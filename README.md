@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid.svg?branch=master)](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid)
+
+
 <a href='https://play.google.com/store/apps/details?id=com.fekracomputers.islamiclibrary&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' width="200px" src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 # Islamic Library ver 1.0
