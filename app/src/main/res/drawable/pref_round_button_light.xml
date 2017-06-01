@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_selected="true" android:state_pressed="true" android:drawable="@drawable/pref_round_button_pressed_selected_light" />
+    <item android:state_enabled="true" android:state_pressed="true" android:drawable="@drawable/pref_round_button_pressed_light" />
+    <item android:state_enabled="true" android:state_selected="true" android:drawable="@drawable/pref_round_button_selected_light" />
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/pref_button_enabled_light" />
+        </shape>
+    </item>
+</selector>

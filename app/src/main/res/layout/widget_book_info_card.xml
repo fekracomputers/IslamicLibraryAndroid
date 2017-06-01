@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_height="wrap_content"
+    tools:layout_width="match_parent"
+    tools:orientation="vertical"
+    tools:parentTag="LinearLayout">
+
+    <View style="@style/HorizontalSeparator" />
+
+    <TextView
+        android:id="@+id/header_tv"
+        style="@style/infoPageHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        tools:text="@string/information_card" />
+
+    <com.fekracomputers.islamiclibrary.widget.EllipsisTextView
+        android:id="@+id/details_tv"
+        style="@style/infoPageDetails.limited"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="10"
+        android:layout_marginBottom="16dp"
+        tools:text="@string/book_details_card_test" />
+
+    <TextView
+        android:id="@+id/more_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:clickable="true"
+        android:gravity="center"
+        tools:visibility="visible"
+        android:text="@string/read_more"
+        android:textColor="@color/book_info_linked_text" />
+</merge>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="IslamicLibraryThemeDark" parent="@style/IslamicLibraryBaseDark">
+        <item name="isLightTheme">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_popupTextColor">@color/material_grey_200</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+    <style name="IslamicLibraryThemeLight" parent="@style/IslamicLibraryBaseLight">
+        <item name="isLightTheme">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.Light.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+    <style name="IslamicLibraryThemeLightDark" parent="@style/IslamicLibraryBaseLightDark">
+        <item name="isLightTheme">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.Light.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+
+</resources>

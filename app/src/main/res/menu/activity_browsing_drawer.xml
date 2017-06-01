@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group >
+        <item xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/search_inside_books"
+            android:title="@string/side_drawer_in_book_search"
+            android:icon="@drawable/ic_search_dark_24dp"
+            app:showAsAction="always" />
+
+        <item xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/start_multi_book_selection"
+            android:title="@string/side_drawer_start_multi_book_download"
+            android:icon="@drawable/ic_file_download_dark_24dp"
+            app:showAsAction="always" />
+
+
+        <item xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_item_downloaded_only"
+            android:title="@string/side_drawer_downloaded_only"
+            app:actionLayout="@layout/menu_swich"
+            app:showAsAction="always" />
+
+        <item xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_item_in_progress_downloads"
+            android:title="@string/menu_download_manager"
+            app:showAsAction="always" />
+
+    </group>
+    <group>
+    <item android:title="@string/About">
+
+        <menu>
+            <item
+                android:id="@+id/nav_about_app"
+                android:icon="@drawable/ic_info_black_24dp"
+                android:title="@string/About"
+                />
+            <item
+                android:id="@+id/nav_rate_app"
+                android:icon="@drawable/ic_star_black_24dp"
+                android:title="@string/action_rate" />
+            <item
+                android:id="@+id/nav_share_app"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="@string/action_share" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/action_settings" />
+            <item
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="@string/action_feedback" />
+        </menu>
+
+    </item>
+    </group>
+</menu>

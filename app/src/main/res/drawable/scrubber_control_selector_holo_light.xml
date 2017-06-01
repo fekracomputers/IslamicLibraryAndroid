@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:constantSize="true">
+    <item android:drawable="@drawable/scrubber_control_disabled_holo_light" android:state_enabled="false" />
+    <item android:drawable="@drawable/scrubber_control_pressed_holo" android:state_pressed="true" />
+    <item android:drawable="@drawable/scrubber_control_pressed_holo" android:state_selected="true" />
+    <item android:drawable="@drawable/scrubber_control_pressed_holo" android:state_focused="true" />
+    <item android:drawable="@drawable/scrubber_control_normal_holo" />
+    <item android:state_checked="true">
+        <shape>
+            <size android:width="32.0dip" android:height="32.0dip" />
+        </shape>
+    </item>
+</selector>

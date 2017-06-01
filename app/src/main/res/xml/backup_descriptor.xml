@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+
+    <!--Files related to app debugging, such as instant run files. To exclude instant run files-->
+    <exclude
+        domain="file"
+        path="instant-run" />
+</full-backup-content>

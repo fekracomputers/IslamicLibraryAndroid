@@ -1,0 +1,38 @@
+body {
+  font-family: 'Amiri';
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+}
+
+h1,h2,h3
+{
+	color:#800000
+}
+
+a:link {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+hr {
+	width:50%;
+	text-align:right;
+	margin-right:0;
+}
+
+
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: bold;
+  
+  src: url('../fonts/amiri-v7-arabic_latin-regular.ttf') format('truetype') /* Safari, Android, iOS */
+
+}

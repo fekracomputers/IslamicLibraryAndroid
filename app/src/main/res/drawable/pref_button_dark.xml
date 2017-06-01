@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/pref_button_pressed_selected_dark"
+        android:state_enabled="true"
+        android:state_pressed="true"
+        android:state_selected="true" />
+
+    <item android:drawable="@drawable/pref_button_pressed_dark"
+        android:state_enabled="true"
+        android:state_pressed="true" />
+
+    <item android:drawable="@drawable/pref_button_selected_dark"
+        android:state_enabled="true"
+        android:state_selected="true" />
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/pref_button_enabled_dark" />
+            <corners android:radius="@dimen/pref_btn_radius" />
+        </shape>
+    </item>
+</selector>

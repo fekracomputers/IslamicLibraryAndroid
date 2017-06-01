@@ -1,0 +1,142 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:visibility="invisible"
+    tools:visibility="visible">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?skim_background"
+        android:clipChildren="false"
+        android:paddingTop="8dp">
+
+        <RelativeLayout
+            android:id="@+id/chapter_and_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/chapter_title"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="20.0dip"
+                android:layout_toRightOf="@+id/part_page_number_tv"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:paddingRight="8dp"
+                tools:text="الباب الأول" />
+
+            <ImageButton
+                android:id="@+id/action_bookmark_this_page"
+                style="@style/ActionMenuItem"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:src="?menuBookmarkIcon"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/action_add_book_mark" />
+
+            <TextView
+                android:id="@+id/part_page_number_tv"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/action_bookmark_this_page"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/skim_view_top_margin"
+                android:enabled="true"
+                android:gravity="end"
+                tools:text="15" />
+
+            <TextView
+                android:id="@+id/page_slash"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3.0sp"
+                android:layout_marginRight="3.0sp"
+                android:layout_toRightOf="@id/part_page_number_tv"
+                android:enabled="false"
+                android:maxLines="1"
+                android:text="@string/skim_page_label_separator"
+                android:textColor="?blueThemedText"
+                 />
+
+
+            <TextView
+                android:id="@+id/part_number"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/page_slash"
+                android:enabled="true"
+                android:maxLines="1"
+                android:textColor="?blueThemedText"
+                tools:text="5" />
+
+
+            <com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText
+                android:id="@+id/page_number_editor"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/part_page_number_tv"
+                android:layout_alignRight="@id/part_page_number_tv"
+                android:digits="\ 0123456789"
+                android:gravity="right"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:padding="8.0dip"
+                android:textColor="?blueThemedText"
+                android:textColorHint="@color/material_grey_500"
+                android:visibility="invisible" />
+
+            <com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText
+                android:id="@+id/part_number_editor"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/part_page_number_tv"
+                android:layout_alignRight="@id/part_number"
+                android:digits="\ 0123456789"
+                android:gravity="end"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:padding="8.0dip"
+                android:textColor="?blueThemedText"
+                android:textColorHint="@color/material_grey_500"
+                android:visibility="invisible"
+                tools:text="25" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/scrubber_bar_height"
+        android:layout_gravity="bottom"
+        android:background="?skim_background"
+        android:focusable="true"
+        tools:progress="50"
+        android:thumb="?scrubberBrightnessThumb" />
+
+
+</FrameLayout>

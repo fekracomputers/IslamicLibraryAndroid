@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardview"
+    style="?cardBackgroundColor"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/search_snippet_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="?selectableItemBackground"
+                android:padding="8dp"
+                tools:text="sssciodsjoijvoidfjfoivjfoifjboifdjboifdnbodfnooofdnobndfoinboidnboifnbognboigfnboifgngboingfoibngfoibngfoinboinboignbogfnboigfnboigfnb" />
+
+        </android.support.v7.widget.CardView>
+
+
+        <RelativeLayout
+            android:id="@+id/chapter_and_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/chapter_title"
+                style="@style/navigationViewTextAppearance.day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:layout_toRightOf="@+id/part_page_number_tv"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/skim_header_side_margin"
+                android:layout_marginRight="20.0dip"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                tools:text="الباب الأول"
+
+                android:textSize="@dimen/skim_view_header_textsize" />
+
+
+            <TextView
+                android:id="@+id/part_page_number_tv"
+                style="@style/navigationViewTextAppearance.day"
+                android:layout_width="wrap_content"
+                android:textStyle="normal"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/skim_header_side_margin"
+                android:layout_marginTop="@dimen/skim_view_top_margin"
+                android:layout_alignParentLeft="true"
+                android:enabled="true"
+                android:gravity="end"
+                tools:text="23"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+
+
+
+

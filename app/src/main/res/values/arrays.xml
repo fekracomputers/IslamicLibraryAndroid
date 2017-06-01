@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="book_list_sorting">
+        <item>@string/library_sort_by_author_death_year</item>
+        <item>@string/library_sort_by_title</item>
+    </string-array>
+
+    <string-array name="author_list_sorting">
+        <item>@string/library_sort_by_author_death_year</item>
+        <item>@string/library_sort_by_name</item>
+        <item>@string/library_sort_by_number_of_books</item>
+    </string-array>
+
+    <string-array name="category_list_sorting">
+        <item>@string/library_sort_by_default</item>
+        <item>@string/library_sort_by_name</item>
+        <item>@string/library_sort_by_number_of_books</item>
+    </string-array>
+    <string-array name="bookmark_list_sorting" >
+        <item>@string/library_sort_by_page</item>
+        <item>@string/library_sort_by_date</item>
+    </string-array>
+    <string-array name="highlight_list_sorting" >
+        <item>@string/library_sort_by_page</item>
+        <item>@string/library_sort_by_date</item>
+        <item>@string/library_sort_by_color</item>
+    </string-array>
+
+
+    <!--<array name="typeface_icons">-->
+        <!--<item>@drawable/ic_font_georgia_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_sans_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_literata_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_merriweather_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_sorts_mill_goudy_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_vollkorn_black_24dp</item>-->
+    <!--</array>-->
+    <!--<array name="typeface_icons_minimal">-->
+        <!--<item>@drawable/ic_font_literata_black_24dp</item>-->
+        <!--<item>@drawable/ic_font_sans_black_24dp</item>-->
+    <!--</array>-->
+</resources>

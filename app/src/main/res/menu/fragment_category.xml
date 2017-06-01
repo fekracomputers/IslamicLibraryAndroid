@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_dark_24dp"
+        android:title="@string/search_list"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="collapseActionView|always"
+
+        />
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_sort_desc_white_24dp"
+        android:orderInCategory="50"
+        android:title="@string/menu_sort"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_rearrange"
+        android:icon="@drawable/ic_view_stream_black_24dp"
+        android:orderInCategory="100"
+        android:title="@string/action_rearrange"
+        app:showAsAction="ifRoom" />
+</menu>

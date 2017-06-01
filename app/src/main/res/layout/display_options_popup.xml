@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/display_options_popup"
+    android:layout_width="@dimen/pref_outer_width"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/pref_outer_margin_right"
+    android:layout_marginRight="@dimen/pref_outer_margin_right"
+    android:orientation="vertical"
+    android:layout_marginStart="@dimen/pref_outer_margin_right"
+    android:layout_marginEnd="@dimen/pref_outer_margin_right">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56.0dip"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/layout_options_button"
+            android:layout_width="0.0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="?cardTabBackgroundDrawable"
+            android:scaleType="center"
+            app:srcCompat="?settingsLayoutTab" />
+
+
+        <ImageButton
+            android:id="@+id/lighting_options_button"
+            android:layout_width="0.0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="?cardTabBackgroundDrawable"
+            android:scaleType="center"
+            app:srcCompat="?settingsLightingTab" />
+    </LinearLayout>
+
+
+    <ViewAnimator
+        android:id="@+id/settings_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+           >
+            <include
+                layout="@layout/pref_text_size"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height" />
+
+            <include
+                layout="@layout/pref_line_height"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/pref_night_mode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height" />
+            <include
+                layout="@layout/pref_theme"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height"
+                android:visibility="gone"
+
+                />
+
+            <include
+                layout="@layout/pref_brightness"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height"
+                android:visibility="gone"
+
+                />
+        </LinearLayout>
+
+    </ViewAnimator>
+
+</LinearLayout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="@color/book_card_background"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/no_book_image" />
+
+        <TextView
+            android:id="@+id/book_label"
+            style="@style/twoLineGridPrimartText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minLines="2"
+            tools:text="فتح الباري بشرح صحيح البخاري" />
+
+        <TextView
+            android:id="@+id/bookauthor"
+            style="@style/twoLineGridSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            tools:text="محمد بن إسماعيل بن إبراهيم بن المغيرة" />
+
+
+        <View
+            android:id="@+id/horizontal_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/colorPrimary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <ImageButton
+                style="@style/OverflowButtonGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                />
+
+            <Button
+                android:id="@+id/btn_download"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/download_book"
+                android:textColor="@color/widget_text_color" />
+
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/download_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            tools:background="@color/indicator_book_not_downloaded" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/book_ceckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+</android.support.v7.widget.CardView>

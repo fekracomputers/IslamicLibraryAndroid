@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <layer-list>
+            <item android:gravity="bottom">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/info_card_tab_indicator_dark" />
+                </shape>
+            </item>
+            <item android:drawable="@drawable/card_tab_background_ripple_dark" android:bottom="@dimen/info_card_tab_indicator_height" />
+        </layer-list>
+    </item>
+    <item android:drawable="@drawable/card_tab_background_ripple_dark" />
+</selector>

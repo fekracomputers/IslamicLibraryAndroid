@@ -1,0 +1,215 @@
+<resources>
+    <string name="app_name">المكتبة الإسلامية</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">الإعدادات</string>
+    <string name="action_search">ابحث</string>
+    <string name="action_rearrange">إعادة ترتيب</string>
+    <string name="action_feedback">اترك تعليقًا</string>
+    <string name="bookmarks">المرجعيات</string>
+    <string name="title_activity_settings">الإعدادات</string>
+    <string name="About">عن التطبيق</string>
+    <string name="tab_Overview">عن الكتاب</string>
+    <string name="tab_Table_of_Contents">الفهرس</string>
+    <string name="tab_Notes_and_Highlights">ملاحظاتي</string>
+    <string name="tab_Bookmarks">علامات</string>
+    <string name="authors">المؤلفون</string>
+    <string name="information_card">بطاقة الكتاب</string>
+    <string name="about_book">عن الكتاب</string>
+    <string name="abouth_the_author">عن المؤلف</string>
+    <string name="Downloading">يجري التحميل</string>
+    <string name="open">قراءة</string>
+    <string name="action_rate">قيم البرنامج</string>
+    <string name="action_share">انشر البرنامج</string>
+    <string name="categoreies">الأقسام</string>
+    <string name="title_activity_book_catalog_filter">عرض الكتب</string>
+    <string name="all">كل الكتب</string>
+    <string name="dialog_information_database_not_available">\"قاعدة بيانات معلومات الكتب غير موجودة \nهل تريد تحميلها \"</string>
+    <string name="Ok">موافق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="wait_for_download">أعد المحاولة بعد انتهاء تحميل بيانات الكتب</string>
+    <string name="book_information_database">قاعدة بيانات الكتب</string>
+    <string name="action_add_book_mark">أضف علامة</string>
+    <string name="action_remove_book_mark">ازل العلامة</string>
+    <string name="page">صفحة :</string>
+    <string name="part">جزء :</string>
+    <string name="search_list">ابحث في الكتب المحددة</string>
+    <string name="ddd">"highlightClicked "</string>
+    <string name="action_share_text">شارك</string>
+    <string name="action_copy_text">انسخ</string>
+    <!---sssssssssssssssssssssssssssss-->
+    <string name="action_bar_title_all_books">جميع الكتب</string>
+    <string name="before_first_bookmark">لإضافة علامة متابعة القراءة، انقر على الجانب العلوي الأيسر من الصفحة أو أضغط على زر العلامات في القائمة</string>
+    <string name="before_first_note">انقر مع الاستمرار على بعض النص للتمييز وإنشاء ملاحظات</string>
+    <string name="checked">محدد</string>
+    <string name="decrease_font_size">تقليل حجم الخط</string>
+    <string name="decrease_line_height">خفض ارتفاع السطر</string>
+    <string name="error_message_title">خطأ في Google Play</string>
+    <string name="increase_font_size">زيادة حجم الخط</string>
+    <string name="increase_line_height">زيادة ارتفاع السطر</string>
+    <string name="invalid_page_number">أدخل رقم صفحة من %1$d إلى %2$d</string>
+    <string name="invalid_part_number">أدخل رقم جزء من %1$d إلى %2$d</string>
+    <string name="library_sort_by_name">الاسم</string>
+    <string name="library_sort_by_number_of_books">عدد الكتب</string>
+    <string name="library_sort_by_author_death_year">وفاة المؤلف</string>
+    <string name="library_sort_by_title">العنوان</string>
+    <string name="library_sort_title">الترتيب بحسب</string>
+    <string name="menu_highlight_color_blue">ظلل بالأزرق</string>
+    <string name="menu_highlight_color_green">ظلل بالأخضر</string>
+    <string name="menu_highlight_color_red">ظلل بالأحمر</string>
+    <string name="menu_highlight_color_yellow">ظلل بالأصفر</string>
+    <string name="menu_reader_search_exit">اكتمل هذا البحث</string>
+    <string name="menu_reader_settings">خيارات العرض</string>
+    <string name="menu_remove_highlight">إزالة التحديد</string>
+    <string name="menu_sort">الترتيب</string>
+    <string name="menu_table_of_contents">المحتويات</string>
+    <string name="more"><u>المزيد</u></string>
+    <string name="next_result_button">النتيجة التالية</string>
+    <string name="pref_line_height_label_initial_text">100%</string>
+    <string name="pref_text_size_label_initial_text">100%</string>
+    <string name="pref_themes">مظهر العرض</string>
+    <string name="pref_themes_day">نهاري</string>
+    <string name="pref_themes_night">ليلي</string>
+    <string name="pref_themes_sepia">بني داكن</string>
+    <string name="previous_result_button">النتيجة السابقة</string>
+    <string name="search_hint">بحث في الكتب المحددة</string>
+    <string name="search_inside_volume_hint">بحث في الكتاب</string>
+    <string name="side_drawer_downloaded_only">ما تم تنزيله فقط</string>
+    <string name="skim_page_label_separator">/</string>
+    <string name="unchecked">غير محدد</string>
+    <string name="pref_ringtone_silent">صامت</string>
+
+    <string name="pref_title_global_override_local">تطبيق على كل الكتب </string>
+    <string name="global_page_display_preference">تعديل </string>
+    <string name="pref_header_global_display">اختيارات عرض صفحة الكتب العامة</string>
+    <string name="pref_global_display_text_size">حجم خط متن الكتاب</string>
+    <string name="pref_summary_global_override_local">تطبيق خيارات عامة موحدة على كل الكتب</string>
+    <string name="pref_title_global_night_mode">القراءة الليلية</string>
+    <string name="share_app_msg">حمل برنامج %1$s\n%2$s</string>
+    <string name="click_again">اضغط على الصورة مرة أخرى لتغييرها</string>
+    <string name="send_feedback">ارسل</string>
+    <string name="send_feedback_two">أرسل تعليقًا</string>
+    <string name="select_image">+ أضف لقطة شاشة</string>
+    <string name="your_input">اكتب تعليقك هنا</string>
+    <string name="select_picture_title">اختر صورةً</string>
+    <string name="feedback">التعليقات</string>
+    <string name="info_fedback_legal_start">"ستُرسَلُ "</string>
+    <string name="info_fedback_legal_system_info">"بيانات جهازك "</string>
+    <string name="info_fedback_legal_and">" و"</string>
+    <string name="info_fedback_legal_will_be_sent">إلى %s</string>
+    <string name="info_fedback_legal_log_data">"بيانات تشغيل البرنامج "</string>
+    <string name="about_version_number">الإصدار</string>
+    <string name="other_apps">برامجنا</string>
+    <string name="about_company">عن شركة فكرة للبرمجيات</string>
+    <string name="find_us_on_social_media">تابعنا على مواقع التواصل الإجتماعي</string>
+    <string name="results">نتائج</string>
+    <string name="downloading_book_information">نحمل قاعدة بيانات الكتب</string>
+    <string name="info_refreshing_database_with_storage">نراجع الكتب المخزنة</string>
+    <string name="info_preparing_book_information_database">نهيء قاعدة بيانات الكتب</string>
+    <string name="pref_ui_language_arabic">واجهة  عربية</string>
+    <string name="download_book">تحميل</string>
+    <string name="download_selected_books">تنزيل الكتب المحددة</string>
+    <string name="searching_downloaded_only">يُبحث في الكتب المنزلة فقط</string>
+    <string name="action_add_note">أضف ملاحظة</string>
+    <string name="action_select_all">حدد الكل</string>
+    <string name="menu_highlight">أضف ملحوظة</string>
+    <string name="library_sort_by_default">افتراضي</string>
+    <string name="death_hijri_year">الوفاة: %dهـ</string>
+    <string name="page_slash_part">%2$d/%1$d</string>
+    <string name="feedback_mail_subject">تعليق حول %1$s</string>
+    <string name="page_number">%d</string>
+    <string name="number_of_books">الكتب: %d</string>
+    <string name="book_long_description_test">"[صحيح البخاري]
+
+(المؤلف)
+أبو عبد الله محمد بن إسماعيل بن إبراهيم بن المغيرة بن بردزبة البخاري (194-256هـ) .
+
+(اسم الكتاب الذي طبع به ووصف أشهر طبعاته)
+قد كثرت طبعات الصحيح جدًا، بشكل يصعب معه حصرها، ونكتفي هنا بذكر أبرز هذه الطبعات، وقد طبعت كلها تقريبًا تحت اسم:
+صحيح البخاري
+1 - طبع بالمطبعة الأميرية بالقاهرة، سنة 1286هـ، وهذه أقدم الطبعات التي وقفنا عليها.
+2 - طبع بمطبعة بولاق 1296هـ، وبهامشه تقييدات وشروح من شرح القسطلاني.
+3 - طبع بمصر في المطبعة الأميرية، سنة 1313هـ، وكرر طبعه 1314هـ، وهذه الطبعة على نسخة الحافظ اليونيني.
+4 - طبع بعناية محمد أبو الفضل إبراهيم ورفاقه، وهي طبعة مرقمة على ترقيمات فتح الباري في الكتب والأبواب والأحاديث، والأجزاء والصفحات، صدرت عن مكتبة النهضة الحديثة بمكة، سنة 1377هـ، ثم في الرياض 1404هـ.
+
+(توثيق نسبة الكتاب إلى مؤلفه)
+لعله من العبث أن يحاول الإنسان أن يثبت الثوابت، فإن أحدًا لا يحتاج إلى إثبات أن الشمس طالعة، حين تكون هي في وسط السماء، في وضح النهار، وحر الظهيرة، في صيف قائظ، وهذا الكتاب أوضح من الشمس وأنور، وأقوى منها وأظهر، ويستدل به لا له.
+فقد سار عبر الزمان وخلال القرون، وعرفه الخاصة والعامة، حتى أصبح لا يجهله إلا جاهل، وأصبح لاسمه مهابة في القلوب، ولإسناد شيء إليه قطع بصحته، وإخراس ألسنة المعاندين، بعدما انعقد إجماع الأمة على نسبته للمؤلف وتلقيه بالقبول جيلًا بعد جيل.
+
+(وصف الكتاب ومنهجه)
+أراد المؤلف رحمه الله أن يجمع كتابًا مسندًا مختصرًا مشتملًا على الصحيح المسند من حديث رسول الله (وسننه وأيامه دفعه إلى ذلك ما بينه بقوله: " كنا عند إسحاق بن راهويه فقال: لو جمعتم كتاباً مختصراً لصحيح سنة رسول الله (، فوقع ذلك في قلبي فأخذت في جمع الجامع الصحيح " فقام بانتقاء هذه المادة من ستمائة ألف حديث، واستغرق ذلك منه ستة عشرة سنة.
+وقد تحصل له من خلال نقده لهذه المرويات الضخمة، بشروطه التي اشترطها (7167) نصًا مسندًا تمثل أصح الصحيح لأنه قد أضاف إلى ما اشترط في حد الصحيح تحقق اللقاء بين كل راو ومن فوقه, والتزم هذا.
+ثم رتب هذه المادة ترتيبًا عجبًا في كتب تندرج تحتها أبواب، وتحت كل باب عدد من النصوص يقل أو يكثر حسبما يتفنن المؤلف في إيراد ذلك.
+وقد انعقد إجماع الأمة على أن التراجم التي وضعها الإمام البخاري في كتابه نمت عن فهم عميق ونظر دقيق في معاني النصوص، حتى اشتهر بين أهل العلم قولهم: " فقه البخاري في تراجمه ".
+وتناول المؤلف في هذا الكتاب سائر أحكام الشرع؛ العملية والاعتقادية.
+وقد أتت مادة الكتاب مقسمة على (97) كتابًا بدأها بكتاب بدأ الوحي، فكتاب الإيمان، فكتاب العلم، ثم دخل في كتب العبادات الوضوء..إلخ، وختم الكتاب بكتاب التوحيد يسبقه كتاب الاعتصام بالسنة.
+وهو بهذا الترتيب العجيب يشير إلى أن الوحي هو طريق الشرع، والإيمان به عن علم مع تطبيق الأحكام التي أتى بها الشرع، يفضي بالمسلم إلى تمسكه بالسنة، وتحصيله للتوحيد الحق.
+وثمة بعض السمات التي تسترعي انتباه المطالع لصحيح الإمام أبي عبد الله البخاري (:
+4 قال النووي: ليس مقصود البخاري الاقتصار على الأحاديث فقط بل مراده الاستنباط منها والاستدلال لأبواب أرادها ولهذا المعنى أخلى كثيراً من الأبواب عن إسناد الحديث واقتصر فيه على قوله فيه فلان عن النبي أو نحو ذلك وقد يذكر المتن بغير إسناد وقد يورده معلَّقاً وإنما يفعل هذا لأنه أراد الاحتجاج للمسألة التي ترجم لها …
+4 لم يستوعب الصحيح ولم يقصد إليه. وقال: ما تركت من الصحيح أكثر.
+4 قد يكرر الحديث في عدة مواضع يشير في كل منها إلى فائدة مستنبطة.
+4 ذكر في تراجم الأبواب آيات وأحاديث وفتاوى الصحابة والتابعين.
+وبعد فهذا غيض من فيض، وسطر من قمطر، ونقطة من بحر، وقليل من كثير من فضل هذا الكتاب العظيم، والسفر الجليل، ولا تكفي هذه العجالة لبيان كنه هذا الكتاب، الذي هو أصح كتاب بعد كتاب الله، بإجماع أهل السنة جميعًا، كيف لا وقد أفرد الحافظ ابن حجر في بداية شرحه للكتاب مجلدًا في الكلام على أسرار هذا الكتاب، فما وفاه حقه وأحس بذلك فصار يذكر مزيدًا على ذلك في أثناء شرحه للنصوص، وكم ترك لغيره من جديد، وإن كان الحافظ رحمه الله هو الملاح الذي أبحر بالسفينة بكل اقتدار.
+
+[التعريف بالكتاب، نقلا عن موقع جامع الحديث]"</string>
+    <string name="book_info_similar_books">كتب شبيهة</string>
+    <string name="book_info_similar_books_by_authour">كتب أخرى ل%s</string>
+    <string name="read_more"><u>اقرأ المزيد</u></string>
+    <string name="search_toc_hint">بحث داخل الفهرس</string>
+    <string name="part_and_page_with_text">جزء %1$d- صقحة %2$d</string>
+    <string name="search_result_root_title">نتائج البحث</string>
+    <string name="page_number_with_label">صفحة %1$d</string>
+    <string name="library_sort_by_date">التاريخ</string>
+    <string name="library_sort_by_page">الصفحة</string>
+    <string name="library_sort_by_color">اللون</string>
+    <string name="citation_bottom_with_square_brackets">[%1$s، %2$s، %3$s]</string>
+    <string name="prefs_volume_key_navigation_title">تصفح بمفاتيح الصوت</string>
+    <string name="prefs_volume_key_navigation_summary">استخدم مفاتيح الصوت للتصفح بين الصفحات</string>
+    <string name="pref_zoom_precent">%d%%</string>
+    <string name="title_activity_download_progress">التنزيلات الحالية</string>
+    <string name="before_first_download">"لا توجد طلبات تنزيل كتب حالية
+        لتنزيل كتاب اضغط على زر التنزيل
+        كذلك يمكنك تحميل كل الكتب داخل قسم أو كل الكتب لمؤلف بالضغط المطول على القسم أو المؤلف ثم اختيار تنزيل كل الكتب"</string>
+    <string name="finished_download">أنتهت كل التحميلات بحمد الله</string>
+    <string name="downloaded_size">%1$s/%2$s</string>
+    <string name="removed_selection_of_downloaded_books">الكتب المحملة مسبقًا أزيل تحديدها</string>
+    <string name="confirm_download">تنزيل</string>
+    <string name="toast_all_selected_books_already_downlaoded">كل الكتب المحددة حُمِّلت من قبل</string>
+    <string name="cancel_all_downloads">إلغاء الجميع</string>
+    <string name="cancelled_download">أُلغيت جميع طلبات التحميل</string>
+    <string name="continue_downloading">استمرار</string>
+    <string name="stop_downloading">إلغاء</string>
+    <string name="removing_all_downloads">يجري إزالة جميع التنزيلات</string>
+    <string name="page_part_from">من</string>
+    <string name="go_to_page">الذهاب إلى</string>
+    <string name="action_go">الذهاب</string>
+    <string name="error_page_missing">عذرًا هذه الصفحة غير موجودة</string>
+    <string name="zero_zero_page_placeholder_single_part">_</string>
+    <string name="zero_zero_page_placeholder_multi_part">_/_</string>
+    <string name="side_drawer_in_book_search">البحث داخل الكتب</string>
+    <string name="side_drawer_start_multi_book_download">تحميل مجموعة</string>
+    <string name="hint_search_inside_books">البحث داخل الكتب</string>
+    <string name="menu_refresh_with_file_system">تحديث الكتب المخزنة</string>
+    <string name="no_downloaded_selected_books">لم تختر أي كتاب محمل للبحث فيه</string>
+    <string name="menu_download_manager">مدير التحميلات</string>
+    <string name="search_author_names">البحث في أسماء المولفين</string>
+    <string name="menu_sort_authors">ترتيب المؤلفين</string>
+    <string name="search_book_list">البحث في أسماء الكتب</string>
+    <string name="menu_sort_books">ترتيب الكتب</string>
+    <string name="search_list_category">البحث في أسماء الأقسام</string>
+    <string name="menu_sort_categories">ترتيب الأقسام</string>
+    <string name="hint_search_authors_names">البحث في أسماء المؤلفين</string>
+    <string name="hint_search_books_names">البحث في أسماء الكتب</string>
+    <string name="preparing_book">جاري الإعداد</string>
+    <string name="refreshing_on_background">سيتم مراجعة الكتب في الخلفية، يمكنك الاستمرار في القراءة الآن</string>
+    <string name="open_source_licences">البرمجيات مفتوحة المصدر المستخدمة</string>
+    <string name="searching_in_d_books">نبحث في %d كتب</string>
+    <string name="about_activity_acknowledgements">شكر وتقدير</string>
+    <string name="about_activity_facebook_label">فايسبوك</string>
+    <string name="about_activity_twitter_label">تويتر</string>
+    <string name="about_activity_web_page_label">الموقع</string>
+
+
+</resources>

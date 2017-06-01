@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="global_overrides_local"
+        android:summary="@string/pref_summary_global_override_local"
+        android:title="@string/pref_title_global_override_local" />
+
+    <PreferenceScreen
+        android:icon="@drawable/ic_text_format_24dp"
+        android:key="customize_global_page_display_preference_sub_screen"
+        android:persistent="false"
+        android:title="@string/global_page_display_preference"
+        app:asp_tintEnabled="true">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="global_night_mode"
+            android:title="@string/pref_title_global_night_mode" />
+
+
+        <!--<ColorPreference-->
+            <!--android:defaultValue="@android:color/white"-->
+            <!--android:entries="@array/colors_theme_names"-->
+            <!--android:entryValues="@array/colors_reading_theme"-->
+            <!--android:key="global_theme_color"-->
+            <!--android:title="@string/pref_themes"-->
+            <!--app:asp_columnCount="3" />-->
+
+        <!--app:titleTextColor="@color/accent"-->
+        <SeekBarPreference
+            android:defaultValue="100"
+            android:icon="@drawable/ic_format_size_light_24dp"
+            android:key="global_display_text_size"
+            android:max="200"
+            android:summary="@string/pref_global_display_text_size"
+            app:asp_dialogTintEnabled="true"
+            app:asp_min="50"
+            app:asp_tintEnabled="true" />
+
+    </PreferenceScreen>
+</PreferenceScreen>

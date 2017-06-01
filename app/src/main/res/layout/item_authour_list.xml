@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    app:cardBackgroundColor="@color/book_card_background"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    tools:context=".browsing.activity.BrowsingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="20dp">
+
+        <CheckBox
+            android:id="@+id/author_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/authour_feather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/death_year"
+            android:layout_alignTop="@+id/author_name"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toLeftOf="@id/author_checkBox"
+            app:srcCompat="@drawable/ic_author_feather_green" />
+
+        <TextView
+            android:id="@+id/author_name"
+            style="@style/twoLineListPrimartText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/authour_feather_icon"
+            android:layout_toRightOf="@+id/vertical_separator"
+            android:ellipsize="middle"
+            android:focusableInTouchMode="false"
+            android:gravity="start"
+            tools:text="حمد بن إسماعيل بن إبراهيم بن بردزبة البخاري الجعفي مولاهم" />
+
+
+        <TextView
+            android:id="@+id/death_year"
+            style="@style/twoLineListSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/author_name"
+            android:layout_below="@id/author_name"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/vertical_separator"
+            android:drawablePadding="4dp"
+            android:drawableRight="@drawable/ic_death_indicator"
+            android:gravity="right"
+            tools:text="الوفاة: 15هـ" />
+
+
+        <ImageView
+            android:id="@+id/number_of_books_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_above="@+id/number_of_books_text_view"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            app:srcCompat="@drawable/ic_all_books_green" />
+
+        <TextView
+            android:id="@+id/number_of_books_text_view"
+            style="@style/twoLineListSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/death_year"
+            android:layout_alignParentLeft="true"
+            tools:text="عدد الكتب: 500" />
+
+        <View
+            android:id="@+id/vertical_separator"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@id/number_of_books_icon"
+            android:background="@drawable/vertical_gradient" />
+
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/download_indicator"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        tools:background="@color/indicator_book_not_downloaded" />
+</android.support.v7.widget.CardView>

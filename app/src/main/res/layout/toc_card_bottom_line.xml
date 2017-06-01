@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/item_bookmark">
+
+
+    <TextView
+        android:id="@+id/page_part_number"
+        style="@style/toc_bottom_line"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/toc_card_body"
+        android:gravity="right|bottom"
+        tools:text="جزء :1 صفحة 110" />
+
+    <TextView
+        android:id="@+id/date_time"
+        style="@style/toc_bottom_line"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/toc_card_body"
+        android:layout_toLeftOf="@+id/page_part_number"
+        android:gravity="left|bottom"
+        tools:text="19 أبريل 2017 -9:15 م" />
+</merge>

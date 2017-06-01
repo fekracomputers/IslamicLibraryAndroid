@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="search_num_results_before">
+        <item quantity="other">%1$s من إجمالي %2$s من التطابقات</item>
+        <item quantity="zero">%1$s من إجمالي %2$s من التطابقات</item>
+        <item quantity="one">%1$s من إجمالي %2$s من التطابقات</item>
+        <item quantity="two">%1$s من إجمالي %2$s من التطابقات</item>
+        <item quantity="few">%1$s من إجمالي %2$s من التطابقات</item>
+        <item quantity="many">%1$s من إجمالي %2$s من التطابقات</item>
+    </plurals>
+    <plurals name="confirm_book_download">
+        <item quantity="other">أتريد تحميل %d من الكتب؟</item>
+        <item quantity="zero">أتريد تحميل %d كتاب؟</item>
+        <item quantity="one">أتريد تحميل كتاب واحد (%d)؟</item>
+        <item quantity="two">أتريد تحميل كتابين (%d)؟</item>
+        <item quantity="few">أتريد تحميل %d كتب؟</item>
+        <item quantity="many">أتريد تحميل %d كتابًا؟</item>
+    </plurals>
+
+</resources>

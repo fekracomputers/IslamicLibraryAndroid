@@ -1,0 +1,39 @@
+.highlight1 {
+            background-color: #ff7043;
+			color : black
+  }
+
+	.highlight2 {
+            background-color: #00e5ff;
+			color : black
+  }
+
+		.highlight3 {
+            background-color: #fbc02d;
+			color : black
+  }
+
+  	.highlight4 {
+            background-color: #8bc34a;
+			color : black
+  }
+
+  .highlight1::selection {
+            background-color: #ff7043;
+
+  }
+
+	.highlight2::selection {
+            background-color: #00e5ff;
+
+  }
+
+		.highlight3::selection  {
+            background-color: #fbc02d;
+
+  }
+
+  	.highlight4::selection  {
+            background-color: #8bc34a;
+
+  }

@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <WebView
+        android:id="@+id/book_page_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp">
+
+    </WebView>
+
+    <ViewStub
+        android:id="@+id/bookmark_view_stub"
+        android:layout="@layout/bookmark_icon_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@id/bookmark_view_stub"
+        android:visibility="gone"
+        />
+
+    <FrameLayout
+        android:id="@+id/selection_popup_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <include layout="@layout/popup_text_selection" />
+
+    </FrameLayout>
+
+
+</FrameLayout>

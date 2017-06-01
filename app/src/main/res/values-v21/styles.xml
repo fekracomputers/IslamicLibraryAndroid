@@ -1,0 +1,229 @@
+<resources>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowActionModeOverlay">false</item>
+        <!--  For Custom Action Mode Background Color/Drawable -->
+        <item name="actionModeBackground">@color/colorPrimaryDark</item>
+        <item name="android:listDivider">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.colored_stausbar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
+    </style>
+
+
+    <style name="PlayDrawerProfileNameText" parent="@style/PlayMediumPlainText">
+        <item name="android:textSize">14.0sp</item>
+        <item name="android:textColor">@color/play_white</item>
+    </style>
+
+    <style name="PlayMediumPlainText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="DetailsPage" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:statusBarColor">@color/books_corpora_dark</item>
+    </style>
+
+    <style name="ReadingActivityDay" parent="@style/FullScreenLightDark">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:popupWindowStyle">@style/ListPopupWindowLight</item>
+        <item name="android:seekBarStyle">@style/BooksSeekBar.Light</item>
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+        <item name="android:windowAllowEnterTransitionOverlap">false</item>
+        <item name="android:windowReturnTransition">@android:transition/fade</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="icon">@android:color/transparent</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonLight</item>
+        <item name="actionBarStyle">@style/ReadingActivityActionBarStyle</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionBarDrawable">@color/colorPrimary</item>
+        <item name="navigationColor">@color/material_grey_700</item>
+        <item name="grayD400L600">@color/material_grey_600</item>
+        <item name="grayD400L700">@color/material_grey_700</item>
+        <item name="grayD500L600">@color/material_grey_600</item>
+        <item name="grayD000L700">@color/material_grey_700</item>
+        <item name="grayD900L200">@color/material_grey_200</item>
+        <item name="webViewBackGround">@android:color/white</item>
+        <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_light_24dp</item>
+        <item name="settingsLayoutTab">@drawable/ic_settings_layout_tab_light_24dp</item>
+        <item name="cardBackgroundDrawable">@drawable/card_background_default_light</item>
+        <item name="cardBackgroundFullDrawable">@drawable/card_background_full_light</item>
+        <item name="cardPrimaryColor">@color/info_card_primary_light</item>
+        <item name="cardSecondaryColor">@color/info_card_secondary_light</item>
+        <item name="cardTabBackgroundDrawable">@drawable/card_tab_background_light</item>
+        <item name="cardTabHighlightColor">@color/material_grey_500</item>
+        <item name="booksPrimaryTextColor">@color/abc_primary_text_material_light</item>
+        <item name="menuSettingsDrawable">@drawable/ic_text_format_wht_24dp</item>
+        <item name="menuTocDrawable">@drawable/ic_toc_dark_24dp</item>
+        <item name="switchOnThumb">@color/books_corpora_dark</item>
+        <item name="switchOffThumb">@color/switch_thumb_material_light</item>
+        <item name="switchOffTrack">@android:color/black</item>
+        <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_light</item>
+        <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_light</item>
+        <item name="scrubberDrawable">@drawable/scrubber_knob</item>
+        <item name="scrubberBkmrkLocDrawable">@drawable/scrubber_bookmark_location_light</item>
+        <item name="scrubberTrackDrawable">@drawable/scrubber_track_light</item>
+        <item name="scrubberTrackAltDrawable">@drawable/scrubber_track_alt_light</item>
+        <item name="scrubberUndoDrawable">@drawable/scrubber_last_page_holo</item>
+        <item name="searchBackground">@color/reader_ab_solid_light</item>
+        <item name="searchLeftArrow">@drawable/ic_search_prev_normal_holo_light_30dp</item>
+        <item name="searchScrubBarExit">@drawable/ic_search_exit_holo_light_30dp</item>
+        <item name="searchScrubBarTextActiveColor">@color/search_scrub_bar_text_active_light</item>
+        <item name="searchScrubBarTextInactiveColor">@color/search_scrub_bar_text_inactive_light</item>
+        <item name="audioFrameDrawable">@drawable/audio_view_frame_light</item>
+        <item name="illo_rotate">@drawable/ic_illo_fit_width_rotate_82dp</item>
+        <item name="illo_scroll">@drawable/ic_illo_fit_width_scroll_82dp</item>
+        <item name="nightMode">false</item>
+        <item name="noteEditorTheme">@style/NoteEditorDialog.Light</item>
+        <item name="noteEditShadow">@drawable/note_shadow_light</item>
+        <item name="noteEditCursor">@drawable/note_editor_text_cursor_light</item>
+        <item name="noteEditOverflow">@drawable/ic_menu_moreoverflow_note_light</item>
+        <item name="displayOptionsButton">@drawable/pref_button_light</item>
+        <item name="displayOptionsRoundButton">@drawable/pref_round_button_light</item>
+        <item name="settingsAutoBrightness">@drawable/ic_settings_brightness_light</item>
+        <item name="settingsTextLarger">@drawable/ic_format_text_size_larger_light_24dp</item>
+        <item name="settingsTextSmaller">@drawable/ic_format_text_size_smaller_light_24dp</item>
+        <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
+        <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_light_24dp
+        </item>
+        <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
+        </item>
+        <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_holo_24dp</item>
+        <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_holo_24dp</item>
+        <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_light</item>
+        <item name="marginNoteIconOutlineColor">@color/margin_note_icon_outline_light</item>
+        <item name="searchCardBackgroundTop">@drawable/card_background_top_holo_light</item>
+        <item name="searchCardBackgroundMiddle">@drawable/card_background_middle_holo_light</item>
+        <item name="searchCardBackgroundBottom">@drawable/card_background_bottom_holo_light</item>
+        <item name="searchCardBackgroundRegular">@drawable/card_background_regular_holo_light</item>
+        <item name="searchCardHeaderTextColor">@color/search_card_header_text_light</item>
+        <item name="searchCardResultTextColor">@color/search_card_result_text_light</item>
+        <item name="searchCardQueryEmphasisColor">@color/search_card_query_emphasis_light</item>
+        <item name="searchCardPageColor">@color/search_card_page_light</item>
+        <item name="searchCardBackgroundColor">@color/search_card_background_light</item>
+        <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_light_24dp</item>
+        <item name="searchCardHeaderBoxColor">@color/search_card_header_box_light</item>
+        <item name="searchCardHeaderBoxTopLineColor">@color/search_card_header_box_top_line_light</item>
+        <item name="searchCardResultDivider">@drawable/card_background_divider_phone_holo_light</item>
+        <item name="translateLanguageArrow">@drawable/ic_arrow_back_gray_24dp</item>
+        <item name="translateSpinnerStyle">@style/Translate.SpinnerLightStyle</item>
+        <item name="preferenceSpinnerStyle">@style/Preference.LightSpinner</item>
+        <item name="skim_background">@color/material_grey_200</item>
+        <item name="skimPageError">@color/material_red_700</item>
+        <item name="dialogAuthorColor">@color/material_grey_700</item>
+        <item name="navigationViewTextAppearance">@style/navigationViewTextAppearance.day</item>
+
+    </style>
+    <style name="ReadingActivityNight" parent="@style/FullScreenDark">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:popupWindowStyle">@style/ListPopupWindowDark</item>
+        <item name="android:seekBarStyle">@style/BooksSeekBar.Dark</item>
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+        <item name="android:windowAllowEnterTransitionOverlap">false</item>
+        <item name="android:windowReturnTransition">@android:transition/fade</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="icon">@android:color/transparent</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonDark</item>
+        <item name="actionBarStyle">@style/ReadingActivityActionBarStyle</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_dark_24dp</item>
+        <item name="actionBarDrawable">@color/reader_ab_solid_dark</item>
+        <item name="navigationColor">@android:color/black</item>
+        <item name="grayD400L600">@color/material_grey_400</item>
+        <item name="grayD400L700">@color/material_grey_400</item>
+        <item name="grayD500L600">@color/material_grey_500</item>
+        <item name="grayD000L700">@android:color/white</item>
+        <item name="grayD900L200">@color/material_grey_900</item>
+        <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
+        <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_dark_24dp</item>
+        <item name="settingsLayoutTab">@drawable/ic_settings_layout_tab_dark_24dp</item>
+        <item name="cardBackgroundDrawable">@drawable/card_background_default_dark</item>
+        <item name="cardBackgroundFullDrawable">@drawable/card_background_full_dark</item>
+        <item name="cardPrimaryColor">@color/info_card_primary_dark</item>
+        <item name="cardSecondaryColor">@color/info_card_secondary_dark</item>
+        <item name="cardTabBackgroundDrawable">@drawable/card_tab_background_dark</item>
+        <item name="cardTabHighlightColor">@android:color/white</item>
+        <item name="booksPrimaryTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="menuSettingsDrawable">@drawable/ic_text_format_wht_24dp</item>
+        <item name="menuTocDrawable">@drawable/ic_toc_dark_24dp</item>
+        <item name="switchOnThumb">@color/books_corpora_dark</item>
+        <item name="switchOffThumb">@color/switch_thumb_material_dark</item>
+        <item name="switchOffTrack">@android:color/white</item>
+        <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_dark</item>
+        <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_dark</item>
+        <item name="scrubberDrawable">@drawable/scrubber_knob</item>
+        <item name="scrubberBkmrkLocDrawable">@drawable/scrubber_bookmark_location_dark</item>
+        <item name="scrubberTrackDrawable">@drawable/scrubber_track_dark</item>
+        <item name="scrubberTrackAltDrawable">@drawable/scrubber_track_alt_dark</item>
+        <item name="scrubberUndoDrawable">@drawable/scrubber_last_page_holo</item>
+        <item name="searchBackground">@color/reader_ab_solid_dark</item>
+        <item name="webViewBackGround">@color/night_mode_web_view_bg</item>
+        <item name="searchLeftArrow">@drawable/ic_search_prev_normal_holo_dark_30dp</item>
+        <item name="searchScrubBarExit">@drawable/ic_search_exit_holo_dark_30dp</item>
+        <item name="searchScrubBarTextActiveColor">@color/search_scrub_bar_text_active_dark</item>
+        <item name="searchScrubBarTextInactiveColor">@color/search_scrub_bar_text_inactive_dark</item>
+        <item name="audioFrameDrawable">@drawable/audio_view_frame_dark</item>
+        <item name="nightMode">true</item>
+        <item name="noteEditorTheme">@style/NoteEditorDialog</item>
+        <item name="noteEditShadow">@drawable/note_shadow_dark</item>
+        <item name="noteEditCursor">@drawable/note_editor_text_cursor_dark</item>
+        <item name="noteEditOverflow">@drawable/ic_menu_moreoverflow_note_dark</item>
+        <item name="displayOptionsButton">@drawable/pref_button_dark</item>
+        <item name="displayOptionsRoundButton">@drawable/pref_round_button_dark</item>
+        <item name="settingsAutoBrightness">@drawable/ic_settings_brightness_dark</item>
+        <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_dark</item>
+        <item name="settingsTextLarger">@drawable/ic_format_text_size_larger_dark_24dp</item>
+        <item name="settingsTextSmaller">@drawable/ic_format_text_size_smaller_dark_24dp</item>
+        <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_dark_24dp
+        </item>
+        <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
+        </item>
+        <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_dark_24dp</item>
+        <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_dark_24dp</item>
+        <item name="marginNoteIconOutlineColor">@color/margin_note_icon_outline_dark</item>
+        <item name="searchCardBackgroundTop">@drawable/card_background_top_holo_dark</item>
+        <item name="searchCardBackgroundMiddle">@drawable/card_background_middle_holo_dark</item>
+        <item name="searchCardBackgroundBottom">@drawable/card_background_bottom_holo_dark</item>
+        <item name="searchCardBackgroundRegular">@drawable/card_background_regular_holo_dark</item>
+        <item name="searchCardHeaderTextColor">@color/search_card_header_text_dark</item>
+        <item name="searchCardResultTextColor">@color/search_card_result_text_dark</item>
+        <item name="searchCardQueryEmphasisColor">@color/search_card_query_emphasis_dark</item>
+        <item name="searchCardPageColor">@color/search_card_page_dark</item>
+        <item name="searchCardBackgroundColor">@color/search_card_background_dark</item>
+        <item name="searchCardHeaderBoxColor">@color/search_card_header_box_dark</item>
+        <item name="searchCardHeaderBoxTopLineColor">@color/search_card_header_box_top_line_dark</item>
+        <item name="searchCardResultDivider">@drawable/card_background_divider_phone_holo_dark</item>
+        <item name="translateLanguageArrow">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="translateSpinnerStyle">@style/Translate.SpinnerDarkStyle</item>
+        <item name="preferenceSpinnerStyle">@style/Preference.DarkSpinner</item>
+        <item name="skim_background">@color/material_grey_900</item>
+        <item name="skimPageError">@color/material_red_500</item>
+        <item name="dialogAuthorColor">@color/material_grey_400</item>
+        <item name="navigationViewTextAppearance">@style/navigationViewTextAppearance.night</item>
+
+    </style>
+
+
+
+
+</resources>

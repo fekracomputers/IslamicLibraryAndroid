@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_for_page_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".reading.ReadingActivity">
+
+    <com.duolingo.open.rtlviewpager.RtlViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    <ViewStub
+        android:id="@+id/book_nav_view_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/book_nav_view"
+        android:layout="@layout/book_nav_view" />
+
+    <include
+        layout="@layout/floating_page_number"
+       />
+
+    <FrameLayout
+        android:id="@+id/search_result_fragment_containerr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize" />
+
+    <ViewStub
+        android:id="@+id/search_scrub_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/search_scrub"
+        android:layout="@layout/search_scrub_bar" />
+
+</FrameLayout>
+

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="8dp"
+    android:background="@color/book_card_background"
+    card_view:cardBackgroundColor="@color/book_card_background"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="0dp">
+
+
+    <CheckBox
+        android:id="@+id/book_ceckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/book_cover"
+            android:layout_width="100dp"
+            android:layout_height="155dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/no_book_image" />
+
+        <TextView
+            android:id="@+id/book_label"
+            style="@style/twoLineListPrimartText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/book_cover"
+            android:maxLines="3"
+            android:minLines="3"
+            android:gravity="start"
+            tools:text="صحيح البخاري" />
+
+
+        <TextView
+            android:id="@+id/bookauthor"
+            style="@style/twoLineListSecondaryText"
+            android:layout_below="@id/book_label"
+            android:layout_alignRight="@id/book_label"
+            android:drawableRight="@drawable/ic_author_feather_green"
+            android:layout_width="wrap_content"
+            android:maxLines="2"
+            android:minLines="2"
+            android:layout_height="wrap_content"
+            tools:text="محمد بن إسماعيل بن إبراهيم بن بردزبة البخاري" />
+
+
+        <Button
+            android:id="@+id/btn_download"
+            style="@style/Base.Widget.AppCompat.ActionButton"
+            android:layout_below="@id/bookauthor"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@id/book_label"
+            android:layout_height="wrap_content"
+            tools:text="@string/download_book"
+            android:textColor="@color/widget_text_color" />
+
+        <View
+            android:id="@+id/download_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_alignParentBottom="true"
+            tools:background="@color/indicator_book_not_downloaded" />
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
+
+

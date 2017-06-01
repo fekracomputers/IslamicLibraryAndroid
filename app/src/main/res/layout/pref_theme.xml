@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pref_theme"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:baselineAligned="false"
+    android:contentDescription="@string/pref_themes"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/pref_item_vertical_margin"
+    android:paddingLeft="@dimen/pref_outer_pad_horiz"
+    android:paddingRight="@dimen/pref_outer_pad_horiz"
+    android:paddingStart="@dimen/pref_outer_pad_horiz"
+    android:paddingEnd="@dimen/pref_outer_pad_horiz">
+    <ImageButton
+        android:id="@+id/button_day"
+        style="@style/Preference.Button.Theme"
+        android:background="@drawable/pref_theme_day_bg"
+        android:contentDescription="@string/pref_themes_day"
+        android:scaleType="center"
+        android:tag="0"
+        app:srcCompat="@drawable/ic_setting_theme_day" />
+    <ImageButton
+        android:id="@+id/button_sepia"
+        style="@style/Preference.Button.Theme"
+        android:layout_marginLeft="8.0dip"
+        android:layout_marginRight="8.0dip"
+        android:background="@drawable/pref_theme_sepia_bg"
+        android:contentDescription="@string/pref_themes_sepia"
+        android:scaleType="center"
+        android:tag="1"
+        app:srcCompat="@drawable/ic_setting_theme_sepia"
+        android:layout_marginEnd="8.0dip"
+        android:layout_marginStart="8.0dip" />
+    <ImageButton
+        android:id="@+id/button_night"
+        style="@style/Preference.Button.Theme"
+        android:background="@drawable/pref_theme_night_bg"
+        android:contentDescription="@string/pref_themes_night"
+        android:scaleType="center"
+        android:tag="2"
+        app:srcCompat="@drawable/ic_setting_theme_night" />
+</LinearLayout>

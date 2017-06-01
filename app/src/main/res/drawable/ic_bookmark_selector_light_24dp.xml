@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+    <item android:drawable="@drawable/ic_bookmark_border_light_24dp" android:state_selected="false" />
+    <item android:drawable="@drawable/ic_bookmark_filled_light_24dp" android:state_selected="true" />
+
+</selector>

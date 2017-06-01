@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?searchBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+   >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:id="@+id/number_of_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="@dimen/skim_view_top_margin"
+            android:textSize="@dimen/skim_view_header_textsize"
+            tools:text="10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/skim_view_top_margin"
+            android:text="@string/results"
+            android:textSize="@dimen/skim_view_header_textsize" />
+
+        <ProgressBar
+            android:id="@+id/search_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            tools:progress="70" />
+
+        <TextView
+            android:id="@+id/current_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/skim_view_top_margin"
+            android:enabled="true"
+            android:gravity="end"
+            android:textSize="@dimen/skim_view_header_textsize"
+            tools:text="23" />
+
+        <TextView
+            android:id="@+id/page_slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6.0sp"
+            android:layout_marginRight="6.0sp"
+            android:enabled="false"
+            android:text="@string/skim_page_label_separator"
+            android:textSize="@dimen/skim_view_header_textsize" />
+
+        <TextView
+            android:id="@+id/total_books"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="true"
+            android:textSize="@dimen/skim_view_header_textsize"
+            tools:text="338" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:enabled="true"
+            android:text="books"
+            android:textSize="@dimen/skim_view_header_textsize" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="com.fekracomputers.islamiclibrary.search.view.SearchResultFragment"
+        tools:listitem="@layout/fragment_search_result" />
+</LinearLayout>

@@ -1,0 +1,128 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/part_selection_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/part_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:maxLines="1"
+                android:text="@string/part"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText" />
+
+            <com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText
+                android:id="@+id/part_number_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:digits="\ 0123456789"
+                android:gravity="right"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:minEms="3"
+                android:padding="8.0dip"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText"
+                android:textColorHint="@color/material_grey_500"
+                tools:text="15" />
+
+            <TextView
+                android:id="@+id/from_part_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3.0sp"
+                android:layout_marginRight="3.0sp"
+                android:enabled="false"
+                android:maxLines="1"
+                android:text="@string/page_part_from"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText" />
+
+            <TextView
+                android:id="@+id/total_part_number_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:maxLines="1"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText"
+                tools:text="50" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/page_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:maxLines="1"
+                android:text="@string/page"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText" />
+
+            <com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText
+                android:id="@+id/page_number_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:digits="\ 0123456789"
+                android:gravity="right"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:minEms="3"
+                android:padding="8.0dip"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText"
+                android:textColorHint="@color/material_grey_500"
+                tools:text="1020" />
+
+            <TextView
+                android:id="@+id/from_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3.0sp"
+                android:layout_marginRight="3.0sp"
+                android:enabled="false"
+                android:maxLines="1"
+                android:text="@string/page_part_from"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText" />
+
+            <TextView
+                android:id="@+id/total_page_number_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:maxLines="1"
+                android:textAppearance="?navigationViewTextAppearance"
+                android:textColor="?blueThemedText"
+                tools:text="3000" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+

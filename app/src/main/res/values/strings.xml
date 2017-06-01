@@ -1,0 +1,311 @@
+<resources>
+    <string name="app_name">Islamic Library</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_rearrange">Rearrange</string>
+    <string name="action_feedback">Feedback</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+
+    <!-- Example settings for Data & Sync -->
+
+    <string name="pref_title_sync_frequency" translatable="false">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles" translatable="false">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values" translatable="false">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_title_system_sync_settings" translatable="false">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+
+    <string name="pref_title_new_message_notifications" translatable="false">New message notifications</string>
+
+    <string name="pref_title_ringtone" translatable="false">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate" translatable="false">Vibrate</string>
+    <string name="title_activity_reading2" translatable="false">ReadingActivity2</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="About">About</string>
+    <string name="title_activity_book_toc_bookmarks" translatable="false">book_toc_bookmarks</string>
+    <string name="tab_Overview">Overview</string>
+    <string name="tab_Table_of_Contents">Table of Contents</string>
+    <string name="tab_Notes_and_Highlights">Notes and Highlights</string>
+    <string name="tab_Bookmarks">Bookmarks</string>
+    <string name="authors">Authors</string>
+    <string name="title_activity_book_catalog_display" translatable="false">BookCatalogDisplay</string>
+    <string name="information_card">Information Card</string>
+    <string name="about_book">about the book</string>
+    <string name="abouth_the_author">Abouth the author</string>
+    <string name="Downloading">Downloading …</string>
+    <string name="open">Open</string>
+    <string name="action_rate">Rate App</string>
+    <string name="action_share">Share</string>
+    <string name="categoreies">Categories</string>
+    <string name="title_activity_book_catalog_filter">Brows Books</string>
+    <string name="all">All Books</string>
+    <string name="base_url" translatable="false">http://booksapi.islam-db.com/data</string>
+    <string name="url_covers" translatable="false">covers</string>
+    <string name="dialog_information_database_not_available">Book Information Database not available,\n download it?</string>
+    <string name="cancel">Cancel</string>
+    <string name="Ok">OK</string>
+    <string name="wait_for_download">Retry after the Book Information Databse downloaded</string>
+    <string name="book_information_database">book information database</string>
+    <string name="action_add_book_mark">add bookmark</string>
+    <string name="action_remove_book_mark">Remove bookmark</string>
+    <string name="page">Page :</string>
+    <string name="part">Part :</string>
+    <string name="search_list">search selected books</string>
+    <string name="action_copy_text">copy</string>
+    <string name="action_share_text">share</string>
+    <string name="ddd">"highlightClicked "</string>
+    <string name="sd" translatable="false">WebAppInterface</string>
+
+
+    <!--cpd-->
+
+    <string name="action_bar_title_all_books">All books</string>
+    <string name="before_first_bookmark">To add a bookmark, tap the top corner of the page</string>
+    <string name="before_first_note">Tap &amp; hold on some text to create highlights and notes</string>
+    <string name="checked">Checked</string>
+    <string name="decrease_font_size">Decrease font size</string>
+    <string name="decrease_line_height">Decrease line height</string>
+    <string name="error_message_title">Google Play error</string>
+    <string name="increase_font_size">Increase font size</string>
+    <string name="increase_line_height">Increase line height</string>
+    <string name="invalid_page_number">Enter a page number from %1$d to %2$d</string>
+    <string name="library_sort_by_author_death_year">Author Death Year</string>
+    <string name="library_sort_by_title">Title</string>
+    <string name="library_sort_title">Sort by</string>
+    <string name="menu_highlight_color_blue">Highlight Blue</string>
+    <string name="menu_highlight_color_green">Highlight Green</string>
+    <string name="menu_highlight_color_red">Highlight Red</string>
+    <string name="menu_highlight_color_yellow">Highlight Yellow</string>
+    <string name="menu_reader_search_exit">Done with this search</string>
+    <string name="menu_reader_settings">Display options</string>
+    <string name="menu_remove_highlight">Remove highlight</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_table_of_contents">Contents</string>
+    <string name="more"><u>More</u></string>
+    <string name="next_result_button">Next result</string>
+    <string name="pref_line_height_label_initial_text">100%</string>
+    <string name="pref_text_size_label_initial_text">100%</string>
+    <string name="pref_themes">Viewing theme</string>
+    <string name="pref_themes_day">Day</string>
+    <string name="pref_themes_night">Night</string>
+    <string name="pref_themes_sepia">Sepia</string>
+    <string name="previous_result_button">Previous result</string>
+    <string name="search_hint">Search Selected books</string>
+    <string name="search_inside_volume_hint">Search in book</string>
+    <string name="side_drawer_downloaded_only">Downloaded only</string>
+    <string name="skim_page_label_separator">/</string>
+    <string name="status_bar_notification_info_overflow" translatable="false">999+</string>
+    <string name="unchecked">Unchecked</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!--cpd-->
+    <string name="lipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus tincidunt nisi nec finibus.</string>
+    <string name="reset" translatable="false">Reset</string>
+
+    <string-array name="colors_material_names" translatable="false">
+        <item>Red</item>
+        <item>Pink</item>
+        <item>Purple</item>
+        <item>Deep Purple</item>
+        <item>Indigo</item>
+        <item>Blue</item>
+        <item>Light Blue</item>
+        <item>Cyan</item>
+        <item>Teal</item>
+        <item>Green</item>
+        <item>Light Green</item>
+        <item>Lime</item>
+        <item>Yellow</item>
+        <item>Amber</item>
+        <item>Orange</item>
+        <item>Deep Orange</item>
+    </string-array>
+
+
+    <string name="pref_notif_color" translatable="false">Notification color</string>
+
+    <string name="pref_notif_content" translatable="false">When device is locked</string>
+    <string-array name="pref_notif_content_titles_long" translatable="false">
+        <!--<item>Show all notification content including sensitive notification content</item>-->
+        <item>Show all notification content including sensitive content</item>
+        <!--<item>Show all notification content including content</item>-->
+        <item>Hide sensitive notification content</item>
+        <item>Hide all notification content</item>
+    </string-array>
+    <string-array name="pref_notif_content_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+
+    <string name="pref_title_volume" translatable="false">Ring volume</string>
+
+    <string name="pref_title_volume2" translatable="false">Media volume</string>
+    <string name="global_page_display_preference">Customize</string>
+    <string name="pref_title_global_override_local">apply to all books</string>
+    <string name="pref_header_global_display">Global page display preferences</string>
+    <string name="pref_global_display_text_size">Text Size</string>
+    <string name="pref_summary_global_override_local">Apply single global preference for all books</string>
+    <string name="pref_title_global_night_mode">Night Mode</string>
+    <string name="invalid_part_number">Enter a part number from %1$d to %2$d</string>
+    <string name="share_app_msg">Let me recommend you %1$s\n%2$s</string>
+
+    <string name="your_input">Write your feedback</string>
+    <string name="send_feedback">Send</string>
+    <string name="please_write" translatable="false">Please write something.</string>
+    <string name="send_feedback_two">Send Feedback</string>
+    <string name="feedback">Feedback</string>
+    <string name="select_image">+ Add Screenshot</string>
+    <string name="click_again">Click again to change the image</string>
+    <string name="select_picture_title">Select Picture</string>
+    <string name="info_fedback_legal_start">"Your "</string>
+    <string name="info_fedback_legal_system_info">"system info "</string>
+    <string name="info_fedback_legal_and">"and "</string>
+    <string name="info_fedback_legal_log_data">"log data "</string>
+    <string name="info_fedback_legal_will_be_sent">will be sent to %s</string>
+    <string name="feedback_email" translatable="false">islamiclibrary@islam-db.com</string>
+    <string name="about_version_number">Version</string>
+    <string name="other_apps">Our Apps</string>
+    <string name="about_company">About Fekra Computers</string>
+    <string name="about_activity_facebook_label">Facebook</string>
+    <string name="facebookUserName" translatable="false">fekraComputers</string>
+    <string name="find_us_on_social_media">Find us on social media</string>
+    <string name="about_activity_twitter_label">Twitter</string>
+    <string name="twitter_user_name" translatable="false">fecracomputers</string>
+    <string name="about_activity_web_page_label">Web</string>
+    <string name="web_page" translatable="false">http://www.islam-db.com/</string>
+    <string name="open_source_licences">open source libraries licences</string>
+    <string name="about_activity_acknowledgements">acknowledgements</string>
+    <string name="results">Results</string>
+    <string name="searching_in_d_books">Searching in %d books</string>
+    <string name="downloading_book_information">Downloading Book information</string>
+    <string name="info_refreshing_database_with_storage">Refreshing with storage</string>
+    <string name="info_preparing_book_information_database">Preparing Book Information Database</string>
+    <string name="pref_ui_language_arabic">Arabic User Interface</string>
+    <string name="download_book">Download</string>
+    <string name="download_selected_books">download selected</string>
+    <string name="searching_downloaded_only">Searching the downloaded books only</string>
+    <string name="action_add_note">Add Note</string>
+    <string name="action_select_all">select all</string>
+    <string name="menu_highlight">Add highlight</string>
+    <string name="library_sort_by_number_of_books">Number of books</string>
+    <string name="library_sort_by_name">Name</string>
+    <string name="library_sort_by_default">Default</string>
+    <string name="death_hijri_year">Death: %d AH</string>
+    <string name="page_slash_part">%1$d/%2$d</string>
+    <string name="feedback_mail_subject">feedback about %1$s</string>
+    <string name="file_name_device_info" translatable="false">deviceInf.txt</string>
+    <string name="file_name_device_log" translatable="false">deviceLog.txt</string>
+    <string name="menu_refresh_with_file_system">refresh stored books</string>
+    <string name="page_number">%d</string>
+    <string name="number_of_books">Books: %d</string>
+    <string name="book_details_card_test" translatable="false">"الكتاب: الجامع المسند الصحيح المختصر من أمور رسول الله صلى الله عليه وسلم وسننه وأيامه = صحيح البخاري
+المؤلف: محمد بن إسماعيل أبو عبدالله البخاري الجعفي
+المحقق: محمد زهير بن ناصر الناصر
+الناشر: دار طوق النجاة (مصورة عن السلطانية بإضافة ترقيم ترقيم محمد فؤاد عبد الباقي)
+الطبعة: الأولى، 1422هـ
+عدد الأجزاء: 9
+[ترقيم الكتاب موافق للمطبوع، وهو ضمن خدمة التخريج، ومتن مرتبط بشرحيه فتح الباري لابن رجب ولابن حجر]
+مع الكتاب: شرح وتعليق د. مصطفى ديب البغا أستاذ الحديث وعلومه في كلية الشريعة - جامعة دمشق
+كالتالي: رقم الحديث (والجزء والصفحة) في ط البغا، يليه تعليقه، ثم أطرافه"</string>
+    <string name="book_info_similar_books">Books From the same Category</string>
+    <string name="book_info_similar_books_by_authour">other books from %s</string>
+    <string name="read_more"><u>Read more</u></string>
+    <string name="search_toc_hint">Search table of contents</string>
+    <string name="part_and_page_with_text">part: %1$d  page:%2$d</string>
+    <string name="search_result_root_title">Search Results</string>
+    <string name="page_number_with_label">page %1$d</string>
+    <string name="library_sort_by_date">date</string>
+    <string name="library_sort_by_page">page</string>
+    <string name="library_sort_by_color">color</string>
+    <string name="citation_bottom_with_square_brackets">[%1$s ,%2$s ,%3$s]</string>
+    <string name="prefs_volume_key_navigation_title">Volume key navigation</string>
+    <string name="prefs_volume_key_navigation_summary">Navigate between pages using volume keys</string>
+    <string name="book_long_description_test">\"\"</string>
+    <string name="pref_zoom_precent">%d%%</string>
+    <string name="title_activity_download_progress">Current downloads</string>
+    <string name="before_first_download">No pending downloads \n you can download single book by pressing download button.\nAlso you could download all books in a category or author by long pressing author or title and press download all</string>
+    <string name="ERROR_CANNOT_RESUME" translatable="false">ERROR_CANNOT_RESUME</string>
+    <string name="ERROR_DEVICE_NOT_FOUND" translatable="false">ERROR_DEVICE_NOT_FOUND</string>
+    <string name="ERROR_FILE_ALREADY_EXISTS" translatable="false">ERROR_FILE_ALREADY_EXISTS</string>
+    <string name="ERROR_FILE_ERROR" translatable="false">ERROR_FILE_ERROR</string>
+    <string name="ERROR_HTTP_DATA_ERROR" translatable="false">ERROR_HTTP_DATA_ERROR</string>
+    <string name="ERROR_INSUFFICIENT_SPACE" translatable="false">ERROR_INSUFFICIENT_SPACE</string>
+    <string name="ERROR_TOO_MANY_REDIRECTS" translatable="false">ERROR_TOO_MANY_REDIRECTS</string>
+    <string name="ERROR_UNHANDLED_HTTP_CODE" translatable="false">ERROR_UNHANDLED_HTTP_CODE</string>
+    <string name="ERROR_UNKNOWN" translatable="false">ERROR_UNKNOWN</string>
+    <string name="PAUSED_QUEUED_FOR_WIFI" translatable="false">PAUSED_QUEUED_FOR_WIFI</string>
+    <string name="PAUSED_UNKNOWN" translatable="false">PAUSED_UNKNOWN</string>
+    <string name="PAUSED_WAITING_FOR_NETWORK" translatable="false">PAUSED_WAITING_FOR_NETWORK</string>
+    <string name="PAUSED_WAITING_TO_RETRY" translatable="false">PAUSED_WAITING_TO_RETRY</string>
+    <string name="STATUS_FAILED" translatable="false">STATUS_FAILED</string>
+    <string name="STATUS_PAUSED" translatable="false">STATUS_PAUSED</string>
+    <string name="STATUS_PENDING" translatable="false">STATUS_PENDING</string>
+    <string name="STATUS_RUNNING" translatable="false">STATUS_RUNNING</string>
+    <string name="STATUS_SUCCESSFUL" translatable="false">STATUS_SUCCESSFUL</string>
+    <string name="unKnown_status" translatable="false">No Reason</string>
+    <string name="finished_download">All downloads has finished</string>
+    <string name="downloaded_size">%1$s/%2$s</string>
+    <string name="removed_selection_of_downloaded_books">already downloaded books removed from download list</string>
+    <string name="confirm_download">Download</string>
+    <string name="toast_all_selected_books_already_downlaoded">all selected books already downloaded</string>
+    <string name="cancel_all_downloads">cancel all</string>
+    <string name="cancelled_download">Downloads cancelled</string>
+    <string name="continue_downloading">continue</string>
+    <string name="stop_downloading">stop</string>
+    <string name="removing_all_downloads">removing all downloads</string>
+    <string name="page_part_from">From</string>
+    <string name="go_to_page">Go to</string>
+    <string name="action_go">Go</string>
+    <string name="error_page_missing">sorry this page is missing</string>
+    <string name="zero_zero_page_placeholder_single_part">_</string>
+    <string name="zero_zero_page_placeholder_multi_part">_/_</string>
+    <string name="side_drawer_in_book_search">Search in Books</string>
+    <string name="side_drawer_start_multi_book_download">Start group download</string>
+    <string name="hint_search_inside_books">Search inside books</string>
+    <string name="no_downloaded_selected_books">you haven\'t selected any downloaded book</string>
+    <string name="menu_download_manager">Download manager</string>
+    <string name="search_author_names">search author names</string>
+    <string name="menu_sort_authors">sort authors</string>
+    <string name="search_book_list">search book names</string>
+    <string name="menu_sort_books">sort books</string>
+    <string name="search_list_category">search category names</string>
+    <string name="menu_sort_categories">sort categories</string>
+    <string name="hint_search_authors_names">Search authors names</string>
+    <string name="hint_search_books_names">search books names</string>
+    <string name="preparing_book">preparing book</string>
+    <string name="refreshing_on_background">stored books will be revised in the background you can continu work</string>
+    <![CDATA[
+    >
+]]>
+</resources>

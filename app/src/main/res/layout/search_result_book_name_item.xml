@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+>
+
+    <TextView
+        android:id="@+id/book_name_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/search_card_header_text_light"
+        android:textSize="@dimen/books_play_large_size"
+        tools:text="صحيح البخاري" />
+
+
+    <TextView
+        android:id="@+id/number_of_results_per_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="end"
+        android:layout_toRightOf="@+id/arrow_expand_imageview"
+        android:maxLines="1"
+        android:textColor="@color/search_card_header_text_light"
+        android:textSize="@dimen/books_play_large_size"
+        tools:text="100 Result" />
+
+    <ImageView
+        android:id="@+id/arrow_expand_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="8dp"
+        app:srcCompat="@drawable/ic_toc_expand_holo_dark_30dp"
+
+        />
+</RelativeLayout>

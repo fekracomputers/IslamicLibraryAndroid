@@ -1,0 +1,886 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="searchBackground">@color/reader_ab_solid_light</item>
+
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:textColorHighlight">@color/text_highlight</item>
+        <item name="alertDialogTheme">@style/AppTheme.Dialog.Alert</item>
+        <item name="dialogTheme">@style/AppTheme.Dialog</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textAppearanceMediumInverse">
+            @style/TextAppearance.AppCompat.Subhead.Inverse
+        </item>
+        <item name="asp_preferenceIconTint">?colorAccent</item>
+        <item name="asp_preferenceDialogIconTint">?asp_preferenceIconTint</item>
+    </style>
+
+    <style name="AppTheme.Grey" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:listDivider">@color/colorPrimary</item>
+        <item name="windowActionModeOverlay">false</item>
+        <item name="actionModeBackground">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/color_tab_layout_indicator</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.WhiteBackground">
+        <item name="android:windowBackground">@color/details_background</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBar.ArtBackground">
+        <item name="android:windowBackground">@drawable/bg_art</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.SplashTheme">
+        <item name="android:windowBackground">@drawable/splash_light</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <!--___________________________________________________-->
+
+    <style name="IslamicLibraryBaseDark" parent="Theme.AppCompat" />
+
+    <style name="IslamicLibraryBaseLight" parent="Theme.AppCompat.Light" />
+
+    <style name="IslamicLibraryBaseLightDark" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+    <style name="IslamicLibraryThemeDark" parent="@style/IslamicLibraryBaseDark">
+        <item name="isLightTheme">true</item>
+        <item name="windowActionModeOverlay">false</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_popupTextColor">@color/material_grey_200</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+    <style name="IslamicLibraryThemeLight" parent="@style/IslamicLibraryBaseLight">
+        <item name="isLightTheme">false</item>
+        <item name="windowActionModeOverlay">false</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.Light.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+    <style name="IslamicLibraryThemeLightDark" parent="@style/IslamicLibraryBaseLightDark">
+        <item name="isLightTheme">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="actionBarStyle">@style/IslamicLibraryActionBar</item>
+        <item name="actionModeBackground">?android:actionModeBackground</item>
+        <item name="actionModeCloseDrawable">?android:actionModeCloseDrawable</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+        <item name="dropDownListViewStyle">@style/Widget.AppCompat.Light.ListView.DropDown</item>
+        <item name="listChoiceBackgroundIndicator">?android:listChoiceBackgroundIndicator</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuItemStyle">@style/ActionMenuItem</item>
+        <item name="ub_alertDialogIcon">?android:alertDialogIcon</item>
+    </style>
+
+
+    <style name="BooksDark" parent="@style/IslamicLibraryThemeDark">
+        <item name="emptyText">@color/empty_dark</item>
+        <item name="blueThemedText">@android:color/white</item>
+        <item name="tocExpand">@drawable/ic_toc_expand_holo_dark_30dp</item>
+        <item name="tocCollapse">@drawable/ic_toc_collapse_holo_dark_30dp</item>
+    </style>
+
+    <style name="BooksLight" parent="@style/IslamicLibraryThemeLight">
+        <item name="emptyText">@color/empty_light</item>
+        <item name="blueThemedText">@color/colorPrimary</item>
+        <item name="tocExpand">@drawable/ic_toc_expand_holo_light_30dp</item>
+        <item name="tocCollapse">@drawable/ic_toc_collapse_holo_light_30dp</item>
+    </style>
+
+    <style name="BooksLightDark" parent="@style/IslamicLibraryThemeLightDark">
+        <item name="emptyText">@color/empty_light</item>
+        <item name="blueThemedText">@color/colorPrimary</item>
+        <item name="tocExpand">@drawable/ic_toc_expand_holo_light_30dp</item>
+        <item name="tocCollapse">@drawable/ic_toc_collapse_holo_light_30dp</item>
+    </style>
+
+
+    <style name="FullScreenDark" parent="@style/BooksDark">
+        <item name="android:windowFullscreen">@bool/fullscreen</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+    </style>
+
+    <style name="FullScreenLight" parent="@style/BooksLight">
+        <item name="android:windowFullscreen">@bool/fullscreen</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_gray_24dp</item>
+    </style>
+
+    <style name="FullScreenLightDark" parent="@style/BooksLightDark">
+        <item name="android:windowFullscreen">@bool/fullscreen</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+    </style>
+
+
+    <style name="ReadingActivityActionBarStyle" parent="@style/IslamicLibraryActionBar">
+        <item name="displayOptions">none</item>
+        <item name="titleTextStyle">@android:style/TextAppearance.Medium</item>
+        <item name="subtitleTextStyle">@style/ReaderSubtitleTextStyle</item>
+        <item name="background">?actionBarDrawable</item>
+    </style>
+
+    <style name="ReadingActivityDay" parent="@style/FullScreenLightDark">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:popupWindowStyle">@style/ListPopupWindowLight</item>
+        <item name="android:seekBarStyle">@style/BooksSeekBar.Light</item>
+        <item name="icon">@android:color/transparent</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonLight</item>
+        <item name="actionBarStyle">@style/ReadingActivityActionBarStyle</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionBarDrawable">@color/colorPrimary</item>
+        <item name="navigationColor">@color/material_grey_700</item>
+        <item name="grayD400L600">@color/material_grey_600</item>
+        <item name="webViewBackGround">@android:color/white</item>
+        <item name="grayD400L700">@color/material_grey_700</item>
+        <item name="grayD500L600">@color/material_grey_600</item>
+        <item name="grayD000L700">@color/material_grey_700</item>
+        <item name="grayD900L200">@color/material_grey_200</item>
+        <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_light_24dp</item>
+        <item name="settingsLayoutTab">@drawable/ic_settings_layout_tab_light_24dp</item>
+        <item name="cardBackgroundDrawable">@drawable/card_background_default_light</item>
+        <item name="cardBackgroundFullDrawable">@drawable/card_background_full_light</item>
+        <item name="cardPrimaryColor">@color/info_card_primary_light</item>
+        <item name="cardSecondaryColor">@color/info_card_secondary_light</item>
+        <item name="cardTabBackgroundDrawable">@drawable/card_tab_background_light</item>
+        <item name="cardTabHighlightColor">@color/material_grey_500</item>
+        <item name="booksPrimaryTextColor">@color/abc_primary_text_material_light</item>
+        <item name="menuSettingsDrawable">@drawable/ic_text_format_wht_24dp</item>
+        <item name="menuTocDrawable">@drawable/ic_toc_dark_24dp</item>
+        <item name="switchOnThumb">@color/books_corpora_dark</item>
+        <item name="switchOffThumb">@color/switch_thumb_material_light</item>
+        <item name="switchOffTrack">@android:color/black</item>
+        <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_light</item>
+        <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_light</item>
+        <item name="scrubberDrawable">@drawable/scrubber_knob</item>
+        <item name="scrubberBkmrkLocDrawable">@drawable/scrubber_bookmark_location_light</item>
+        <item name="scrubberTrackDrawable">@drawable/scrubber_track_light</item>
+        <item name="scrubberTrackAltDrawable">@drawable/scrubber_track_alt_light</item>
+        <item name="scrubberUndoDrawable">@drawable/scrubber_last_page_holo</item>
+        <item name="searchBackground">@color/reader_ab_solid_light</item>
+        <item name="searchLeftArrow">@drawable/ic_search_prev_normal_holo_light_30dp</item>
+        <item name="searchScrubBarExit">@drawable/ic_search_exit_holo_light_30dp</item>
+        <item name="searchScrubBarTextActiveColor">@color/search_scrub_bar_text_active_light</item>
+        <item name="searchScrubBarTextInactiveColor">@color/search_scrub_bar_text_inactive_light
+        </item>
+        <item name="audioFrameDrawable">@drawable/audio_view_frame_light</item>
+        <item name="illo_rotate">@drawable/ic_illo_fit_width_rotate_82dp</item>
+        <item name="illo_scroll">@drawable/ic_illo_fit_width_scroll_82dp</item>
+        <item name="nightMode">false</item>
+        <item name="noteEditorTheme">@style/NoteEditorDialog.Light</item>
+        <item name="noteEditShadow">@drawable/note_shadow_light</item>
+        <item name="noteEditCursor">@drawable/note_editor_text_cursor_light</item>
+        <item name="noteEditOverflow">@drawable/ic_menu_moreoverflow_note_light</item>
+        <item name="displayOptionsButton">@drawable/pref_button_light</item>
+        <item name="displayOptionsRoundButton">@drawable/pref_round_button_light</item>
+        <item name="settingsAutoBrightness">@drawable/ic_settings_brightness_light</item>
+        <item name="settingsTextLarger">@drawable/ic_format_text_size_larger_light_24dp</item>
+        <item name="settingsTextSmaller">@drawable/ic_format_text_size_smaller_light_24dp</item>
+        <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
+        <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_light_24dp</item>
+        <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_light_24dp
+        </item>
+        <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
+        </item>
+        <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_holo_24dp</item>
+        <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_holo_24dp</item>
+        <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_light</item>
+        <item name="marginNoteIconOutlineColor">@color/margin_note_icon_outline_light</item>
+        <item name="searchCardBackgroundTop">@drawable/card_background_top_holo_light</item>
+        <item name="searchCardBackgroundMiddle">@drawable/card_background_middle_holo_light</item>
+        <item name="searchCardBackgroundBottom">@drawable/card_background_bottom_holo_light</item>
+        <item name="searchCardBackgroundRegular">@drawable/card_background_regular_holo_light</item>
+        <item name="searchCardHeaderTextColor">@color/search_card_header_text_light</item>
+        <item name="searchCardResultTextColor">@color/search_card_result_text_light</item>
+        <item name="searchCardQueryEmphasisColor">@color/search_card_query_emphasis_light</item>
+        <item name="searchCardPageColor">@color/search_card_page_light</item>
+        <item name="searchCardBackgroundColor">@color/search_card_background_light</item>
+        <item name="searchCardHeaderBoxColor">@color/search_card_header_box_light</item>
+        <item name="searchCardHeaderBoxTopLineColor">@color/search_card_header_box_top_line_light
+        </item>
+        <item name="searchCardResultDivider">@drawable/card_background_divider_phone_holo_light
+        </item>
+        <item name="translateLanguageArrow">@drawable/ic_arrow_back_gray_24dp</item>
+        <item name="translateSpinnerStyle">@style/Translate.SpinnerLightStyle</item>
+        <item name="preferenceSpinnerStyle">@style/Preference.LightSpinner</item>
+        <item name="skim_background">@color/material_grey_200</item>
+        <item name="skimPageError">@color/material_red_700</item>
+        <item name="dialogAuthorColor">@color/material_grey_700</item>
+        <item name="navigationViewTextAppearance">@style/navigationViewTextAppearance.day</item>
+    </style>
+
+    <style name="ReadingActivityNight" parent="@style/FullScreenDark">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:popupWindowStyle">@style/ListPopupWindowDark</item>
+        <item name="webViewBackGround">@color/night_mode_web_view_bg</item>
+        <item name="android:seekBarStyle">@style/BooksSeekBar.Dark</item>
+        <item name="icon">@android:color/transparent</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonDark</item>
+        <item name="actionBarStyle">@style/ReadingActivityActionBarStyle</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionBarDrawable">@color/reader_ab_solid_dark</item>
+        <item name="navigationColor">@android:color/black</item>
+        <item name="grayD400L600">@color/material_grey_400</item>
+        <item name="grayD400L700">@color/material_grey_400</item>
+        <item name="grayD500L600">@color/material_grey_500</item>
+        <item name="grayD000L700">@android:color/white</item>
+        <item name="grayD900L200">@color/material_grey_900</item>
+        <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
+        <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_dark_24dp</item>
+        <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_dark_24dp</item>
+        <item name="settingsLayoutTab">@drawable/ic_settings_layout_tab_dark_24dp</item>
+        <item name="cardBackgroundDrawable">@drawable/card_background_default_dark</item>
+        <item name="cardBackgroundFullDrawable">@drawable/card_background_full_dark</item>
+        <item name="cardPrimaryColor">@color/info_card_primary_dark</item>
+        <item name="cardSecondaryColor">@color/info_card_secondary_dark</item>
+        <item name="cardTabBackgroundDrawable">@drawable/card_tab_background_dark</item>
+        <item name="cardTabHighlightColor">@android:color/white</item>
+        <item name="booksPrimaryTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="menuSettingsDrawable">@drawable/ic_text_format_wht_24dp</item>
+        <item name="menuTocDrawable">@drawable/ic_toc_dark_24dp</item>
+        <item name="switchOnThumb">@color/books_corpora_dark</item>
+        <item name="switchOffThumb">@color/switch_thumb_material_dark</item>
+        <item name="switchOffTrack">@android:color/white</item>
+        <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_dark</item>
+        <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_dark</item>
+        <item name="scrubberDrawable">@drawable/scrubber_knob</item>
+        <item name="scrubberBkmrkLocDrawable">@drawable/scrubber_bookmark_location_dark</item>
+        <item name="scrubberTrackDrawable">@drawable/scrubber_track_dark</item>
+        <item name="scrubberTrackAltDrawable">@drawable/scrubber_track_alt_dark</item>
+        <item name="scrubberUndoDrawable">@drawable/scrubber_last_page_holo</item>
+        <item name="searchBackground">@color/reader_ab_solid_dark</item>
+        <item name="searchLeftArrow">@drawable/ic_search_prev_normal_holo_dark_30dp</item>
+        <item name="searchScrubBarExit">@drawable/ic_search_exit_holo_dark_30dp</item>
+        <item name="searchScrubBarTextActiveColor">@color/search_scrub_bar_text_active_dark</item>
+        <item name="searchScrubBarTextInactiveColor">@color/search_scrub_bar_text_inactive_dark
+        </item>
+        <item name="audioFrameDrawable">@drawable/audio_view_frame_dark</item>
+        <item name="illo_rotate">@drawable/ic_illo_fit_width_rotate_dark_82dp</item>
+        <item name="illo_scroll">@drawable/ic_illo_fit_width_scroll_dark_82dp</item>
+        <item name="nightMode">true</item>
+        <item name="noteEditorTheme">@style/NoteEditorDialog</item>
+        <item name="noteEditShadow">@drawable/note_shadow_dark</item>
+        <item name="noteEditCursor">@drawable/note_editor_text_cursor_dark</item>
+        <item name="noteEditOverflow">@drawable/ic_menu_moreoverflow_note_dark</item>
+        <item name="displayOptionsButton">@drawable/pref_button_dark</item>
+        <item name="displayOptionsRoundButton">@drawable/pref_round_button_dark</item>
+        <item name="settingsAutoBrightness">@drawable/ic_settings_brightness_dark</item>
+        <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_dark</item>
+        <item name="settingsTextLarger">@drawable/ic_format_text_size_larger_dark_24dp</item>
+        <item name="settingsTextSmaller">@drawable/ic_format_text_size_smaller_dark_24dp</item>
+        <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_dark_24dp
+        </item>
+        <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
+        </item>
+
+        <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_dark_24dp</item>
+        <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_dark_24dp</item>
+
+        <item name="marginNoteIconOutlineColor">@color/margin_note_icon_outline_dark</item>
+        <item name="searchCardBackgroundTop">@drawable/card_background_top_holo_dark</item>
+        <item name="searchCardBackgroundMiddle">@drawable/card_background_middle_holo_dark</item>
+        <item name="searchCardBackgroundBottom">@drawable/card_background_bottom_holo_dark</item>
+        <item name="searchCardBackgroundRegular">@drawable/card_background_regular_holo_dark</item>
+        <item name="searchCardHeaderTextColor">@color/search_card_header_text_dark</item>
+        <item name="searchCardResultTextColor">@color/search_card_result_text_dark</item>
+        <item name="searchCardQueryEmphasisColor">@color/search_card_query_emphasis_dark</item>
+        <item name="searchCardPageColor">@color/search_card_page_dark</item>
+        <item name="searchCardBackgroundColor">@color/search_card_background_dark</item>
+        <item name="searchCardHeaderBoxColor">@color/search_card_header_box_dark</item>
+        <item name="searchCardHeaderBoxTopLineColor">@color/search_card_header_box_top_line_dark
+        </item>
+        <item name="searchCardResultDivider">@drawable/card_background_divider_phone_holo_dark
+        </item>
+        <item name="translateLanguageArrow">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="translateSpinnerStyle">@style/Translate.SpinnerDarkStyle</item>
+        <item name="preferenceSpinnerStyle">@style/Preference.DarkSpinner</item>
+        <item name="skim_background">@color/material_grey_900</item>
+        <item name="skimPageError">@color/material_red_500</item>
+        <item name="dialogAuthorColor">@color/material_grey_400</item>
+        <item name="navigationViewTextAppearance">@style/navigationViewTextAppearance.day</item>
+    </style>
+
+
+    <style name="AppTheme.MaterialAboutActivity" parent="Theme.Mal.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--_____________________________Styles_______________________________________-->
+
+
+    <style name="IslamicLibraryActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:displayOptions">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
+    </style>
+
+
+    <style name="BooksPlayPlainText" />
+
+    <!--________________________Preference_____Styles_______________________________________-->
+
+    <style name="Preference" />
+
+    <style name="Preference.Button" parent="@android:style/Widget.Button.Small">
+        <item name="android:gravity">center</item>
+        <item name="android:background">?displayOptionsButton</item>
+        <item name="android:padding">0.0dip</item>
+        <item name="android:layout_width">74.0dip</item>
+        <item name="android:layout_height">36.0dip</item>
+        <item name="android:minHeight">0.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+
+    <style name="Preference.Button.Theme" parent="@style/Preference.Button">
+        <item name="android:layout_width">64.0dip</item>
+    </style>
+
+    <style name="BooksSpinner.Dark" parent="@android:style/Widget.Holo.Spinner" />
+
+    <style name="BooksSpinner.Light" parent="@android:style/Widget.Holo.Light.Spinner" />
+
+    <style name="Preference.DarkSpinner" parent="@style/BooksSpinner.Dark">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_holo_dark</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+    <style name="Preference.LightSpinner" parent="@style/BooksSpinner.Light">
+
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_holo_light</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+    <style name="Preference.Numeric" parent="@style/BooksPlayPlainText">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?grayD000L700</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:minWidth">@dimen/pref_numeric_label_min_width</item>
+    </style>
+
+    <style name="Preference.SpinnerContainer" parent="@style/Preference">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="spinnerView">@layout/pref_spinner_view</item>
+        <item name="spinnerDropdownItemView">@layout/pref_spinner_dropdown</item>
+    </style>
+
+    <style name="Preference.SpinnerDropdownText" parent="@style/Preference.SpinnerText" />
+
+    <style name="Preference.SpinnerText" parent="@style/Preference">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textSize">@dimen/pref_switch_text_size</item>
+        <item name="android:textColor">?grayD000L700</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">start</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">8.0dip</item>
+        <item name="android:layout_marginRight">8.0dip</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="Preference.SwitchColor" parent="@style/Preference">
+        <item name="android:colorForeground">?switchOffTrack</item>
+        <item name="colorControlActivated">?switchOnThumb</item>
+        <item name="colorSwitchThumbNormal">?switchOffThumb</item>
+    </style>
+
+    <style name="Preference.TypefaceButton" parent="@style/Preference">
+        <item name="android:gravity">center</item>
+        <item name="android:background">?displayOptionsRoundButton</item>
+        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+    </style>
+
+    <!--card View styles-->
+
+    <style name="Base.CardView" parent="@android:style/Widget">
+        <item name="cardCornerRadius">@dimen/cardview_default_radius</item>
+        <item name="cardElevation">@dimen/cardview_default_elevation</item>
+        <item name="cardMaxElevation">@dimen/cardview_default_elevation</item>
+        <item name="cardUseCompatPadding">false</item>
+        <item name="cardPreventCornerOverlap">true</item>
+    </style>
+
+    <style name="CardView" parent="@style/Base.CardView" />
+
+    <style name="CardView.Dark" parent="@style/CardView">
+        <item name="cardBackgroundColor">@color/cardview_dark_background</item>
+    </style>
+
+    <style name="CardView.Light" parent="@style/CardView">
+        <item name="cardBackgroundColor">@color/cardview_light_background</item>
+    </style>
+
+    <style name="DetailsCardText" parent="@style/BooksPlayPlainText">
+        <item name="android:gravity">start|center</item>
+    </style>
+
+    <style name="ActionMenuItem">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:focusable">true</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:drawablePadding">4.0dip</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="primaryText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/widget_text_color</item>
+    </style>
+
+    <style name="twoLineListPrimartText" parent="primaryText">
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/widget_text_color</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="twoLineGridPrimartText" parent="primaryText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="infoPagePrimaryText" parent="primaryText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:minLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical|right</item>
+
+    </style>
+
+    <style name="infoPageSecondaryText" parent="primaryText">
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical|right</item>
+    </style>
+
+
+    <style name="infoPageDetails">
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:textSize">16sp</item>
+
+        <item name="android:textColor">@color/info_page_details</item>
+
+    </style>
+
+    <style name="infoPageDetails.extended">
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="infoPageDetails.limited">
+        <item name="android:maxLines">10</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="infoPageHeader">
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+
+    </style>
+
+    <style name="infoPageHeader.gray">
+        <item name="android:textColor">#317256</item>
+    </style>
+
+    <style name="infoPageHeader.white">
+        <item name="android:textColor">#bd4d02</item>
+    </style>
+
+    <style name="infoPageHeader.for_recycler">
+        <item name="android:textColor">#317256</item>
+    </style>
+
+    <style name="twoLineListSecondaryText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="twoLineGridSecondaryText">
+        <item name="android:textSize">@dimen/twoLineGridSecondaryTextSize</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ReaderSubtitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+        <item name="android:textColor">?grayD400L700</item>
+    </style>
+
+    <style name="ListPopupWindowLight">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_holo_light</item>
+    </style>
+
+    <style name="NoteEditorDialog" parent="@style/BooksDark">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    <style name="NoteEditorDialog.Light" parent="@style/BooksLight">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    <!--seekBar____________________________________________________________________Styles-->
+    <style name="BooksSeekBar" parent="@android:style/Widget">
+        <item name="android:paddingLeft">16.0dip</item>
+        <item name="android:paddingRight">16.0dip</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxHeight">13.0dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:minHeight">13.0dip</item>
+        <item name="android:thumbOffset">16.0dip</item>
+    </style>
+
+    <style name="BooksSeekBar.Dark" parent="@style/BooksSeekBar">
+        <item name="android:indeterminateDrawable">
+            @drawable/scrubber_progress_horizontal_holo_dark
+        </item>
+        <item name="android:progressDrawable">@drawable/scrubber_progress_horizontal_holo_dark
+        </item>
+        <item name="android:thumb">@drawable/scrubber_control_selector_holo_dark</item>
+    </style>
+
+    <style name="BooksSeekBar.Light" parent="@style/BooksSeekBar">
+        <item name="android:indeterminateDrawable">
+            @drawable/scrubber_progress_horizontal_holo_light
+        </item>
+        <item name="android:progressDrawable">@drawable/scrubber_progress_horizontal_holo_light
+        </item>
+        <item name="android:thumb">@drawable/scrubber_control_selector_holo_light</item>
+    </style>
+    <!--oer____________________________________________________________________Styles-->
+
+    <style name="OverflowButtonDark" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="srcCompat">@drawable/ic_more_vert_wt_24dp</item>
+    </style>
+
+    <style name="OverflowButtonLight" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="srcCompat">@drawable/ic_more_vert_black_24dp</item>
+    </style>
+
+    <style name="OverflowButtonGreen" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="srcCompat">@drawable/ic_more_vert_green_24dp</item>
+    </style>
+
+    <style name="Translate.SpinnerDarkStyle" parent="@style/BooksSpinner.Dark">
+        <item name="android:spinnerMode">dialog</item>
+    </style>
+
+    <style name="Translate.SpinnerLightStyle" parent="@style/BooksSpinner.Light">
+        <item name="android:spinnerMode">dialog</item>
+    </style>
+
+    <style name="ListPopupWindowDark">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_holo_dark</item>
+    </style>
+
+    <style name="display_option_pref_label">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textSize">@dimen/pref_switch_text_size</item>
+        <item name="android:textColor">?grayD000L700</item>
+        <item name="android:gravity">start|center</item>
+    </style>
+
+    <style name="ThemeOverlay.AppCompat.Dark.ActionBar.InverseControls">
+        <item name="colorControlNormal">?android:attr/textColorSecondaryInverse</item>
+        <item name="colorControlHighlight">@color/ripple_material_light</item>
+    </style>
+
+
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <!--<item name="colorPrimary">@color/primary</item>-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark</item>-->
+        <item name="colorAccent">@color/accent_alt</item>
+
+        <item name="android:textColorHighlight">@color/text_highlight_alt</item>
+
+        <!--<item name="android:textAppearanceMedium">?textAppearanceListItem</item>-->
+        <item name="android:textAppearanceMedium">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textAppearanceMediumInverse">
+            @style/TextAppearance.AppCompat.Subhead.Inverse
+        </item>
+    </style>
+
+    <style name="AppTheme.Dialog.Alert" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--<item name="colorPrimary">@color/primary</item>-->
+        <!--<item name="colorPrimaryDark">@color/primary_dark</item>-->
+        <item name="colorAccent">@color/accent_alt</item>
+
+        <item name="android:textColorHighlight">@color/text_highlight_alt</item>
+
+        <!--<item name="android:textAppearanceMedium">?textAppearanceListItem</item>-->
+        <item name="android:textAppearanceMedium">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textAppearanceMediumInverse">
+            @style/TextAppearance.AppCompat.Subhead.Inverse
+        </item>
+    </style>
+
+    <style name="Widget.AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleMarginStart">16dp</item>
+        <item name="titleMarginEnd">16dp</item>
+    </style>
+
+    <style name="Widget.AppTheme.Toolbar.Solid">
+        <item name="android:background">?colorPrimary</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+
+    <style name="Popup" parent="Widget.AppCompat.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/popup</item>
+    </style>
+
+
+    <style name="BooksPlayCardPrice" parent="@style/BooksPlayPlainText">
+        <item name="android:textSize">@dimen/books_play_medium_size</item>
+        <item name="android:textColor">@color/books_play_price_tag</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:paddingTop">1.0dip</item>
+        <item name="android:paddingBottom">1.0dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">0.0dip</item>
+        <item name="android:minHeight">0.0dip</item>
+    </style>
+
+    <!--search-->
+
+    <style name="SearchBar" />
+
+    <style name="SearchBar.Action" parent="@style/SearchBar">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:padding">@dimen/searchbar_b_button_pad</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="SearchBar.Text" parent="@style/SearchBar">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="SearchBar.Text.Matches" parent="@style/SearchBar.Text">
+        <item name="android:textSize">@dimen/books_play_large_size</item>
+        <item name="android:textColor">?searchScrubBarTextActiveColor</item>
+    </style>
+
+    <style name="PlayPlainText" />
+
+    <style name="PlayMediumPlainText" parent="@style/PlayPlainText" />
+
+    <style name="PlayHeaderListBannerText" parent="@style/PlayMediumPlainText">
+        <item name="android:textSize">@dimen/play_header_list_banner_text_size</item>
+        <item name="android:textColor">@color/play_header_list_banner_text_color</item>
+    </style>
+
+
+    <style name="BooksPlayCardPriceLabel" parent="@style/BooksPlayCardPrice">
+        <item name="android:textSize">@dimen/books_play_medium_size</item>
+        <item name="android:textColor">@color/books_play_secondary_text</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingTop">0.0dip</item>
+        <item name="android:paddingRight">6.0dip</item>
+        <item name="android:paddingBottom">0.0dip</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="BooksPlayCardPriceTag" parent="@style/BooksPlayPlainText">
+        <item name="android:textSize">@dimen/books_play_medium_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/books_play_app_color</item>
+        <item name="android:paddingLeft">6.0dip</item>
+        <item name="android:paddingTop">1.0dip</item>
+        <item name="android:paddingRight">6.0dip</item>
+        <item name="android:paddingBottom">1.0dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="BooksPlayCardSubtitle" parent="@style/BooksPlayPlainText">
+        <item name="android:textSize">@dimen/books_play_subtitle_size</item>
+        <item name="android:textColor">@color/books_play_secondary_text</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lineSpacingExtra">@dimen/books_play_subtitle_spacing</item>
+    </style>
+
+    <style name="BooksPlayCardTitle" parent="@style/BooksPlayPlainText">
+        <item name="android:textSize">@dimen/books_play_large_size</item>
+        <item name="android:textColor">@color/books_play_primary_text</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:lineSpacingExtra">@dimen/books_play_large_spacing</item>
+    </style>
+
+
+    <style name="toc_tab_style" parent="Base.Widget.Design.TabLayout">
+        <item name="android:background">@color/toc_tab_color</item>
+        <!--<item name="tabMaxWidth">@dimen/tab_max_width</item>-->
+        <!--<item name="tabIndicatorColor">?attr/colorAccent</item>-->
+        <item name="tabIndicatorHeight">4dp</item>
+        <!--<item name="tabPaddingStart">12dp</item>-->
+        <!--<item name="tabPaddingEnd">12dp</item>-->
+        <!--<item name="tabBackground">?attr/selectableItemBackground</item>-->
+        <item name="tabMode">fixed</item>
+        <item name="tabTextAppearance">@style/toc_tab_text_appearance</item>
+        <item name="tabSelectedTextColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="toc_tab_text_appearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#80000000</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="toc_bottom_line">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <color name="info_page_details">#2d492b</color>
+    <color name="infoPage_details_gray">#eeeeee</color>
+
+    <style name="navigationViewTextAppearance" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/skim_view_header_textsize</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="navigationViewTextAppearance.day"></style>
+
+    <style name="navigationViewTextAppearance.night"></style>
+
+    <style name="HorizontalSeparator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+
+        <item name="android:background">#9ea5a6</item>
+    </style>
+
+
+</resources>

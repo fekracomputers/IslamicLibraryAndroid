@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="search_num_results_before">
+        <item quantity="other">%1$s of %2$s matches</item>
+        <item quantity="one">%1$s of %2$s match</item>
+        <item quantity="two">%1$s of %2$s matches</item>
+        <item quantity="few">%1$s of %2$s matches</item>
+        <item quantity="many">%1$s of %2$s matches</item>
+    </plurals>
+
+    <plurals name="confirm_book_download">
+        <item quantity="other">Download %d Books?</item>
+        <item quantity="one">Download %d Book?</item>
+        <item quantity="two">Download %d Books?</item>
+        <item quantity="few">Download %d Books?</item>
+        <item quantity="many">Download %d Books?</item>
+    </plurals>
+
+</resources>

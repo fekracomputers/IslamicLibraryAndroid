@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_copy_text"
+        android:icon="@drawable/ic_content_copy_black_24dp"
+        android:onClick="onContextualMenuItemClicked"
+        android:title="@string/action_copy_text"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/action_select_all_text"
+        android:icon="@drawable/ic_select_all_black_24dp"
+        android:onClick="onContextualMenuItemClicked"
+        android:title="@string/action_select_all"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_share_text"
+        android:icon="@drawable/ic_share_black_24dp"
+        android:onClick="onContextualMenuItemClicked"
+        android:title="@string/action_share_text"
+        app:showAsAction="always"
+
+        />
+
+    <item
+        android:id="@+id/action_add_comment"
+        android:icon="@drawable/ic_note_add_black_24dp"
+        android:visible="false"
+        android:onClick="onContextualMenuItemClicked"
+        android:title="@string/action_add_note"
+        app:showAsAction="always" />
+
+    <item
+        android:icon="@drawable/ic_border_color_black_24dp"
+        android:id="@+id/action_add_highlight"
+        android:title="@string/menu_highlight"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/highlight_1"
+                android:layout_width="0dp"
+                android:icon="@drawable/circle_red"
+                android:onClick="onContextualMenuItemClicked"
+                android:title="@string/menu_highlight_color_red" />
+            <item
+                android:id="@+id/highlight_2"
+                android:layout_width="0dp"
+                android:icon="@drawable/circle_blue"
+                android:onClick="onContextualMenuItemClicked"
+                android:title="@string/menu_highlight_color_blue" />
+            <item
+                android:id="@+id/highlight_3"
+                android:layout_width="0dp"
+                android:icon="@drawable/circle_yellow"
+                android:onClick="onContextualMenuItemClicked"
+                android:scaleType="center"
+                android:title="@string/menu_highlight_color_yellow" />
+
+            <item
+                android:id="@+id/highlight_4"
+                android:layout_width="0dp"
+                android:icon="@drawable/circle_green"
+                android:onClick="onContextualMenuItemClicked"
+                android:title="@string/menu_highlight_color_green" />
+
+
+            <item
+                android:id="@+id/highlight_remove"
+                android:layout_width="0dp"
+                android:icon="@drawable/ic_highlight_off_black_24dp"
+                android:onClick="onContextualMenuItemClicked"
+                android:visible="false"
+                android:title="@string/menu_remove_highlight" />
+        </menu>
+    </item>
+</menu>

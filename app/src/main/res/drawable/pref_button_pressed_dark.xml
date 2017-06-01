@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/pref_button_enabled_dark" />
+            <corners android:radius="@dimen/pref_btn_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/books_pressed_holo_dark" />
+            <corners android:radius="@dimen/pref_btn_radius" />
+        </shape>
+    </item>
+</layer-list>

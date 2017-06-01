@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="highlight_red">#FFff7043</color>
+    <color name="highlight_blue">#FF00e5ff</color>
+    <color name="highlight_yellow">#FFfbc02d</color>
+    <color name="highlight_green">#FF8bc34a</color>
+
+
+</resources>
