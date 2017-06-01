@@ -35,7 +35,8 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
         public void notifyBookDownloadStatusUpdate() {
             for (BrowsingActivityListingFragment browsingActivityListingFragment : mDownloadStatusUpdateListener) {
                 browsingActivityListingFragment.reAcquireCursors();
-            }        }
+            }
+        }
 
 
     };
