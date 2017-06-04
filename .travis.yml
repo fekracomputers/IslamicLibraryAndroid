@@ -24,7 +24,6 @@ android:
 
 env:
   global:
-    - DIR=constraint-layout-start # Project directory
     - API=25 # Android API level 25 by default
     - TAG=google_apis # Google APIs by default, alternatively use default
     - ABI=armeabi-v7a # ARM ABI v7a by default
@@ -72,9 +71,9 @@ install:
   # Start adbd, wait for device connected and show android serial
   #- adb wait-for-device get-serialno
   # Show version and download Gradle Wrapper if it's not already cached
-  - cd ${TRAVIS_BUILD_DIR}/${DIR} && ./gradlew --version
+  - cd ${TRAVIS_BUILD_DIR} && ./gradlew --version
   # Clean project and download missing dependencies and components
-  - cd ${TRAVIS_BUILD_DIR}/${DIR} && ./gradlew clean build
+  - cd ${TRAVIS_BUILD_DIR} && ./gradlew clean build
   # Check components status
   - sdkmanager --list || true
 
@@ -89,9 +88,9 @@ install:
 
 script:
   # Run all device checks
-  - cd ${TRAVIS_BUILD_DIR}/${DIR} && ./gradlew connectedCheck
+  - cd ${TRAVIS_BUILD_DIR} && ./gradlew connectedCheck
 
 after_script:
   # Show tests and lint results
-  - cat ${TRAVIS_BUILD_DIR}/${DIR}/*/build/outputs/androidTest-results/connected/*
-  - cat ${TRAVIS_BUILD_DIR}/${DIR}/*/build/reports/lint-results.xml
+  - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/*
+  - cat ${TRAVIS_BUILD_DIR}/*/build/reports/lint-results.xml
