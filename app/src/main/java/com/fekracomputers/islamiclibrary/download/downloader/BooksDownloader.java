@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedReceiver;
+import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class BooksDownloader {
     public BooksDownloader(Context context) {
         this.mContext = context;
         SharedPreferences sharedPref = mContext.getSharedPreferences("Books_Path", Context.MODE_PRIVATE);
-        booksPath = sharedPref.getString("Books_Path_directory", Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "IslamicLibrary");
+        booksPath = sharedPref.getString("Books_Path_directory", StorageUtils.getApplicationBooksDir());
     }
 
 

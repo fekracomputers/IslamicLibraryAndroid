@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -23,6 +22,7 @@ import com.fekracomputers.islamiclibrary.model.BookCategory;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.search.services.FtsIndexingService;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
+import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -357,8 +357,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
 
     private static BooksInformationDbHelper sInstance;
-    private static String sDatabasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator +
-            "IslamicLibrary" + File.separator +
+    private static String sDatabasePath = StorageUtils.getApplicationBooksDir() + File.separator +
             DATABASE_FULL_NAME;
     private final String TAG = "InfoDbHelper";
 
@@ -907,7 +906,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 contentValues, null, null);
 
-        File booksDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "IslamicLibrary");
+        File booksDir = new File(StorageUtils.getApplicationBooksDir());
         if (!(booksDir.exists() && booksDir.isDirectory())) {
             booksDir.mkdirs();
             return false;
