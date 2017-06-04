@@ -12,7 +12,7 @@ import java.io.File;
 public class StorageUtils {
     public static String getApplicationBooksDir()
     {
-        //test
+
        return Environment.getExternalStorageDirectory().getAbsolutePath() +
                 File.separator + "IslamicLibrary";
     }
