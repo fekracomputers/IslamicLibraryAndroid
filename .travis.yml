@@ -35,19 +35,19 @@ env:
     - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
     - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
-matrix:
-  include: # More Emulator API levels to build in parallel
-    - env: API=24
-    - env: API=23
-    - env: API=22
-  allow_failures:
-    - env: API=23
-    - env: API=22
-  fast_finish: false
+#matrix:
+#  include: # More Emulator API levels to build in parallel
+#    - env: API=24
+#    - env: API=23
+#    - env: API=22
+#  allow_failures:
+#    - env: API=23
+#    - env: API=22
+#  fast_finish: false
 
-before_install:
-  - export EMULATOR="system-images;android-${API};${TAG};${ABI}" # Used to install/create emulator
-  - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
+#before_install:
+#  - export EMULATOR="system-images;android-${API};${TAG};${ABI}" # Used to install/create emulator
+#  - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
 
 install:
   # List and delete unnecessary components to free space
@@ -65,7 +65,7 @@ install:
   - echo yes | sdkmanager "extras;google;m2repository"
   - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
   - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
-  - echo yes | sdkmanager "$EMULATOR" # Install emulator system image
+  #- echo yes | sdkmanager "$EMULATOR" # Install emulator system image
   # Create and start emulator
   #- echo no | avdmanager create avd -n acib -k "$EMULATOR" -f --abi "$ABI" --tag "$TAG"
   #- emulator -avd acib -engine classic -no-window -camera-back none -camera-front none -verbose -qemu -m 512 &
