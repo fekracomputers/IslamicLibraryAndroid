@@ -29,6 +29,15 @@ android {
         javaMaxHeapSize "2g"
     }
 
+    lintOptions {
+        textOutput 'stdout'
+        textReport true
+        htmlReport true
+        htmlOutput file("lint-report.html")
+        abortOnError false
+        warningsAsErrors false
+    }
+
 
 }
 
