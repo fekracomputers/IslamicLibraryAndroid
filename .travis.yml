@@ -86,11 +86,11 @@ install:
   #- sleep 30
   #- adb shell input keyevent 82 &
 
-script:
-  # Run all device checks
-  - cd ${TRAVIS_BUILD_DIR} && ./gradlew connectedCheck
-
-after_script:
-  # Show tests and lint results
-  - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/*
-  - cat ${TRAVIS_BUILD_DIR}/*/build/reports/lint-results.xml
+#script:
+#  # Run all device checks
+#  - cd ${TRAVIS_BUILD_DIR} && ./gradlew connectedCheck
+#
+#after_script:
+#  # Show tests and lint results
+#  - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/*
+#  - cat ${TRAVIS_BUILD_DIR}/*/build/reports/lint-results.xml

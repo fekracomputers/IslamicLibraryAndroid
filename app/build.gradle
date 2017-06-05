@@ -30,10 +30,10 @@ android {
     }
 
     lintOptions {
-        textOutput 'stdout'
-        textReport true
-        htmlReport true
-        htmlOutput file("lint-report.html")
+//        textOutput 'stdout'
+//        textReport true
+//        htmlReport true
+//        htmlOutput file("lint-report.html")
         abortOnError false
         warningsAsErrors false
     }
