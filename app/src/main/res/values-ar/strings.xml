@@ -210,6 +210,9 @@
     <string name="about_activity_facebook_label">فايسبوك</string>
     <string name="about_activity_twitter_label">تويتر</string>
     <string name="about_activity_web_page_label">الموقع</string>
+    <string name="storage_permission_rationale">البرنامج يحتاج للإذن للكتابة على الذاكرة الخارجية\nالبرنامج يمكنه العمل دون هذا الإذن لكن عند إلغاء تنصيب البرنامج سوف تمسح جميع الكتب\n\nهل تريد منح البرنامج الإذن؟</string>
+    <string name="info_changing_file_structure">يجري نقل الملفات الرجاء الانتظار</string>
+    <string name="storage_permission_please_restart">نرجو إعادة تشغيل البرنامج</string>
 
 
 </resources>

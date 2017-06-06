@@ -1,7 +1,6 @@
 package com.fekracomputers.islamiclibrary.databases;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -11,6 +10,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.PageCitation;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
@@ -207,11 +207,10 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
     private BookDatabaseHelper(Context context, int mBookId) {
         //super(new DatabaseContext(context),mBookId+".sqlite", null, 1);
-        super(context, StorageUtils.getApplicationBooksDir() +
-                File.separator + mBookId + SQL.DOT_SEPARATOR + "sqlite", null, 1);
+        super(context, StorageUtils.getIslamicLibraryShamelaBooksDir(context) +
+                File.separator + mBookId + SQL.DOT_SEPARATOR + DownloadFileConstants.DATABASE_FILE_EXTENSTION, null, 1);
         this.bookId = mBookId;
-        SharedPreferences sharedPref = context.getSharedPreferences("Books_Path", Context.MODE_PRIVATE);
-        String booksPath = sharedPref.getString("Books_Path_directory", StorageUtils.getApplicationBooksDir());
+        String booksPath = StorageUtils.getIslamicLibraryShamelaBooksDir(context);
         mBookPath = booksPath + File.separator + Integer.toString(mBookId) + SQL.DOT_SEPARATOR + BooksInformationDbHelper.DATABASE_EXTENSION;
 
 

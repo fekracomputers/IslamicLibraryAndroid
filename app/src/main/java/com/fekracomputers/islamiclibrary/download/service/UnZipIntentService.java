@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
-import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedReceiver;
 
@@ -126,11 +126,11 @@ public class UnZipIntentService extends IntentService {
 
                         if (zipEntry.isDirectory() //Just neglect nested directories
                                 || !((BooksInformationDbHelper.uncompressedBookFileRegex.matcher(filename).matches()
-                                || filename.equals(BooksDownloader.ONLINE_DATABASE_NAME)))//Neglect any file which doesn't match <bookId>.sqlite in the zip file
+                                || filename.equals(DownloadFileConstants.ONLINE_DATABASE_NAME)))//Neglect any file which doesn't match <bookId>.sqlite in the zip file
 
                                 )
                             continue;
-                        if (filename.equals(BooksDownloader.ONLINE_DATABASE_NAME))
+                        if (filename.equals(DownloadFileConstants.ONLINE_DATABASE_NAME))
                             filename = BooksInformationDbHelper.DATABASE_FULL_NAME;
 
                         //All files are outputted to the same directory as the zip folder

@@ -357,8 +357,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
 
     private static BooksInformationDbHelper sInstance;
-    private static String sDatabasePath = StorageUtils.getApplicationBooksDir() + File.separator +
-            DATABASE_FULL_NAME;
+    private static String sDatabasePath;
     private final String TAG = "InfoDbHelper";
 
     private BooksInformationDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -374,6 +373,10 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      */
     @Nullable
     public synchronized static BooksInformationDbHelper getInstance(@NonNull Context context) {
+        if (sDatabasePath == null) {
+            sDatabasePath = StorageUtils.getIslamicLibraryShamelaBooksDir(context) + File.separator +
+                    DATABASE_FULL_NAME;
+        }
         if (sInstance == null) {
             if (!databaseExists()) return null;
             sInstance = new BooksInformationDbHelper(context, sDatabasePath, null, DATABASE_VERSION);
@@ -385,6 +388,14 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      * @return true if a file named as the bookInformation database exists, doesn't check its content
      */
     public static boolean databaseExists() {
+        return new File(sDatabasePath).exists();
+    }
+
+    public static boolean databaseExists(@NonNull Context context) {
+        if (sDatabasePath == null) {
+            sDatabasePath = StorageUtils.getIslamicLibraryShamelaBooksDir(context) + File.separator +
+                    DATABASE_FULL_NAME;
+        }
         return new File(sDatabasePath).exists();
     }
 
@@ -906,7 +917,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 contentValues, null, null);
 
-        File booksDir = new File(StorageUtils.getApplicationBooksDir());
+        File booksDir = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context));
         if (!(booksDir.exists() && booksDir.isDirectory())) {
             booksDir.mkdirs();
             return false;

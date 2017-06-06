@@ -305,6 +305,9 @@
     <string name="hint_search_books_names">search books names</string>
     <string name="preparing_book">preparing book</string>
     <string name="refreshing_on_background">stored books will be revised in the background you can continu work</string>
+    <string name="storage_permission_rationale">Islamic Library wants your permission to store its data on        \n external storage app will work without this permission, but if you clear data or     \n     uninstall the app, all downloaded books will be removed. Grant Quran permission?</string>
+    <string name="storage_permission_please_restart">Please restart the app for this to take effect</string>
+    <string name="info_changing_file_structure">changing file structure please wait</string>
     <![CDATA[
     >
 ]]>

@@ -2,13 +2,13 @@ package com.fekracomputers.islamiclibrary.download.downloader;
 
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedReceiver;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
@@ -27,27 +27,14 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class BooksDownloader {
 
-    public static final String URL_SEPARATOR = "/";
-    public static final String DATABASE_FILE_EXTENSTION = "sqlite";
-    public static final String ONLINE_DATABASE_NAME = "main" + "." + DATABASE_FILE_EXTENSTION;
-    public static final String COMPRESSION_EXTENTION = "zip";
-    private static String domain = "http://booksapi.islam-db.com";
-    private static String baseUrl = domain + "/data";
-    private static String uncompressedBaseBookUrl = baseUrl + URL_SEPARATOR + "books";
-    private static String bookInformationUrl = baseUrl + URL_SEPARATOR + ONLINE_DATABASE_NAME;
-    private static String compressedBaseBookUrl = baseUrl + URL_SEPARATOR + "cbooks";
-    // http://books.islam-db.com/data/cbooks/main.zip
-    private static String compressedBookInformationUrl = compressedBaseBookUrl + URL_SEPARATOR + "main" + "." + COMPRESSION_EXTENTION;
     private final String TAG = this.getClass().getSimpleName();
     private Context mContext;
     private String booksPath;
 
 
-    // TODO: 02/11/2016 fix shared preference
     public BooksDownloader(Context context) {
         this.mContext = context;
-        SharedPreferences sharedPref = mContext.getSharedPreferences("Books_Path", Context.MODE_PRIVATE);
-        booksPath = sharedPref.getString("Books_Path_directory", StorageUtils.getApplicationBooksDir());
+        booksPath = StorageUtils.getIslamicLibraryShamelaBooksDir(mContext);
     }
 
 
@@ -83,10 +70,10 @@ public class BooksDownloader {
         Uri uri;
         if (compressed) {
             fileName = book_id + "." + BooksInformationDbHelper.COMPRESSION_EXTENSION;
-            uri = Uri.parse(compressedBaseBookUrl + URL_SEPARATOR + fileName);
+            uri = Uri.parse(DownloadFileConstants.compressedBaseBookUrl + DownloadFileConstants.URL_SEPARATOR + fileName);
         } else {
             fileName = book_id + "." + BooksInformationDbHelper.DATABASE_EXTENSION;
-            uri = Uri.parse(uncompressedBaseBookUrl + URL_SEPARATOR + fileName);
+            uri = Uri.parse(DownloadFileConstants.uncompressedBaseBookUrl + DownloadFileConstants.URL_SEPARATOR + fileName);
         }
 
 
@@ -103,7 +90,7 @@ public class BooksDownloader {
 
         //Enqueue download and save into referenceId
         long downloadReference = downloadManager.enqueue(request);
-        Log.v(TAG, "started downloading from " + uri.toString() + " with id =" + Long.toString(downloadReference) + "into" + booksPath + URL_SEPARATOR + fileName);
+        Log.v(TAG, "started downloading from " + uri.toString() + " with id =" + Long.toString(downloadReference) + "into" + booksPath + DownloadFileConstants.URL_SEPARATOR + fileName);
         //add the downloadReference to the data base to recognize it from other applications' downloads
         BooksInformationDbHelper.getInstance(mContext).addDownload(book_id, downloadReference, DownloadsConstants.STATUS_DOWNLOAD_REQUESTED);
         return downloadReference;
@@ -113,11 +100,11 @@ public class BooksDownloader {
         Uri uri;
         String extension;
         if (compressed) {
-            uri = Uri.parse(compressedBookInformationUrl);
+            uri = Uri.parse(DownloadFileConstants.compressedBookInformationUrl);
             extension = BooksInformationDbHelper.DATABASE_COMPRESSED_EXTENTION;
 
         } else {
-            uri = Uri.parse(bookInformationUrl);
+            uri = Uri.parse(DownloadFileConstants.bookInformationUrl);
             extension = BooksInformationDbHelper.DATABASE_EXTENTION;
         }
 
@@ -141,7 +128,7 @@ public class BooksDownloader {
         if (compressed)
             BookDownloadCompletedReceiver.informationDatabaseDownloadEnqueId = downloadReference;
 
-        Log.v(TAG, "started downloading from " + uri.getPath() + "with id =" + Long.toString(downloadReference) + "into" + booksPath + URL_SEPARATOR + BooksInformationDbHelper.DATABASE_NAME + "." + extension);
+        Log.v(TAG, "started downloading from " + uri.getPath() + "with id =" + Long.toString(downloadReference) + "into" + booksPath + DownloadFileConstants.URL_SEPARATOR + BooksInformationDbHelper.DATABASE_NAME + "." + extension);
         return downloadReference;
     }
 
