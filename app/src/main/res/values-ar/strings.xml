@@ -107,7 +107,7 @@
     <string name="results">نتائج</string>
     <string name="downloading_book_information">نحمل قاعدة بيانات الكتب</string>
     <string name="info_refreshing_database_with_storage">نراجع الكتب المخزنة</string>
-    <string name="info_preparing_book_information_database">نهيء قاعدة بيانات الكتب</string>
+    <string name="info_preparing_book_information_database">جاري إعداد قاعدة بيانات الكتب</string>
     <string name="pref_ui_language_arabic">واجهة  عربية</string>
     <string name="download_book">تحميل</string>
     <string name="download_selected_books">تنزيل الكتب المحددة</string>
