@@ -1,9 +1,12 @@
+m
 a.idea
 r.idea/libraries
 rapp/build/generated/source/r/debug/ca/barrenechea/widget/recyclerview/decoration
 rapp/src/main/assets
 rapp/src/main/assets/scripts
 mapp/src/main/java/com/fekracomputers/islamiclibrary/browsing/activity
+mapp/src/main/java/com/fekracomputers/islamiclibrary/databases
+mapp/src/main/java/com/fekracomputers/islamiclibrary/download/downloader
 rapp/src/main/res/drawable-ar/drawable-hdpi
 rapp/src/main/res/drawable-ar/drawable-mdpi
 rapp/src/main/res/drawable-ar/drawable-xhdpi
