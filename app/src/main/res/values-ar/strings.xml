@@ -158,7 +158,7 @@
     <string name="book_info_similar_books_by_authour">كتب أخرى ل%s</string>
     <string name="read_more"><u>اقرأ المزيد</u></string>
     <string name="search_toc_hint">بحث داخل الفهرس</string>
-    <string name="part_and_page_with_text">جزء %1$d- صقحة %2$d</string>
+    <string name="part_and_page_with_text">جزء %1$d- صفحة %2$d</string>
     <string name="search_result_root_title">نتائج البحث</string>
     <string name="page_number_with_label">صفحة %1$d</string>
     <string name="library_sort_by_date">التاريخ</string>
