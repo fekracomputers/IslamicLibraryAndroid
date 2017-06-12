@@ -122,7 +122,6 @@
     <string name="search_inside_volume_hint">Search in book</string>
     <string name="side_drawer_downloaded_only">Downloaded only</string>
     <string name="skim_page_label_separator">/</string>
-    <string name="status_bar_notification_info_overflow">999+</string>
     <string name="unchecked">Unchecked</string>
 
     <!-- TODO: Remove or change this placeholder text -->
