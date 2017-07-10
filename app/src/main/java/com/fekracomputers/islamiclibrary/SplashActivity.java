@@ -221,7 +221,7 @@ public class SplashActivity extends AppCompatActivity {
         //a better condition would be to check the directory
         if (BooksInformationDbHelper.databaseExists(SplashActivity.this)) {
             finishSplashAndLaunchMainActivity();
-        } else if (BuildConfig.VERSION_CODE > 3 && StorageUtils.isOldDirectoriesExists(this)) {
+        } else if (StorageUtils.isOldDirectoriesExists(this)) {
 
             new AsyncTask<Void, Integer, Void>() {
                 @Override
