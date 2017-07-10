@@ -199,7 +199,7 @@ public class BookListFragment
                 if ((mSearchQuery == null || mSearchQuery.isEmpty()) && !(query == null || query.isEmpty())) {
                     //first click on search icon
                     mSearchQuery = query;
-                    mSavedScrollPositionBeforSearch = ((GridLayoutManager) mRecyclerView.getLayoutManager())
+                    mSavedScrollPositionBeforSearch = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                             .findFirstCompletelyVisibleItemPosition();
                 } else if (!(mSearchQuery == null || mSearchQuery.isEmpty()) && (query == null || query.isEmpty())) {
                     //clearing the search query
