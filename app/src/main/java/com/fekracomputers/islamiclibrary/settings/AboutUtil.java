@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickListener;
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.settings.easy_feedback.EasyFeedback;
+import com.webianks.easy_feedback.EasyFeedback;
 
 import java.util.List;
 

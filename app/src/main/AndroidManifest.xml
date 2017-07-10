@@ -77,10 +77,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.easy_feedback.FeedbackActivity"
-            android:label="@string/feedback"
-            android:parentActivityName=".browsing.activity.BrowsingActivity" />
-        <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".browsing.activity.BrowsingActivity"

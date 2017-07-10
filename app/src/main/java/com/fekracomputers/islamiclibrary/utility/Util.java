@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.support.annotation.AttrRes;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.TintTypedArray;
 import android.util.TypedValue;
 import android.view.View;
@@ -88,4 +89,11 @@ public final class Util {
     }
 
 
+    @ColorInt
+    public static int getColorFromAttr(Context context, int attr, @ColorInt int defaultColor) {
+        TypedArray a = context.obtainStyledAttributes(new TypedValue().data, new int[]{attr});
+        int intColor = a.getColor(0, defaultColor);
+        a.recycle();
+        return intColor;
+    }
 }

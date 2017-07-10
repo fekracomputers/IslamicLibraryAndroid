@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.reading.SearchNavigationStatus;
-import com.fekracomputers.islamiclibrary.settings.easy_feedback.components.Utils;
+import com.fekracomputers.islamiclibrary.utility.Util;
 
 
 public class SearchScrubBar extends FrameLayout {
@@ -36,8 +36,8 @@ public class SearchScrubBar extends FrameLayout {
                 }
             }
         };
-         this.mSearchScrubBarTextActiveColor = Utils.getColorFromAttr(context, R.attr.searchScrubBarTextActiveColor, 0xFF888888);
-         this.mSearchScrubBarTextInactiveColor = Utils.getColorFromAttr(context, R.attr.searchScrubBarTextInactiveColor, 0xFF888888);
+         this.mSearchScrubBarTextActiveColor = Util.getColorFromAttr(context, R.attr.searchScrubBarTextActiveColor, 0xFF888888);
+         this.mSearchScrubBarTextInactiveColor = Util.getColorFromAttr(context, R.attr.searchScrubBarTextInactiveColor, 0xFF888888);
     }
 
     public View getPreviousButton() {
