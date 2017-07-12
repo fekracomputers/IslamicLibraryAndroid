@@ -10,8 +10,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.danielstone.materialaboutlibrary.MaterialAboutActivity;
-import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickListener;
 import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem;
+import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction;
 import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
@@ -26,11 +26,10 @@ public class AboutActivity extends MaterialAboutActivity {
     private boolean mIsArabic;
 
 
-
     @NonNull
     @Override
     protected MaterialAboutList getMaterialAboutList(@NonNull final Context context) {
-        mIsArabic= Util.isArabicUi(this);
+        mIsArabic = Util.isArabicUi(this);
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         MaterialAboutCard.Builder generalInfoCardBuilder = new MaterialAboutCard.Builder();
 
@@ -66,9 +65,9 @@ public class AboutActivity extends MaterialAboutActivity {
         supportCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.send_feedback_two)
                 .icon(R.drawable.ic_feedback_black_24dp)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.sendFeedBack(context);
 
                     }
@@ -80,9 +79,9 @@ public class AboutActivity extends MaterialAboutActivity {
         shareCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.action_share)
                 .icon(R.drawable.ic_share_black_24dp)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.ShareAppLink(context);
                     }
                 })
@@ -90,9 +89,9 @@ public class AboutActivity extends MaterialAboutActivity {
         shareCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.action_rate)
                 .icon(R.drawable.ic_star_black_24dp)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.rateApp(context);
                     }
                 })
@@ -103,9 +102,9 @@ public class AboutActivity extends MaterialAboutActivity {
         aboutCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.other_apps)
                 .icon(R.drawable.ic_collections_bookmark_black_24dp)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.openDevelopersPage(context);
 
                     }
@@ -114,7 +113,7 @@ public class AboutActivity extends MaterialAboutActivity {
         aboutCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.about_company)
                 .icon(R.drawable.ic_info_black_24dp)
-                .setOnClickListener(AboutUtil.webViewDialog(context,
+                .setOnClickAction(AboutUtil.webViewDialog(context,
                         "file:///android_asset/aboutFekra.html", R.string.about_company))
                 .build());
 
@@ -129,9 +128,9 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text(R.string.about_activity_facebook_label)
                 .subText(R.string.facebookUserName)
                 .icon(R.drawable.ic_facebook_logo)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.getOpenFacebookIntent(context,
                                 getString(R.string.facebookUserName));
 
@@ -142,9 +141,9 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text(R.string.about_activity_twitter_label)
                 .subText(R.string.twitter_user_name)
                 .icon(R.drawable.ic_twitter_logo_blue)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         AboutUtil.startTwitter(context,
                                 getString(R.string.twitter_user_name));
 
@@ -156,9 +155,9 @@ public class AboutActivity extends MaterialAboutActivity {
                 .text(R.string.about_activity_web_page_label)
                 .subText(R.string.web_page)
                 .icon(R.drawable.ic_public_black_24dp)
-                .setOnClickListener(new MaterialAboutItemOnClickListener() {
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
                     @Override
-                    public void onClick(boolean longClick) {
+                    public void onClick() {
                         startActivity(new Intent(Intent.ACTION_VIEW,
                                 Uri.parse(getString(R.string.web_page))));
                     }
@@ -170,14 +169,14 @@ public class AboutActivity extends MaterialAboutActivity {
         legalCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.open_source_licences)
                 .icon(R.drawable.ic_insert_drive_file_black_24dp)
-                .setOnClickListener(AboutUtil.webViewDialog(context,
+                .setOnClickAction(AboutUtil.webViewDialog(context,
                         "file:///android_asset/licenses.html",
                         R.string.open_source_licences))
                 .build());
         legalCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.about_activity_acknowledgements)
                 .icon(R.drawable.ic_info_black_24dp)
-                .setOnClickListener(AboutUtil.webViewDialog(context,
+                .setOnClickAction(AboutUtil.webViewDialog(context,
                         "file:///android_asset/acknowledgements.html",
                         R.string.about_activity_acknowledgements))
                 .build());
@@ -201,10 +200,9 @@ public class AboutActivity extends MaterialAboutActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Util.restartIfLocaleChanged(this,mIsArabic);
+        Util.restartIfLocaleChanged(this, mIsArabic);
 
     }
-
 
 
 }

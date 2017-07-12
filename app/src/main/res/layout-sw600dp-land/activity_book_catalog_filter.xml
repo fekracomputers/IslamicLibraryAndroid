@@ -17,7 +17,6 @@
         tools:text="@string/side_drawer_downloaded_only" />
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/overview_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

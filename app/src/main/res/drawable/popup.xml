@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/abc_popup_background_mtrl_mult"
-    android:insetBottom="8dp"
-    android:insetRight="8dp">
-
-</inset>

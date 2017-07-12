@@ -2,17 +2,4 @@
 <resources>
 
 
-    <style name="Preference.SpinnerText" parent="@style/Preference">
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-        <item name="android:textSize">@dimen/pref_switch_text_size</item>
-        <item name="android:textColor">?grayD000L700</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:gravity">start</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">8.0dip</item>
-        <item name="android:layout_marginRight">8.0dip</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
 </resources>

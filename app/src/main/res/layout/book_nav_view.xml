@@ -16,7 +16,6 @@
         android:paddingTop="8dp">
 
         <RelativeLayout
-            android:id="@+id/chapter_and_page"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

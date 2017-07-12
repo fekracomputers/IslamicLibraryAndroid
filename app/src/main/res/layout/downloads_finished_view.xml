@@ -15,7 +15,6 @@
         app:srcCompat="@drawable/ic_check_books_green_24dp" />
 
     <TextView
-        android:id="@+id/palce_holder_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"

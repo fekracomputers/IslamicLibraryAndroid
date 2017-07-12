@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickListener;
+import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction;
 import com.fekracomputers.islamiclibrary.R;
 import com.webianks.easy_feedback.EasyFeedback;
 
@@ -138,19 +138,19 @@ public class AboutUtil {
 
     }
 
-    public static MaterialAboutItemOnClickListener webViewDialog(final Context context,
+    public static MaterialAboutItemOnClickAction webViewDialog(final Context context,
                                                                  final String targetUrl,
                                                                  final int title) {
 
         return webViewDialog(context, targetUrl, context.getString(title));
     }
 
-    public static MaterialAboutItemOnClickListener webViewDialog(final Context context,
+    public static MaterialAboutItemOnClickAction webViewDialog(final Context context,
                                                                         final String targetUrl,
                                                                         final String title) {
-        return new MaterialAboutItemOnClickListener() {
+        return new MaterialAboutItemOnClickAction() {
             @Override
-            public void onClick(boolean longClick) {
+            public void onClick() {
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle(title);
                 WebView wv = new WebView(context);

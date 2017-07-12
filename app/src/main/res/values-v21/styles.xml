@@ -11,26 +11,9 @@
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.colored_stausbar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/colorAccent</item>
-    </style>
-
-
-    <style name="PlayDrawerProfileNameText" parent="@style/PlayMediumPlainText">
-        <item name="android:textSize">14.0sp</item>
-        <item name="android:textColor">@color/play_white</item>
-    </style>
 
     <style name="PlayMediumPlainText">
         <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="DetailsPage" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:statusBarColor">@color/books_corpora_dark</item>
     </style>
 
     <style name="ReadingActivityDay" parent="@style/FullScreenLightDark">

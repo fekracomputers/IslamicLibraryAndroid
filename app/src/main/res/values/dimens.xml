@@ -22,8 +22,6 @@
     <item name="abc_dialog_min_width_minor" type="dimen">95.00001%</item>
     <item name="rtl_mirror_scalex" type="dimen">1.0</item>
     <dimen name="books_play_large_size">16.0sp</dimen>
-    <dimen name="books_play_medium_size">12.0sp</dimen>
-    <dimen name="books_play_subtitle_size">12.0sp</dimen>
     <dimen name="skim_view_top_margin">0.0sp</dimen>
     <dimen name="abc_action_bar_content_inset_material">16.0dip</dimen>
     <dimen name="abc_action_bar_default_padding_end_material">0.0dip</dimen>
@@ -85,8 +83,6 @@
     <dimen name="abc_text_size_small_material">14.0sp</dimen>
     <dimen name="abc_text_size_subhead_material">16.0sp</dimen>
     <dimen name="abc_text_size_title_material">20.0sp</dimen>
-    <dimen name="books_play_large_spacing">2.0sp</dimen>
-    <dimen name="books_play_subtitle_spacing">4.0sp</dimen>
     <dimen name="cardview_compat_inset_shadow">1.0dip</dimen>
     <dimen name="cardview_default_elevation">2.0dip</dimen>
     <dimen name="cardview_default_radius">2.0dip</dimen>

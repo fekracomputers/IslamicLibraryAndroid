@@ -18,7 +18,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/part_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:enabled="true"
@@ -45,7 +44,6 @@
                 tools:text="15" />
 
             <TextView
-                android:id="@+id/from_part_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3.0sp"
@@ -83,7 +81,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/page_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:enabled="true"
@@ -110,7 +107,6 @@
                 tools:text="1020" />
 
             <TextView
-                android:id="@+id/from_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3.0sp"

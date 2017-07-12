@@ -33,7 +33,6 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/search_action_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

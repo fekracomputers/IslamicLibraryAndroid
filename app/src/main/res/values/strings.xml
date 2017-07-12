@@ -128,7 +128,7 @@
 
     <!--cpd-->
     <string name="lipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus tincidunt nisi nec finibus.</string>
-    <string name="reset" translatable="false">Reset</string>
+    <string name="reset" >Reset</string>
 
     <string-array name="colors_material_names" translatable="false">
         <item>Red</item>
