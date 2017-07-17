@@ -179,6 +179,8 @@ public class BrowsingActivity
             }
         }
 
+
+
         @Override
         public void notifyBookDownloadStatusUpdate(int bookId, int downloadStatus) {
             BrowsingActivity.this.notifyBookDownloadStatusUpdate(bookId, downloadStatus);

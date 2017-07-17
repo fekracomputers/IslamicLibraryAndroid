@@ -1201,4 +1201,11 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public void deleteBook(int bookId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(BooksInformationDBContract.StoredBooks.TABLE_NAME,
+                BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID+"=?",
+                new String[]{String.valueOf(bookId)});
+    }
 }

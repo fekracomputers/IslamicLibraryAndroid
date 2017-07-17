@@ -4,7 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BookListActivity;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.browsing.util.BrowsingUtils;
@@ -100,6 +104,24 @@ public abstract class BookCardEventsCallback {
         intent.putExtra(BookListFragment.FILTERTYPE, BookListFragment.FILTERBYCATEGORY);
         intent.putExtra(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_TITLE, category.getName());
         context.startActivity(intent);
+    }
+
+    public  void onMoreButtonClicked(final int bookId, View v){
+        PopupMenu popup = new PopupMenu(context, v);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.book_overflow_delete_book:
+                        BrowsingUtils.deleteBook(bookId,context);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.inflate(R.menu.book_card_overflow);
+        popup.show();
     }
 
 

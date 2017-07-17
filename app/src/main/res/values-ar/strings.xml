@@ -214,6 +214,7 @@
     <string name="info_changing_file_structure">يجري نقل الملفات الرجاء الانتظار</string>
     <string name="storage_permission_please_restart">نرجو إعادة تشغيل البرنامج</string>
     <string name="reset">إعادة الإعدادات الأصلية</string>
+    <string name="menu_book_overflow_delete_book">حذف الكتاب</string>
 
 
 </resources>

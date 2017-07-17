@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.fekracomputers.islamiclibrary.browsing.activity.BookInformationActivity;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
+import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
@@ -34,5 +35,12 @@ public class BrowsingUtils {
         intent.putExtra(BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID, book_id);
         intent.putExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookTitle);
         context.startActivity(intent);
+    }
+
+    public static void deleteBook(int bookId, Context context) {
+        BooksInformationDbHelper booksInformationDbHelper= BooksInformationDbHelper.getInstance(context);
+        if (booksInformationDbHelper != null) {
+            booksInformationDbHelper.deleteBook(bookId);
+        }
     }
 }
