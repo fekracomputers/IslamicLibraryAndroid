@@ -155,8 +155,9 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         holder.bookInfo = new BookInfo(bookId, bookTitle, authorId, authourName, bookDownloadStatus);
         holder.bindCheckBoxVisibilityValue(mListener.isInSelectionMode());
 
-        if (holder.bookCheckBox.getVisibility() == View.VISIBLE)
+        if (holder.bookCheckBox.getVisibility() == View.VISIBLE) {
             holder.bookCheckBox.setChecked(mListener.isBookSelected(holder.bookInfo.getBookId()));
+        }
         holder.bindDownloadStatus(bookDownloadStatus);
 
         Glide.with(mContext).load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId())).placeholder(R.drawable.no_book_image).into(holder.bookCoverImageView);
@@ -277,7 +278,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
             moreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onMoreButtonClicked(bookInfo.getBookId(),v);
+                    mListener.onMoreButtonClicked(bookInfo,v);
                 }
             });
 

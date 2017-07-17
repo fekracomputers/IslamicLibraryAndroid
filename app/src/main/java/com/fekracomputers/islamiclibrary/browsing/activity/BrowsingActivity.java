@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBatchDownloadDialogFragment;
+import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBookDeleteDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AuthorListFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookCategoryFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookFilterPagerFragment;
@@ -76,7 +77,9 @@ public class BrowsingActivity
         BookFilterPagerFragment.OnBookFilterPagerPageChangedListener,
         SearchRequestPopupFragment.OnSearchPopupFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener,
-        BookCardEventListener, ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener {
+        BookCardEventListener,
+        ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener,
+        ConfirmBookDeleteDialogFragment.BookDeleteDialogListener {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -178,7 +181,6 @@ public class BrowsingActivity
                 }
             }
         }
-
 
 
         @Override
@@ -433,7 +435,7 @@ public class BrowsingActivity
             return true;
         } else if (id == R.id.refresh_with_file_system) {
             RefreshBooksWithDirectoryService.startActionRefreshEveryThing(this);
-            Toast.makeText(this,R.string.refreshing_on_background,Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.refreshing_on_background, Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -803,6 +805,11 @@ public class BrowsingActivity
     @Override
     public void onDialogPositiveClick() {
         startBatchDownload();
+    }
+
+    @Override
+    public void onBookDeleteDialogDialogPositiveClick(int bookId) {
+        bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
 
     protected class SelectionActionModeCallBack implements ActionMode.Callback {

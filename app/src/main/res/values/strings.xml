@@ -308,6 +308,8 @@
     <string name="storage_permission_please_restart">Please restart the app for this to take effect</string>
     <string name="info_changing_file_structure">changing file structure please wait</string>
     <string name="menu_book_overflow_delete_book">Delete</string>
+    <string name="confirm_delete">Delete</string>
+    <string name="confirm_book_delete">Confirm delete %s</string>
     <![CDATA[
     >
 ]]>

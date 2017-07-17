@@ -16,5 +16,13 @@
         <item quantity="few">أتريد تحميل %d كتب؟</item>
         <item quantity="many">أتريد تحميل %d كتابًا؟</item>
     </plurals>
+    <plurals name="confirm_book_delete" >
+        <item quantity="other">أتريد حذف %d من الكتب؟</item>
+        <item quantity="zero">أتريد حذف %d كتاب؟</item>
+        <item quantity="one">أتريد حذف كتاب واحد (%d)؟</item>
+        <item quantity="two">أتريد حذف كتابين (%d)؟</item>
+        <item quantity="few">أتريد حذف %d كتب؟</item>
+        <item quantity="many">أتريد حذف %d كتابًا؟</item>
+    </plurals>
 
 </resources>
