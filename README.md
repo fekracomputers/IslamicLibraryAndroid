@@ -3,6 +3,8 @@
 
 # Islamic Library 
 
+[![Join the chat at https://gitter.im/fekracomputers/IslamicLibraryAndroid](https://badges.gitter.im/fekracomputers/IslamicLibraryAndroid.svg)](https://gitter.im/fekracomputers/IslamicLibraryAndroid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Encyclopedia for Islamic books based on (shamela.ws) books with unique features in browsing ,reading and searching books
 
 <a href='https://play.google.com/store/apps/details?id=com.fekracomputers.islamiclibrary&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
