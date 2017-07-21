@@ -51,6 +51,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
         mTextView = (TextView) findViewById(R.id.progressTextView);
+
         checkStorage();
 
     }
