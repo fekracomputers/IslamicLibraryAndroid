@@ -4,8 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BookListActivity;
+import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBookDeleteDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.browsing.util.BrowsingUtils;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
@@ -27,10 +35,10 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
  * >Communicating with Other Fragments</a> for more information.
  */
 public abstract class BookCardEventsCallback {
-    protected Context context;
+    protected FragmentActivity context;
     private BookDownloadReceiver mReceiver;
 
-    public BookCardEventsCallback(Context context) {
+    public BookCardEventsCallback(FragmentActivity context) {
         this.context = context;
     }
 
@@ -102,6 +110,38 @@ public abstract class BookCardEventsCallback {
         context.startActivity(intent);
     }
 
+    public void onMoreButtonClicked(final BookInfo bookInfo, View v) {
+        PopupMenu popup = new PopupMenu(context, v);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.book_overflow_delete_book:
+                        DialogFragment confirmBatchDownloadDialogFragment = new ConfirmBookDeleteDialogFragment();
+
+                        Bundle confirmDeleteDialogFragmentBundle = new Bundle();
+                        confirmDeleteDialogFragmentBundle.putInt(ConfirmBookDeleteDialogFragment.KEY_NUMBER_OF_BOOKS_TO_DELETE, 1);
+                        confirmDeleteDialogFragmentBundle.putInt(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID, bookInfo.getBookId());
+                        confirmDeleteDialogFragmentBundle.putString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookInfo.getName());
+
+                        confirmBatchDownloadDialogFragment.setArguments(confirmDeleteDialogFragmentBundle);
+                        confirmBatchDownloadDialogFragment.show(context.getSupportFragmentManager(), "ConfirmBookDeleteDialogFragment");
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.inflate(R.menu.book_card_overflow);
+        if (bookInfo.getDownloadStatus() < DownloadsConstants.STATUS_DOWNLOAD_COMPLETED) {
+            popup.getMenu().removeItem(R.id.book_overflow_delete_book);
+        }
+        popup.show();
+    }
+
+    public void onBookDeleteConfirmation(int bookId) {
+        BrowsingUtils.deleteBook(bookId, context);
+    }
 
     public static class BookDownloadReceiver extends BroadcastReceiver {
 
@@ -123,8 +163,8 @@ public abstract class BookCardEventsCallback {
         public void onReceive(Context context, Intent intent) {
             int downloadStatus = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS,
                     DownloadsConstants.STATUS_INVALID);
-            boolean notifyCangeWithotBokId = intent.getBooleanExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, false);
-            if (!notifyCangeWithotBokId) {
+            boolean notifyCangeWithoutBookId = intent.getBooleanExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, false);
+            if (!notifyCangeWithoutBookId) {
                 int bookId = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, 0);
                 bookCardEventsCallback.notifyBookDownloadStatusUpdate(bookId, downloadStatus);
 

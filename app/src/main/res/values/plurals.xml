@@ -15,5 +15,12 @@
         <item quantity="few">Download %d Books?</item>
         <item quantity="many">Download %d Books?</item>
     </plurals>
+    <plurals name="confirm_book_delete" >
+        <item quantity="other">Delete %d Books?</item>
+        <item quantity="one">Delete %d Book?</item>
+        <item quantity="two">Delete %d Books?</item>
+        <item quantity="few">Delete %d Books?</item>
+        <item quantity="many">Delete %d Books?</item>
+    </plurals>
 
 </resources>

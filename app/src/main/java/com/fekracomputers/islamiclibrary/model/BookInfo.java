@@ -97,4 +97,8 @@ public class BookInfo {
     public BookCategory getCategory() {
         return category;
     }
+
+    public int getDownloadStatus() {
+        return downloadStatus;
+    }
 }

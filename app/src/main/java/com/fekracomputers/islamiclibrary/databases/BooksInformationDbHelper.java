@@ -35,6 +35,7 @@ import static com.fekracomputers.islamiclibrary.databases.BooksInformationDBCont
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.BROADCAST_ACTION;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_STATUS;
+import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.STATUS_FTS_INDEXING_ENDED;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.STATUS_NOT_DOWNLOAD;
 
 
@@ -50,6 +51,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "BooksInformationDB";
     public static final String DATABASE_FULL_NAME = DATABASE_NAME + "." + DATABASE_EXTENTION;
     public static final String DATABASE_EXTENSION = "sqlite";
+    public static final String DATABASE__JOURNAL_EXTENSION = "sqlite-journal";
     public static final Pattern uncompressedBookFileRegex = Pattern.compile("(^\\d+)\\." + DATABASE_EXTENSION + "$");
     public static final String COMPRESSION_EXTENSION = "zip";
     public static final Pattern compressedBookFileRegex = Pattern.compile("(^\\d+)\\." + COMPRESSION_EXTENSION + "$");
@@ -1201,4 +1203,25 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public void deleteBook(int bookId,Context context) {
+        //TODO Stop the indexing service if it was running
+        File book = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context)+bookId+"."+DATABASE_EXTENSION);
+        book.delete();
+
+        //journal file for book database
+        File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context)+bookId+"."+DATABASE__JOURNAL_EXTENSION);
+        journal.delete();
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(BooksInformationDBContract.StoredBooks.TABLE_NAME,
+                BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID+"=?",
+                new String[]{String.valueOf(bookId)});
+
+        Intent bookDeleteBroadCast =
+                new Intent(BROADCAST_ACTION)
+                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_NOT_DOWNLOAD)
+                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+        context.sendOrderedBroadcast(bookDeleteBroadCast, null);
+    }
+
 }

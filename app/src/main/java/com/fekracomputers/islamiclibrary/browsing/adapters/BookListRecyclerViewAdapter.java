@@ -36,6 +36,9 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
 public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRecyclerViewAdapter.ViewHolder> {
 
 
+    /**
+     * Constant for horzontal Recycler view
+     */
     public static final int LINEAR_HORIZONTAL_LAYOUT_MANAGER = 2;
     private final int coulmn_title_id;
     private final int coulmn_authourId_id;
@@ -77,11 +80,8 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
     @Override
     public BookListRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view.
-
         View v;
         switch (layoutManagerType) {
-
             case BookListFragment.GRID_LAYOUT_MANAGER:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.boook_list_grid_element, parent, false);
@@ -146,20 +146,21 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
     private void onBindViewHolder(final ViewHolder holder, final Cursor movedCursor) {
         String bookTitle = movedCursor.getString(coulmn_title_id);
-        holder.book_cover_name.setText(bookTitle);
+        holder.bookCoverName.setText(bookTitle);
         String authourName = movedCursor.getString(coulmn_authour_id);
-        holder.book_cover_author.setText(authourName);
+        holder.bookCoverAuthor.setText(authourName);
         int authorId = movedCursor.getInt(coulmn_authourId_id);
         int bookDownloadStatus = movedCursor.isNull(coulmn_downloadStatus_id) ? DownloadsConstants.STATUS_NOT_DOWNLOAD : movedCursor.getInt(coulmn_downloadStatus_id);
         final int bookId = movedCursor.getInt(column_bookId_id);
         holder.bookInfo = new BookInfo(bookId, bookTitle, authorId, authourName, bookDownloadStatus);
         holder.bindCheckBoxVisibilityValue(mListener.isInSelectionMode());
 
-        if (holder.book_check_box.getVisibility() == View.VISIBLE)
-            holder.book_check_box.setChecked(mListener.isBookSelected(holder.bookInfo.getBookId()));
+        if (holder.bookCheckBox.getVisibility() == View.VISIBLE) {
+            holder.bookCheckBox.setChecked(mListener.isBookSelected(holder.bookInfo.getBookId()));
+        }
         holder.bindDownloadStatus(bookDownloadStatus);
 
-        Glide.with(mContext).load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId())).placeholder(R.drawable.no_book_image).into(holder.book_cover_image_view);
+        Glide.with(mContext).load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId())).placeholder(R.drawable.no_book_image).into(holder.bookCoverImageView);
 
 
         //TODO Is it better to attach the listener here or in the constuctor of view holder
@@ -255,22 +256,32 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView book_cover_image_view;
-        TextView book_cover_name;
-        TextView book_cover_author;
-        CheckBox book_check_box;
+        ImageView bookCoverImageView;
+        TextView bookCoverName;
+        TextView bookCoverAuthor;
+        CheckBox bookCheckBox;
         BookInfo bookInfo;
         Button downloadButton;
         View downloadIndicator;
+        ImageView moreButton;
 
         public ViewHolder(final View bookCover) {
             super(bookCover);
-            book_cover_image_view = (ImageView) bookCover.findViewById(R.id.book_cover);
-            book_cover_name = (TextView) bookCover.findViewById(R.id.book_label);
-            book_cover_author = (TextView) bookCover.findViewById(R.id.bookauthor);
-            book_check_box = (CheckBox) bookCover.findViewById(R.id.book_ceckBox);
-            if (null != mListener)
-                book_check_box.setVisibility(mListener.isInSelectionMode() ? View.VISIBLE : View.GONE);
+            bookCoverImageView = (ImageView) bookCover.findViewById(R.id.book_cover);
+            bookCoverName = (TextView) bookCover.findViewById(R.id.book_label);
+            bookCoverAuthor = (TextView) bookCover.findViewById(R.id.bookauthor);
+            bookCheckBox = (CheckBox) bookCover.findViewById(R.id.book_ceckBox);
+            if (null != mListener) {
+                bookCheckBox.setVisibility(mListener.isInSelectionMode() ? View.VISIBLE : View.GONE);
+            }
+            moreButton=(ImageView) bookCover.findViewById(R.id.book_overflow_btn);
+            moreButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onMoreButtonClicked(bookInfo,v);
+                }
+            });
+
             bookCover.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -285,14 +296,14 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that an item has been lonClicked.
                         handled = mListener.OnBookItemLongClicked(bookInfo.getBookId());
-                        book_check_box.setChecked(handled);
+                        bookCheckBox.setChecked(handled);
                     }
 
                     return handled;
                 }
             });
 
-            book_check_box.setOnClickListener(new View.OnClickListener() {
+            bookCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mListener.bookSelected(bookInfo.getBookId(), ((CheckBox) v).isChecked());
@@ -305,14 +316,14 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
         void bindCheckBoxVisibilityValue(Boolean isVisibale) {
             //when the selection mode is destroyed hide all checkboxes and un-check them
-            book_check_box.setVisibility(isVisibale ? View.VISIBLE : View.GONE);
+            bookCheckBox.setVisibility(isVisibale ? View.VISIBLE : View.GONE);
         }
 
         public void bindCheckBoxCheckedValue(Boolean value) {
             if (value != null)
-                book_check_box.setChecked(value);
+                bookCheckBox.setChecked(value);
             else
-                book_check_box.setChecked(mListener.isBookSelected(bookInfo.getBookId()));
+                bookCheckBox.setChecked(mListener.isBookSelected(bookInfo.getBookId()));
 
         }
 
