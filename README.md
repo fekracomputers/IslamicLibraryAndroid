@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid.svg?branch=master)](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid)
-
-
 # Islamic Library 
+
+[![Join the chat at https://gitter.im/fekracomputers/IslamicLibraryAndroid](https://badges.gitter.im/fekracomputers/IslamicLibraryAndroid.svg)](https://gitter.im/fekracomputers/IslamicLibraryAndroid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid.svg?branch=master)](https://travis-ci.org/fekracomputers/IslamicLibraryAndroid)
 
 Encyclopedia for Islamic books based on (shamela.ws) books with unique features in browsing ,reading and searching books
 
