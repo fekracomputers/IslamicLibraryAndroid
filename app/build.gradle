@@ -61,9 +61,11 @@ dependencies {
     compile 'net.xpece.android:support-preference:1.2.7'
     compile 'net.xpece.android:support-preference-color:1.2.7'
     compile 'net.xpece.android:support-spinner:1.2.7'
+    compile 'com.github.franmontiel:AttributionPresenter:1.0'
+    compile 'com.github.daniel-stoneuk:material-about-library:2.1.0'
+
 
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
-    compile 'com.github.daniel-stoneuk:material-about-library:2.1.0'
     testCompile 'junit:junit:4.12'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
