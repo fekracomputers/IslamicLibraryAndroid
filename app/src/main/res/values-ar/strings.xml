@@ -217,6 +217,11 @@
     <string name="menu_book_overflow_delete_book">حذف الكتاب</string>
     <string name="confirm_delete">حذف</string>
     <string name="confirm_book_delete">تأكيد حذف كتاب \"%s\"</string>
+    <string name="source_code">الكود المصدري للبرنامج</string>
+    <string name="chat_on_gitter">مناقشة المشروع على Gitter</string>
+    <string name="chat_on_slack">مناقشة المشروع على Slack</string>
+    <string name="open_source_notice">هذا البرنامج حر ومفتوح المصدر يمكن لأي أحد المساهمة في تطويره</string>
+    <string name="about_cntribute_programatically">المساهمة في الطوير البرنامج</string>
 
 
 </resources>

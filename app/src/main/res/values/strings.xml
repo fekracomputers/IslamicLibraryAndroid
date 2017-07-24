@@ -310,7 +310,13 @@
     <string name="menu_book_overflow_delete_book">Delete</string>
     <string name="confirm_delete">Delete</string>
     <string name="confirm_book_delete">Confirm delete %s</string>
-    <![CDATA[
-    >
-]]>
+    <string name="source_code">program source code</string>
+    <string name="about_git_hub" translatable="false">GitHub</string>
+    <string name="chat_on_gitter">Gitter</string>
+    <string name="chat_on_slack">Slack</string>
+    <string name="copyright_notice" translatable="false">Copyright © 2017  Fekra Computers</string>
+    <string name="licence" translatable="false">licence</string>
+    <string name="open_source_notice">This program is free and open source anyone can contibute</string>
+    <string name="about_cntribute_programatically">Contribute in development</string>
+
 </resources>

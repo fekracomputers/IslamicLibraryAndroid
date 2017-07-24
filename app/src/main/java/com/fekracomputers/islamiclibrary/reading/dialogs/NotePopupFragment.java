@@ -102,7 +102,6 @@ public class NotePopupFragment extends DialogFragment {
         super.onDismiss(dialog);
         HighlightNoteDialogListener listener = (HighlightNoteDialogListener) getParentFragment();
         listener.onFinishHighlightNoteDialog(mNoteEditText.getText().toString());
-
     }
 
     public interface HighlightNoteDialogListener {

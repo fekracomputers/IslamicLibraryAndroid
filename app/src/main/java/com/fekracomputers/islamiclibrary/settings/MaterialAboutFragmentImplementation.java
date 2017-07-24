@@ -30,6 +30,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
     public MaterialAboutFragmentImplementation() {
 
     }
+
     @Override
     protected int getTheme() {
         return R.style.AppTheme_MaterialAboutActivity_Fragment;
@@ -41,6 +42,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         ((IslamicLibraryApplication) getActivity().getApplication()).refreshLocale(getActivity(), false);
         MaterialAboutCard.Builder generalInfoCardBuilder = new MaterialAboutCard.Builder();
 
+        //region generalInfoCardBuilder
         PackageManager packageManager = getActivity().getPackageManager();
         ApplicationInfo applicationInfo = getActivity().getApplicationInfo();
         Drawable applicationIcon = packageManager.getApplicationIcon(applicationInfo);
@@ -68,7 +70,10 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                 .text(R.string.about_version_number)
                 .subText(versionName + " (" + versionCode + ")")
                 .build());
+        //endregion
 
+
+        //region supportCardBuilder
         MaterialAboutCard.Builder supportCardBuilder = new MaterialAboutCard.Builder();
         supportCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.send_feedback_two)
@@ -81,31 +86,36 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                     }
                 })
                 .build());
+        //endregion
 
 
+        //region shareCardBuilder
         MaterialAboutCard.Builder shareCardBuilder = new MaterialAboutCard.Builder();
-        shareCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text(R.string.action_share)
-                .icon(R.drawable.ic_share_black_24dp)
-                .setOnClickAction(new MaterialAboutItemOnClickAction() {
-                    @Override
-                    public void onClick() {
-                        AboutUtil.ShareAppLink(context);
-                    }
-                })
-                .build());
-        shareCardBuilder.addItem(new MaterialAboutActionItem.Builder()
-                .text(R.string.action_rate)
-                .icon(R.drawable.ic_star_black_24dp)
-                .setOnClickAction(new MaterialAboutItemOnClickAction() {
-                    @Override
-                    public void onClick() {
-                        AboutUtil.rateApp(context);
-                    }
-                })
-                .build());
+        shareCardBuilder
+                .addItem(new MaterialAboutActionItem.Builder()
+                        .text(R.string.action_share)
+                        .icon(R.drawable.ic_share_black_24dp)
+                        .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                            @Override
+                            public void onClick() {
+                                AboutUtil.ShareAppLink(context);
+                            }
+                        })
+                        .build())
+                .addItem(new MaterialAboutActionItem.Builder()
+                        .text(R.string.action_rate)
+                        .icon(R.drawable.ic_star_black_24dp)
+                        .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                            @Override
+                            public void onClick() {
+                                AboutUtil.rateApp(context);
+                            }
+                        })
+                        .build());
+        //endregion
 
 
+        //region aboutCardBuilder
         MaterialAboutCard.Builder aboutCardBuilder = new MaterialAboutCard.Builder();
         aboutCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.other_apps)
@@ -124,8 +134,10 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                 .setOnClickAction(AboutUtil.webViewDialog(context,
                         "file:///android_asset/aboutFekra.html", R.string.about_company))
                 .build());
+        //endregion
 
 
+        //region socialNetworksCardBuilder
         MaterialAboutCard.Builder socialNetworksCardBuilder = new MaterialAboutCard.Builder();
         socialNetworksCardBuilder.addItem(new MaterialAboutTitleItem.Builder()
                 .text(R.string.find_us_on_social_media)
@@ -171,7 +183,69 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                     }
                 })
                 .build());
+        //endregion
 
+
+        //region openSourceCardBuilder
+        MaterialAboutCard.Builder openSourceCardBuilder = new MaterialAboutCard.Builder();
+        openSourceCardBuilder.addItem(
+                new MaterialAboutTitleItem.Builder()
+                        .text(getString(R.string.about_cntribute_programatically))
+                        .icon(applicationIcon)
+                        .build());
+
+        openSourceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .subText(R.string.open_source_notice)
+                 .build());
+
+        openSourceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.about_git_hub)
+                .subText(R.string.source_code)
+                .icon(R.drawable.github_mark_64px)
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                    @Override
+                    public void onClick() {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/fekracomputers/IslamicLibraryAndroid"));
+                        startActivity(browserIntent);
+                    }
+                })
+                .build());
+
+        openSourceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.chat_on_gitter)
+                .icon(R.drawable.gitter_logo)
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                    @Override
+                    public void onClick() {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gitter.im/fekracomputers/IslamicLibraryAndroid"));
+                        startActivity(browserIntent);
+                    }
+                })
+                .build());
+
+        openSourceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.chat_on_slack)
+                .icon(R.drawable.slack_mark)
+                .setOnClickAction(new MaterialAboutItemOnClickAction() {
+                    @Override
+                    public void onClick() {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://join.slack.com/t/fekra-computers/shared_invite/MjExNjYwNDYzODEwLTE0OTk4NjA3NDgtMDU5MDQxOWRlNw"));
+                        startActivity(browserIntent);
+                    }
+                })
+                .build());
+        openSourceCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.licence)
+                .subText(R.string.copyright_notice)
+                .icon(R.drawable.gplv3_logo)
+                .setOnClickAction(AboutUtil.webViewDialog(context,
+                        "file:///android_asset/LICENCE.html",
+                        R.string.licence))
+                .build());
+
+        //endregion
+
+        //region legalCardBuilder
         final AttributionPresenter attributionPresenter = new AttributionPresenter.Builder(context)
                 .addAttributions(
                         new Attribution.Builder("Rangy")
@@ -230,6 +304,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                         "file:///android_asset/acknowledgements.html",
                         R.string.about_activity_acknowledgements))
                 .build());
+        //endregion
 
 
         return new MaterialAboutList.Builder()
@@ -238,6 +313,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                 .addCard(shareCardBuilder.build())
                 .addCard(aboutCardBuilder.build())
                 .addCard(socialNetworksCardBuilder.build())
+                .addCard(openSourceCardBuilder.build())
                 .addCard(legalCardBuilder.build())
                 .build();
     }
