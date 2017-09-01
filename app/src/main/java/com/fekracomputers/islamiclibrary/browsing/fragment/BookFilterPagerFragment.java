@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.browsing.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -44,6 +45,7 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
  */
 public class BookFilterPagerFragment extends Fragment {
 
+    private static final String SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY = "SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY";
     ArrayList<BookCatalogElement> bookCatalogElements = new ArrayList<>();
     private OnBookFilterPagerPageChangedListener mListener;
     private ViewPager mViewPager;
@@ -73,10 +75,16 @@ public class BookFilterPagerFragment extends Fragment {
         TabLayout mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mViewPager.setCurrentItem(sharedPref.getInt(SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY,0));
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mListener.OnFilterAllSelected(position == 2);
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY, position);
+                editor.apply();
             }
         });
         mTabLayout.setupWithViewPager(mViewPager);

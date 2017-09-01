@@ -309,16 +309,16 @@ public class BrowsingActivity
                 }
             }
         }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.filter_pager_container, new BookFilterPagerFragment());
             fragmentTransaction.commit();
-
         } else {//after screen rotation
             int oldPanNumbers = savedInstanceState.getInt(NUMBER_OF_PANS_KEY);
             if (oldPanNumbers != mPaneNumber) {
                 if (oldPanNumbers == 3 && mPaneNumber == 1) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_LIST_FRAGMENT_TAG);
                     //First remove the fragment from its container
                     if (oldBookList != null) {
@@ -333,14 +333,12 @@ public class BrowsingActivity
                     }
 
                 } else if (oldPanNumbers == 2 && mPaneNumber == 1) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
                     if (oldBookList != null) fragmentTransaction.remove(oldBookList);
                     fragmentTransaction.commit();
 
                 } else if (oldPanNumbers == 1 && mPaneNumber == 2 || oldPanNumbers == 1 && mPaneNumber == 3) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment oldBookInfo = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
                     if (oldBookInfo != null) {
                         fragmentManager.popBackStackImmediate(BOOK_INFORMATION_FRAGMENT_ADDED, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -446,9 +444,13 @@ public class BrowsingActivity
     public void OnCategoryItemClick(BookCategory bookCategory) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         int bookCategoryId = bookCategory.getId();
+
         if (mPaneNumber == 1) {
+            //this constructor instrycts the fragmen to request chang the title bar
             BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId, bookCategory.getName());
             pushBookListFragment(fragment);
+
+            //Why did I do that ?!
             AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
             appBarLayout.setExpanded(true, false);
 

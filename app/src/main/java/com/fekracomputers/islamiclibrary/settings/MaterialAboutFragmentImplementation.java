@@ -284,6 +284,13 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                                 .setWebsite("https://github.com/franmontiel/AttributionPresenter")
                                 .build()
                 )
+                .addAttributions(
+                        new Attribution.Builder("Quran Android")
+                                .addCopyrightNotice("For Storage Utilities")
+                                .addLicense(License.GPL_3)
+                                .setWebsite("https://github.com/quran/quran_android")
+                                .build()
+                )
                 .addAttributions(Library.GLIDE)
                 .build();
         MaterialAboutCard.Builder legalCardBuilder = new MaterialAboutCard.Builder();
