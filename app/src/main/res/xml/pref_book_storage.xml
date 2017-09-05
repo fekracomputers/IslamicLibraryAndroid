@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="global_overrides_local"
+        android:summary="@string/pref_summary_global_override_local"
+        android:title="@string/pref_title_global_override_local" />
+
+    <PreferenceScreen
+        android:icon="@drawable/ic_text_format_24dp"
+        android:key="customize_global_page_display_preference_sub_screen"
+        android:persistent="false"
+        android:title="@string/global_page_display_preference"
+        app:asp_tintEnabled="true">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="global_night_mode"
+            android:title="@string/pref_title_global_night_mode" />
+
+
+    </PreferenceScreen>
+</PreferenceScreen>

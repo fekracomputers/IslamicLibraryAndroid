@@ -28,6 +28,7 @@ import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
+import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
@@ -45,6 +46,13 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent =getIntent();
+        if(intent.getBooleanExtra(SettingsActivity.KEY_KILL_APP,false))
+        {
+            finish();
+            System.exit(0);
+        }
+
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
@@ -154,7 +162,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkStorage() {
-        final String path = StorageUtils.getCustomLocation(this);
+        final String path = StorageUtils.getAppCustomLocation(this);
         final File fallbackFile = getExternalFilesDir(null);
 
         boolean usesExternalFileDir = path != null && path.contains(BuildConfig.APPLICATION_ID);

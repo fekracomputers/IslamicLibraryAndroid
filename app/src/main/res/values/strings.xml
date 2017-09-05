@@ -319,4 +319,29 @@
     <string name="open_source_notice">This program is free and open source anyone can contibute</string>
     <string name="about_cntribute_programatically">Contribute in development</string>
 
+<!--storage pref-->
+    <string name="prefs_app_location_title">books data directory</string>
+    <string name="prefs_app_location_summary">Choose where to store books files</string>
+    <string name="prefs_sdcard_internal">Internal storage</string>
+    <string name="prefs_sdcard_external">External SD card %1$d</string>
+    <string name="prefs_app_size">Current data size is</string>
+    <string name="prefs_calculating_app_size">Calculating App Size</string>
+    <string name="prefs_copying_app_files">Copying App files</string>
+    <string name="prefs_err_moving_app_files">Failed to move app files</string>
+    <string name="prefs_no_enough_space_to_move_files">Insufficient space to move app files</string>
+    <string name="prefs_megabytes_int">%1$d MB</string>
+    <string name="prefs_megabytes_str">%s MB</string>
+    <string name="warning">Warning</string>
+    <string name="kitkat_external_message">Due to Android limitations, if you choose to place
+        data on your external SD card and later uninstall or clear data for Islamic Library, all books
+        will be deleted and you will have to download them again. Are you
+        sure you want to use the external SD card?</string>
+    <string name="please_grant_permissions">Please grant permission in application settings.</string>
+    <string name="external_move_choice">If you have large number of books then it would be better to move them manuly from the old location to the new location using the system files manager \\n old location: %1$s \\n new location %2$s</string>
+    <string name="external_move_automatic">automatic move</string>
+    <string name="external_move_manually">manual move</string>
+    <string name="free_space">free space:%1$d</string>
+    <string name="mount_point">location:%1$s</string>
+    <string name="press_back_then_move_files_using_system_file_manager">Press back then move files using system file manager</string>
+    <!--end storage pref-->
 </resources>

@@ -9,9 +9,12 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
+import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.settings.SettingsFragment;
 
 import java.util.Locale;
+
+import timber.log.Timber;
 
 /**
  *
@@ -21,6 +24,16 @@ public class IslamicLibraryApplication extends Application {
 //    static {
 //        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+    }
+
     public void refreshLocale(@NonNull Context context, boolean force) {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

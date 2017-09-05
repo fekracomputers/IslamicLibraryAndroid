@@ -222,6 +222,31 @@
     <string name="chat_on_slack">مناقشة المشروع على Slack</string>
     <string name="open_source_notice">هذا البرنامج حر ومفتوح المصدر يمكن لأي أحد المساهمة في تطويره</string>
     <string name="about_cntribute_programatically">المساهمة في الطوير البرنامج</string>
+    <!--pref app location-->
+    <string name="prefs_app_location_title">الذاكرة المستخدمة</string>
+    <string name="prefs_app_location_summary">اختر الذاكرة التي سيتم تخزين الملفات عليها</string>
+    <string name="prefs_sdcard_internal">الذاكرة الداخلية</string>
+    <string name="prefs_sdcard_external">الذاكرة الخارجية %1$d</string>
+    <string name="prefs_app_size">مساحة التطبيق</string>
+    <string name="prefs_calculating_app_size">جاري حساب مساحة التطبيق</string>
+    <string name="prefs_copying_app_files">جاري نسخ ملفات التطبيق</string>
+    <string name="prefs_err_moving_app_files">حدث خطأ اثناء نقل ملفات التطبيق</string>
+    <string name="prefs_no_enough_space_to_move_files">لا يوجد مساحة كافية لنقل ملفات التطبيق</string>
+    <string name="warning">تحذير</string>
+    <string name="kitkat_external_message">إذا وضعت ملفات البرنامج على الSD card ثم حذفت البرنامج سوف تحذف جميع الكتب</string>
+    <string name="external_move_choice">
+        إذا كانت الكتب المحملة كثيرة جدا فقد يكون من الأفضل نقلها يدويا من خلال مدير ملفات النظام
+        \nالمكان القديم: %1$s
+        \nالمكان الجديد: %2$s</string>
+    <string name="external_move_automatic">نقل أوتوماتيكي</string>
+    <string name="external_move_manually">نقل يدوي</string>
+    <string name="free_space">المساحة الفارغة:%1$d</string>
+    <string name="mount_point">المكان:%1$s</string>
+    <string name="press_back_then_move_files_using_system_file_manager">اضغط على زر الرجوع ثم انقل الملفات باستخدام مدير الملفات</string>
+    <string name="please_grant_permissions">الرجاء إعطاء الإذن للبرنامج</string>
+    <string name="prefs_megabytes_int">%1$d ميجا</string>
+    <string name="prefs_megabytes_str">%s ميجا</string>
 
+    <!--end app location-->
 
 </resources>

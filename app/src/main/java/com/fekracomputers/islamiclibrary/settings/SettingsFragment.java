@@ -1,22 +1,40 @@
 package com.fekracomputers.islamiclibrary.settings;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+
+import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
+import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
+
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.XpPreferenceFragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.utility.StorageUtils;
+import com.fekracomputers.islamiclibrary.widget.DataListPreference;
+import com.fekracomputers.islamiclibrary.widget.DataListPreferenceDialogFragmentCompat;
 
 import net.xpece.android.support.preference.ColorPreference;
 import net.xpece.android.support.preference.ListPreference;
@@ -28,8 +46,13 @@ import net.xpece.android.support.preference.RingtonePreference;
 import net.xpece.android.support.preference.SeekBarPreference;
 import net.xpece.android.support.preference.SharedPreferencesCompat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * @author Eugen on 7. 12. 2015.
@@ -41,6 +64,16 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String KEY_IS_THEME_NIGHT_MODE = "global_night_mode";
     public static final String KEY_UI_LANG_ARABIC = "ui_lang_arabic";
     public static final String PREF_USE_VOLUME_KEY_NAV = "volumeKeyNavigation";
+
+    private DataListPreference listStoragePref;
+    private MoveFilesAsyncTask moveFilesTask;
+    private List<StorageUtils.Storage> storageList;
+    private LoadStorageOptionsTask loadStorageOptionsTask;
+    private int appSize;
+    private String internalSdcardLocation;
+    private AlertDialog dialog;
+
+
     private static final String TAG = SettingsFragment.class.getSimpleName();
     /**
      * A preference value change listener that updates the preference's summary
@@ -111,6 +144,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             return true;
         }
     };
+    private boolean isPaused;
 
     public static SettingsFragment newInstance(String rootKey) {
         Bundle args = new Bundle();
@@ -159,26 +193,15 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         return new String[]{BuildConfig.APPLICATION_ID};
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-    }
-
-    @Override
-    public void onPause() {
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        super.onPause();
-    }
 
     @Override
     public void onCreatePreferences2(final Bundle savedInstanceState, final String rootKey) {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_general);
-
+        prepareStorageLst();
         // Add 'global_display' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(getPreferenceManager().getContext());
+        //fakeHeader.setLayoutResource(R.layout.fake_pref_header);
         fakeHeader.setTitle(R.string.pref_header_global_display);
         getPreferenceScreen().addPreference(fakeHeader);
 
@@ -285,6 +308,31 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         PreferenceScreenNavigationStrategy.ReplaceFragment.onCreatePreferences(this, rootKey);
     }
 
+    private void prepareStorageLst() {
+        internalSdcardLocation =
+                Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        listStoragePref = (DataListPreference) findPreference(DownloadFileConstants.PREF_APP_LOCATION);
+        listStoragePref.setEnabled(false);
+
+        try {
+            storageList = StorageUtils.getAllStorageLocations(getContext().getApplicationContext());
+        } catch (Exception e) {
+            Timber.d(e, "Exception while trying to get storage locations");
+            storageList = new ArrayList<>();
+        }
+
+        // Hide app location pref if there is no storage option
+        // except for the normal Environment.getExternalStorageDirectory
+        if (storageList == null || storageList.size() <= 1) {
+            Timber.d("removing advanced settings from preferences");
+            hideStorageListPref();
+        } else {
+            loadStorageOptionsTask = new LoadStorageOptionsTask(getContext());
+            loadStorageOptionsTask.execute();
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -306,7 +354,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         final RecyclerView listView = getListView();
 
         // We're using alternative divider.
-        listView.addItemDecoration(new PreferenceDividerDecoration(getContext()).drawBottom(true).drawBetweenCategories(false));
+        listView.addItemDecoration(new PreferenceDividerDecoration(getContext()).drawBottom(true).drawBetweenCategories(true));
         setDivider(null);
 
         // We don't want this. The children are still focusable.
@@ -322,4 +370,263 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             }
         }
     }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        DialogFragment fragment;
+        if (preference instanceof DataListPreference) {
+            fragment = DataListPreferenceDialogFragmentCompat.newInstance(preference);
+            fragment.setTargetFragment(this, 0);
+            fragment.show(getFragmentManager(),
+                    "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else super.onDisplayPreferenceDialog(preference);
+    }
+
+    public void moveFiles(String newLocation, boolean automatic) {
+        moveFilesTask = new MoveFilesAsyncTask(getActivity(), newLocation,automatic);
+        moveFilesTask.execute();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isPaused = false;
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        isPaused = true;
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+
+    private class MoveFilesAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String newLocation;
+        private ProgressDialog dialog;
+        private Context appContext;
+        private boolean automatic;
+
+        private MoveFilesAsyncTask(Context context, String newLocation, boolean automatic) {
+            this.newLocation = newLocation;
+            this.appContext = context.getApplicationContext();
+            this.automatic = automatic;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage(appContext.getString(R.string.prefs_copying_app_files));
+
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return StorageUtils.moveAppFiles(appContext, newLocation, automatic);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!isPaused) {
+                dialog.dismiss();
+                if (result) {
+                    //StorageUtils.setAppCustomLocation(newLocation, appContext);
+                    if (listStoragePref != null) {
+                        listStoragePref.setValue(newLocation);
+                    }
+                    BooksInformationDbHelper.clearInstance(getContext());
+                    ((SettingsActivity) getContext()).setRestartOnBack(automatic ?
+                            SettingsActivity.RESTART_ON_BACK :
+                            SettingsActivity.EXIT_ON_BACK);
+                    if(!automatic)
+                    Toast.makeText(appContext,
+                            getString(R.string.press_back_then_move_files_using_system_file_manager),
+                            Toast.LENGTH_LONG)
+                            .show();
+
+                } else {
+                    Toast.makeText(appContext,
+                            getString(R.string.prefs_err_moving_app_files),
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+                dialog = null;
+                moveFilesTask = null;
+            }
+        }
+    }
+
+
+    private class LoadStorageOptionsTask extends AsyncTask<Void, Void, Void> {
+
+        private Context appContext;
+
+        LoadStorageOptionsTask(Context context) {
+            this.appContext = context.getApplicationContext();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            listStoragePref.setSummary(R.string.prefs_calculating_app_size);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            appSize = StorageUtils.getAppUsedSpace(appContext);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!isPaused) {
+                loadStorageOptions(appContext);
+                loadStorageOptionsTask = null;
+                listStoragePref.setSummary(R.string.prefs_app_location_summary);
+            }
+        }
+    }
+
+    private void loadStorageOptions(final Context context) {
+        try {
+            if (appSize == -1) {
+                // sdcard is not mounted...
+                hideStorageListPref();
+                return;
+            }
+
+            listStoragePref.setLabelsAndSummaries(context, appSize, storageList);
+            final HashMap<String, StorageUtils.Storage> storageMap =
+                    new HashMap<>(storageList.size());
+            for (StorageUtils.Storage storage : storageList) {
+                storageMap.put(storage.getMountPoint(), storage);
+            }
+
+            listStoragePref
+                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            final Context context1 = SettingsFragment.this.getActivity();
+
+                            if (TextUtils.isEmpty(StorageUtils.getAppCustomLocation(context)) &&
+                                    Environment.getExternalStorageDirectory().equals(newValue)) {
+                                // do nothing since we're moving from empty settings to
+                                // the default sdcard setting, which are the same, but write it.
+                                return false;
+                            }
+
+                            // this is called right before the preference is saved
+                            String newLocation = (String) newValue;
+                            StorageUtils.Storage destStorage = storageMap.get(newLocation);
+                            String current = StorageUtils.getAppCustomLocation(context);
+                            if (appSize < destStorage.getFreeSpace()) {
+                                if (current == null || !current.equals(newLocation)) {
+                                    if (destStorage.doesRequirePermission()) {
+                                        if (!PermissionUtil.haveWriteExternalStoragePermission(context1)) {
+                                            SettingsFragment.this.requestExternalStoragePermission(newLocation, current);
+                                            return false;
+                                        }
+
+                                        // we have the permission, so fall through and handle the move
+                                    }
+                                    SettingsFragment.this.handleMove(newLocation, current);
+                                }
+                            } else {
+                                Toast.makeText(context1,
+                                        SettingsFragment.this.getString(
+                                                R.string.prefs_no_enough_space_to_move_files),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            // this says, "don't write the preference"
+                            return false;
+                        }
+                    });
+            listStoragePref.setEnabled(true);
+        } catch (Exception e) {
+            Timber.e(e, "error loading storage options");
+            hideStorageListPref();
+        }
+    }
+
+    private void requestExternalStoragePermission(String newLocation, String oldLocation) {
+        Activity activity = getActivity();
+        if (activity instanceof SettingsActivity) {
+            ((SettingsActivity) activity)
+                    .requestWriteExternalSdcardPermission(newLocation, oldLocation);
+        }
+    }
+
+
+    public void handleMove(final String newLocation, String current) {
+
+        final Context context = getActivity();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setMessage(getString(R.string.external_move_choice, current, newLocation))
+                .setPositiveButton(R.string.external_move_automatic, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface currentDialog, int which) {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT ||
+                                newLocation.equals(internalSdcardLocation)) {
+                            moveFiles(newLocation, true);
+                        } else {
+                            showKitKatConfirmation(newLocation);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.external_move_manually, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface currentDialog, int which) {
+                        moveFiles(newLocation, false);
+                        currentDialog.dismiss();
+                        SettingsFragment.this.dialog = null;
+                    }
+                });
+        dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void showKitKatConfirmation(final String newLocation) {
+        final Context context = getActivity();
+        final AlertDialog.Builder b = new AlertDialog.Builder(context)
+                .setTitle(R.string.warning)
+                .setMessage(R.string.kitkat_external_message)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface currentDialog, int which) {
+                        moveFiles(newLocation, true);
+                        currentDialog.dismiss();
+                        SettingsFragment.this.dialog = null;
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface currentDialog, int which) {
+                        currentDialog.dismiss();
+                        SettingsFragment.this.dialog = null;
+                    }
+                });
+        dialog = b.create();
+        dialog.show();
+    }
+
+    private void removeAdvancePreference(Preference preference) {
+        // these null checks are to fix a crash due to an NPE on 4.4.4
+        if (preference != null) {
+            PreferenceGroup group =
+                    (PreferenceGroup) findPreference("pref_general");
+            if (group != null) {
+                group.removePreference(preference);
+            }
+        }
+    }
+
+    private void hideStorageListPref() {
+        removeAdvancePreference(listStoragePref);
+    }
+
+
 }

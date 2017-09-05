@@ -386,6 +386,13 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         return sInstance;
     }
 
+    public synchronized static void clearInstance(Context context)
+    {
+        sDatabasePath=null;
+        sInstance=null;
+        getInstance(context);
+    }
+
     /**
      * @return true if a file named as the bookInformation database exists, doesn't check its content
      */
