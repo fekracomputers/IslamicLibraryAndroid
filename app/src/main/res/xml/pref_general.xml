@@ -2,12 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="pref_general">
 
-    <SwitchPreference
+    <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="ui_lang_arabic"
         android:title="@string/pref_ui_language_arabic" />
 
-    <SwitchPreference
+    <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="volumeKeyNavigation"
         android:summary="@string/prefs_volume_key_navigation_summary"

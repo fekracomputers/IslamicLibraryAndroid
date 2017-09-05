@@ -97,13 +97,6 @@ public class StorageUtils {
                         PackageManager.PERMISSION_GRANTED;
     }
 
-    public static boolean canRequestWriteExternalStoragePermission(Activity activity) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        boolean didPresentSdcardPermissionsDialog = sharedPreferences.getBoolean(PREF_SDCARDPERMESSION_DIALOG_DISPLAYED, false);
-        return !didPresentSdcardPermissionsDialog ||
-                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
     public static void setAppCustomLocation(String location, Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();

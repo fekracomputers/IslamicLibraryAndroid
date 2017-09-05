@@ -178,48 +178,36 @@ public class SplashActivity extends AppCompatActivity {
 
         if (needsPermission && !StorageUtils.haveWriteExternalStoragePermission(this)) {
             // request permission
-            if (StorageUtils.canRequestWriteExternalStoragePermission(this)) {
-                //show permission rationale dialog
-                permissionsDialog = new AlertDialog.Builder(this)
-                        .setMessage(R.string.storage_permission_rationale)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                permissionsDialog = null;
-                                requestExternalSdcardPermission();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                permissionsDialog = null;
+            //show permission rationale dialog
+            permissionsDialog = new AlertDialog.Builder(this)
+                    .setMessage(R.string.storage_permission_rationale)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            permissionsDialog = null;
+                            requestExternalSdcardPermission();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            permissionsDialog = null;
 
-                                // fall back if we can
-                                if (fallbackFile != null) {
-                                    StorageUtils.setAppCustomLocation(fallbackFile.getAbsolutePath(), SplashActivity.this);
-                                    checkBookInformationDatabase();
-                                } else {
-                                    // set to null so we can try again next launch
-                                    StorageUtils.setAppCustomLocation(null, SplashActivity.this);
-                                    finishSplashAndLaunchMainActivity();
-                                }
+                            // fall back if we can
+                            if (fallbackFile != null) {
+                                StorageUtils.setAppCustomLocation(fallbackFile.getAbsolutePath(), SplashActivity.this);
+                                checkBookInformationDatabase();
+                            } else {
+                                // set to null so we can try again next launch
+                                StorageUtils.setAppCustomLocation(null, SplashActivity.this);
+                                finishSplashAndLaunchMainActivity();
                             }
-                        })
-                        .create();
-                permissionsDialog.show();
-            } else {
-                // fall back if we can
-                if (fallbackFile != null) {
-                    StorageUtils.setAppCustomLocation(fallbackFile.getAbsolutePath(), this);
-                    checkBookInformationDatabase();
-                } else {
-                    // set to null so we can try again next launch
-                    StorageUtils.setAppCustomLocation(null, this);
-                    finishSplashAndLaunchMainActivity();
-                }
-            }
+                        }
+                    })
+                    .create();
+            permissionsDialog.show();
 
         } else {
             checkBookInformationDatabase();
