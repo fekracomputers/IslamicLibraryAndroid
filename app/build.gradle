@@ -54,13 +54,15 @@ dependencies {
     compile 'com.android.support:transition:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile 'com.yotadevices.widget:rtlviewpager:1.0.4'
+//    compile 'com.yotadevices.widget:rtlviewpager:1.0.4'
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
     compile 'com.webianks.library:easy-feedback:1.0.2'
+
     compile 'net.xpece.android:support-preference:1.2.7'
     compile 'net.xpece.android:support-preference-color:1.2.7'
     compile 'net.xpece.android:support-spinner:1.2.7'
+
     compile 'com.github.franmontiel:AttributionPresenter:1.0'
     compile 'com.github.daniel-stoneuk:material-about-library:2.1.0'
     compile 'com.jakewharton.timber:timber:4.5.1'

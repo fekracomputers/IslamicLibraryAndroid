@@ -129,6 +129,7 @@
 
     <SeekBar
         android:id="@+id/seek_bar"
+        android:layoutDirection="rtl"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/scrubber_bar_height"
         android:layout_gravity="bottom"

@@ -1320,6 +1320,7 @@ public class ReadingActivity extends AppCompatActivity implements
             });
 
             seekBar = (SeekBar) findViewById(R.id.seek_bar);
+            ViewCompat.setLayoutDirection(seekBar,ViewCompat.LAYOUT_DIRECTION_RTL);
             seekBar.setMax(PAGE_COUNT);
             seekBar.setProgress(mPager.getCurrentItem());
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

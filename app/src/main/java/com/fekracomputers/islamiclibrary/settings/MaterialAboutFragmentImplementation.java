@@ -260,10 +260,11 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                                 .setWebsite("http://bignerdranch.github.io/expandable-recycler-view/")
                                 .build()
                 ).addAttributions(
-                        new Attribution.Builder("rtl-viewpager")
-                                .addCopyrightNotice("Copyright 2016 Duolingo")
+                        new Attribution.Builder("RtlViewPager")
+                                .addCopyrightNotice("Copyright (C) 2017 Yota Devices LLC, Russia\n" +
+                                        "Copyright (C) 2015 Diego Gómez Olvera")
                                 .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/duolingo/rtl-viewpager")
+                                .setWebsite("https://github.com/yotadevices/RtlViewPager")
                                 .build()
                 ).addAttributions(
                         new Attribution.Builder("android-support-preference")
