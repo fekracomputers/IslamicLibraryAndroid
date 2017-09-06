@@ -10,7 +10,7 @@
     android:layout_marginTop="4dp"
     app:cardBackgroundColor="@color/book_card_background"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
+    app:cardElevation="4dp"
     tools:context=".browsing.activity.BrowsingActivity">
 
     <RelativeLayout

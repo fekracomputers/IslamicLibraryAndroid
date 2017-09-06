@@ -5,7 +5,7 @@
     <color name="colorPrimaryDark">#18392b</color>
     <color name="colorAccent">@color/green_light</color>
     <color name="color_tab_layout_indicator">#fff</color>
-    <color name="book_card_background">#96ffffff</color>
+    <color name="book_card_background">#FFF</color>
     <color name="widget_text_color">@color/colorPrimary</color>
     <color name="orange_light">#d87300</color>
     <color name="night_mode_web_view_bg">#333333</color>
