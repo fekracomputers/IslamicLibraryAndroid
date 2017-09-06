@@ -614,7 +614,6 @@ public class ReadingActivity extends AppCompatActivity implements
             actionBar.setTitle(bookName);
         }
         mPager = (ViewPager) findViewById(R.id.pager);
-
         mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
         mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
         PAGE_COUNT = mBookDatabaseHelper.getPageCount();

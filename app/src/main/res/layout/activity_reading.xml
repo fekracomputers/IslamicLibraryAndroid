@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".reading.ReadingActivity">
 
-    <com.duolingo.open.rtlviewpager.RtlViewPager
+    <com.fekracomputers.islamiclibrary.widget.RTLOnlyViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

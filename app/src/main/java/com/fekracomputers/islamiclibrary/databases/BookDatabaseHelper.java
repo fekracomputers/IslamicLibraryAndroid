@@ -420,7 +420,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             Title title;
             if (titleId != 0) {
                 title = getTitleById(titleId);
-                while (title.parentId!=0) {
+                while (title.parentId != 0) {
                     title = getTitleById(title.parentId);
                     titlesHistory.addFirst(title);
                 }
@@ -479,13 +479,13 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public String getPageContentByOriginalPageNumber(int partNumber, int orgPageNumber) {
+    public String getPageContentByOriginalPageNumber(int partNumber, int pageNumber) {
 
         Cursor c = getReadableDatabase().query(BookDatabaseContract.PageEntry.TABLE_NAME
                 , new String[]{BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE},
                 BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + " = ? and " +
                         BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + " = ?",
-                new String[]{String.valueOf(partNumber), String.valueOf(orgPageNumber)},
+                new String[]{String.valueOf(partNumber), String.valueOf(pageNumber)},
                 null, null, null
         );
         c.moveToFirst();
@@ -696,7 +696,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
         c.moveToFirst();
         int position = c.getInt(0);
         c.close();
-
+        if (position < 0) throw new IndexOutOfBoundsException("this page id doesn't exisit");
         return position;
     }
 

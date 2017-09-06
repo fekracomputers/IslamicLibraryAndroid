@@ -440,10 +440,13 @@ public class UserDataDBHelper {
                     UserDataDBContract.AccessInformationEntry.COLUMN_NAME_BOOK_ID + "=?",
                     new String[]{String.valueOf(bookId)}, null, null, null
             );
+            final int LAST_OPENED_COULMN_INDEX = c.getColumnIndex(UserDataDBContract.AccessInformationEntry.LAST_OPENED_PAGE_ID);
+
             PageInfo pageInfo;
-            if (c.moveToFirst()) {
+            if (c.moveToFirst() && !c.isNull(LAST_OPENED_COULMN_INDEX)) {
+
                 pageInfo = new PageInfo(
-                        c.getInt(c.getColumnIndex(UserDataDBContract.AccessInformationEntry.LAST_OPENED_PAGE_ID)),
+                        c.getInt(LAST_OPENED_COULMN_INDEX),
                         c.getInt(c.getColumnIndex(UserDataDBContract.AccessInformationEntry.LAST_OPENED_PART_NUMBER)),
                         c.getInt(c.getColumnIndex(UserDataDBContract.AccessInformationEntry.LAST_OPENED_PAGE_NUMBER))
                 );
