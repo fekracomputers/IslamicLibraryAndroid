@@ -26,6 +26,7 @@ import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -386,10 +387,9 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    public synchronized static void clearInstance(Context context)
-    {
-        sDatabasePath=null;
-        sInstance=null;
+    public synchronized static void clearInstance(Context context) {
+        sDatabasePath = null;
+        sInstance = null;
         getInstance(context);
     }
 
@@ -1211,17 +1211,17 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteBook(int bookId,Context context) {
+    public void deleteBook(int bookId, Context context) {
         //TODO Stop the indexing service if it was running
-        File book = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context)+bookId+"."+DATABASE_EXTENSION);
+        File book = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE_EXTENSION);
         book.delete();
 
         //journal file for book database
-        File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context)+bookId+"."+DATABASE__JOURNAL_EXTENSION);
+        File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE__JOURNAL_EXTENSION);
         journal.delete();
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(BooksInformationDBContract.StoredBooks.TABLE_NAME,
-                BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID+"=?",
+                BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{String.valueOf(bookId)});
 
         Intent bookDeleteBroadCast =
@@ -1231,4 +1231,28 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         context.sendOrderedBroadcast(bookDeleteBroadCast, null);
     }
 
+
+    public HashSet<Integer> getBookIdsDownloadedOnly() {
+        return getBooksIdsFilteredOnDownloadStatus(
+                BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + ">=?",
+                new String[]{String.valueOf(DownloadsConstants.STATUS_FTS_INDEXING_ENDED)}
+        );
+    }
+
+    public HashSet<Integer> getAllBookIds() {
+        HashSet<Integer> selectedBookInfoItems = new HashSet<>();
+        Cursor c = getReadableDatabase().query(BooksInformationDBContract.StoredBooks.TABLE_NAME,
+                new String[]{BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID},
+                null,
+                null,
+                null,
+                null,
+                null);
+        while (c.moveToNext()) {
+            selectedBookInfoItems.add(c.getInt(0));
+        }
+        c.close();
+        return selectedBookInfoItems;
+
+    }
 }

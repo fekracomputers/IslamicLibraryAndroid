@@ -68,7 +68,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
 
         generalInfoCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.about_version_number)
-                .subText(versionName + " (" + versionCode + ")")
+                .subText(versionName)// + " (" + versionCode + ")")
                 .build());
         //endregion
 
@@ -260,11 +260,10 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                                 .setWebsite("http://bignerdranch.github.io/expandable-recycler-view/")
                                 .build()
                 ).addAttributions(
-                        new Attribution.Builder("RtlViewPager")
-                                .addCopyrightNotice("Copyright (C) 2017 Yota Devices LLC, Russia\n" +
-                                        "Copyright (C) 2015 Diego Gómez Olvera")
+                        new Attribution.Builder("rtl-viewpager")
+                                .addCopyrightNotice("Copyright 2016 Duolingo")
                                 .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/yotadevices/RtlViewPager")
+                                .setWebsite("https://github.com/duolingo/rtl-viewpager")
                                 .build()
                 ).addAttributions(
                         new Attribution.Builder("android-support-preference")

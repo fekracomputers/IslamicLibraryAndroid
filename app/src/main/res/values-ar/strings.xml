@@ -246,6 +246,7 @@
     <string name="please_grant_permissions">الرجاء إعطاء الإذن للبرنامج</string>
     <string name="prefs_megabytes_int">%1$d ميجا</string>
     <string name="prefs_megabytes_str">%s ميجا</string>
+    <string name="action_de_select_all">إزالة تحديد الكل</string>
 
     <!--end app location-->
 

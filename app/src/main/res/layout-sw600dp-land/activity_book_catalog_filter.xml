@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/selection_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryDark"
+        android:gravity="center_vertical|start"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/up_button"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+    </android.support.v7.widget.Toolbar>
+
     <TextView
         android:id="@+id/browsing_header_banner"
         style="@style/PlayHeaderListBannerText"
@@ -30,8 +48,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="enterAlways|scroll" />
+                android:background="?attr/colorPrimary" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -39,8 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
                 android:id="@+id/filter_pager_container"

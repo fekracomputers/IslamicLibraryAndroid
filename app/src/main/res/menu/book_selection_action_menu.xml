@@ -14,4 +14,20 @@
         app:showAsAction="ifRoom"
         >
     </item>
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/ic_check_box_black_24dp"
+        android:title="@string/action_select_all"
+        app:showAsAction="ifRoom"
+        >
+    </item>
+    <item
+        android:id="@+id/clear_selection"
+        android:icon="@drawable/ic_check_box_outline_blank_black_24dp"
+        android:title="@string/action_de_select_all"
+        app:showAsAction="ifRoom"
+        >
+    </item>
+
+
 </menu>

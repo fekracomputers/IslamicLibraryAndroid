@@ -343,5 +343,6 @@
     <string name="free_space">free space:%1$d</string>
     <string name="mount_point">location:%1$s</string>
     <string name="press_back_then_move_files_using_system_file_manager">Press back then move files using system file manager</string>
+    <string name="action_de_select_all">Clear Selection</string>
     <!--end storage pref-->
 </resources>

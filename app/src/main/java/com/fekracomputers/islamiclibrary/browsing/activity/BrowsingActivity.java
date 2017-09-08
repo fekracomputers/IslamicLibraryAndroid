@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -18,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -85,6 +85,7 @@ public class BrowsingActivity
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
     public static final int BOOK_LIST_FRAGMENT_TYPE = 2;
     public static final int BOOK_INFORMATION_TYPE = 3;
+    public static final int ALL_BOOKS_TYPE = -1;
 
     public static final String NUMBER_OF_PANS_KEY = "NUMBER_OF_PANS_KEY";
     public static final String BOOK_LIST_FRAGMENT_TAG = "BookListFragment";
@@ -95,9 +96,8 @@ public class BrowsingActivity
     private static final String BOOK_LIST_FRAGMENT_ADDED = "BOOK_LIST_FRAGMENT_ADDED";
     private static final String BOOK_INFORMATION_FRAGMENT_ADDED = "BOOK_INFORMATION_FRAGMENT_ADDED";
     protected int mPaneNumber;
-    protected ActionMode.Callback mSelectionActionModeCallBack;
     protected HashSet<Integer> selectedBooksIds = new HashSet<>();
-    protected ActionMode mActionMode;
+    protected BookSelectionActionModeCallback mActionMode;
     protected boolean mIsArabic;
     protected TextView mDownloadOnlyBanner;
     protected boolean mShouldDisplayDownloadOnly;
@@ -125,10 +125,9 @@ public class BrowsingActivity
             if (mActionMode != null) {
                 return false;
             }
-            if (mSelectionActionModeCallBack == null) {
-                mSelectionActionModeCallBack = new SelectionActionModeCallBack();
-            }
-            mActionMode = startSupportActionMode(mSelectionActionModeCallBack);
+
+            mActionMode = new BookSelectionActionModeCallback();
+            mActionMode.startBookSelectionActionMode(BrowsingActivity.this);
             selectedBooksIds.add(bookId);
             notifySelectionStateChanged(BOOK_LIST_FRAGMENT_TYPE);
             return true;
@@ -385,6 +384,8 @@ public class BrowsingActivity
 
         if (mActionMode != null) {
             mActionMode.getMenu().findItem(R.id.batch_download).setVisible(!showDownloadedOnly).setEnabled(!showDownloadedOnly);
+            mActionMode.getMenu().findItem(R.id.select_all).setVisible(showDownloadedOnly).setEnabled(showDownloadedOnly);
+
         }
         mShouldDisplayDownloadOnly = showDownloadedOnly;
         setDownloadOnlyBannerText(showDownloadedOnly);
@@ -435,6 +436,8 @@ public class BrowsingActivity
             RefreshBooksWithDirectoryService.startActionRefreshEveryThing(this);
             Toast.makeText(this, R.string.refreshing_on_background, Toast.LENGTH_LONG).show();
             return true;
+        } else if (id == android.R.id.home) {
+            Toast.makeText(this, mActionMode == null ? "true" : "false", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -466,10 +469,9 @@ public class BrowsingActivity
         if (mActionMode != null) {
             return false;
         }
-        if (mSelectionActionModeCallBack == null) {
-            mSelectionActionModeCallBack = new SelectionActionModeCallBack();
-        }
-        mActionMode = startSupportActionMode(mSelectionActionModeCallBack);
+
+        mActionMode = new BookSelectionActionModeCallback();
+        mActionMode.startBookSelectionActionMode(this);
         addSelectedCategory(categoryId);
         return true;
 
@@ -492,6 +494,20 @@ public class BrowsingActivity
     protected void addSelectedCategory(int categoryId) {
         selectedBooksIds.addAll(mBooksInformationDbHelper.getBooksIdsSetByCategoryId(categoryId, shouldDisplayDownloadedOnly()));
         notifySelectionStateChanged(BOOK_CATEGORY_FRAGMENT_TYPE);
+    }
+
+    protected void addAllBooksToSelection(boolean downloadedOnly) {
+        if (downloadedOnly) {
+            selectedBooksIds.addAll(mBooksInformationDbHelper.getBookIdsDownloadedOnly());
+        } else {
+            selectedBooksIds.addAll(mBooksInformationDbHelper.getAllBookIds());
+        }
+        notifySelectionStateChanged(ALL_BOOKS_TYPE);
+    }
+
+    protected void removeAllSelectedBooks() {
+        selectedBooksIds.clear();
+        notifySelectionStateChanged(ALL_BOOKS_TYPE);
     }
 
     @Override
@@ -529,10 +545,8 @@ public class BrowsingActivity
         if (mActionMode != null) {
             return false;
         }
-        if (mSelectionActionModeCallBack == null) {
-            mSelectionActionModeCallBack = new SelectionActionModeCallBack();
-        }
-        mActionMode = startSupportActionMode(mSelectionActionModeCallBack);
+        mActionMode = new BookSelectionActionModeCallback();
+        mActionMode.startBookSelectionActionMode(this);
         addSelectedAuthor(authorId);
         return true;
     }
@@ -680,10 +694,7 @@ public class BrowsingActivity
         if (shouldDisplayDownloadedOnly()) {
             selectedSearchableBooks.addAll(selectedBooksIds);
         } else {
-            HashSet<Integer> downloadedHashSet = mBooksInformationDbHelper.getBooksIdsFilteredOnDownloadStatus(
-                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + ">=?",
-                    new String[]{String.valueOf(DownloadsConstants.STATUS_FTS_INDEXING_ENDED)}
-            );
+            HashSet<Integer> downloadedHashSet = mBooksInformationDbHelper.getBookIdsDownloadedOnly();
             downloadedHashSet.retainAll(selectedBooksIds);
 
             if (downloadedHashSet.size() == 0) {
@@ -756,10 +767,9 @@ public class BrowsingActivity
         if (mActionMode != null) {
             return true;
         }
-        if (mSelectionActionModeCallBack == null) {
-            mSelectionActionModeCallBack = new SelectionActionModeCallBack();
-        }
-        mActionMode = startSupportActionMode(mSelectionActionModeCallBack);
+
+        mActionMode = new BookSelectionActionModeCallback();
+        mActionMode.startBookSelectionActionMode(this);
         notifySelectionActionModeSarted();
         return false;
     }
@@ -769,9 +779,22 @@ public class BrowsingActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (isInSelectionMode()) {
+            mayBecloseSelectionMode();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void mayBecloseSelectionMode() {
+
+        if (pagerFragment != null && pagerFragment.isVisible()) {
+            mActionMode.onDestroyActionMode();
+        } else {
+            super.onBackPressed();
+        }
+
+
     }
 
     @Override
@@ -814,46 +837,13 @@ public class BrowsingActivity
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
 
-    protected class SelectionActionModeCallBack implements ActionMode.Callback {
 
-        SelectionActionModeCallBack() {
+    private class BookSelectionActionModeCallback {
 
-        }
+        private Menu menu;
+        private Toolbar selectionToolBar;
 
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.book_selection_action_menu, menu);//Inflate the menu over action mode
-            notifySelectionActionModeSarted();
-            menu.findItem(R.id.batch_download).setEnabled(!shouldDisplayDownloadedOnly()).setVisible(!shouldDisplayDownloadedOnly());
-            mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-            mSearchView.setQueryHint(getString(R.string.hint_search_inside_books));
-
-            //   mSearchView.setIconifiedByDefault(true);
-            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    startSearch(s);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    return false;
-                }
-            });
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            mSearchView.requestFocus();
-            return true;
-        }
-
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        boolean onActionItemClicked(MenuItem item) {
             if (item.getItemId() == R.id.batch_download) {
                 mBooksToDownload.clear();
                 mBooksToDownload.addAll(selectedBooksIds);
@@ -866,6 +856,7 @@ public class BrowsingActivity
                 if (mBooksToDownload.size() != 0) {
                     if (mBooksToDownload.size() == 1) {
                         startBatchDownload();
+                        onDestroyActionMode();
                     } else {
                         if (isSelectionModified) {
                             Toast.makeText(BrowsingActivity.this, R.string.removed_selection_of_downloaded_books, Toast.LENGTH_LONG).show();
@@ -876,24 +867,87 @@ public class BrowsingActivity
                         DialogFragment confirmBatchDownloadDialogFragment = new ConfirmBatchDownloadDialogFragment();
                         confirmBatchDownloadDialogFragment.setArguments(confirmBatchDownloadDialogFragmentBundle);
                         confirmBatchDownloadDialogFragment.show(getSupportFragmentManager(), "ConfirmBatchDownloadDialogFragment");
-                        mode.finish();
+                        onDestroyActionMode();
                     }
                 } else {
                     Toast.makeText(BrowsingActivity.this, R.string.toast_all_selected_books_already_downlaoded, Toast.LENGTH_LONG).show();
                 }
 
+            } else if (item.getItemId() == R.id.select_all) {
+                addAllBooksToSelection(shouldDisplayDownloadedOnly());
+            } else if (item.getItemId() == R.id.clear_selection) {
+                removeAllSelectedBooks();
             }
 
             return false;
         }
 
 
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
+        void onDestroyActionMode() {
             mActionMode = null;
             selectedBooksIds.clear();
+            selectionToolBar.setVisibility(View.GONE);
+            mDownloadOnlyBanner.setVisibility(View.VISIBLE);
             notifySelectionActionModeDestroyed();
         }
+
+        @Nullable
+        BookSelectionActionModeCallback startBookSelectionActionMode(final BrowsingActivity browsingActivity) {
+            selectionToolBar = (Toolbar) browsingActivity.findViewById(R.id.selection_tool_bar);
+            menu = selectionToolBar.getMenu();
+            if (menu == null || !menu.hasVisibleItems()) {
+                selectionToolBar.inflateMenu(R.menu.book_selection_action_menu);
+                selectionToolBar.findViewById(R.id.up_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        browsingActivity.onBackPressed();
+                    }
+                });
+
+                menu = selectionToolBar.getMenu();
+                selectionToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return onActionItemClicked(menuItem);
+                    }
+                });
+            }
+            browsingActivity.notifySelectionActionModeSarted();
+            boolean displayDownloadOnly = browsingActivity.shouldDisplayDownloadedOnly();
+            menu.findItem(R.id.batch_download)
+                    .setEnabled(!displayDownloadOnly)
+                    .setVisible(!displayDownloadOnly);
+            menu.findItem(R.id.select_all)
+                    .setEnabled(displayDownloadOnly)
+                    .setVisible(displayDownloadOnly);
+
+            browsingActivity.mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            browsingActivity.mSearchView.setQueryHint(browsingActivity.getString(R.string.hint_search_inside_books));
+
+            selectionToolBar.setVisibility(View.VISIBLE);
+            browsingActivity.mDownloadOnlyBanner.setVisibility(View.GONE);
+            //   mSearchView.setIconifiedByDefault(true);
+            browsingActivity.mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    browsingActivity.startSearch(s);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    return false;
+                }
+            });
+
+            return this;
+        }
+
+        public Menu getMenu() {
+            return menu;
+        }
     }
+
+
 }
 
