@@ -337,6 +337,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
             if (bookDownloadStatus < STATUS_DOWNLOAD_REQUESTED) {
 //                downloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
                 downloadButton.setText(R.string.download_book);
+                downloadButton.setEnabled(true);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_not_downloaded);
                 downloadButton.setOnClickListener(new View.OnClickListener() {
                     @Override
