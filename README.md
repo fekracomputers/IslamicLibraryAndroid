@@ -32,3 +32,33 @@ Encyclopedia for Islamic books based on (shamela.ws) books with unique features 
 - Ability to search all the books by an author or all books within category
 
 Currently displaying  7000 book by more than 3000 author organized in more than 70 categories (Tafsir,Hadith,Fiqh,...)
+
+# Development Road map
+## [Data](https://github.com/fekracomputers/IslamicLibraryWebservice)
+1. fulluy importing Shamela data
+2. extracting more information
+
+## Front End user interfaces
+1. [Android](https://github.com/fekracomputers/IslamicLibraryAndroid)
+1. [Web application](https://github.com/fekracomputers/IslamicLibraryWebsite)
+1. IOS
+1. PC
+
+## Users
+1. syncing user data across devices
+1. user interaction and discussuin
+
+## suggested plan
+> links to milestones with detaied issues ,progress track
+
+1. [Android 1.0.0](https://github.com/fekracomputers/IslamicLibraryAndroid/milestone/1): bug fixes and final home pages design
+1. [Android 1.1.0](https://github.com/fekracomputers/IslamicLibraryAndroid/milestone/3): user requests
+1. Shamela Data Import:fully import data ,enhancing database design,
+1. [Android 2.0.0](https://github.com/fekracomputers/IslamicLibraryAndroid/milestone/4): Integrating deeper understand of books data into android UI
+1. website frontend 2.0.0 full redesign
+1. User data 1.0.0 (sync bookmarks and notes)
+1. [Android 2.1.0](https://github.com/fekracomputers/IslamicLibraryAndroid/milestone/4) (integrating with user data)
+1. PC
+1. IOS
+1. User data 2.0.0 (user discussuin)
+1. Shamela Data Import 2.0.0 (extract more data)
