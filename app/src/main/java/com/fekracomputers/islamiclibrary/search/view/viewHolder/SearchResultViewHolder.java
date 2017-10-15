@@ -27,9 +27,9 @@ public class SearchResultViewHolder extends ChildViewHolder {
                                   final SearchResultRecyclerViewAdapter.SearchResultOnClickDelegateListener mListener,
                                   Resources mResources) {
         super(searchResult);
-        searchSnippetTextView = (TextView) searchResult.findViewById(R.id.search_snippet_text_view);
-        pageNumberTextView = (TextView) searchResult.findViewById(R.id.part_page_number_tv);
-        chapterTitleTextView = (TextView) searchResult.findViewById(R.id.chapter_title);
+        searchSnippetTextView = searchResult.findViewById(R.id.search_snippet_text_view);
+        pageNumberTextView = searchResult.findViewById(R.id.part_page_number_tv);
+        chapterTitleTextView = searchResult.findViewById(R.id.chapter_title);
 
 
         this.searchResultView = searchResult;
@@ -51,12 +51,7 @@ public class SearchResultViewHolder extends ChildViewHolder {
         chapterTitleTextView.setText(searchResult.parentTitle.title);
 
 
-        searchResultView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onSearchResultClicked(getParentAdapterPosition(), getChildAdapterPosition());
-            }
-        });
+        searchResultView.setOnClickListener(v -> mListener.onSearchResultClicked(getParentAdapterPosition(), getChildAdapterPosition()));
 
     }
 

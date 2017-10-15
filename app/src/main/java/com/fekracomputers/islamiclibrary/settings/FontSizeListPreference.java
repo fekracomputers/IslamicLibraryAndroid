@@ -77,7 +77,7 @@ public class FontSizeListPreference extends ListPreference {
         }
 
         private void setup(final int position, final View view) {
-            TextView text = (TextView) view.findViewById(android.R.id.text1);
+            TextView text = view.findViewById(android.R.id.text1);
             final int baseSp = 16;
             final float q = 1 / 2f + (float) position / getCount(); // <0.5;1.5>
             text.setTextSize(TypedValue.COMPLEX_UNIT_SP, baseSp * q);

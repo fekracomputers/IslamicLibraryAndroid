@@ -2,7 +2,6 @@ package com.fekracomputers.islamiclibrary.download.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -41,17 +40,11 @@ public class CancelDownloadDialogFragment extends DialogFragment {
                                         booksCount)
                 )
                 .setPositiveButton(R.string.stop_downloading,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                mListener.onCancelAllDialogPositiveClick();
-                                dismiss();
-                            }
+                        (dialog, id) -> {
+                            mListener.onCancelAllDialogPositiveClick();
+                            dismiss();
                         })
-                .setNegativeButton(R.string.continue_downloading, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
-                    }
-                });
+                .setNegativeButton(R.string.continue_downloading, (dialog, id) -> dismiss());
 
         // Create the AlertDialog object and return it
         return builder.create();

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.PopupMenu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -112,24 +111,21 @@ public abstract class BookCardEventsCallback {
 
     public void onMoreButtonClicked(final BookInfo bookInfo, View v) {
         PopupMenu popup = new PopupMenu(context, v);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.book_overflow_delete_book:
-                        DialogFragment confirmBatchDownloadDialogFragment = new ConfirmBookDeleteDialogFragment();
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.book_overflow_delete_book:
+                    DialogFragment confirmBatchDownloadDialogFragment = new ConfirmBookDeleteDialogFragment();
 
-                        Bundle confirmDeleteDialogFragmentBundle = new Bundle();
-                        confirmDeleteDialogFragmentBundle.putInt(ConfirmBookDeleteDialogFragment.KEY_NUMBER_OF_BOOKS_TO_DELETE, 1);
-                        confirmDeleteDialogFragmentBundle.putInt(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID, bookInfo.getBookId());
-                        confirmDeleteDialogFragmentBundle.putString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookInfo.getName());
+                    Bundle confirmDeleteDialogFragmentBundle = new Bundle();
+                    confirmDeleteDialogFragmentBundle.putInt(ConfirmBookDeleteDialogFragment.KEY_NUMBER_OF_BOOKS_TO_DELETE, 1);
+                    confirmDeleteDialogFragmentBundle.putInt(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID, bookInfo.getBookId());
+                    confirmDeleteDialogFragmentBundle.putString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookInfo.getName());
 
-                        confirmBatchDownloadDialogFragment.setArguments(confirmDeleteDialogFragmentBundle);
-                        confirmBatchDownloadDialogFragment.show(context.getSupportFragmentManager(), "ConfirmBookDeleteDialogFragment");
-                        return true;
-                    default:
-                        return false;
-                }
+                    confirmBatchDownloadDialogFragment.setArguments(confirmDeleteDialogFragmentBundle);
+                    confirmBatchDownloadDialogFragment.show(context.getSupportFragmentManager(), "ConfirmBookDeleteDialogFragment");
+                    return true;
+                default:
+                    return false;
             }
         });
         popup.inflate(R.menu.book_card_overflow);

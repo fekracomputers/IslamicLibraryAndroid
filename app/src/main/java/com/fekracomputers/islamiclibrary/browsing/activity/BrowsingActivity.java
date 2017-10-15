@@ -110,14 +110,7 @@ public class BrowsingActivity
     View bookListContainer;
     BookFilterPagerFragment pagerFragment;
     BooksInformationDbHelper mBooksInformationDbHelper;
-    protected CompoundButton.OnCheckedChangeListener onDownloadSwitchCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            switchDownloadOnlyFilter(isChecked);
-        }
-
-
-    };
+    protected CompoundButton.OnCheckedChangeListener onDownloadSwitchCheckedChangeListener = (buttonView, isChecked) -> switchDownloadOnlyFilter(isChecked);
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
@@ -245,7 +238,7 @@ public class BrowsingActivity
 
     protected void inflateUi(Bundle savedInstanceState) {
         setContentView(R.layout.activity_browsing);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -255,17 +248,17 @@ public class BrowsingActivity
         mBooksInformationDbHelper = BooksInformationDbHelper.getInstance(BrowsingActivity.this);
 
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        mDownloadOnlyBanner = (TextView) findViewById(R.id.browsing_header_banner);
+        mDownloadOnlyBanner = findViewById(R.id.browsing_header_banner);
         downloadedOnlySwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.nav_item_downloaded_only).getActionView();
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -273,25 +266,16 @@ public class BrowsingActivity
         setDownloadOnlyBannerText(mShouldDisplayDownloadOnly);
         setDownloadOnlySwitchNoCallBack(mShouldDisplayDownloadOnly);
 
-        mDownloadOnlyBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly());
-
-            }
-        });
+        mDownloadOnlyBanner.setOnClickListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
 
         downloadedOnlySwitch.setOnCheckedChangeListener(onDownloadSwitchCheckedChangeListener);
 
         //this is done to prevent motion of drawer when the user tries to slide thes switch
-        downloadedOnlySwitch.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                return false;
+        downloadedOnlySwitch.setOnTouchListener((v, event) -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
             }
+            return false;
         });
 
         View filterPagerContainer = findViewById(R.id.filter_pager_container);
@@ -454,7 +438,7 @@ public class BrowsingActivity
             pushBookListFragment(fragment);
 
             //Why did I do that ?!
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
+            AppBarLayout appBarLayout = findViewById(R.id.appBar);
             appBarLayout.setExpanded(true, false);
 
         } else if (mPaneNumber > 1) {
@@ -601,7 +585,7 @@ public class BrowsingActivity
                     authorInfo.getName());
             pushBookListFragment(fragment);
 
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
+            AppBarLayout appBarLayout = findViewById(R.id.appBar);
             appBarLayout.setExpanded(true, false);
 
         } else if (mPaneNumber > 1) {
@@ -758,7 +742,7 @@ public class BrowsingActivity
             downloadedOnlySwitch.toggle();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -776,7 +760,7 @@ public class BrowsingActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (isInSelectionMode()) {
@@ -893,24 +877,14 @@ public class BrowsingActivity
 
         @Nullable
         BookSelectionActionModeCallback startBookSelectionActionMode(final BrowsingActivity browsingActivity) {
-            selectionToolBar = (Toolbar) browsingActivity.findViewById(R.id.selection_tool_bar);
+            selectionToolBar = browsingActivity.findViewById(R.id.selection_tool_bar);
             menu = selectionToolBar.getMenu();
             if (menu == null || !menu.hasVisibleItems()) {
                 selectionToolBar.inflateMenu(R.menu.book_selection_action_menu);
-                selectionToolBar.findViewById(R.id.up_button).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        browsingActivity.onBackPressed();
-                    }
-                });
+                selectionToolBar.findViewById(R.id.up_button).setOnClickListener(v -> browsingActivity.onBackPressed());
 
                 menu = selectionToolBar.getMenu();
-                selectionToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        return onActionItemClicked(menuItem);
-                    }
-                });
+                selectionToolBar.setOnMenuItemClickListener(this::onActionItemClicked);
             }
             browsingActivity.notifySelectionActionModeSarted();
             boolean displayDownloadOnly = browsingActivity.shouldDisplayDownloadedOnly();

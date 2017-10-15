@@ -248,21 +248,11 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
             super(titleView);
 
             this.titleViewElement = titleView;
-            tileText = (TextView) titleView.findViewById(R.id.title_tv);
-            titlepageNumberTv = (TextView) titleView.findViewById(R.id.title_page_tv);
-            expandTitleButton = (ImageButton) titleView.findViewById(R.id.btn_sub_titles);
-            titleView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnTableOfContentTitleClickListener.OnOnTableOfContentTitleClicked(title);
-                }
-            });
-            expandTitleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnTableOfContentExpandListener.OnOnTableOfContentExpandClicked(title);
-                }
-            });
+            tileText = titleView.findViewById(R.id.title_tv);
+            titlepageNumberTv = titleView.findViewById(R.id.title_page_tv);
+            expandTitleButton = titleView.findViewById(R.id.btn_sub_titles);
+            titleView.setOnClickListener(v -> mOnTableOfContentTitleClickListener.OnOnTableOfContentTitleClicked(title));
+            expandTitleButton.setOnClickListener(view -> mOnTableOfContentExpandListener.OnOnTableOfContentExpandClicked(title));
         }
 
 

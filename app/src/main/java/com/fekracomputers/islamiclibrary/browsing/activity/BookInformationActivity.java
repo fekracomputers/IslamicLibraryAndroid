@@ -3,7 +3,6 @@ package com.fekracomputers.islamiclibrary.browsing.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
@@ -62,7 +61,7 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
         int bookId = callingIntent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
         String bookName = callingIntent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

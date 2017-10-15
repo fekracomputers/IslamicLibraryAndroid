@@ -26,9 +26,9 @@ public class BookResultsHeaderViewHolder extends ParentViewHolder {
 
     public BookResultsHeaderViewHolder(@NonNull View itemView) {
         super(itemView);
-        bookNameTextView = (TextView) itemView.findViewById(R.id.number_of_results_per_book);
-        numberOfResultsTextView = (TextView) itemView.findViewById(R.id.book_name_header);
-        mArrowExpandImageView = (ImageView) itemView.findViewById(R.id.arrow_expand_imageview);
+        bookNameTextView = itemView.findViewById(R.id.number_of_results_per_book);
+        numberOfResultsTextView = itemView.findViewById(R.id.book_name_header);
+        mArrowExpandImageView = itemView.findViewById(R.id.arrow_expand_imageview);
 
     }
 

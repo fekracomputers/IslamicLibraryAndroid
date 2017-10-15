@@ -172,7 +172,7 @@ public class BookListFragment
             mListener.mayBeSetTitle(title);
         }
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(bookListRecyclerViewAdapter);
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);

@@ -96,8 +96,8 @@ public class TimingLogger {
     public void reset() {
         mDisabled = false;
         if (mSplits == null) {
-            mSplits = new ArrayList<Long>();
-            mSplitLabels = new ArrayList<String>();
+            mSplits = new ArrayList<>();
+            mSplitLabels = new ArrayList<>();
         } else {
             mSplits.clear();
             mSplitLabels.clear();

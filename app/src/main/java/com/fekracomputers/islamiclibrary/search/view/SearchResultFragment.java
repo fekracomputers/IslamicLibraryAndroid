@@ -88,21 +88,20 @@ public class SearchResultFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_search_result_list, container, false);
 
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         new SearchAsyncTask().execute(new SearchRequest(mSearchQuery, new SearchOptions(), requestedSearchBookIds, !mIsGlobalSearch));
         searchResultRecyclerViewAdapter = new SearchResultRecyclerViewAdapter(bookSearchResultsContainerList, this, getContext());
 
         recyclerView.setAdapter(searchResultRecyclerViewAdapter);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.search_progress);
+        mProgressBar = view.findViewById(R.id.search_progress);
         mProgressBar.setMax(requestedSearchBookIds.size());
-        mTotalBooksTextView = (TextView) view.findViewById(R.id.total_books);
+        mTotalBooksTextView = view.findViewById(R.id.total_books);
         mTotalBooksTextView.setText(String.valueOf(requestedSearchBookIds.size()));
-        mNumberOfAlreadySearchedBooksTextView = (TextView) view.findViewById(R.id.current_book);
+        mNumberOfAlreadySearchedBooksTextView = view.findViewById(R.id.current_book);
         mNumberOfAlreadySearchedBooksTextView.setText("0");
         return view;
     }
-
 
 
     @Override
@@ -122,8 +121,8 @@ public class SearchResultFragment extends Fragment implements
         mListener = null;
     }
 
-    public void onSearchResultClicked(int parentAdapterPosition,int childAdapterPosition) {
-        mListener.onSearchResultClicked(bookSearchResultsContainerList.get(parentAdapterPosition),childAdapterPosition);
+    public void onSearchResultClicked(int parentAdapterPosition, int childAdapterPosition) {
+        mListener.onSearchResultClicked(bookSearchResultsContainerList.get(parentAdapterPosition), childAdapterPosition);
     }
 
 
@@ -158,8 +157,6 @@ public class SearchResultFragment extends Fragment implements
             for (Integer bookId : searchableBooksIds) {
                 publishProgress(bookSearcher.getBookSearchResultsContainer(bookId));
             }
-
-
             return null;
         }
 

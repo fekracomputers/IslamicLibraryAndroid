@@ -2,7 +2,6 @@ package com.fekracomputers.islamiclibrary.browsing.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -41,18 +40,12 @@ public class ConfirmBatchDownloadDialogFragment extends DialogFragment {
                                         booksCount)
                 )
                 .setPositiveButton(R.string.confirm_download,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dismiss();
-                                mListener.onDialogPositiveClick();
+                        (dialog, id) -> {
+                            dismiss();
+                            mListener.onDialogPositiveClick();
 
-                            }
                         })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
-                    }
-                });
+                .setNegativeButton(R.string.cancel, (dialog, id) -> dismiss());
         // Create the AlertDialog object and return it
         return builder.create();
     }

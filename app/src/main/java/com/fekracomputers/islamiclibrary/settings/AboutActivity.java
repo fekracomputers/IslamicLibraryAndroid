@@ -2,7 +2,6 @@ package com.fekracomputers.islamiclibrary.settings;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
@@ -18,7 +17,7 @@ public class AboutActivity extends AppCompatActivity {
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

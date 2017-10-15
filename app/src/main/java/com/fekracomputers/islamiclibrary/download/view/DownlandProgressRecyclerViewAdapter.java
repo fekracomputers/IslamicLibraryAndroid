@@ -136,19 +136,16 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
 
         DownloadProgressViewHolder(View itemView) {
             super(itemView);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
-            downloadTitle = (TextView) itemView.findViewById(R.id.book_name);
-            cancelButton = (ImageButton) itemView.findViewById(R.id.cancel_btn);
-            downladStatusTextView = (TextView) itemView.findViewById(R.id.status_tv);
-            reasonTextView = (TextView) itemView.findViewById(R.id.reason_tv);
-            bytesDownloadedSoFarTextView = (TextView) itemView.findViewById(R.id.download_size_tv);
+            progressBar = itemView.findViewById(R.id.progressBar);
+            downloadTitle = itemView.findViewById(R.id.book_name);
+            cancelButton = itemView.findViewById(R.id.cancel_btn);
+            downladStatusTextView = itemView.findViewById(R.id.status_tv);
+            reasonTextView = itemView.findViewById(R.id.reason_tv);
+            bytesDownloadedSoFarTextView = itemView.findViewById(R.id.download_size_tv);
 
-            cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-                    downloadManager.remove(downloadInfo.getId());
-                }
+            cancelButton.setOnClickListener(v -> {
+                DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+                downloadManager.remove(downloadInfo.getId());
             });
         }
 

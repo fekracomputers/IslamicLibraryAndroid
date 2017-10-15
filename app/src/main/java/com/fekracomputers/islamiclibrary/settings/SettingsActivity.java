@@ -22,12 +22,10 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.SplashActivity;
@@ -101,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
 
@@ -110,13 +108,10 @@ public class SettingsActivity extends AppCompatActivity implements
         mTitle = getTitle();
 
         mTitleSwitcher = new TextSwitcher(mToolbar.getContext());
-        mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView tv = new AppCompatTextView(mToolbar.getContext());
-                TextViewCompat.setTextAppearance(tv, R.style.TextAppearance_AppCompat_Widget_ActionBar_Title);
-                return tv;
-            }
+        mTitleSwitcher.setFactory(() -> {
+            TextView tv = new AppCompatTextView(mToolbar.getContext());
+            TextViewCompat.setTextAppearance(tv, R.style.TextAppearance_AppCompat_Widget_ActionBar_Title);
+            return tv;
         });
         mTitleSwitcher.setCurrentText(mTitle);
         if (ab != null) {

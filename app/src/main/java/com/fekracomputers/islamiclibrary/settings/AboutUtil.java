@@ -2,7 +2,6 @@ package com.fekracomputers.islamiclibrary.settings;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -148,42 +147,32 @@ public class AboutUtil {
     public static MaterialAboutItemOnClickAction webViewDialog(final Context context,
                                                                         final String targetUrl,
                                                                         final String title) {
-        return new MaterialAboutItemOnClickAction() {
-            @Override
-            public void onClick() {
-                AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                alert.setTitle(title);
-                WebView wv = new WebView(context);
-                wv.setWebViewClient(
-                        new WebViewClient() {
-                            @Override
-                            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                if (!url.equals("targetUrl")) {
-                                    context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse(url)));
-                                    view.reload();
-                                    return true;
-                                } else {
-                                    view.loadUrl(url);
-                                    return true;
-                                }
+        return () -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle(title);
+            WebView wv = new WebView(context);
+            wv.setWebViewClient(
+                    new WebViewClient() {
+                        @Override
+                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                            if (!url.equals("targetUrl")) {
+                                context.startActivity(new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse(url)));
+                                view.reload();
+                                return true;
+                            } else {
+                                view.loadUrl(url);
+                                return true;
                             }
                         }
-                );
-                wv.loadUrl(targetUrl);
-                alert.setView(wv);
-                alert.setNegativeButton(R.string.Ok, new DialogInterface.OnClickListener()
+                    }
+            );
+            wv.loadUrl(targetUrl);
+            alert.setView(wv);
+            alert.setNegativeButton(R.string.Ok, (dialog, id) -> dialog.dismiss()
 
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        }
-
-                );
-                alert.show();
-            }
+            );
+            alert.show();
         }
 
                 ;

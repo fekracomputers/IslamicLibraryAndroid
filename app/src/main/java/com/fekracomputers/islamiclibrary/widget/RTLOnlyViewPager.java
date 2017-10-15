@@ -1,7 +1,6 @@
 package com.fekracomputers.islamiclibrary.widget;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 
 import com.duolingo.open.rtlviewpager.RtlViewPager;

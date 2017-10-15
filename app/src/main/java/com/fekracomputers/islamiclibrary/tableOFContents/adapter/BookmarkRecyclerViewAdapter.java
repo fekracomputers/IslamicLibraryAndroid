@@ -36,22 +36,14 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
     private static final ArrayList<Comparator<Bookmark>> comparators = new ArrayList<>();
 
     static {
-        comparators.add(new Comparator<Bookmark>() {
-            @Override
-            public int compare(Bookmark o1, Bookmark o2) {
-                return o1.pageInfo.pageId - o2.pageInfo.pageId;
+        comparators.add((o1, o2) -> o1.pageInfo.pageId - o2.pageInfo.pageId);
+        comparators.add((o1, o2) -> {
+            try {
+                return o1.getDateTime().compareTo(o2.getDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        });
-        comparators.add(new Comparator<Bookmark>() {
-            @Override
-            public int compare(Bookmark o1, Bookmark o2) {
-                try {
-                    return o1.getDateTime().compareTo(o2.getDateTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
+            return 0;
         });
 
     }
@@ -112,41 +104,31 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
         }
 
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mView.setOnClickListener(v -> onBookmarkClickListener.onBookmarkClicked(holder.bookmark));
+        holder.bookmarkIcon.setOnClickListener(v -> removeBookmarkWithAnimation(holder.bookmarkIcon, new Animator.AnimatorListener() {
             @Override
-            public void onClick(View v) {
-                onBookmarkClickListener.onBookmarkClicked(holder.bookmark);
+            public void onAnimationStart(Animator animation) {
+
             }
-        });
-        holder.bookmarkIcon.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                removeBookmarkWithAnimation(holder.bookmarkIcon, new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        holder.bookmarkIcon.setVisibility(View.INVISIBLE);
-                        userDataDBHelper.RemoveBookmark(holder.bookmark.pageInfo.pageId);
-                        bookmarkList.remove(holder.bookmark);
-                        notifyItemRemoved(bookmarkList.indexOf(holder.bookmark));
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+            public void onAnimationEnd(Animator animation) {
+                holder.bookmarkIcon.setVisibility(View.INVISIBLE);
+                userDataDBHelper.RemoveBookmark(holder.bookmark.pageInfo.pageId);
+                bookmarkList.remove(holder.bookmark);
+                notifyItemRemoved(bookmarkList.indexOf(holder.bookmark));
             }
-        });
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }));
     }
 
     public void sortBy(int which) {
@@ -191,10 +173,10 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
         ViewHolder(View view) {
             super(view);
             mView = view;
-            parentTitleTextView = (TextView) view.findViewById(R.id.toc_card_body);
-            pageNumberTextView = (TextView) view.findViewById(R.id.page_part_number);
-            dateTimeTextView = (TextView) view.findViewById(R.id.date_time);
-            bookmarkIcon = (ImageView) view.findViewById(R.id.bookmark_icon);
+            parentTitleTextView = view.findViewById(R.id.toc_card_body);
+            pageNumberTextView = view.findViewById(R.id.page_part_number);
+            dateTimeTextView = view.findViewById(R.id.date_time);
+            bookmarkIcon = view.findViewById(R.id.bookmark_icon);
         }
 
         @Override

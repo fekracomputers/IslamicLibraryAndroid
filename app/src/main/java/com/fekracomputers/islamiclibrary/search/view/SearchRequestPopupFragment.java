@@ -91,14 +91,11 @@ public class SearchRequestPopupFragment  extends DialogFragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton addEtitText= (ImageButton) view.findViewById(R.id.add_edit_text);
-        final LinearLayout editTextContainer= (LinearLayout) view.findViewById(R.id.edit_text_container);
-        addEtitText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater layoutInflater=(LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                editTextContainer.addView(layoutInflater.inflate(R.layout.item_search_field,null));
-            }
+        ImageButton addEtitText= view.findViewById(R.id.add_edit_text);
+        final LinearLayout editTextContainer= view.findViewById(R.id.edit_text_container);
+        addEtitText.setOnClickListener(v -> {
+            LayoutInflater layoutInflater=(LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            editTextContainer.addView(layoutInflater.inflate(R.layout.item_search_field,null));
         });
         getDialog().setTitle(String.format(getString(R.string.searching_in_d_books),10));
 

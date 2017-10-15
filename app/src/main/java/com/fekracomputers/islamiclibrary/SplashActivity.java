@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -58,8 +57,8 @@ public class SplashActivity extends AppCompatActivity {
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
-        mTextView = (TextView) findViewById(R.id.progressTextView);
+        mProgressBar = findViewById(R.id.progressBar1);
+        mTextView = findViewById(R.id.progressTextView);
 
         checkStorage();
 
@@ -181,29 +180,23 @@ public class SplashActivity extends AppCompatActivity {
             //show permission rationale dialog
             permissionsDialog = new AlertDialog.Builder(this)
                     .setMessage(R.string.storage_permission_rationale)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            permissionsDialog = null;
-                            requestExternalSdcardPermission();
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        dialog.dismiss();
+                        permissionsDialog = null;
+                        requestExternalSdcardPermission();
                     })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            permissionsDialog = null;
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                        dialog.dismiss();
+                        permissionsDialog = null;
 
-                            // fall back if we can
-                            if (fallbackFile != null) {
-                                StorageUtils.setAppCustomLocation(fallbackFile.getAbsolutePath(), SplashActivity.this);
-                                checkBookInformationDatabase();
-                            } else {
-                                // set to null so we can try again next launch
-                                StorageUtils.setAppCustomLocation(null, SplashActivity.this);
-                                finishSplashAndLaunchMainActivity();
-                            }
+                        // fall back if we can
+                        if (fallbackFile != null) {
+                            StorageUtils.setAppCustomLocation(fallbackFile.getAbsolutePath(), SplashActivity.this);
+                            checkBookInformationDatabase();
+                        } else {
+                            // set to null so we can try again next launch
+                            StorageUtils.setAppCustomLocation(null, SplashActivity.this);
+                            finishSplashAndLaunchMainActivity();
                         }
                     })
                     .create();
@@ -296,14 +289,11 @@ public class SplashActivity extends AppCompatActivity {
 
             final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
             boolean downloading = true;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mTextView.setVisibility(View.VISIBLE);
-                    mTextView.setText(R.string.downloading_book_information);
-                    mProgressBar.setIndeterminate(false);
-                }
+            runOnUiThread(() -> {
+                mProgressBar.setVisibility(View.VISIBLE);
+                mTextView.setVisibility(View.VISIBLE);
+                mTextView.setText(R.string.downloading_book_information);
+                mProgressBar.setIndeterminate(false);
             });
 
             while (downloading) {
@@ -324,23 +314,14 @@ public class SplashActivity extends AppCompatActivity {
 
                 final long dl_progress = (bytes_downloaded * 100L / bytes_total);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setProgress((int) dl_progress);
-
-                    }
-                });
+                runOnUiThread(() -> mProgressBar.setProgress((int) dl_progress));
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mTextView.setVisibility(View.VISIBLE);
-                    mProgressBar.setIndeterminate(true);
-                    mTextView.setText(R.string.info_preparing_book_information_database);
+            runOnUiThread(() -> {
+                mProgressBar.setVisibility(View.VISIBLE);
+                mTextView.setVisibility(View.VISIBLE);
+                mProgressBar.setIndeterminate(true);
+                mTextView.setText(R.string.info_preparing_book_information_database);
 
-                }
             });
         }
     }

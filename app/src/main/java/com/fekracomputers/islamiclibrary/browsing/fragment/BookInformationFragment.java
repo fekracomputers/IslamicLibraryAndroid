@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
@@ -108,41 +109,38 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
 
 
         //region Intiallize upper part Views
-        TextView bookCategoryTextView = (TextView) rootView.findViewById(R.id.book_category);
+        TextView bookCategoryTextView = rootView.findViewById(R.id.book_category);
         bookCategoryTextView.setText(mBookInfo.getCategory().getName());
-        bookCategoryTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onCategoryClicked(mBookInfo.getCategory());
-                // startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
-            }
+        bookCategoryTextView.setOnClickListener(v -> {
+            mListener.onCategoryClicked(mBookInfo.getCategory());
+            // startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
         });
 
 
-        ImageView coverIamgeView = (ImageView) rootView.findViewById(R.id.book_cover);
+        ImageView coverIamgeView = rootView.findViewById(R.id.book_cover);
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.no_book_image);
+
         Glide.with(getContext()).
+                setDefaultRequestOptions(requestOptions).
                 load(CoverImagesDownloader.getImageUrl(getContext(), mBookInfo.getBookId())).
-                diskCacheStrategy(DiskCacheStrategy.SOURCE).
-                placeholder(R.drawable.no_book_image).
                 into(coverIamgeView);
 
         final String bookName = mBookInfo.getName();
-        TextView bookNameTv = (TextView) rootView.findViewById(R.id.book_name_tv);
+        TextView bookNameTv = rootView.findViewById(R.id.book_name_tv);
         bookNameTv.setText(bookName);
 
-        TextView bookAuthorTextView = (TextView) rootView.findViewById(R.id.book_author);
+        TextView bookAuthorTextView = rootView.findViewById(R.id.book_author);
         bookAuthorTextView.setText(mBookInfo.getAuthorName());
-        bookAuthorTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
+        bookAuthorTextView.setOnClickListener(v -> {
+            mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
 
 //                startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
-            }
         });
         //endregion
 
-        mLinearLayoutContainer = (LinearLayout) rootView.findViewById(R.id.linear_container);
+        mLinearLayoutContainer = rootView.findViewById(R.id.linear_container);
         isGrey = true;//first card in this region is grey
 
         maybeAddInformationCard(mBookInfo.getInformationCard(), getString(R.string.information_card));
@@ -159,13 +157,10 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, categoryPreviewCursor, isGrey);
 
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
-        categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
-                mListener.onCategoryClicked(mBookInfo.getCategory());
+        categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
+            //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
+            mListener.onCategoryClicked(mBookInfo.getCategory());
 
-            }
         });
         isGrey = !isGrey;
         mLinearLayoutContainer.addView(categoryMoreBooksHorizontalBookRecyclerView);
@@ -182,21 +177,18 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
                             ArabicUtilities.prepareForPrefixingLam(mBookInfo.getAuthorInfo().getName())
                     )
             );
-            authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
+            authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
+                mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
 
-                    //  startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
-                }
+                //  startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
             });
             isGrey = !isGrey;
             mLinearLayoutContainer.addView(authorMoreBooksHorizontalBookRecyclerView);
         }
 
-        mDownloadButtonLayout = (CardView) rootView.findViewById(R.id.download_button_text_layout);
-        mDownloadButtonText = (TextView) rootView.findViewById(R.id.download_button_text);
-        mDownloadButtonImage = (ImageView) rootView.findViewById(R.id.download_image);
+        mDownloadButtonLayout = rootView.findViewById(R.id.download_button_text_layout);
+        mDownloadButtonText = rootView.findViewById(R.id.download_button_text);
+        mDownloadButtonImage = rootView.findViewById(R.id.download_image);
 
         if (diplayedInTableOfContent) {
             rootView.findViewById(R.id.book_information_upper_part_separator).setVisibility(View.GONE);
@@ -258,16 +250,13 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
                 mDownloadButtonLayout.setBackgroundResource(R.color.indicator_book_not_downloaded);
                 mDownloadButtonImage.setImageResource(R.drawable.ic_download_thin_white);
 
-                mDownloadButtonLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        BrowsingUtils.startDownloadingBook(mBookInfo, getContext());
-                        setDownloadButtonForStartDownloading();
-                    }
+                mDownloadButtonLayout.setOnClickListener(v -> {
+                    BrowsingUtils.startDownloadingBook(mBookInfo, getContext());
+                    setDownloadButtonForStartDownloading();
                 });
             } else if (bookDownloadStatus >= STATUS_DOWNLOAD_REQUESTED && bookDownloadStatus < STATUS_DOWNLOAD_COMPLETED) {
                 setDownloadButtonForStartDownloading();
-            }else if(bookDownloadStatus >= STATUS_DOWNLOAD_COMPLETED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED){
+            } else if (bookDownloadStatus >= STATUS_DOWNLOAD_COMPLETED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 setDownloadButtonForStartDownloading(R.string.preparing_book);
             } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 mDownloadButtonText.setText(R.string.open);
@@ -276,12 +265,7 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
                 mDownloadButtonImage.clearAnimation();
                 mDownloadButtonLayout.setEnabled(true);
                 mDownloadButtonLayout.setClickable(true);
-                mDownloadButtonLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        BrowsingUtils.openBookForReading(mBookInfo, getContext());
-                    }
-                });
+                mDownloadButtonLayout.setOnClickListener(v -> BrowsingUtils.openBookForReading(mBookInfo, getContext()));
             }
             mBookDownloadStatus = bookDownloadStatus;
         }
@@ -299,7 +283,7 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         mDownloadButtonImage.setImageResource(R.drawable.ic_loading_white);
         mDownloadButtonLayout.setBackgroundResource(R.color.indicator_book_downloading);
         mDownloadButtonImage.startAnimation(
-                AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinetly) );
+                AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinetly));
 
     }
 

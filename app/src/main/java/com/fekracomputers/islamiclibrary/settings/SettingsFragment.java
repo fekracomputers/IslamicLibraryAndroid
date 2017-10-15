@@ -3,7 +3,6 @@ package com.fekracomputers.islamiclibrary.settings;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -79,70 +78,67 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, value) -> {
+        String stringValue = value.toString();
 
-            if (preference instanceof SeekBarPreference) {
-                SeekBarPreference pref = (SeekBarPreference) preference;
-                int progress = (int) value;
-                pref.setInfo(progress + "%");
-            } else if (preference instanceof ColorPreference) {
-                ColorPreference colorPreference = (ColorPreference) preference;
-                int color = (int) value;
+        if (preference instanceof SeekBarPreference) {
+            SeekBarPreference pref = (SeekBarPreference) preference;
+            int progress = (int) value;
+            pref.setInfo(progress + "%");
+        } else if (preference instanceof ColorPreference) {
+            ColorPreference colorPreference = (ColorPreference) preference;
+            int color = (int) value;
 //                String colorString = String.format("#%06X", 0xFFFFFF & color);
 //                preference.setSummary(colorString);
-                int index = colorPreference.findIndexOfValue(color);
-                if (index < 0) {
-                    preference.setSummary(null);
-                } else {
-                    final CharSequence name = colorPreference.getNameForColor(color);
-                    preference.setSummary(name);
-                }
-            } else if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
+            int index = colorPreference.findIndexOfValue(color);
+            if (index < 0) {
+                preference.setSummary(null);
+            } else {
+                final CharSequence name = colorPreference.getNameForColor(color);
+                preference.setSummary(name);
+            }
+        } else if (preference instanceof ListPreference) {
+            // For list preferences, look up the correct display value in
+            // the preference's 'entries' list.
+            ListPreference listPreference = (ListPreference) preference;
+            int index = listPreference.findIndexOfValue(stringValue);
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-            } else if (preference instanceof MultiSelectListPreference) {
-                String summary = stringValue.trim().substring(1, stringValue.length() - 1); // strip []
-                preference.setSummary(summary);
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
+            // Set the summary to reflect the new value.
+            preference.setSummary(
+                    index >= 0
+                            ? listPreference.getEntries()[index]
+                            : null);
+        } else if (preference instanceof MultiSelectListPreference) {
+            String summary = stringValue.trim().substring(1, stringValue.length() - 1); // strip []
+            preference.setSummary(summary);
+        } else if (preference instanceof RingtonePreference) {
+            // For ringtone preferences, look up the correct display value
+            // using RingtoneManager.
+            if (TextUtils.isEmpty(stringValue)) {
+                // Empty values correspond to 'silent' (no ringtone).
+                preference.setSummary(R.string.pref_ringtone_silent);
 
             } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
+                Ringtone ringtone = RingtoneManager.getRingtone(
+                        preference.getContext(), Uri.parse(stringValue));
+
+                if (ringtone == null) {
+                    // Clear the summary if there was a lookup error.
+                    preference.setSummary(null);
+                } else {
+                    // Set the summary to reflect the new ringtone display
+                    // name.
+                    String name = ringtone.getTitle(preference.getContext());
+                    preference.setSummary(name);
+                }
             }
-            return true;
+
+        } else {
+            // For all other preferences, set the summary to the value's
+            // simple string representation.
+            preference.setSummary(stringValue);
         }
+        return true;
     };
     private boolean isPaused;
 
@@ -174,7 +170,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             Set<String> summary = SharedPreferencesCompat.getStringSet(
                     PreferenceManager.getDefaultSharedPreferences(preference.getContext()),
                     key,
-                    new HashSet<String>());
+                    new HashSet<>());
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, summary);
         } else if (preference instanceof ColorPreference) {
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, ((ColorPreference) preference).getColor());
@@ -506,43 +502,40 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             }
 
             listStoragePref
-                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            final Context context1 = SettingsFragment.this.getActivity();
+                    .setOnPreferenceChangeListener((preference, newValue) -> {
+                        final Context context1 = SettingsFragment.this.getActivity();
 
-                            if (TextUtils.isEmpty(StorageUtils.getAppCustomLocation(context)) &&
-                                    Environment.getExternalStorageDirectory().equals(newValue)) {
-                                // do nothing since we're moving from empty settings to
-                                // the default sdcard setting, which are the same, but write it.
-                                return false;
-                            }
-
-                            // this is called right before the preference is saved
-                            String newLocation = (String) newValue;
-                            StorageUtils.Storage destStorage = storageMap.get(newLocation);
-                            String current = StorageUtils.getAppCustomLocation(context);
-                            if (appSize < destStorage.getFreeSpace()) {
-                                if (current == null || !current.equals(newLocation)) {
-                                    if (destStorage.doesRequirePermission()) {
-                                        if (!PermissionUtil.haveWriteExternalStoragePermission(context1)) {
-                                            SettingsFragment.this.requestExternalStoragePermission(newLocation, current);
-                                            return false;
-                                        }
-
-                                        // we have the permission, so fall through and handle the move
-                                    }
-                                    SettingsFragment.this.handleMove(newLocation, current);
-                                }
-                            } else {
-                                Toast.makeText(context1,
-                                        SettingsFragment.this.getString(
-                                                R.string.prefs_no_enough_space_to_move_files),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                            // this says, "don't write the preference"
+                        if (TextUtils.isEmpty(StorageUtils.getAppCustomLocation(context)) &&
+                                Environment.getExternalStorageDirectory().equals(newValue)) {
+                            // do nothing since we're moving from empty settings to
+                            // the default sdcard setting, which are the same, but write it.
                             return false;
                         }
+
+                        // this is called right before the preference is saved
+                        String newLocation = (String) newValue;
+                        StorageUtils.Storage destStorage = storageMap.get(newLocation);
+                        String current = StorageUtils.getAppCustomLocation(context);
+                        if (appSize < destStorage.getFreeSpace()) {
+                            if (current == null || !current.equals(newLocation)) {
+                                if (destStorage.doesRequirePermission()) {
+                                    if (!PermissionUtil.haveWriteExternalStoragePermission(context1)) {
+                                        SettingsFragment.this.requestExternalStoragePermission(newLocation, current);
+                                        return false;
+                                    }
+
+                                    // we have the permission, so fall through and handle the move
+                                }
+                                SettingsFragment.this.handleMove(newLocation, current);
+                            }
+                        } else {
+                            Toast.makeText(context1,
+                                    SettingsFragment.this.getString(
+                                            R.string.prefs_no_enough_space_to_move_files),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        // this says, "don't write the preference"
+                        return false;
                     });
             listStoragePref.setEnabled(true);
         } catch (Exception e) {
@@ -565,24 +558,18 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         final Context context = getActivity();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setMessage(getString(R.string.external_move_choice, current, newLocation))
-                .setPositiveButton(R.string.external_move_automatic, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface currentDialog, int which) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT ||
-                                newLocation.equals(internalSdcardLocation)) {
-                            moveFiles(newLocation, true);
-                        } else {
-                            showKitKatConfirmation(newLocation);
-                        }
+                .setPositiveButton(R.string.external_move_automatic, (currentDialog, which) -> {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT ||
+                            newLocation.equals(internalSdcardLocation)) {
+                        moveFiles(newLocation, true);
+                    } else {
+                        showKitKatConfirmation(newLocation);
                     }
                 })
-                .setNegativeButton(R.string.external_move_manually, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface currentDialog, int which) {
-                        moveFiles(newLocation, false);
-                        currentDialog.dismiss();
-                        SettingsFragment.this.dialog = null;
-                    }
+                .setNegativeButton(R.string.external_move_manually, (currentDialog, which) -> {
+                    moveFiles(newLocation, false);
+                    currentDialog.dismiss();
+                    SettingsFragment.this.dialog = null;
                 });
         dialog = builder.create();
         dialog.show();
@@ -594,20 +581,14 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         final AlertDialog.Builder b = new AlertDialog.Builder(context)
                 .setTitle(R.string.warning)
                 .setMessage(R.string.kitkat_external_message)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface currentDialog, int which) {
-                        moveFiles(newLocation, true);
-                        currentDialog.dismiss();
-                        SettingsFragment.this.dialog = null;
-                    }
+                .setPositiveButton(R.string.ok, (currentDialog, which) -> {
+                    moveFiles(newLocation, true);
+                    currentDialog.dismiss();
+                    SettingsFragment.this.dialog = null;
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface currentDialog, int which) {
-                        currentDialog.dismiss();
-                        SettingsFragment.this.dialog = null;
-                    }
+                .setNegativeButton(R.string.cancel, (currentDialog, which) -> {
+                    currentDialog.dismiss();
+                    SettingsFragment.this.dialog = null;
                 });
         dialog = b.create();
         dialog.show();

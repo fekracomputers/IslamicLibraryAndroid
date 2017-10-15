@@ -76,10 +76,10 @@ public class DataListPreferenceDialogFragmentCompat extends ListPreferenceDialog
                 convertView = inflater.inflate(R.layout.data_storage_location_item, parent, false);
 
                 holder = new ViewHolder();
-                holder.titleTextView = (TextView) convertView.findViewById(R.id.storage_label);
-                holder.freeSpaceTextView = (TextView) convertView.findViewById(R.id.available_free_space);
-                holder.mountPointTextView = (TextView) convertView.findViewById(R.id.mount_point);
-                holder.checkedTextView = (CheckedTextView) convertView.findViewById(R.id.checked_text_view);
+                holder.titleTextView = convertView.findViewById(R.id.storage_label);
+                holder.freeSpaceTextView = convertView.findViewById(R.id.available_free_space);
+                holder.mountPointTextView = convertView.findViewById(R.id.mount_point);
+                holder.checkedTextView = convertView.findViewById(R.id.checked_text_view);
                 convertView.setTag(holder);
             }
 

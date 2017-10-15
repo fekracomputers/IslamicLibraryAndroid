@@ -71,8 +71,8 @@ public class BookFilterPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_filter_pager, container, false);
-        mViewPager = (ViewPager) rootView.findViewById(R.id.category_filter_pager);
-        TabLayout mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        mViewPager = rootView.findViewById(R.id.category_filter_pager);
+        TabLayout mTabLayout = rootView.findViewById(R.id.tabs);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);

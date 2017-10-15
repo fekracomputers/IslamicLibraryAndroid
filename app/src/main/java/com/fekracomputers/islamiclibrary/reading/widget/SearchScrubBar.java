@@ -29,11 +29,9 @@ public class SearchScrubBar extends FrameLayout {
     public SearchScrubBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        this.mDelegateOnClickListener = new OnClickListener() {
-            public void onClick(View view) {
-                if (SearchScrubBar.this.mRealOnClickListener != null) {
-                    SearchScrubBar.this.mRealOnClickListener.onClick(view);
-                }
+        this.mDelegateOnClickListener = view -> {
+            if (SearchScrubBar.this.mRealOnClickListener != null) {
+                SearchScrubBar.this.mRealOnClickListener.onClick(view);
             }
         };
          this.mSearchScrubBarTextActiveColor = Util.getColorFromAttr(context, R.attr.searchScrubBarTextActiveColor, 0xFF888888);
@@ -50,7 +48,7 @@ public class SearchScrubBar extends FrameLayout {
 
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.mMatches = (TextView) findViewById(R.id.matchIndex);
+        this.mMatches = findViewById(R.id.matchIndex);
     }
 
     public void setupPagingDirection(boolean isArabic) {
@@ -89,7 +87,7 @@ public class SearchScrubBar extends FrameLayout {
                     getResources()
                             .getQuantityString(R.plurals.search_num_results_before,
                                     numMatches,
-                                    new Object[]{Integer.valueOf(numMatchesToReport),Integer.valueOf(numMatches)}));
+                                    new Object[]{numMatchesToReport, numMatches}));
 
             if (currentPageContainsMatch) {
                 this.mMatches.setTextColor(this.mSearchScrubBarTextActiveColor);

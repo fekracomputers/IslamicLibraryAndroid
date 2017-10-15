@@ -152,7 +152,7 @@ public class BookPageFragment extends Fragment implements
 
         FrameLayout rootView = (FrameLayout) inflater.inflate(R.layout.fragment_book_page, container, false);
 
-        mBookPageWebView = (WebView) rootView.findViewById(R.id.book_page_web_view);
+        mBookPageWebView = rootView.findViewById(R.id.book_page_web_view);
 
         initializeWebView(mBookPageWebView);
 
@@ -223,9 +223,7 @@ public class BookPageFragment extends Fragment implements
 
         final GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(getContext(), simpleOnGestureListener);
 
-        mBookPageWebView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
+        mBookPageWebView.setOnTouchListener((v, e) -> {
 //                final int action = e.getActionMasked();
 //
 //                switch (e.getAction() & MotionEvent.ACTION_MASK) {
@@ -256,10 +254,8 @@ public class BookPageFragment extends Fragment implements
 //                        break;
 //                }
 
-                mScaleDetector.onTouchEvent(e);
-                return gestureDetectorCompat.onTouchEvent(e);
-
-            }
+            mScaleDetector.onTouchEvent(e);
+            return gestureDetectorCompat.onTouchEvent(e);
 
         });
         //endregion
@@ -267,7 +263,7 @@ public class BookPageFragment extends Fragment implements
             initializeSelectionPopup(rootView);
         }
 
-        mBookmarkFrame = (ViewStub) rootView.findViewById(R.id.bookmark_view_stub);
+        mBookmarkFrame = rootView.findViewById(R.id.bookmark_view_stub);
         return rootView;
     }
 
@@ -276,24 +272,19 @@ public class BookPageFragment extends Fragment implements
     }
 
     private void initializeSelectionPopup(final View v) {
-        mPopupTextSelection = (ViewGroup) v.findViewById(R.id.selection_popup_frame);
+        mPopupTextSelection = v.findViewById(R.id.selection_popup_frame);
         mAactionDeleteHighlight = v.findViewById(R.id.highlight_remove);
         mActionAddComment = v.findViewById(R.id.action_add_comment);
         mPopupTextSelection.setAlpha(0);
 
-        final View.OnClickListener mHighlightButtonOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onContextualMenuItemClicked(v.getId());
-            }
-        };
+        final View.OnClickListener mHighlightButtonOnClickListener = v1 -> onContextualMenuItemClicked(v1.getId());
 
-        ViewGroup upperSelectionMenu = (ViewGroup) v.findViewById(R.id.text_selection_popup_0);
+        ViewGroup upperSelectionMenu = v.findViewById(R.id.text_selection_popup_0);
         for (int i = 0; i < upperSelectionMenu.getChildCount(); i++) {
             upperSelectionMenu.getChildAt(i).setOnClickListener(mHighlightButtonOnClickListener);
         }
 
-        ViewGroup lowerSelectionMenu = (ViewGroup) v.findViewById(R.id.text_selection_popup_1);
+        ViewGroup lowerSelectionMenu = v.findViewById(R.id.text_selection_popup_1);
         for (int i = 0; i < lowerSelectionMenu.getChildCount(); i++) {
             lowerSelectionMenu.getChildAt(i).setOnClickListener(mHighlightButtonOnClickListener);
         }
@@ -800,24 +791,14 @@ public class BookPageFragment extends Fragment implements
         @JavascriptInterface
         public void highlightClicked(final int highlightId) {
             Log.d(getString(R.string.sd), getString(R.string.ddd) + highlightId);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    BookPageFragment.this.highlightClicked(highlightId);
-                }
-            });
+            handler.post(() -> BookPageFragment.this.highlightClicked(highlightId));
 
         }
 
         @JavascriptInterface
         public void setSelectionRect(int left, int top, int right, int bottom) {
             final Rect selectionRect = new Rect(left, top, right, bottom);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    BookPageFragment.this.newSelectionRect(selectionRect);
-                }
-            });
+            handler.post(() -> BookPageFragment.this.newSelectionRect(selectionRect));
 
         }
 

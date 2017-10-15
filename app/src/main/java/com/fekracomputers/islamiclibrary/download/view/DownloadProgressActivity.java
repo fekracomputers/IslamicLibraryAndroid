@@ -13,7 +13,6 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +28,6 @@ import com.fekracomputers.islamiclibrary.download.model.DownloadInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.KEY_NUMBER_OF_BOOKS_TO_DONLOAD;
@@ -53,7 +51,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_progress);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -63,7 +61,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
             supportActionBar.setTitle(R.string.title_activity_download_progress);
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
 
 
         booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
@@ -82,33 +80,28 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     }
 
     void showAlternativeView(int viewType) {
-        FrameLayout recyclerFrame = (FrameLayout) findViewById(R.id.recycler_frame);
+        FrameLayout recyclerFrame = findViewById(R.id.recycler_frame);
         recyclerFrame.setVisibility(View.GONE);
         mShowCancelAll = false;
 
         switch (viewType) {
             case ZERO_DOWNLOAD_TYPE:
-                ViewStub zeroView = (ViewStub) findViewById(R.id.zero_downloads);
+                ViewStub zeroView = findViewById(R.id.zero_downloads);
                 zeroView.setVisibility(View.VISIBLE);
                 break;
             case FINISHED_DOWNLOAD_TYPE:
-                ViewStub finishedView = (ViewStub) findViewById(R.id.finished_downloads);
+                ViewStub finishedView = findViewById(R.id.finished_downloads);
                 finishedView.setVisibility(View.VISIBLE);
 
 
                 break;
             case CANCELLED_DOWNLOAD_TYPE:
-                ViewStub cancelledView = (ViewStub) findViewById(R.id.cancelled_downloads);
+                ViewStub cancelledView = findViewById(R.id.cancelled_downloads);
                 cancelledView.setVisibility(View.VISIBLE);
                 break;
 
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 10000);
+        new Handler().postDelayed(this::finish, 10000);
     }
 
 
@@ -145,7 +138,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     }
 
     private void showProgress() {
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.removing_downloads_frame);
+        RelativeLayout relativeLayout = findViewById(R.id.removing_downloads_frame);
         relativeLayout.setVisibility(View.VISIBLE);
     }
 
@@ -187,23 +180,20 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
                         progressDownloadInfo.add(i, downloadInfo);
                         Log.d("download_iter", downloadInfo.toString());
                     }
-                    Collections.sort(progressDownloadInfo, new Comparator<DownloadInfo>() {
-                        @Override
-                        public int compare(DownloadInfo o1, DownloadInfo o2) {
-                            if (o1.getProgressPercent() != 0 && o2.getProgressPercent() != 0) {
-                                return o1.compareTo(o2);
-                            } else if (o1.getProgressPercent() != 0 && o2.getProgressPercent() == 0) {
-                                return -1;
+                    Collections.sort(progressDownloadInfo, (o1, o2) -> {
+                        if (o1.getProgressPercent() != 0 && o2.getProgressPercent() != 0) {
+                            return o1.compareTo(o2);
+                        } else if (o1.getProgressPercent() != 0 && o2.getProgressPercent() == 0) {
+                            return -1;
 
-                            } else if (o1.getProgressPercent() == 0 && o2.getProgressPercent() != 0) {
-                                return 1;
+                        } else if (o1.getProgressPercent() == 0 && o2.getProgressPercent() != 0) {
+                            return 1;
 
-                            } else //(o1.getProgressPercent() == 0 && o2.getProgressPercent() == 0)
-                            {
-                                return o1.compareTo(o2);
-                            }
-
+                        } else //(o1.getProgressPercent() == 0 && o2.getProgressPercent() == 0)
+                        {
+                            return o1.compareTo(o2);
                         }
+
                     });
                 }
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(

@@ -26,7 +26,7 @@ public class SearchResultActivity extends AppCompatActivity implements SearchRes
         setContentView(R.layout.activity_search_result);
         mIsArabic = Util.isArabicUi(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {

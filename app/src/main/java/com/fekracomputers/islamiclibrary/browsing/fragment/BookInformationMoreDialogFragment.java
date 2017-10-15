@@ -48,7 +48,7 @@ public class BookInformationMoreDialogFragment extends DialogFragment {
 
         Bundle args = getArguments();
         String title = args.getString(KEY_DIALOG_FRAGMENT_TITLE, getResources().getString(R.string.authors));
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         toolbar.setTitle(title);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -67,7 +67,7 @@ public class BookInformationMoreDialogFragment extends DialogFragment {
 
 
         String body = args.getString(KEY_DIALOG_BODY, getResources().getString(R.string.authors));
-        TextView bodyTextView = (TextView) rootView.findViewById(R.id.more_dialog_body_text_view);
+        TextView bodyTextView = rootView.findViewById(R.id.more_dialog_body_text_view);
         bodyTextView.setText(body);
         setHasOptionsMenu(true);
         return rootView;

@@ -2,7 +2,6 @@ package com.fekracomputers.islamiclibrary.reading.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,26 +76,17 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
 
         builder.setView(contentView)
                 // Add action buttons
-                .setPositiveButton(R.string.action_go, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        validateAndGo();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
-                    }
-                })
+                .setPositiveButton(R.string.action_go, (dialog, id) -> validateAndGo())
+                .setNegativeButton(R.string.cancel, (dialog, id) -> dismiss())
                 .setTitle(R.string.go_to_page);
 
         AlertDialog alertDialog = builder.create();
 
-        ViewGroup partSelectionLayout = (ViewGroup) contentView.findViewById(R.id.part_selection_layout);
-        partNumberEditor = (KeyboardAwareEditText) contentView.findViewById(R.id.part_number_editor);
-        TextView totalPartNumberTv = (TextView) contentView.findViewById(R.id.total_part_number_tv);
-        pageNumberEditor = (KeyboardAwareEditText) contentView.findViewById(R.id.page_number_editor);
-        final TextView totalPageNumberTv = (TextView) contentView.findViewById(R.id.total_page_number_tv);
+        ViewGroup partSelectionLayout = contentView.findViewById(R.id.part_selection_layout);
+        partNumberEditor = contentView.findViewById(R.id.part_number_editor);
+        TextView totalPartNumberTv = contentView.findViewById(R.id.total_part_number_tv);
+        pageNumberEditor = contentView.findViewById(R.id.page_number_editor);
+        final TextView totalPageNumberTv = contentView.findViewById(R.id.total_page_number_tv);
 
         if (mPartsInfo.isMultiPart()) {
             partSelectionLayout.setVisibility(View.VISIBLE);
@@ -140,12 +129,7 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
             });
 
 
-            partNumberEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    return actionId == EditorInfo.IME_ACTION_GO && validateAndGo();
-                }
-            });
+            partNumberEditor.setOnEditorActionListener((v, actionId, event) -> actionId == EditorInfo.IME_ACTION_GO && validateAndGo());
             partNumberEditor.setHint(getString(R.string.page_number, currentPageInfo.partNumber));
 
 
@@ -155,12 +139,7 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
         pageNumberEditor.setHint(String.valueOf(currentPageInfo.pageNumber));
         totalPageNumberTv.setText(getString(R.string.page_number, mCurrentPart.lastPage));
 
-        pageNumberEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                return actionId == EditorInfo.IME_ACTION_GO && validateAndGo();
-            }
-        });
+        pageNumberEditor.setOnEditorActionListener((v, actionId, event) -> actionId == EditorInfo.IME_ACTION_GO && validateAndGo());
         pageNumberEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

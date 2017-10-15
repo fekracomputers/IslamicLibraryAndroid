@@ -26,7 +26,6 @@ import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,7 +35,6 @@ import static com.fekracomputers.islamiclibrary.databases.BooksInformationDBCont
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.BROADCAST_ACTION;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_STATUS;
-import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.STATUS_FTS_INDEXING_ENDED;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.STATUS_NOT_DOWNLOAD;
 
 
@@ -851,10 +849,12 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             int status = c.getInt(0);
             if (status >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {//this book is alrready in the db and fully confiured
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG, BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
+                contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
+                        BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
                 db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                         contentValues, BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                         new String[]{String.valueOf(bookId)});
+
             } else if (status <= DownloadsConstants.STATUS_UNZIP_ENDED) {
                 BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
                 if (bookDatabaseHelper.isFtsSearchable()) {
@@ -876,12 +876,30 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         } else//book wasn't added before
         {
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-            if (bookDatabaseHelper.isFtsSearchable()) {
+            if (bookDatabaseHelper.isFtsSearchable()) {//the book is fully configured
                 insertStoredBook(db, bookId, DownloadsConstants.STATUS_FTS_INDEXING_ENDED);
+
+                Intent localIntent =
+                        new Intent(BROADCAST_ACTION)
+                                // Puts the status into the Intent
+                                .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_FTS_INDEXING_ENDED)
+                                .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                context.sendOrderedBroadcast(localIntent, null);
+
+
             } else {
                 insertStoredBook(db, bookId, DownloadsConstants.STATUS_UNZIP_ENDED);
+                Intent localIntent =
+                        new Intent(BROADCAST_ACTION)
+                                // Puts the status into the Intent
+                                .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
+                                .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                context.sendOrderedBroadcast(localIntent, null);
                 queryIndexing(bookId, context);
+
             }
+
+
             bookDatabaseHelper.close();
         }
         c.close();
@@ -1034,6 +1052,19 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + "=?",
                 new String[]{Long.toString(enqueueId)});
         return i == 1;
+    }
+
+    public boolean isDownloadEnqueue(long enqueueId) {
+        return 1L == DatabaseUtils.longForQuery(getReadableDatabase(),
+                " SELECT COUNT(*)" +
+                        " FROM " +
+                        BooksInformationDBContract.StoredBooks.TABLE_NAME +
+                        " WHERE " +
+                        BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + "=?",
+                new String[]{String.valueOf(enqueueId)}
+        );
+
+
     }
 
     /**
@@ -1215,15 +1246,22 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         //TODO Stop the indexing service if it was running
         File book = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE_EXTENSION);
         book.delete();
-
         //journal file for book database
         File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE__JOURNAL_EXTENSION);
         journal.delete();
+        deleteBookFromStoredBooks(bookId, context);
+
+    }
+
+    public void deleteBookFromStoredBooks(int bookId, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{String.valueOf(bookId)});
 
+    }
+
+    public static void broadCastBookDeleted(int bookId, Context context) {
         Intent bookDeleteBroadCast =
                 new Intent(BROADCAST_ACTION)
                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_NOT_DOWNLOAD)

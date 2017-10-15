@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
@@ -74,44 +73,38 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
             mInitialZoom = getArguments().getInt(ARA_INITIAL_ZOOM);
         }
 
-        final ImageButton LightningOptionsBtn = (ImageButton) view.findViewById(R.id.lighting_options_button);
-        final ImageButton LayoutOptionsBtn = (ImageButton) view.findViewById(R.id.layout_options_button);
-        final ViewAnimator viewAnimator = (ViewAnimator) view.findViewById(R.id.settings_view_container);
+        final ImageButton LightningOptionsBtn = view.findViewById(R.id.lighting_options_button);
+        final ImageButton LayoutOptionsBtn = view.findViewById(R.id.layout_options_button);
+        final ViewAnimator viewAnimator = view.findViewById(R.id.settings_view_container);
 
         viewAnimator.setDisplayedChild(mCurrentView);
         LayoutOptionsBtn.setSelected(mCurrentView == 0);
         LightningOptionsBtn.setSelected(mCurrentView == 1);
 
 
-        LightningOptionsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentView != 1) {
-                    viewAnimator.setDisplayedChild(1);
-                    mCurrentView = 1;
-                    v.setSelected(true);
-                    LayoutOptionsBtn.setSelected(false);
-                }
-
+        LightningOptionsBtn.setOnClickListener(v -> {
+            if (mCurrentView != 1) {
+                viewAnimator.setDisplayedChild(1);
+                mCurrentView = 1;
+                v.setSelected(true);
+                LayoutOptionsBtn.setSelected(false);
             }
+
         });
-        LayoutOptionsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentView != 0) {
-                    viewAnimator.setDisplayedChild(0);
-                    mCurrentView = 0;
-                    LayoutOptionsBtn.setSelected(true);
-                    LightningOptionsBtn.setSelected(false);
-                }
-
+        LayoutOptionsBtn.setOnClickListener(v -> {
+            if (mCurrentView != 0) {
+                viewAnimator.setDisplayedChild(0);
+                mCurrentView = 0;
+                LayoutOptionsBtn.setSelected(true);
+                LightningOptionsBtn.setSelected(false);
             }
+
         });
 
 
-        final ViewGroup prefTextSize = (ViewGroup) viewAnimator.findViewById(R.id.pref_text_size);
+        final ViewGroup prefTextSize = viewAnimator.findViewById(R.id.pref_text_size);
 
-        prefTextSizeTV = (TextView) prefTextSize.findViewById(R.id.setting_text);
+        prefTextSizeTV = prefTextSize.findViewById(R.id.setting_text);
         prefTextSizeTV.setText(getString(R.string.pref_zoom_precent,mInitialZoom));
         prefTextSize.findViewById(R.id.button_plus).setOnClickListener(new View.OnClickListener() {
 
@@ -132,33 +125,25 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
             }
         });
 
-        final SwitchCompat nightModeSwitch = (SwitchCompat) viewAnimator.findViewById(R.id.pref_night_mode);
+        final SwitchCompat nightModeSwitch = viewAnimator.findViewById(R.id.pref_night_mode);
         //nightModeSwitch.setOnCheckedChangeListener(null);
         nightModeSwitch.setChecked(mOnPrefDialogInteractionListener.isThemeNightMode());
 
-        nightModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mOnPrefDialogInteractionListener.setThemeNightMode(nightModeSwitch.isChecked());
-            }
-        });
+        nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> mOnPrefDialogInteractionListener.setThemeNightMode(nightModeSwitch.isChecked()));
 
 
-        final ViewGroup prefTheme = (ViewGroup) viewAnimator.findViewById(R.id.pref_theme);
-        ImageButton buttonDay = (ImageButton) prefTheme.findViewById(R.id.button_day);
-        ImageButton buttonSepia = (ImageButton) prefTheme.findViewById(R.id.button_sepia);
-        ImageButton buttonNight = (ImageButton) prefTheme.findViewById(R.id.button_night);
+        final ViewGroup prefTheme = viewAnimator.findViewById(R.id.pref_theme);
+        ImageButton buttonDay = prefTheme.findViewById(R.id.button_day);
+        ImageButton buttonSepia = prefTheme.findViewById(R.id.button_sepia);
+        ImageButton buttonNight = prefTheme.findViewById(R.id.button_night);
 
-        View.OnClickListener themeImageButtonOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isDesiredThemeNightMode = Integer.valueOf((String) v.getTag()) == 0;
+        View.OnClickListener themeImageButtonOnClickListener = v -> {
+            boolean isDesiredThemeNightMode = Integer.valueOf((String) v.getTag()) == 0;
 
-                if (mOnPrefDialogInteractionListener.isThemeNightMode() ^ isDesiredThemeNightMode)//Not equal ;)
-                {
-                    mOnPrefDialogInteractionListener.setThemeNightMode(isDesiredThemeNightMode);
-                    v.setSelected(true);
-                }
+            if (mOnPrefDialogInteractionListener.isThemeNightMode() ^ isDesiredThemeNightMode)//Not equal ;)
+            {
+                mOnPrefDialogInteractionListener.setThemeNightMode(isDesiredThemeNightMode);
+                v.setSelected(true);
             }
         };
 
@@ -179,7 +164,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.display_options_popup, container);
-        final ViewAnimator viewAnimator = (ViewAnimator) v.findViewById(R.id.settings_view_container);
+        final ViewAnimator viewAnimator = v.findViewById(R.id.settings_view_container);
         viewAnimator.setDisplayedChild(mCurrentView);
         Window window = getDialog().getWindow();
         if (window != null) {

@@ -96,8 +96,8 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
         View view = inflater.inflate(R.layout.fragment_bookmark_list, container, false);
 
         // Set the adapter
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        ViewStub zeroView = (ViewStub) view.findViewById(R.id.zero_bookmarks);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        ViewStub zeroView = view.findViewById(R.id.zero_bookmarks);
 
         UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
         ArrayList<Bookmark> bookmarks = userDataDBHelper.getAllBookmarks(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);

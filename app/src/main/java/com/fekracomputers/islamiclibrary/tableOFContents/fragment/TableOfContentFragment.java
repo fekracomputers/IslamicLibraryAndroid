@@ -94,7 +94,7 @@ public class TableOfContentFragment extends Fragment implements
         String bookName = bundle.getString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
 
 
-        RecyclerView titleRecyclerView = (RecyclerView) rootView.findViewById(R.id.toc_recycler_view);
+        RecyclerView titleRecyclerView = rootView.findViewById(R.id.toc_recycler_view);
         LinearLayoutManager tableOfContentLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         titleRecyclerView.setLayoutManager(tableOfContentLayoutManager);
         mTableOfContentRecyclerViewAdapter = new TableOfContentRecyclerViewAdapter(getContext(), bookId, this, mListener);
@@ -110,7 +110,7 @@ public class TableOfContentFragment extends Fragment implements
         titleRecyclerView.addItemDecoration(tableOfContentsDividerItemDecoration);
 
 
-        mHistoryRecyclerView = (RecyclerView) rootView.findViewById(R.id.toc_history_recycler_view);
+        mHistoryRecyclerView = rootView.findViewById(R.id.toc_history_recycler_view);
         LinearLayoutManager historyLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mHistoryRecyclerView.setLayoutManager(historyLinearLayoutManager);
 
@@ -144,16 +144,13 @@ public class TableOfContentFragment extends Fragment implements
         mHistoryRecyclerView.addItemDecoration(dividerItemDecoration);
 
 
-        rootView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (mBacstackTitlesLinkedList.size() > 0 && event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    //back key is equivelant to pressing the previous to last title in history
-                    OnTitleHistoryClicked(mHistoryLinkedList.size() - 2);
-                    return true;
-                }
-                return false;
+        rootView.setOnKeyListener((v, keyCode, event) -> {
+            if (mBacstackTitlesLinkedList.size() > 0 && event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                //back key is equivelant to pressing the previous to last title in history
+                OnTitleHistoryClicked(mHistoryLinkedList.size() - 2);
+                return true;
             }
+            return false;
         });
 
         return rootView;

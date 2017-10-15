@@ -93,7 +93,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         bookName = intent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
         setContentView(R.layout.activity_book_toc_bookmarks);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -105,7 +105,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
 
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         if (intent.hasExtra(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID)) {
@@ -116,7 +116,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         } else {
             mViewPager.setCurrentItem(initial_section);
         }
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         mBooksPartInfo = BookDatabaseHelper.getInstance(this, bookId).getBookPartsInfo();
         mIsArabic = Util.isArabicUi(this);

@@ -40,15 +40,12 @@ public class BooksDownloader {
 
     public void downloadBookCollection(final Collection<Integer> book_ids) {
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(mContext);
-                for (Integer book_id : book_ids) {
-                    //   if (booksInformationDbHelper.getBookDownloadStatus(book_id) < DownloadsConstants.STATUS_DOWNLOAD_REQUESTED)
-                    downloadBook(book_id, booksInformationDbHelper.getBookName(book_id), true, VISIBILITY_VISIBLE);
-                    //
-                }
+        AsyncTask.execute(() -> {
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(mContext);
+            for (Integer book_id : book_ids) {
+                //   if (booksInformationDbHelper.getBookDownloadStatus(book_id) < DownloadsConstants.STATUS_DOWNLOAD_REQUESTED)
+                downloadBook(book_id, booksInformationDbHelper.getBookName(book_id), true, VISIBILITY_VISIBLE);
+                //
             }
         });
 
@@ -70,10 +67,10 @@ public class BooksDownloader {
         Uri uri;
         if (compressed) {
             fileName = book_id + "." + BooksInformationDbHelper.COMPRESSION_EXTENSION;
-            uri = Uri.parse(DownloadFileConstants.compressedBaseBookUrl + DownloadFileConstants.URL_SEPARATOR + fileName);
+            uri = Uri.parse(DownloadFileConstants.COMPRESSED_BASE_BOOK_URL + DownloadFileConstants.URL_SEPARATOR + fileName);
         } else {
             fileName = book_id + "." + BooksInformationDbHelper.DATABASE_EXTENSION;
-            uri = Uri.parse(DownloadFileConstants.uncompressedBaseBookUrl + DownloadFileConstants.URL_SEPARATOR + fileName);
+            uri = Uri.parse(DownloadFileConstants.UNCOMPRESSED_BASE_BOOK_URL + DownloadFileConstants.URL_SEPARATOR + fileName);
         }
 
 
@@ -100,11 +97,11 @@ public class BooksDownloader {
         Uri uri;
         String extension;
         if (compressed) {
-            uri = Uri.parse(DownloadFileConstants.compressedBookInformationUrl);
+            uri = Uri.parse(DownloadFileConstants.COMPRESSED_BOOK_INFORMATION_URL);
             extension = BooksInformationDbHelper.DATABASE_COMPRESSED_EXTENTION;
 
         } else {
-            uri = Uri.parse(DownloadFileConstants.bookInformationUrl);
+            uri = Uri.parse(DownloadFileConstants.BOOK_INFORMATION_URL);
             extension = BooksInformationDbHelper.DATABASE_EXTENTION;
         }
 
@@ -124,7 +121,7 @@ public class BooksDownloader {
         //Enqueue download and save into referenceId
         long downloadReference = downloadManager.enqueue(request);
 
-        /** notify the {@link BookDownloadCompletedReceiver} to wait for the download to decompress */
+        /* notify the {@link BookDownloadCompletedReceiver} to wait for the download to decompress */
         if (compressed)
             BookDownloadCompletedReceiver.informationDatabaseDownloadEnqueId = downloadReference;
 

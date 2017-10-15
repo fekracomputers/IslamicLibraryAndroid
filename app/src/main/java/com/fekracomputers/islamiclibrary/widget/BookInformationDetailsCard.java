@@ -56,20 +56,15 @@ public class BookInformationDetailsCard extends LinearLayout {
                 R.color.infoPage_details_gray :
                 R.color.infoPage_details_white);
 
-        final TextView mMoreTextView = (TextView) findViewById(R.id.more_tv);
+        final TextView mMoreTextView = findViewById(R.id.more_tv);
         mMoreTextView.setOnClickListener(moreOnClickListener);
 
-        TextView headerTextView = (TextView) findViewById(R.id.header_tv);
+        TextView headerTextView = findViewById(R.id.header_tv);
         headerTextView.setText(header);
-        EllipsisTextView detailsTextView = (EllipsisTextView) findViewById(R.id.details_tv);
+        EllipsisTextView detailsTextView = findViewById(R.id.details_tv);
         detailsTextView.setText(body);
 
-        detailsTextView.addEllipsesListener(new EllipsisTextView.EllipsisListener() {
-            @Override
-            public void ellipsisStateChanged(boolean ellipses) {
-                mMoreTextView.setVisibility(ellipses ? VISIBLE : GONE);
-            }
-        });
+        detailsTextView.addEllipsesListener(ellipses -> mMoreTextView.setVisibility(ellipses ? VISIBLE : GONE));
 
         headerTextView.setTextColor(getContext().
                 getResources().

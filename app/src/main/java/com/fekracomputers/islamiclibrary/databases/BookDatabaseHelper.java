@@ -25,6 +25,8 @@ import com.fekracomputers.islamiclibrary.utility.SystemUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 public class BookDatabaseHelper extends SQLiteOpenHelper {
@@ -89,7 +91,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             BookDatabaseContract.titlesTextSearch.TABLE_NAME + "(" + BookDatabaseContract.titlesTextSearch.TABLE_NAME + ")" +
             "VALUES('optimize')";
     private static final String TAG = "BookDatabaseHelper";
-    ;
     private static final String SELECT_TITLES = SQL.SELECT +
             TITLES_COLUMNS +
             " from " +
@@ -783,7 +784,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean indexFts() {
+    public boolean indexFts() throws SQLException {
         SQLiteDatabase db = getWritableDatabase();
         Cursor allPagesCursor = null;
         Cursor allTitlesCursor = null;
@@ -853,9 +854,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     "(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + "," + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ")");
             db.setTransactionSuccessful();
             return true;
-        } catch (SQLException e) {
-            Log.e(TAG, "indexFts: ", e);
-            return false;
         } finally {
             db.endTransaction();
             if (allPagesCursor != null) {
@@ -880,11 +878,15 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                 null);
         boolean pageTextSearchExists = false;
         if (c.moveToFirst()) {
-            pageTextSearchExists = c.getString(0).equals(CREATE_BOOK_FTS_TABLE);
+            String foundCreateStatement = c.getString(0);
+            pageTextSearchExists = foundCreateStatement
+                    .equalsIgnoreCase(CREATE_BOOK_FTS_TABLE.replace("IF NOT ",""));
         }
         boolean titlesTextSearchExists = false;
         if (pageTextSearchExists && c.moveToNext()) {
-            titlesTextSearchExists = c.getString(1).equals(CREATE_TITLES_FTS_TABLE);
+            String foundCreateStatement = c.getString(0);
+            titlesTextSearchExists =foundCreateStatement
+                    .equalsIgnoreCase(CREATE_TITLES_FTS_TABLE.replace("IF NOT ",""));
         }
 
         c.close();
@@ -903,4 +905,24 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public boolean isValidBook() {
+        Cursor c = getReadableDatabase().query(" sqlite_master ",
+                new String[]{"sql"},
+                "type='table'",
+               null,
+                null,
+                null,
+                null);
+        Set<String> createStatements = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        createStatements.add("CREATE TABLE info (name VARCHAR(64) NOT NULL PRIMARY KEY, value TEXT)");
+        createStatements.add("CREATE TABLE pages (id INTEGER NOT NULL PRIMARY KEY, partnumber INTEGER NOT NULL, pagenumber INTEGER NOT NULL, page TEXT)");
+        createStatements.add("CREATE TABLE titles (id INTEGER NOT NULL PRIMARY KEY, parentid INTEGER NOT NULL, pageid INTEGER NOT NULL, title TEXT)");
+        while (c.moveToNext()) {
+            String createStatment = c.getString(0);
+            createStatements.remove(createStatment.toUpperCase());
+        }
+
+       c.close();
+        return createStatements.size() == 0;
+    }
 }

@@ -1,7 +1,6 @@
 package com.fekracomputers.islamiclibrary.browsing.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
@@ -47,12 +46,9 @@ public class SortListDialogFragment extends DialogFragment {
         builder.setCancelable(true)
                 .setTitle(R.string.library_sort_title)
                 .setSingleChoiceItems(args.getInt(KEY_SORT_ARRAY_RES_ID),
-                        args.getInt(KEY_CURRENT_SORT_INDEX), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mListener.sortMethodSelected(which);
-                                dismiss();
-                            }
+                        args.getInt(KEY_CURRENT_SORT_INDEX), (dialog, which) -> {
+                            mListener.sortMethodSelected(which);
+                            dismiss();
                         });
         return builder.create();
     }

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
@@ -67,17 +68,23 @@ public class UnZipIntentService extends IntentService {
 
                 if (unZipInPlace(zipFilePath)) {
 
-                    //Broadcast unzip ended
-                    Intent unzipEndedBroadCast =
-                            new Intent(BROADCAST_ACTION)
-                                    // Puts the status into the Intent
-                                    .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_UNZIP_ENDED)
-                                    .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-                    // Broadcasts the Intent to receivers in this app.
-                    sendOrderedBroadcast(unzipEndedBroadCast, null);
+                    if(validateDatabase(bookId)) {
+                        //Broadcast unzip ended
+                        Intent unzipEndedBroadCast =
+                                new Intent(BROADCAST_ACTION)
+                                        // Puts the status into the Intent
+                                        .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_UNZIP_ENDED)
+                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                        // Broadcasts the Intent to receivers in this app.
+                        sendOrderedBroadcast(unzipEndedBroadCast, null);
 
-                    if (!new File(zipFilePath).delete()) {
-                        Log.e(TAG, "Deleting file: ", new IOException("error deleting file at" + zipFilePath));
+                        if (!new File(zipFilePath).delete()) {
+                            Log.e(TAG, "Deleting file: ", new IOException("error deleting file at" + zipFilePath));
+                        }
+                    }
+                    else
+                    {
+                        BookDownloadCompletedReceiver.broadCastBookDownloadFailed(bookId, "invalidDatabase", this);
                     }
                 }
             } else if (fileName.equals(DATABASE_NAME + ".zip")) {
@@ -99,6 +106,11 @@ public class UnZipIntentService extends IntentService {
                 }
             }
         }
+    }
+
+    private boolean validateDatabase(int bookId) {
+        BookDatabaseHelper bookDatabaseHelper= BookDatabaseHelper.getInstance(this,bookId);
+        return bookDatabaseHelper.isValidBook();
     }
 
     /**
@@ -158,11 +170,13 @@ public class UnZipIntentService extends IntentService {
             }
             return true;
         } else {
-            Log.d(TAG, "File deleteded before unzip:"+zipFilePath);
+            Log.d(TAG, "File deleteded before unzip:" + zipFilePath);
 
             return false;
         }
     }
+
+
 
 }
 

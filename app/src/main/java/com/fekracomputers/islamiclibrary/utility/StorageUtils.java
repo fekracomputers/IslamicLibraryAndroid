@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 
@@ -287,9 +286,7 @@ public class StorageUtils {
                 }
             }
 
-            for (String s : toRemove) {
-                mounts.remove(s);
-            }
+            mounts.removeAll(toRemove);
         } else {
             Timber.d("Android version: %d, skip reading vold.fstab file", Build.VERSION.SDK_INT);
         }

@@ -94,8 +94,8 @@ public class HighlightFragment extends Fragment implements SortListDialogFragmen
 
         View view = inflater.inflate(R.layout.fragment_highlight_list, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        ViewStub zeroView = (ViewStub) view.findViewById(R.id.zero_highlights);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        ViewStub zeroView = view.findViewById(R.id.zero_highlights);
 
         UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
         ArrayList<Highlight> userDataDBHelperAllHighlights = userDataDBHelper.getAllHighlights();

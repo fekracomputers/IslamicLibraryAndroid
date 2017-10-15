@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
@@ -43,7 +41,7 @@ public class BookListActivity extends BrowsingActivity {
     @Override
     protected void inflateUi(Bundle savedInstanceState) {
         setContentView(R.layout.activity_book_catalog_display);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         mPaneNumber = 1;
@@ -71,14 +69,8 @@ public class BookListActivity extends BrowsingActivity {
             getSupportActionBar().setTitle(title);
         }
 
-        mDownloadOnlyBanner = (TextView) findViewById(R.id.browsing_header_banner);
-        mDownloadOnlyBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly());
-
-            }
-        });
+        mDownloadOnlyBanner = findViewById(R.id.browsing_header_banner);
+        mDownloadOnlyBanner.setOnClickListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         mShouldDisplayDownloadOnly = sharedPref.getBoolean(KEY_DOWNLOADED_ONLY, false);
         setDownloadOnlyBannerText(mShouldDisplayDownloadOnly);

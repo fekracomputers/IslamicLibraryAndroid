@@ -38,10 +38,11 @@ public class BrowsingUtils {
     }
 
     public static void deleteBook(int bookId, Context context) {
-
         BooksInformationDbHelper booksInformationDbHelper= BooksInformationDbHelper.getInstance(context);
         if (booksInformationDbHelper != null) {
             booksInformationDbHelper.deleteBook(bookId,context);
+            BooksInformationDbHelper.broadCastBookDeleted(bookId,context);
+
         }
     }
 }

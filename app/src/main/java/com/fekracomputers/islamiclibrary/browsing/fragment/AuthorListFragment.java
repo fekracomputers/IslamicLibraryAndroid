@@ -120,7 +120,7 @@ public class AuthorListFragment
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(fragment_author_list, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setAdapter(mAuthorRecyclerViewAdapter);
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 

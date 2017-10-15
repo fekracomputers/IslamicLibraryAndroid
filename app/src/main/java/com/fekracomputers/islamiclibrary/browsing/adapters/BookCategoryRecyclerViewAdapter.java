@@ -179,24 +179,9 @@ public class BookCategoryRecyclerViewAdapter
     private static final ArrayList<Comparator<BookCategory>> comparators = new ArrayList<>();
 
     static {
-        comparators.add(new Comparator<BookCategory>() {
-            @Override
-            public int compare(BookCategory o1, BookCategory o2) {
-                return o1.getOrder() - o2.getOrder();
-            }
-        });
-        comparators.add(new Comparator<BookCategory>() {
-            @Override
-            public int compare(BookCategory o1, BookCategory o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        comparators.add(new Comparator<BookCategory>() {
-            @Override
-            public int compare(BookCategory o1, BookCategory o2) {
-                return o2.getNumberOfBooks()-o1.getNumberOfBooks();
-            }
-        });
+        comparators.add((o1, o2) -> o1.getOrder() - o2.getOrder());
+        comparators.add((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        comparators.add((o1, o2) -> o2.getNumberOfBooks()-o1.getNumberOfBooks());
 
     }
 
@@ -231,45 +216,36 @@ public class BookCategoryRecyclerViewAdapter
         ViewHolder(View view) {
             super(view);
 
-            mCategoryTitleView = (TextView) view.findViewById(R.id.category_title_tv);
-            mCheckBox = (CheckBox) view.findViewById(R.id.category_checkBox);
-            mNumberOfBooksTextView = (TextView) view.findViewById(R.id.number_of_books_text_view);
+            mCategoryTitleView = view.findViewById(R.id.category_title_tv);
+            mCheckBox = view.findViewById(R.id.category_checkBox);
+            mNumberOfBooksTextView = view.findViewById(R.id.number_of_books_text_view);
             downloadIndicator = view.findViewById(R.id.download_indicator);
             if (null != mListener)
                 mCheckBox.setVisibility(mListener.isInSelectionMode() ? View.VISIBLE : View.GONE);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been clicked.
-                        mListener.OnCategoryItemClick(category);
+            view.setOnClickListener(v -> {
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been clicked.
+                    mListener.OnCategoryItemClick(category);
 
 
-                    }
                 }
             });
 
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    boolean handled = false;
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been lonClicked.
-                        handled = mListener.OnCategoryItemLongClicked(category.getId());
-                        mCheckBox.setChecked(handled);
-                    }
-
-                    return handled;
+            view.setOnLongClickListener(v -> {
+                boolean handled = false;
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been lonClicked.
+                    handled = mListener.OnCategoryItemLongClicked(category.getId());
+                    mCheckBox.setChecked(handled);
                 }
+
+                return handled;
             });
-            mCheckBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mListener) {
-                        mListener.onCategorySelected(category.getId(), ((CheckBox) v).isChecked());
-                    }
+            mCheckBox.setOnClickListener(v -> {
+                if (null != mListener) {
+                    mListener.onCategorySelected(category.getId(), ((CheckBox) v).isChecked());
                 }
             });
 

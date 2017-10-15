@@ -262,39 +262,26 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         public ViewHolder(final View authourView) {
             super(authourView);
 
-            authorNameTv = (TextView) authourView.findViewById(R.id.author_name);
-            authorDeathYear = (TextView) authourView.findViewById(R.id.death_year);
-            authourNumberOfBooksTextView = (TextView) authourView.findViewById(R.id.number_of_books_text_view);
+            authorNameTv = authourView.findViewById(R.id.author_name);
+            authorDeathYear = authourView.findViewById(R.id.death_year);
+            authourNumberOfBooksTextView = authourView.findViewById(R.id.number_of_books_text_view);
             downloadIndicator = authourView.findViewById(R.id.download_indicator);
-            mCheckBox = (CheckBox) authourView.findViewById(R.id.author_checkBox);
+            mCheckBox = authourView.findViewById(R.id.author_checkBox);
             if (null != mListener)
                 mCheckBox.setVisibility(mListener.isInSelectionMode() ? View.VISIBLE : View.GONE);
-            authourView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.OnAuthorItemItemClick(authorInfo);
+            authourView.setOnClickListener(v -> mListener.OnAuthorItemItemClick(authorInfo));
+            authourView.setOnLongClickListener(v -> {
+                boolean handled = false;
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been lonClicked.
+                    handled = mListener.OnAuthorItemLongClicked(authourId);
+                    mCheckBox.setChecked(handled);
                 }
-            });
-            authourView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    boolean handled = false;
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been lonClicked.
-                        handled = mListener.OnAuthorItemLongClicked(authourId);
-                        mCheckBox.setChecked(handled);
-                    }
 
-                    return handled;
-                }
+                return handled;
             });
-            mCheckBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onAuthorSelected(authourId, ((CheckBox) v).isChecked());
-                }
-            });
+            mCheckBox.setOnClickListener(v -> mListener.onAuthorSelected(authourId, ((CheckBox) v).isChecked()));
         }
 
 

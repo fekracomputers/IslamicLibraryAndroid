@@ -58,7 +58,7 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         String idCoulmnName = BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID;
         mBookListRecyclerViewAdapter = new BookListRecyclerViewAdapter(
                 getContext(),

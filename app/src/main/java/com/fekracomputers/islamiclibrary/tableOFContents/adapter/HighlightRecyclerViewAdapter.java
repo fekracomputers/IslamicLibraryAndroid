@@ -90,12 +90,7 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
 
 
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onHighlightClicked(holder.highlight);
-            }
-        });
+        holder.mView.setOnClickListener(v -> mListener.onHighlightClicked(holder.highlight));
     }
 
     @Override
@@ -121,29 +116,16 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
         <item>@string/library_sort_by_date</item>
         <item>@string/library_sort_by_color</item>
          */
-        comparators.add(new Comparator<Highlight>() {
-            @Override
-            public int compare(Highlight o1, Highlight o2) {
-                return o1.pageInfo.pageId - o2.pageInfo.pageId;
+        comparators.add((o1, o2) -> o1.pageInfo.pageId - o2.pageInfo.pageId);
+        comparators.add((o1, o2) -> {
+            try {
+                return o1.getDateTime().compareTo(o2.getDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+            return 0;
         });
-        comparators.add(new Comparator<Highlight>() {
-            @Override
-            public int compare(Highlight o1, Highlight o2) {
-                try {
-                    return o1.getDateTime().compareTo(o2.getDateTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
-        comparators.add(new Comparator<Highlight>() {
-            @Override
-            public int compare(Highlight o1, Highlight o2) {
-                return o1.className.compareTo(o2.className);
-            }
-        });
+        comparators.add((o1, o2) -> o1.className.compareTo(o2.className));
 
     }
 
@@ -181,10 +163,10 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
             super(view);
             mView = view;
 
-            partPageNumberTextView = (TextView) view.findViewById(R.id.page_part_number);
-            dateTimeTextView = (TextView) view.findViewById(R.id.date_time);
-            noteTextTextView = (TextView) view.findViewById(R.id.toc_card_body);
-            HighlightTextTextView = (TextView) view.findViewById(R.id.text_view_highlight_text);
+            partPageNumberTextView = view.findViewById(R.id.page_part_number);
+            dateTimeTextView = view.findViewById(R.id.date_time);
+            noteTextTextView = view.findViewById(R.id.toc_card_body);
+            HighlightTextTextView = view.findViewById(R.id.text_view_highlight_text);
         }
 
         @Override

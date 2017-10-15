@@ -76,7 +76,7 @@ public class NotePopupFragment extends DialogFragment {
         Bundle args = getArguments();
 
 
-        TextView mHighlightText = (TextView) view.findViewById(R.id.text_view_highlight_text);
+        TextView mHighlightText = view.findViewById(R.id.text_view_highlight_text);
 
         mHighlightText.setOnTouchListener(new MovingTouchListener(getDialog().getWindow()));
         String title = args.getString(HIGHLIGHT_TEXT_KEY, "TEXT");
@@ -85,7 +85,7 @@ public class NotePopupFragment extends DialogFragment {
         mHighlightText.setBackgroundColor(highlightColor);
 
 
-        mNoteEditText = (EditText) view.findViewById(R.id.toc_card_body);
+        mNoteEditText = view.findViewById(R.id.toc_card_body);
         String note = args.getString(HIGHLIGHT_NOTE_KEY, "");
         mNoteEditText.setText(note);
         int highlightDarkColor = args.getInt(HIGHLIGHT_DARK_COLOR_KEY);

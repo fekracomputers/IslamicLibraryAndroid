@@ -24,19 +24,15 @@ public class DownloadBookInformationDialog extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_information_database_not_available);
 
-        builder.setPositiveButton(R.string.Ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                BooksDownloader booksDownloader = new BooksDownloader(getContext());
+        builder.setPositiveButton(R.string.Ok, (dialog, id) -> {
+            BooksDownloader booksDownloader = new BooksDownloader(getContext());
 
-                //TODO shared preference
-                booksDownloader.DownloadBookInformationDatabase(true);
-                Toast.makeText(getContext(), R.string.wait_for_download, Toast.LENGTH_LONG).show();
-            }
+            //TODO shared preference
+            booksDownloader.DownloadBookInformationDatabase(true);
+            Toast.makeText(getContext(), R.string.wait_for_download, Toast.LENGTH_LONG).show();
         });
 
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
         });
         // Create the AlertDialog object and return it
         return builder.create();

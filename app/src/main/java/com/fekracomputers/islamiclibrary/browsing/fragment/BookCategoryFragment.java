@@ -98,7 +98,7 @@ public class BookCategoryFragment
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_bookcategory_list, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setAdapter(mBookCategoryRecyclerViewAdapter);
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 

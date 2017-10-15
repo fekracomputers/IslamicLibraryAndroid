@@ -2,29 +2,16 @@ package com.fekracomputers.islamiclibrary.widget;
 
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
-import android.widget.ListAdapter;
-import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

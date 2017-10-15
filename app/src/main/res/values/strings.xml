@@ -200,7 +200,7 @@
     <string name="facebookUserName" translatable="false">fekraComputers</string>
     <string name="find_us_on_social_media">Find us on social media</string>
     <string name="about_activity_twitter_label">Twitter</string>
-    <string name="twitter_user_name" translatable="false">fecracomputers</string>
+    <string name="twitter_user_name" translatable="false">fekra_library</string>
     <string name="about_activity_web_page_label">Web</string>
     <string name="web_page" translatable="false">http://www.islam-db.com/</string>
     <string name="open_source_licences">open source libraries licences</string>

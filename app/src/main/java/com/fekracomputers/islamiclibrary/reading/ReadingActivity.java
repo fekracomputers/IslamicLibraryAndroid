@@ -31,7 +31,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -120,14 +119,11 @@ public class ReadingActivity extends AppCompatActivity implements
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
         }
+        return false;
     };
     boolean mTurnPageByVolumeUpKey = true;
     boolean mTurnPageByVolumeDownKey = true;
@@ -211,24 +207,14 @@ public class ReadingActivity extends AppCompatActivity implements
     private BookPartsInfo mPartsInfo;
     private int PAGE_COUNT;
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+    private final Runnable mHideRunnable = this::hide;
     private Title parentTitle;
     private UserDataDBHelper mUserDataDBHelper;
     private boolean isThemeNightMode;
     private boolean mIsInSearchMode = false;
     private SearchView mSearchView;
     private SharedPreferences defaultSharedPreferences;
-    private View.OnClickListener mShowPageNumberPickerDialogClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showPageNumberPickerDialog();
-        }
-    };
+    private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
 
     private void showPageNumberPickerDialog() {
         Bundle PageNumberPickerDialogFragmentBundle = new Bundle();
@@ -501,7 +487,7 @@ public class ReadingActivity extends AppCompatActivity implements
     @Override
     public void setBookmarkState(boolean Checked) {
         if (is_nav_view_inflated) {
-            ImageButton bookmarkImageButton = (ImageButton) mControlsView.findViewById(R.id.action_bookmark_this_page);
+            ImageButton bookmarkImageButton = mControlsView.findViewById(R.id.action_bookmark_this_page);
             if (bookmarkImageButton.isSelected() != Checked)
                 bookmarkImageButton.setSelected(Checked);
         }
@@ -586,25 +572,22 @@ public class ReadingActivity extends AppCompatActivity implements
         setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
 
         setContentView(R.layout.activity_reading);
-        mNavViewStub = (ViewStub) findViewById(R.id.book_nav_view_stub);
+        mNavViewStub = findViewById(R.id.book_nav_view_stub);
         mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
 
-        mSearchViewStub = (ViewStub) findViewById(R.id.search_scrub_stub);
+        mSearchViewStub = findViewById(R.id.search_scrub_stub);
         mSearchViewStub.setOnInflateListener(new SearchScrubOnInflateListener());
 
-        mFloatingPageNumberFrameLayout = (FrameLayout) findViewById(R.id.floating_page_number_frame);
-        mFloatingPageNumberTextView = (TextView) mFloatingPageNumberFrameLayout.
+        mFloatingPageNumberFrameLayout = findViewById(R.id.floating_page_number_frame);
+        mFloatingPageNumberTextView = mFloatingPageNumberFrameLayout.
                 findViewById(R.id.floating_page_number_text_view);
-        mFloatingPageNumberTextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showNavView();
-                mHideHandler.post(mHideFloatingPageNumberRunnable);
-                final KeyboardAwareEditText pageNumberEditor = (KeyboardAwareEditText) mControlsView.findViewById(R.id.page_number_editor);
-                final TextView pageNumberTextView = (TextView) mControlsView.findViewById(R.id.part_page_number_tv);
-                showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
-                return true;
-            }
+        mFloatingPageNumberTextView.setOnLongClickListener(v -> {
+            showNavView();
+            mHideHandler.post(mHideFloatingPageNumberRunnable);
+            final KeyboardAwareEditText pageNumberEditor = mControlsView.findViewById(R.id.page_number_editor);
+            final TextView pageNumberTextView = mControlsView.findViewById(R.id.part_page_number_tv);
+            showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
+            return true;
         });
         mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
         bookName = intent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
@@ -613,7 +596,7 @@ public class ReadingActivity extends AppCompatActivity implements
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(bookName);
         }
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
         mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
         PAGE_COUNT = mBookDatabaseHelper.getPageCount();
@@ -1036,37 +1019,29 @@ public class ReadingActivity extends AppCompatActivity implements
         public void onInflate(ViewStub stub, View inflated) {
             searchScrubBar = (SearchScrubBar) inflated;
             searchScrubBar.setupPagingDirection(mIsArabic);
-            searchScrubBar.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    if (view == searchScrubBar.getPreviousButton()) {
-                        ReadingActivity.this.moveToPreviousMatch();
-                    } else if (view == searchScrubBar.getNextButton()) {
-                        ReadingActivity.this.moveToNextMatch();
-                    }
+            searchScrubBar.setOnClickListener(view -> {
+                if (view == searchScrubBar.getPreviousButton()) {
+                    ReadingActivity.this.moveToPreviousMatch();
+                } else if (view == searchScrubBar.getNextButton()) {
+                    ReadingActivity.this.moveToNextMatch();
                 }
             });
-            searchScrubBar.setExitSearchListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!isInGlobalSearchResult()) {
-                        removeSearchResultFragment();
-                    }
-                    exitSearchMode();
+            searchScrubBar.setExitSearchListener(v -> {
+                if (!isInGlobalSearchResult()) {
+                    removeSearchResultFragment();
                 }
+                exitSearchMode();
             });
-            searchScrubBar.setMatchDescriptionOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            searchScrubBar.setMatchDescriptionOnClickListener(v -> {
 
-                    if (!isInGlobalSearchResult()) {
-                        reShowSearchResultFragment();
+                if (!isInGlobalSearchResult()) {
+                    reShowSearchResultFragment();
 
-                    } else {
-                        //TODO May be change the scenario to remove the Search activity from the application backStack
-                        finish();
-                    }
-
+                } else {
+                    //TODO May be change the scenario to remove the Search activity from the application backStack
+                    finish();
                 }
+
             });
 
         }
@@ -1080,27 +1055,24 @@ public class ReadingActivity extends AppCompatActivity implements
         @Override
         public void onInflate(ViewStub stub, View inflated) {
 
-            final TextView pageNumberTextView = (TextView) inflated.findViewById(R.id.part_page_number_tv);
-            final TextView partNumberTextView = (TextView) inflated.findViewById(R.id.part_number);
-            final KeyboardAwareEditText pageNumberEditor = (KeyboardAwareEditText) inflated.findViewById(R.id.page_number_editor);
-            final KeyboardAwareEditText partNumberEditor = (KeyboardAwareEditText) inflated.findViewById(R.id.part_number_editor);
-            final TextView chapterTitleTextView = (TextView) inflated.findViewById(chapter_title);
-            final ImageButton bookmarkImageButton = (ImageButton) inflated.findViewById(R.id.action_bookmark_this_page);
+            final TextView pageNumberTextView = inflated.findViewById(R.id.part_page_number_tv);
+            final TextView partNumberTextView = inflated.findViewById(R.id.part_number);
+            final KeyboardAwareEditText pageNumberEditor = inflated.findViewById(R.id.page_number_editor);
+            final KeyboardAwareEditText partNumberEditor = inflated.findViewById(R.id.part_number_editor);
+            final TextView chapterTitleTextView = inflated.findViewById(chapter_title);
+            final ImageButton bookmarkImageButton = inflated.findViewById(R.id.action_bookmark_this_page);
             bookmarkImageButton.setVisibility(View.VISIBLE);
             bookmarkImageButton.setSelected(mUserDataDBHelper.isPageBookmarked(currentPageInfo.pageId));
 
-            bookmarkImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean newBookmarkState = !bookmarkImageButton.isSelected();
-                    bookmarkImageButton.setSelected(newBookmarkState);
-                    if (bookmarkImageButton.isSelected()) {
-                        mUserDataDBHelper.addBookmark(currentPageInfo.pageId);
-                    } else {
-                        mUserDataDBHelper.RemoveBookmark(currentPageInfo.pageId);
-                    }
-                    notifyBookmarkStateChanged(newBookmarkState);
+            bookmarkImageButton.setOnClickListener(v -> {
+                boolean newBookmarkState = !bookmarkImageButton.isSelected();
+                bookmarkImageButton.setSelected(newBookmarkState);
+                if (bookmarkImageButton.isSelected()) {
+                    mUserDataDBHelper.addBookmark(currentPageInfo.pageId);
+                } else {
+                    mUserDataDBHelper.RemoveBookmark(currentPageInfo.pageId);
                 }
+                notifyBookmarkStateChanged(newBookmarkState);
             });
 
 
@@ -1110,23 +1082,16 @@ public class ReadingActivity extends AppCompatActivity implements
                 //The book has only one part
                 partNumberTextView.setVisibility(View.GONE);
                 partNumberEditor.setVisibility(View.GONE);
-                TextView slash = (TextView) findViewById(R.id.page_slash);
+                TextView slash = findViewById(R.id.page_slash);
                 slash.setVisibility(View.GONE);
             } else {
                 partNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
-                partNumberTextView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        showEditingPartNumberInPlace(partNumberTextView, partNumberEditor);
-                        return true;
-                    }
+                partNumberTextView.setOnLongClickListener(v -> {
+                    showEditingPartNumberInPlace(partNumberTextView, partNumberEditor);
+                    return true;
                 });
 
-                partNumberEditor.setKeyboardListener(new KeyboardAwareEditText.KeyboardListener() {
-                    public void onKeyboardDismissed(KeyboardAwareEditText editText) {
-                        switchEditTextToTextView(partNumberEditor, partNumberTextView);
-                    }
-                });
+                partNumberEditor.setKeyboardListener(editText -> switchEditTextToTextView(partNumberEditor, partNumberTextView));
 
 
                 int maxPartLength = String.valueOf(mPartsInfo.lastPart).length();
@@ -1179,51 +1144,38 @@ public class ReadingActivity extends AppCompatActivity implements
                         }
                     }
                 });
-                partNumberEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (!hasFocus)
-                            switchEditTextToTextView(partNumberEditor, partNumberTextView);
-                        Util.enableSoftInput(v, hasFocus);
-                    }
+                partNumberEditor.setOnFocusChangeListener((v, hasFocus) -> {
+                    if (!hasFocus)
+                        switchEditTextToTextView(partNumberEditor, partNumberTextView);
+                    Util.enableSoftInput(v, hasFocus);
                 });
-                partNumberEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        boolean handled = false;
-                        if (v.getError() != null) {
-                            return false;
-                        } else {
-                            if (actionId == EditorInfo.IME_ACTION_GO) {
+                partNumberEditor.setOnEditorActionListener((v, actionId, event) -> {
+                    boolean handled = false;
+                    if (v.getError() != null) {
+                        return false;
+                    } else {
+                        if (actionId == EditorInfo.IME_ACTION_GO) {
 
-                                mPager.setCurrentItem((
-                                                mBookDatabaseHelper.pageId2position(
-                                                        mBookDatabaseHelper.getPageId(Integer.valueOf(v.getText().toString()),
-                                                                currentPageInfo.pageNumber))),
-                                        true);
-                                switchEditTextToTextView(partNumberEditor, partNumberTextView);
-                                handled = true;
-                            }
+                            mPager.setCurrentItem((
+                                            mBookDatabaseHelper.pageId2position(
+                                                    mBookDatabaseHelper.getPageId(Integer.valueOf(v.getText().toString()),
+                                                            currentPageInfo.pageNumber))),
+                                    true);
+                            switchEditTextToTextView(partNumberEditor, partNumberTextView);
+                            handled = true;
                         }
-                        return handled;
                     }
+                    return handled;
                 });
 
 
             }
             pageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
-            pageNumberTextView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
-                    return true;
-                }
+            pageNumberTextView.setOnLongClickListener(v -> {
+                showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
+                return true;
             });
-            pageNumberEditor.setKeyboardListener(new KeyboardAwareEditText.KeyboardListener() {
-                public void onKeyboardDismissed(KeyboardAwareEditText editText) {
-                    switchEditTextToTextView(pageNumberEditor, pageNumberTextView);
-                }
-            });
+            pageNumberEditor.setKeyboardListener(editText -> switchEditTextToTextView(pageNumberEditor, pageNumberTextView));
 
 
             int maxPageLength = String.valueOf(mPartsInfo.largestPage).length();
@@ -1285,41 +1237,35 @@ public class ReadingActivity extends AppCompatActivity implements
                 }
             });
 
-            pageNumberEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        switchEditTextToTextView(pageNumberEditor, pageNumberTextView);
-                    }
-                    Util.enableSoftInput(v, hasFocus);
+            pageNumberEditor.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    switchEditTextToTextView(pageNumberEditor, pageNumberTextView);
                 }
+                Util.enableSoftInput(v, hasFocus);
             });
 
-            pageNumberEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    boolean handled = false;
+            pageNumberEditor.setOnEditorActionListener((v, actionId, event) -> {
+                boolean handled = false;
 
-                    if (v.getError() != null) {
-                        return false;
-                    }
-                    if (actionId == EditorInfo.IME_ACTION_GO) {
-
-                        mPager.setCurrentItem((
-                                        mBookDatabaseHelper.pageId2position(
-                                                mBookDatabaseHelper.getPageId(currentPageInfo.partNumber,
-                                                        Integer.valueOf(v.getText().toString())))),
-                                true);
-
-                        switchEditTextToTextView(pageNumberEditor, pageNumberTextView);
-                        handled = true;
-
-                    }
-                    return handled;
+                if (v.getError() != null) {
+                    return false;
                 }
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+
+                    mPager.setCurrentItem((
+                                    mBookDatabaseHelper.pageId2position(
+                                            mBookDatabaseHelper.getPageId(currentPageInfo.partNumber,
+                                                    Integer.valueOf(v.getText().toString())))),
+                            true);
+
+                    switchEditTextToTextView(pageNumberEditor, pageNumberTextView);
+                    handled = true;
+
+                }
+                return handled;
             });
 
-            seekBar = (SeekBar) findViewById(R.id.seek_bar);
+            seekBar = findViewById(R.id.seek_bar);
             ViewCompat.setLayoutDirection(seekBar,ViewCompat.LAYOUT_DIRECTION_RTL);
             seekBar.setMax(PAGE_COUNT);
             seekBar.setProgress(mPager.getCurrentItem());
@@ -1367,17 +1313,14 @@ public class ReadingActivity extends AppCompatActivity implements
                 }
             });
 
-            chapterTitleTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ReadingActivity.this, TableOfContentsBookmarksActivity.class);
-                    intent.putExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, bookId);
-                    intent.putExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookName);
-                    intent.putExtra(KEY_TAB_NAME, TableOfContentsBookmarksActivity.TableOfContentAndNotesTab.TAB_TABLE_OF_CONTENTS.ordinal());
-                    intent.putExtra(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, parentTitle.pageInfo.pageId);
-                    intent.putExtra(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID, parentTitle.id);
-                    startActivityForResult(intent, PICK_TITLE_REQUEST);
-                }
+            chapterTitleTextView.setOnClickListener(v -> {
+                Intent intent = new Intent(ReadingActivity.this, TableOfContentsBookmarksActivity.class);
+                intent.putExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, bookId);
+                intent.putExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookName);
+                intent.putExtra(KEY_TAB_NAME, TableOfContentsBookmarksActivity.TableOfContentAndNotesTab.TAB_TABLE_OF_CONTENTS.ordinal());
+                intent.putExtra(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, parentTitle.pageInfo.pageId);
+                intent.putExtra(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID, parentTitle.id);
+                startActivityForResult(intent, PICK_TITLE_REQUEST);
             });
 
         }

@@ -58,13 +58,8 @@ public class HistoryTitlesAdapter extends RecyclerView.Adapter<HistoryTitlesAdap
 
         ViewHolder(View v) {
             super(v);
-            title_history_element = (TextView) v.findViewById(R.id.title_history_element);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnTitleHistoryClickListener.OnTitleHistoryClicked(getAdapterPosition());
-                }
-            });
+            title_history_element = v.findViewById(R.id.title_history_element);
+            v.setOnClickListener(view -> mOnTitleHistoryClickListener.OnTitleHistoryClicked(getAdapterPosition()));
 
         }
     }

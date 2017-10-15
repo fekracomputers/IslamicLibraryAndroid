@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
@@ -159,8 +160,11 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
             holder.bookCheckBox.setChecked(mListener.isBookSelected(holder.bookInfo.getBookId()));
         }
         holder.bindDownloadStatus(bookDownloadStatus);
-
-        Glide.with(mContext).load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId())).placeholder(R.drawable.no_book_image).into(holder.bookCoverImageView);
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.no_book_image);
+        Glide.with(mContext)
+                .setDefaultRequestOptions(requestOptions)
+                .load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId()))
+                .into(holder.bookCoverImageView);
 
 
         //TODO Is it better to attach the listener here or in the constuctor of view holder
@@ -267,49 +271,31 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
         public ViewHolder(final View bookCover) {
             super(bookCover);
-            bookCoverImageView = (ImageView) bookCover.findViewById(R.id.book_cover);
-            bookCoverName = (TextView) bookCover.findViewById(R.id.book_label);
-            bookCoverAuthor = (TextView) bookCover.findViewById(R.id.bookauthor);
-            bookCheckBox = (CheckBox) bookCover.findViewById(R.id.book_ceckBox);
+            bookCoverImageView = bookCover.findViewById(R.id.book_cover);
+            bookCoverName = bookCover.findViewById(R.id.book_label);
+            bookCoverAuthor = bookCover.findViewById(R.id.bookauthor);
+            bookCheckBox = bookCover.findViewById(R.id.book_ceckBox);
             if (null != mListener) {
                 bookCheckBox.setVisibility(mListener.isInSelectionMode() ? View.VISIBLE : View.GONE);
             }
-            moreButton=(ImageView) bookCover.findViewById(R.id.book_overflow_btn);
-            moreButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onMoreButtonClicked(bookInfo,v);
+            moreButton= bookCover.findViewById(R.id.book_overflow_btn);
+            moreButton.setOnClickListener(v -> mListener.onMoreButtonClicked(bookInfo,v));
+
+            bookCover.setOnClickListener(v -> mListener.OnBookTitleClick(bookInfo.getBookId(), bookInfo.getName()));
+            bookCover.setOnLongClickListener(v -> {
+                boolean handled = false;
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been lonClicked.
+                    handled = mListener.OnBookItemLongClicked(bookInfo.getBookId());
+                    bookCheckBox.setChecked(handled);
                 }
+
+                return handled;
             });
 
-            bookCover.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.OnBookTitleClick(bookInfo.getBookId(), bookInfo.getName());
-                }
-            });
-            bookCover.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    boolean handled = false;
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been lonClicked.
-                        handled = mListener.OnBookItemLongClicked(bookInfo.getBookId());
-                        bookCheckBox.setChecked(handled);
-                    }
-
-                    return handled;
-                }
-            });
-
-            bookCheckBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.bookSelected(bookInfo.getBookId(), ((CheckBox) v).isChecked());
-                }
-            });
-            downloadButton = (Button) bookCover.findViewById(R.id.btn_download);
+            bookCheckBox.setOnClickListener(v -> mListener.bookSelected(bookInfo.getBookId(), ((CheckBox) v).isChecked()));
+            downloadButton = bookCover.findViewById(R.id.btn_download);
             downloadIndicator = bookCover.findViewById(R.id.download_indicator);
         }
 
@@ -339,15 +325,12 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
                 downloadButton.setText(R.string.download_book);
                 downloadButton.setEnabled(true);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_not_downloaded);
-                downloadButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.StartDownloadingBook(bookInfo);
-                        v.setEnabled(false);
-                        ((Button) v).setText(R.string.Downloading);
+                downloadButton.setOnClickListener(v -> {
+                    mListener.StartDownloadingBook(bookInfo);
+                    v.setEnabled(false);
+                    ((Button) v).setText(R.string.Downloading);
 //                        downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
-                        downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
-                    }
+                    downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 });
             } else if (bookDownloadStatus >= STATUS_DOWNLOAD_REQUESTED && bookDownloadStatus < DownloadsConstants.STATUS_DOWNLOAD_COMPLETED) {
                 downloadButton.setText(R.string.Downloading);
@@ -364,12 +347,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 //                downloadButton.setImageResource(R.drawable.book_open_variant);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloaded);
                 downloadButton.setEnabled(true);
-                downloadButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.openBookForReading(bookInfo);
-                    }
-                });
+                downloadButton.setOnClickListener(v -> mListener.openBookForReading(bookInfo));
             }
 
         }

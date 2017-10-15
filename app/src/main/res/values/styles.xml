@@ -22,7 +22,7 @@
     </style>
 
 
-    <style name="AppTheme.MaterialAboutActivity.Fragment" parent="Theme.Mal.Light.DarkActionBar" >
+    <style name="AppTheme.MaterialAboutActivity.Fragment" parent="Theme.Mal.Light" >
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
