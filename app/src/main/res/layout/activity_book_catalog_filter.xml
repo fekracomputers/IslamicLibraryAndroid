@@ -17,22 +17,12 @@
         tools:visibility="visible">
 
         <ImageButton
-            style="@style/Widget.AppCompat.ActionButton"
             android:id="@+id/up_button"
+            style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
     </android.support.v7.widget.Toolbar>
-
-    <TextView
-        android:id="@+id/browsing_header_banner"
-        style="@style/PlayHeaderListBannerText"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/browsing_banner_height"
-        android:background="@drawable/browsing_layout_banner_bg"
-        android:gravity="center"
-        android:textAllCaps="true"
-        tools:text="@string/side_drawer_downloaded_only" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -49,7 +39,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="enterAlways|scroll" />
+                app:layout_scrollFlags="enterAlways|scroll">
+
+                <com.polyak.iconswitch.IconSwitch
+                    android:id="@+id/toolbar_downloaded_only_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:isw_icon_left="@drawable/ic_cloud_done_black_24dp"
+                    app:isw_icon_right="@drawable/ic_cloud_download_black_24dp"
+                    />
+                <!--app:isw_thumb_color_left="@color/material_yellow_500"-->
+                <!--app:isw_thumb_color_right="@color/material_blue_500"-->
+                <!--app:isw_inactive_tint_icon_left="@color/material_yellow_500"-->
+                <!--app:isw_inactive_tint_icon_right="@color/material_blue_500-->
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -60,6 +64,16 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout="@layout/fragment_filter_pager" />
 
+        <android.support.design.widget.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="start|bottom"
+            android:background="@color/colorPrimaryDark"
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:menu="@menu/buttom_navigation" />
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

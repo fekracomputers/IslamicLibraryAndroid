@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/browsing_header_banner"
+        android:id="@+id/toolbar_downloaded_only_switch"
         style="@style/PlayHeaderListBannerText"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/browsing_banner_height"

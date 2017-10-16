@@ -5,17 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!--<android.support.design.widget.TabLayout-->
+    <!--android:id="@+id/tabs"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorPrimary"-->
+    <!--app:tabGravity="fill"-->
+    <!--app:tabIndicatorColor="@color/color_tab_layout_indicator"-->
+    <!--app:tabMaxWidth="0dp"-->
+    <!--app:tabMode="scrollable"-->
+    <!--app:theme="@style/Theme.AppCompat.NoActionBar" />-->
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
+        style="@style/toc_tab_style"
+        android:background="#e0e0e0"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/color_tab_layout_indicator"
-        app:tabMaxWidth="0dp"
-        app:tabMode="scrollable"
-        app:theme="@style/Theme.AppCompat.NoActionBar" />
-
+        android:layout_height="wrap_content" />
 
 
     <android.support.v4.view.ViewPager

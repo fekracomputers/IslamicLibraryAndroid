@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
     android:layout_marginTop="4dp"
     app:cardBackgroundColor="@color/book_card_background"
     app:cardCornerRadius="8dp"
@@ -18,10 +18,10 @@
         android:layout_height="match_parent"
         android:gravity="right"
         android:orientation="vertical"
-        android:paddingBottom="20dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="20dp">
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp">
 
         <CheckBox
             android:id="@+id/author_checkBox"
@@ -88,7 +88,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/death_year"
             android:layout_alignParentLeft="true"
-            tools:text="عدد الكتب: 500" />
+            android:layout_marginLeft="8dp"
+            tools:text="الكتب: 500" />
 
         <View
             android:id="@+id/vertical_separator"

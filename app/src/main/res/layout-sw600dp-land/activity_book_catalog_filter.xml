@@ -24,16 +24,6 @@
             app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/browsing_header_banner"
-        style="@style/PlayHeaderListBannerText"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/browsing_banner_height"
-        android:background="@drawable/browsing_layout_banner_bg"
-        android:gravity="center"
-        android:textAllCaps="true"
-        tools:text="@string/side_drawer_downloaded_only" />
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -48,7 +38,15 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary" />
+                android:background="?attr/colorPrimary">
+
+                <com.polyak.iconswitch.IconSwitch
+                    android:id="@+id/toolbar_downloaded_only_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:isw_icon_left="@drawable/ic_cloud_done_black_24dp"
+                    app:isw_icon_right="@drawable/ic_cloud_download_black_24dp" />
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 

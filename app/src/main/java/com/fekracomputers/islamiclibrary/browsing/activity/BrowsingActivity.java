@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -57,6 +56,7 @@ import com.fekracomputers.islamiclibrary.settings.AboutActivity;
 import com.fekracomputers.islamiclibrary.settings.AboutUtil;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
 import com.fekracomputers.islamiclibrary.utility.Util;
+import com.polyak.iconswitch.IconSwitch;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -99,9 +99,9 @@ public class BrowsingActivity
     protected HashSet<Integer> selectedBooksIds = new HashSet<>();
     protected BookSelectionActionModeCallback mActionMode;
     protected boolean mIsArabic;
-    protected TextView mDownloadOnlyBanner;
+    protected IconSwitch toolbarDownloadOnlySwitch;
     protected boolean mShouldDisplayDownloadOnly;
-    protected SwitchCompat downloadedOnlySwitch;
+    protected SwitchCompat navDownloadedOnlySwitch;
     protected List<BrowsingActivityListingFragment> pagerTabs = new ArrayList<>();
     protected SearchView mSearchView;
     /**
@@ -110,7 +110,6 @@ public class BrowsingActivity
     View bookListContainer;
     BookFilterPagerFragment pagerFragment;
     BooksInformationDbHelper mBooksInformationDbHelper;
-    protected CompoundButton.OnCheckedChangeListener onDownloadSwitchCheckedChangeListener = (buttonView, isChecked) -> switchDownloadOnlyFilter(isChecked);
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
@@ -258,20 +257,19 @@ public class BrowsingActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        mDownloadOnlyBanner = findViewById(R.id.browsing_header_banner);
-        downloadedOnlySwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.nav_item_downloaded_only).getActionView();
+        toolbarDownloadOnlySwitch = findViewById(R.id.toolbar_downloaded_only_switch);
+        navDownloadedOnlySwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.nav_item_downloaded_only).getActionView();
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         mShouldDisplayDownloadOnly = sharedPref.getBoolean(KEY_DOWNLOADED_ONLY, false);
-        setDownloadOnlyBannerText(mShouldDisplayDownloadOnly);
+        setToolbarDownloadOnlySwitchNoCallBack(mShouldDisplayDownloadOnly);
         setDownloadOnlySwitchNoCallBack(mShouldDisplayDownloadOnly);
 
-        mDownloadOnlyBanner.setOnClickListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
-
-        downloadedOnlySwitch.setOnCheckedChangeListener(onDownloadSwitchCheckedChangeListener);
+        toolbarDownloadOnlySwitch.setCheckedChangeListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
+        navDownloadedOnlySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> switchDownloadOnlyFilter(isChecked));
 
         //this is done to prevent motion of drawer when the user tries to slide thes switch
-        downloadedOnlySwitch.setOnTouchListener((v, event) -> {
+        navDownloadedOnlySwitch.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);
             }
@@ -372,7 +370,7 @@ public class BrowsingActivity
 
         }
         mShouldDisplayDownloadOnly = showDownloadedOnly;
-        setDownloadOnlyBannerText(showDownloadedOnly);
+        setToolbarDownloadOnlySwitchNoCallBack(showDownloadedOnly);
         setDownloadOnlySwitchNoCallBack(showDownloadedOnly);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -387,15 +385,19 @@ public class BrowsingActivity
     }
 
     protected void setDownloadOnlySwitchNoCallBack(boolean showDownloadedOnly) {
-        if (downloadedOnlySwitch != null) {
-            downloadedOnlySwitch.setOnCheckedChangeListener(null);
-            downloadedOnlySwitch.setChecked(showDownloadedOnly);
-            downloadedOnlySwitch.setOnCheckedChangeListener(onDownloadSwitchCheckedChangeListener);
+        if (navDownloadedOnlySwitch != null) {
+            navDownloadedOnlySwitch.setOnCheckedChangeListener(null);
+            navDownloadedOnlySwitch.setChecked(showDownloadedOnly);
+            navDownloadedOnlySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> switchDownloadOnlyFilter(isChecked));
         }
     }
 
-    protected void setDownloadOnlyBannerText(boolean showDownloadedOnly) {
-        mDownloadOnlyBanner.setText(showDownloadedOnly ? R.string.side_drawer_downloaded_only : R.string.action_bar_title_all_books);
+    protected void setToolbarDownloadOnlySwitchNoCallBack(boolean showDownloadedOnly) {
+        if (toolbarDownloadOnlySwitch != null) {
+            toolbarDownloadOnlySwitch.setCheckedChangeListener(null);
+            toolbarDownloadOnlySwitch.setChecked(showDownloadedOnly ? IconSwitch.Checked.LEFT : IconSwitch.Checked.RIGHT);
+            toolbarDownloadOnlySwitch.setCheckedChangeListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
+        }
     }
 
     @Override
@@ -871,7 +873,6 @@ public class BrowsingActivity
             mActionMode = null;
             selectedBooksIds.clear();
             selectionToolBar.setVisibility(View.GONE);
-            mDownloadOnlyBanner.setVisibility(View.VISIBLE);
             notifySelectionActionModeDestroyed();
         }
 
@@ -899,7 +900,6 @@ public class BrowsingActivity
             browsingActivity.mSearchView.setQueryHint(browsingActivity.getString(R.string.hint_search_inside_books));
 
             selectionToolBar.setVisibility(View.VISIBLE);
-            browsingActivity.mDownloadOnlyBanner.setVisibility(View.GONE);
             //   mSearchView.setIconifiedByDefault(true);
             browsingActivity.mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override

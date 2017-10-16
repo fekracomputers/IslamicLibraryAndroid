@@ -247,6 +247,9 @@
     <string name="prefs_megabytes_int">%1$d ميجا</string>
     <string name="prefs_megabytes_str">%s ميجا</string>
     <string name="action_de_select_all">إزالة تحديد الكل</string>
+    <string name="bottom_nav_home">الرئيسية</string>
+    <string name="bottom_nav_search">بحث</string>
+    <string name="bottom_library">المكتبة</string>
 
     <!--end app location-->
 

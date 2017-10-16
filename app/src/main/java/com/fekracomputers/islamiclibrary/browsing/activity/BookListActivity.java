@@ -69,11 +69,11 @@ public class BookListActivity extends BrowsingActivity {
             getSupportActionBar().setTitle(title);
         }
 
-        mDownloadOnlyBanner = findViewById(R.id.browsing_header_banner);
-        mDownloadOnlyBanner.setOnClickListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
+        toolbarDownloadOnlySwitch = findViewById(R.id.toolbar_downloaded_only_switch);
+        toolbarDownloadOnlySwitch.setCheckedChangeListener(v -> switchDownloadOnlyFilter(!shouldDisplayDownloadedOnly()));
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         mShouldDisplayDownloadOnly = sharedPref.getBoolean(KEY_DOWNLOADED_ONLY, false);
-        setDownloadOnlyBannerText(mShouldDisplayDownloadOnly);
+        setToolbarDownloadOnlySwitchNoCallBack(mShouldDisplayDownloadOnly);
 
         Fragment bookListFragment = BookListFragment.newInstance(filterType, id);
         fragmentTransaction.replace(R.id.book_list_container, bookListFragment);

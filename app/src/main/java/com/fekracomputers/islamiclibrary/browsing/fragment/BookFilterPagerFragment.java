@@ -89,10 +89,10 @@ public class BookFilterPagerFragment extends Fragment {
         });
         mTabLayout.setupWithViewPager(mViewPager);
         ViewCompat.setLayoutDirection(mTabLayout, ViewCompat.LAYOUT_DIRECTION_LTR);
-        makTabsFixed(mTabLayout);
-        for (int i = 0; i < mTabLayout.getTabCount(); i++) {
-            mTabLayout.getTabAt(i).setIcon(bookCatalogElements.get(i).getIconDrawableId());
-        }
+//        makTabsFixed(mTabLayout);
+//        for (int i = 0; i < mTabLayout.getTabCount(); i++) {
+//            mTabLayout.getTabAt(i).setIcon(bookCatalogElements.get(i).getIconDrawableId());
+//        }
         return rootView;
     }
 
