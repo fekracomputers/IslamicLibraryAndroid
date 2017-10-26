@@ -1,7 +1,5 @@
 package com.fekracomputers.islamiclibrary.browsing.interfaces;
 
-import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
-
 /**
  * بسم الله الرحمن الرحيم
  */
@@ -22,5 +20,5 @@ public interface BrowsingActivityListingFragment {
 
     void closeCursors();
 
-    void selecteItem(BookCatalogElement bookCatalogElement);
+    void selecteItem(int id);
 }

@@ -19,11 +19,11 @@ import android.view.inputmethod.EditorInfo;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
-import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.browsing.adapters.BookCategoryRecyclerViewAdapter;
+import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
-import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
 
 import java.util.List;
@@ -267,8 +267,8 @@ public class BookCategoryFragment
     }
 
     @Override
-    public void selecteItem(BookCatalogElement bookCatalogElement) {
-        mRecyclerView.scrollToPosition(mBookCategoryRecyclerViewAdapter.getPositonById(bookCatalogElement.getId()));
+    public void selecteItem(int id) {
+        mRecyclerView.scrollToPosition(mBookCategoryRecyclerViewAdapter.getPositonById(id));
 
     }
 

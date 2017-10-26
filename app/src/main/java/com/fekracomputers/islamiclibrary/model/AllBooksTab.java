@@ -1,6 +1,5 @@
 package com.fekracomputers.islamiclibrary.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.support.v4.app.Fragment;
 
@@ -13,10 +12,23 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
  */
 
 public class AllBooksTab implements BookCatalogElement {
-    private final String name;
+    public static final Creator<AllBooksTab> CREATOR = new Creator<AllBooksTab>() {
+        @Override
+        public AllBooksTab createFromParcel(Parcel source) {
+            return new AllBooksTab(source);
+        }
 
-    public AllBooksTab(Context c) {
-        name=c.getString(R.string.all);
+        @Override
+        public AllBooksTab[] newArray(int size) {
+            return new AllBooksTab[size];
+        }
+    };
+
+    public AllBooksTab() {
+
+    }
+
+    protected AllBooksTab(Parcel in) {
     }
 
     @Override
@@ -25,8 +37,8 @@ public class AllBooksTab implements BookCatalogElement {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public int getName() {
+        return R.string.all;
     }
 
     @Override
@@ -40,7 +52,6 @@ public class AllBooksTab implements BookCatalogElement {
         return R.drawable.ic_all_books;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -48,22 +59,5 @@ public class AllBooksTab implements BookCatalogElement {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
     }
-
-    protected AllBooksTab(Parcel in) {
-        this.name = in.readString();
-    }
-
-    public static final Creator<AllBooksTab> CREATOR = new Creator<AllBooksTab>() {
-        @Override
-        public AllBooksTab createFromParcel(Parcel source) {
-            return new AllBooksTab(source);
-        }
-
-        @Override
-        public AllBooksTab[] newArray(int size) {
-            return new AllBooksTab[size];
-        }
-    };
 }

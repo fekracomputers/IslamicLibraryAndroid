@@ -128,7 +128,7 @@
 
     <!--cpd-->
     <string name="lipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus tincidunt nisi nec finibus.</string>
-    <string name="reset" >Reset</string>
+    <string name="reset">Reset</string>
 
     <string-array name="colors_material_names" translatable="false">
         <item>Red</item>
@@ -319,7 +319,7 @@
     <string name="open_source_notice">This program is free and open source anyone can contibute</string>
     <string name="about_cntribute_programatically">Contribute in development</string>
 
-<!--storage pref-->
+    <!--storage pref-->
     <string name="prefs_app_location_title">books data directory</string>
     <string name="prefs_app_location_summary">Choose where to store books files</string>
     <string name="prefs_sdcard_internal">Internal storage</string>
@@ -347,5 +347,13 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_search">Search</string>
     <string name="bottom_library">Library</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="book_collection_favourite">book_collection_favourite</string>
+    <string name="book_collection_recent_download">popular books</string>
+    <string name="book_collection_most_opened">most opened</string>
+    <string name="book_collection_most_recent">recent</string>
     <!--end storage pref-->
 </resources>

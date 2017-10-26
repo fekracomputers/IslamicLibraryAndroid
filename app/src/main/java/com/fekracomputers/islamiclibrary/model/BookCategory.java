@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -9,7 +10,18 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 /**
  * Model that represents a book category
  */
-public class BookCategory implements BookCatalogElement {
+public class BookCategory implements Parcelable {
+    public static final Creator<BookCategory> CREATOR = new Creator<BookCategory>() {
+        @Override
+        public BookCategory createFromParcel(Parcel source) {
+            return new BookCategory(source);
+        }
+
+        @Override
+        public BookCategory[] newArray(int size) {
+            return new BookCategory[size];
+        }
+    };
     private int id;
     private int order;
     private String name;
@@ -32,6 +44,14 @@ public class BookCategory implements BookCatalogElement {
 
     public BookCategory(int id) {
         this.id = id;
+    }
+
+    public BookCategory(Parcel in) {
+        this.id = in.readInt();
+        this.order = in.readInt();
+        this.name = in.readString();
+        this.numberOfBooks = in.readInt();
+        this.hasDownloadedBooks = in.readByte() != 0;
     }
 
     @Override
@@ -59,25 +79,21 @@ public class BookCategory implements BookCatalogElement {
         return name;
     }
 
-    @Override
-    public Fragment getNewFragment() {
-        return BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, id);
-    }
-
-    @Override
-    public int getIconDrawableId() {
-        return R.drawable.ic_specific_category;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public Fragment getNewFragment() {
+        return BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, id);
+    }
+
+    public int getIconDrawableId() {
+        return R.drawable.ic_specific_category;
+    }
 
     public int getNumberOfBooks() {
         return numberOfBooks;
     }
-
 
     public boolean hasDownloadedBooks() {
         return hasDownloadedBooks;
@@ -88,12 +104,10 @@ public class BookCategory implements BookCatalogElement {
         this.hasDownloadedBooks=hasDownloadedBooks;
     }
 
-    @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeInt(this.order);
@@ -101,24 +115,4 @@ public class BookCategory implements BookCatalogElement {
         dest.writeInt(this.numberOfBooks);
         dest.writeByte(this.hasDownloadedBooks ? (byte) 1 : (byte) 0);
     }
-
-    public BookCategory(Parcel in) {
-        this.id = in.readInt();
-        this.order = in.readInt();
-        this.name = in.readString();
-        this.numberOfBooks = in.readInt();
-        this.hasDownloadedBooks = in.readByte() != 0;
-    }
-
-    public static final Creator<BookCategory> CREATOR = new Creator<BookCategory>() {
-        @Override
-        public BookCategory createFromParcel(Parcel source) {
-            return new BookCategory(source);
-        }
-
-        @Override
-        public BookCategory[] newArray(int size) {
-            return new BookCategory[size];
-        }
-    };
 }

@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.model.Bookmark;
+import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.model.Highlight;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 
 public class UserDataDBHelper {
     private static final String TAG = "UserDataDBHelper";
-    private static internalUserDBHelper sInternalUserDBHelper;
+    private static GlobalUserDBHelper sGlobalUserDBHelper;
     private final Context context;
     private int bookId;
 
@@ -35,76 +37,86 @@ public class UserDataDBHelper {
 
 
     public static synchronized UserDataDBHelper getInstance(Context context, int bookId) {
-        if (sInternalUserDBHelper == null) {
-            sInternalUserDBHelper = new internalUserDBHelper(context);
+        if (sGlobalUserDBHelper == null) {
+            sGlobalUserDBHelper = new GlobalUserDBHelper(context);
         }
         return new UserDataDBHelper(context, bookId);
     }
 
+    public static synchronized GlobalUserDBHelper getInstance(Context context) {
+        if (sGlobalUserDBHelper == null) {
+            sGlobalUserDBHelper = new GlobalUserDBHelper(context);
+        }
+        return sGlobalUserDBHelper;
+    }
+
+
     public void addBookmark(int pageId) {
-        sInternalUserDBHelper.addBookmark(pageId, bookId);
+        sGlobalUserDBHelper.addBookmark(pageId, bookId);
     }
 
     public void RemoveBookmark(int pageId) {
-        sInternalUserDBHelper.RemoveBookmark(pageId, bookId);
+        sGlobalUserDBHelper.RemoveBookmark(pageId, bookId);
     }
 
     public boolean isPageBookmarked(int pageId) {
-        return sInternalUserDBHelper.isPageBookmarked(pageId, bookId);
+        return sGlobalUserDBHelper.isPageBookmarked(pageId, bookId);
     }
 
     public Highlight getHighlightById(int highlightId, int pageRowId) {
-        return sInternalUserDBHelper.getHighlightById(highlightId, pageRowId, context, bookId);
+        return sGlobalUserDBHelper.getHighlightById(highlightId, pageRowId, context, bookId);
     }
 
     public void addNoteToHighlight(Highlight mSelectedHighlight) {
-        sInternalUserDBHelper.addNoteToHighlight(mSelectedHighlight, bookId);
+        sGlobalUserDBHelper.addNoteToHighlight(mSelectedHighlight, bookId);
     }
 
     public void setSerializedHighlights(PageInfo pageInfo, String serializedHighlights) {
-        sInternalUserDBHelper.setSerializedHighlights(pageInfo, serializedHighlights, bookId);
+        sGlobalUserDBHelper.setSerializedHighlights(pageInfo, serializedHighlights, bookId);
     }
 
     public String getSerializedHighlights(int pageRowId) {
-        return sInternalUserDBHelper.getSerializedHighlights(pageRowId, bookId);
+        return sGlobalUserDBHelper.getSerializedHighlights(pageRowId, bookId);
     }
 
     public String getDisplayPreferenceValue(String preferenceKey, String s) {
-        return sInternalUserDBHelper.getDisplayPreferenceValue(preferenceKey, s, bookId);
+        return sGlobalUserDBHelper.getDisplayPreferenceValue(preferenceKey, s, bookId);
     }
 
     public void setDisplayPreferenceValue(String preferenceKey, String s) {
-        sInternalUserDBHelper.setDisplayPreferenceValue(preferenceKey, s, bookId);
+        sGlobalUserDBHelper.setDisplayPreferenceValue(preferenceKey, s, bookId);
     }
 
     public ArrayList<Bookmark> getAllBookmarks(String order) {
-        return sInternalUserDBHelper.getAllBookmarks(order, context, bookId);
+        return sGlobalUserDBHelper.getAllBookmarks(order, context, bookId);
     }
 
     public ArrayList<Highlight> getAllHighlights() {
-        return sInternalUserDBHelper.getAllHighlights(context, bookId);
+        return sGlobalUserDBHelper.getAllHighlights(context, bookId);
     }
 
     public void logBookAccess() {
-        sInternalUserDBHelper.logBookAccess(bookId);
+        sGlobalUserDBHelper.logBookAccess(bookId);
     }
 
     public void logPageAccess(PageInfo pageId) {
-        sInternalUserDBHelper.logPageAccess(pageId, bookId);
+        sGlobalUserDBHelper.logPageAccess(pageId, bookId);
     }
 
 
     public PageInfo getLastPageInfo() {
-        return sInternalUserDBHelper.getLastPageInfo(bookId, context);
+        return sGlobalUserDBHelper.getLastPageInfo(bookId, context);
     }
 
 
-    private static class internalUserDBHelper extends SQLiteOpenHelper {
+    public static class GlobalUserDBHelper extends SQLiteOpenHelper {
         private static final String DATABASE_NAME = "user_data";
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 2;
+        private final Context context;
 
-        private internalUserDBHelper(Context context) {
+        private GlobalUserDBHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            this.context = context;
         }
 
 
@@ -115,11 +127,54 @@ public class UserDataDBHelper {
             sqLiteDatabase.execSQL(UserDataDBContract.HighlightEntry.TABLE_HIGHLIGHTS_CREATE);
             sqLiteDatabase.execSQL(UserDataDBContract.DisplayPreferenceEntry.CREATE_STATEMENT);
             sqLiteDatabase.execSQL(UserDataDBContract.AccessInformationEntry.CREATE_STATEMENT);
+            version2(sqLiteDatabase);
+        }
+
+        private void version2(SQLiteDatabase sqLiteDatabase) {
+            sqLiteDatabase.execSQL(UserDataDBContract.BooksCollectionEntry.CREATE_STATEMENT);
+            sqLiteDatabase.execSQL(UserDataDBContract.BooksCollectionJoinEntry.CREATE_STATEMENT);
+            sqLiteDatabase.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
+                    UserDataDBContract.BooksCollectionJoinEntry.Table_NAME +
+                    "collectionIdIndex" + SQL.ON +
+                    UserDataDBContract.BooksCollectionJoinEntry.Table_NAME +
+                    "(" + UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + ")");
+            sqLiteDatabase.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
+                    UserDataDBContract.BooksCollectionJoinEntry.Table_NAME +
+                    "bookIdIndex" + SQL.ON +
+                    UserDataDBContract.BooksCollectionJoinEntry.Table_NAME +
+                    "(" + UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID + ")");
+            insertBasicCollections(sqLiteDatabase);
+        }
+
+        private void insertBasicCollections(SQLiteDatabase sqLiteDatabase) {
+
+            String[] standardBooksCollection = context.getResources().getStringArray(R.array.standard_books_collection);
+            int[] standardBooksCollectionAUtmaticIds = context.getResources().getIntArray(R.array.standard_books_collection_automatic_id);
+            ContentValues contentValues = new ContentValues();
+            for (int i = 0; i < 3; i++) {
+                String booksCollection = standardBooksCollection[i];
+                int booksCollectionAutomaticId = standardBooksCollectionAUtmaticIds[i];
+                contentValues.put(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME, booksCollection);
+                contentValues.put(UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID, booksCollectionAutomaticId);
+                sqLiteDatabase.insert(UserDataDBContract.BooksCollectionEntry.Table_NAME,
+                        null,
+                        contentValues);
+            }
+            contentValues = new ContentValues();
+            contentValues.put(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME, context.getResources().getString(R.string.book_collection_favourite));
+            sqLiteDatabase.insert(UserDataDBContract.BooksCollectionEntry.Table_NAME,
+                    null,
+                    contentValues);
+
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+            switch (oldVersion) {
+                case 1:
+                    version2(sqLiteDatabase);
+                    // we want both updates, so no break statement here...
+            }
         }
 
         @Override
@@ -457,6 +512,87 @@ public class UserDataDBHelper {
             c.close();
             return pageInfo;
 
+        }
+
+        public ArrayList<BooksCollection> getBooksCollections(boolean viewdOnly) {
+            ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
+
+            Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionEntry.Table_NAME,
+                    new String[]{
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_ID,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_NAME
+                    },
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?",
+                    new String[]{String.valueOf(viewdOnly ? 1 : 0)},
+                    null,
+                    null,
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER + "," + UserDataDBContract.BooksCollectionEntry.COLUMN_ID
+            );
+
+            final int INDEX_COLLECTION_ID = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_ID);
+            final int INDEX_AUTOMATIC_ID = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID);
+            final int INDEX_ORDER = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER);
+            final int INDEX_COLUMN_VISIBILITY = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY);
+            final int INDEX_NAME = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME);
+
+            while (c.moveToNext()) {
+                int collectionId = c.getInt(INDEX_COLLECTION_ID);
+                int automaticID = c.getInt(INDEX_AUTOMATIC_ID);
+                String name = c.getString(INDEX_NAME);
+                boolean visibility = c.getInt(INDEX_COLUMN_VISIBILITY) != 0;
+                int order = c.getInt(INDEX_ORDER);
+                booksCollectionArrayList.add(new BooksCollection(order, visibility, automaticID, name, collectionId));
+            }
+            c.close();
+            return booksCollectionArrayList;
+        }
+
+        public Cursor getBooksCollectionCursor(BooksCollection booksCollection) {
+            if (booksCollection.isAutomatic()) {
+                return getAutomaticBooksCollectionCursor(booksCollection.getAutomaticId());
+            } else {
+                return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
+                        context.getDatabasePath(DATABASE_NAME).toString(),
+                        UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
+                        UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
+                        new String[]{String.valueOf(booksCollection.getCollectionsId())},
+                        DATABASE_NAME + SQL.DOT + UserDataDBContract.BooksCollectionJoinEntry.Table_NAME + SQL.DOT + UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + SQL.EQUALS + "?",
+                        null);
+            }
+
+        }
+
+        private Cursor getAutomaticBooksCollectionCursor(int automaticId) {
+            switch (automaticId) {
+                case 1://book_collection_most_recent
+                    //select * from AccESSiNFORMATION where lastOpened is not null order by lastOpened desc
+                    return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
+                            context.getDatabasePath(DATABASE_NAME).toString(),
+                            UserDataDBContract.AccessInformationEntry.Table_NAME,
+                            UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
+                            null,
+                            DATABASE_NAME + SQL.DOT + UserDataDBContract.AccessInformationEntry.Table_NAME + SQL.DOT +
+                                    UserDataDBContract.AccessInformationEntry.LAST_OPENED_TIME_STAMP + SQL.IS_NOT_NULL,
+                            DATABASE_NAME + SQL.DOT + UserDataDBContract.AccessInformationEntry.Table_NAME + SQL.DOT +
+                                    UserDataDBContract.AccessInformationEntry.LAST_OPENED_TIME_STAMP + SQL.DECS);
+                case 2://book_collection_most_opened
+                    return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
+                            context.getDatabasePath(DATABASE_NAME).toString(),
+                            UserDataDBContract.AccessInformationEntry.Table_NAME,
+                            UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
+                            null,
+                            DATABASE_NAME + SQL.DOT + UserDataDBContract.AccessInformationEntry.Table_NAME + SQL.DOT +
+                                    UserDataDBContract.AccessInformationEntry.COLUMN_ACCESS_COUNT + SQL.IS_NOT_NULL,
+                            DATABASE_NAME + SQL.DOT + UserDataDBContract.AccessInformationEntry.Table_NAME + SQL.DOT +
+                                    UserDataDBContract.AccessInformationEntry.COLUMN_ACCESS_COUNT + SQL.DECS);
+                case 3://book_collection_recent_download
+                    return BooksInformationDbHelper.getInstance(context).getRecentDownloads(0);
+
+            }
+            return null;
         }
     }
 

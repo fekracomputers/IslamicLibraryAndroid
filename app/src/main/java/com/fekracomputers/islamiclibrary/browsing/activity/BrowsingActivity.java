@@ -8,12 +8,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -26,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -35,9 +32,9 @@ import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBatchDownloadDia
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBookDeleteDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AuthorListFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookCategoryFragment;
-import com.fekracomputers.islamiclibrary.browsing.fragment.BookFilterPagerFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
+import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
@@ -74,7 +71,7 @@ public class BrowsingActivity
         extends AppCompatActivity
         implements BookCategoryFragment.OnCategoryItemClickListener,
         AuthorListFragment.OnAuthorItemClickListener,
-        BookFilterPagerFragment.OnBookFilterPagerPageChangedListener,
+        LibraryFragment.OnBookFilterPagerPageChangedListener,
         SearchRequestPopupFragment.OnSearchPopupFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener,
         BookCardEventListener,
@@ -93,8 +90,8 @@ public class BrowsingActivity
     public static final String KEY_NUMBER_OF_BOOKS_TO_DONLOAD = "KEY_NUMBER_OF_BOOKS_TO_DONLOAD";
     protected static final String TAG = "BrowsingActivity";
     protected static final String KEY_DOWNLOADED_ONLY = "shared_pref_download_only_Key";
-    private static final String BOOK_LIST_FRAGMENT_ADDED = "BOOK_LIST_FRAGMENT_ADDED";
-    private static final String BOOK_INFORMATION_FRAGMENT_ADDED = "BOOK_INFORMATION_FRAGMENT_ADDED";
+    static final String BOOK_LIST_FRAGMENT_ADDED = "BOOK_LIST_FRAGMENT_ADDED";
+    static final String BOOK_INFORMATION_FRAGMENT_ADDED = "BOOK_INFORMATION_FRAGMENT_ADDED";
     protected int mPaneNumber;
     protected HashSet<Integer> selectedBooksIds = new HashSet<>();
     protected BookSelectionActionModeCallback mActionMode;
@@ -108,8 +105,8 @@ public class BrowsingActivity
      * this variable is here to be overrided in subclasses to allow calling activity super constructors
      */
     View bookListContainer;
-    BookFilterPagerFragment pagerFragment;
     BooksInformationDbHelper mBooksInformationDbHelper;
+    private BrowsingActivityNavigationController browsingActivityNavigationController;
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
@@ -153,10 +150,11 @@ public class BrowsingActivity
 
         @Override
         public void onAuthorClicked(AuthorInfo authorInfo) {
-            pagerFragment.switchTo(AUTHOR_LIST_FRAGMENT_TYPE);
+            BrowsingActivity.this.OnAuthorItemItemClick(authorInfo);
+            browsingActivityNavigationController.switchPagerTo(AUTHOR_LIST_FRAGMENT_TYPE);
             for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
                 if (browsingActivityListingFragment.getType() == AUTHOR_LIST_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selecteItem(authorInfo);
+                    browsingActivityListingFragment.selecteItem(authorInfo.getId());
                 }
             }
         }
@@ -164,11 +162,11 @@ public class BrowsingActivity
         @Override
         public void onCategoryClicked(BookCategory category) {
             BrowsingActivity.this.OnCategoryItemClick(category);
-            pagerFragment.switchTo(BOOK_CATEGORY_FRAGMENT_TYPE);
+            browsingActivityNavigationController.switchPagerTo(BOOK_CATEGORY_FRAGMENT_TYPE);
 
             for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
                 if (browsingActivityListingFragment.getType() == BOOK_CATEGORY_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selecteItem(category);
+                    browsingActivityListingFragment.selecteItem(category.getId());
                 }
             }
         }
@@ -192,20 +190,12 @@ public class BrowsingActivity
 
         @Override
         public void OnBookTitleClick(int bookId, String bookTitle) {
-            if (mPaneNumber <= 2) {
-                pushBookInformationFragment(BookInformationFragment.newInstance(bookId));
-
-            } else if (mPaneNumber == 3) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.book_info_container, BookInformationFragment.newInstance(bookId), BOOK_INFORMATION_FRAGMENT_TAG);
-                fragmentTransaction.commit();
-            }
-
-
+            browsingActivityNavigationController.showBookInformationFragment(BookInformationFragment.newInstance(bookId));
         }
 
 
     };
+
 
     @Override
     public synchronized void registerListener(BrowsingActivityListingFragment pagerTab) {
@@ -234,6 +224,7 @@ public class BrowsingActivity
         inflateUi(savedInstanceState);
 
     }
+
 
     protected void inflateUi(Bundle savedInstanceState) {
         setContentView(R.layout.activity_browsing);
@@ -279,71 +270,40 @@ public class BrowsingActivity
         View filterPagerContainer = findViewById(R.id.filter_pager_container);
         bookListContainer = findViewById(R.id.book_list_container);
         View bookInfoContainer = findViewById(R.id.book_info_container);
-
-
-        if (filterPagerContainer != null && filterPagerContainer.getVisibility() == View.VISIBLE) {
-            mPaneNumber = 1;
-            if (bookListContainer != null && bookListContainer.getVisibility() == View.VISIBLE) {
-                mPaneNumber = 2;
-                if (bookInfoContainer != null && bookInfoContainer.getVisibility() == View.VISIBLE) {
-                    mPaneNumber = 3;
-                }
-            }
-        }
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if (savedInstanceState == null) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.filter_pager_container, new BookFilterPagerFragment());
-            fragmentTransaction.commit();
-        } else {//after screen rotation
-            int oldPanNumbers = savedInstanceState.getInt(NUMBER_OF_PANS_KEY);
-            if (oldPanNumbers != mPaneNumber) {
-                if (oldPanNumbers == 3 && mPaneNumber == 1) {
-                    Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_LIST_FRAGMENT_TAG);
-                    //First remove the fragment from its container
-                    if (oldBookList != null) {
-                        fragmentManager.beginTransaction().remove(oldBookList).commitNow();
-                        pushBookListFragment(oldBookList);
-                    }
 
-                    Fragment oldBookInfo = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
-                    if (oldBookInfo != null) {
-                        fragmentManager.beginTransaction().remove(oldBookInfo).commitNow();
-                        pushBookInformationFragment(oldBookInfo);
-                    }
+        mPaneNumber = getmumberOfpans(filterPagerContainer, bookInfoContainer);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-                } else if (oldPanNumbers == 2 && mPaneNumber == 1) {
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
-                    if (oldBookList != null) fragmentTransaction.remove(oldBookList);
-                    fragmentTransaction.commit();
+        int oldPanNumbers = savedInstanceState == null ? 0 : savedInstanceState.getInt(NUMBER_OF_PANS_KEY);
 
-                } else if (oldPanNumbers == 1 && mPaneNumber == 2 || oldPanNumbers == 1 && mPaneNumber == 3) {
-                    Fragment oldBookInfo = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
-                    if (oldBookInfo != null) {
-                        fragmentManager.popBackStackImmediate(BOOK_INFORMATION_FRAGMENT_ADDED, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        fragmentManager.beginTransaction().remove(oldBookInfo).commit();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.book_info_container, oldBookInfo, BOOK_INFORMATION_FRAGMENT_TAG)
-                                .commit();
-
-                    }
-                    Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_LIST_FRAGMENT_TAG);
-                    if (oldBookList != null) {
-                        fragmentManager.popBackStackImmediate(BOOK_LIST_FRAGMENT_ADDED, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        fragmentManager.beginTransaction().remove(oldBookList).commit();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.book_list_container, oldBookList, BOOK_LIST_FRAGMENT_TAG)
-                                .commit();
-
-                    }
-                }
-            }
-
+        browsingActivityNavigationController = BrowsingActivityNavigationController.create(
+                mPaneNumber,
+                oldPanNumbers,
+                fragmentManager,
+                savedInstanceState != null,
+                this, bottomNavigationView);
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.intiializePans();
+            bottomNavigationView.setOnNavigationItemSelectedListener(browsingActivityNavigationController::handleButtomNavigationItem);
         }
 
 
+    }
+
+    private int getmumberOfpans(View filterPagerContainer, View bookInfoContainer) {
+        int paneNumber = 0;
+        if (filterPagerContainer != null && filterPagerContainer.getVisibility() == View.VISIBLE) {
+            paneNumber = 1;
+            if (bookListContainer != null && bookListContainer.getVisibility() == View.VISIBLE) {
+                paneNumber = 2;
+                if (bookInfoContainer != null && bookInfoContainer.getVisibility() == View.VISIBLE) {
+                    paneNumber = 3;
+                }
+            }
+        }
+        return paneNumber;
     }
 
     @Override
@@ -431,23 +391,7 @@ public class BrowsingActivity
 
     @Override
     public void OnCategoryItemClick(BookCategory bookCategory) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        int bookCategoryId = bookCategory.getId();
-
-        if (mPaneNumber == 1) {
-            //this constructor instrycts the fragmen to request chang the title bar
-            BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId, bookCategory.getName());
-            pushBookListFragment(fragment);
-
-            //Why did I do that ?!
-            AppBarLayout appBarLayout = findViewById(R.id.appBar);
-            appBarLayout.setExpanded(true, false);
-
-        } else if (mPaneNumber > 1) {
-            BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId);
-            fragmentTransaction.replace(R.id.book_list_container, fragment, BOOK_LIST_FRAGMENT_TAG);
-            fragmentTransaction.commit();
-        }
+        browsingActivityNavigationController.showCategoryDetails(bookCategory.getId(), bookCategory.getName());
     }
 
     @Override
@@ -562,40 +506,13 @@ public class BrowsingActivity
         }
     }
 
-    private void pushBookListFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.filter_pager_container, fragment, BrowsingActivity.BOOK_LIST_FRAGMENT_TAG)
-                .addToBackStack(BOOK_LIST_FRAGMENT_ADDED)
-                .commit();
-    }
-
-    private void pushBookInformationFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.filter_pager_container, fragment, BOOK_INFORMATION_FRAGMENT_TAG)
-                .addToBackStack(BOOK_INFORMATION_FRAGMENT_ADDED)
-                .commit();
-    }
 
     @Override
     public void OnAuthorItemItemClick(AuthorInfo authorInfo) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (mPaneNumber == 1) {
-            BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYAuthour,
-                    authorInfo.getId(),
-                    authorInfo.getName());
-            pushBookListFragment(fragment);
-
-            AppBarLayout appBarLayout = findViewById(R.id.appBar);
-            appBarLayout.setExpanded(true, false);
-
-        } else if (mPaneNumber > 1) {
-            BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYAuthour, authorInfo.getId());
-            fragmentManager.beginTransaction()
-                    .replace(R.id.book_list_container, fragment, BOOK_LIST_FRAGMENT_TAG)
-                    .commit();
-        }
+        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYAuthour,
+                authorInfo.getId(),
+                authorInfo.getName());
+        browsingActivityNavigationController.showAuthorFragment(fragment);
 
 
     }
@@ -607,8 +524,10 @@ public class BrowsingActivity
         }
     }
 
-    public void registerPagerFragment(BookFilterPagerFragment bookFilterPagerFragment) {
-        this.pagerFragment = bookFilterPagerFragment;
+    public synchronized void registerPagerFragment(LibraryFragment libraryFragment) {
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.registerPagerFragment(libraryFragment);
+        }
     }
 
     protected synchronized void notifySelectionActionModeDestroyed() {
@@ -661,8 +580,11 @@ public class BrowsingActivity
 
     }
 
-    public void unregisterPagerFragment() {
-        pagerFragment = null;
+    public void unRegisterPagerFragment() {
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.unRegisterPagerFragment();
+        }
+
     }
 
     @Override
@@ -773,8 +695,7 @@ public class BrowsingActivity
     }
 
     private void mayBecloseSelectionMode() {
-
-        if (pagerFragment != null && pagerFragment.isVisible()) {
+        if (browsingActivityNavigationController.shouldCloseSelectionMode()) {
             mActionMode.onDestroyActionMode();
         } else {
             super.onBackPressed();

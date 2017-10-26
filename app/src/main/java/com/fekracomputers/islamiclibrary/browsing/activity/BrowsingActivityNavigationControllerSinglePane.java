@@ -1,0 +1,106 @@
+package com.fekracomputers.islamiclibrary.browsing.activity;
+
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.browsing.fragment.AdvancedSearchFragment;
+import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
+import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
+import com.fekracomputers.islamiclibrary.browsing.fragment.HomeScreenFragment;
+import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
+
+import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_TAG;
+import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_LIST_FRAGMENT_TAG;
+
+/**
+ * Created by Mohammad on 10/19/2017.
+ */
+
+class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNavigationController {
+
+
+    public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
+        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+        paneNumber = 1;
+    }
+
+    @Override
+    protected void intializePansAfterRotation(int oldPanNumbers, FragmentManager fragmentManager) {
+        if (oldPanNumbers != paneNumber) {
+            if (oldPanNumbers == 3) {
+                Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_LIST_FRAGMENT_TAG);
+                //First remove the fragment from its container
+                if (oldBookList != null) {
+                    fragmentManager.beginTransaction().remove(oldBookList).commitNow();
+                    pushBookListFragment(oldBookList);
+                }
+
+                Fragment oldBookInfo = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
+                if (oldBookInfo != null) {
+                    fragmentManager.beginTransaction().remove(oldBookInfo).commitNow();
+                    pushBookInformationFragment(oldBookInfo);
+                }
+
+            } else if (oldPanNumbers == 2) {
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
+                if (oldBookList != null) fragmentTransaction.remove(oldBookList);
+                fragmentTransaction.commit();
+
+            }
+        }
+    }
+
+    @Override
+    protected void intitalizePansFresh(FragmentManager fragmentManager) {
+        switchBottomNavigationTo(lastButtomSheetCheckedItemId);
+    }
+
+    @Override
+    protected boolean switchBottomNavigationTo(int itemId) {
+        Fragment fragment;
+        if (fragments.get(itemId) == null) {
+            switch (itemId) {
+                case R.id.bottom_nav_home:
+                    fragment = new HomeScreenFragment();
+                    break;
+                case R.id.bottom_library:
+                default:
+                    fragment = new LibraryFragment();
+                    break;
+                case R.id.bottom_nav_search:
+                    fragment = new AdvancedSearchFragment();
+                    break;
+            }
+            fragments.put(itemId, fragment);
+        } else {
+            fragment = fragments.get(itemId);
+        }
+
+        fragments.put(itemId, fragment);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.filter_pager_container, fragment);
+        fragmentTransaction.commit();
+        return true;
+    }
+
+    void showBookInformationFragment(BookInformationFragment bookInformationFragment) {
+        pushBookInformationFragment(bookInformationFragment);
+
+    }
+
+    public void showCategoryDetails(int bookCategoryId, String name) {
+        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId, name);
+        pushBookListFragment(fragment);
+    }
+
+    public void showAuthorFragment(BookListFragment fragment) {
+        pushBookListFragment(fragment);
+    }
+
+
+}
+

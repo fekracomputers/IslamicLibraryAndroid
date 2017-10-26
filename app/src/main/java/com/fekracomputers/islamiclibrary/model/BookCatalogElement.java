@@ -10,7 +10,8 @@ import android.support.v4.app.Fragment;
  */
 public interface BookCatalogElement extends Parcelable {
     int getId();
-    String getName();
+
+    int getName();
     Fragment getNewFragment();
     @DrawableRes
     int getIconDrawableId();

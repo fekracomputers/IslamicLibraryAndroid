@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.model.AllBooksTab;
 import com.fekracomputers.islamiclibrary.model.AuthoursTab;
 import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
@@ -34,7 +33,7 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
  * Activities that contain this fragment must implement the
  * <p>
  * to handle interaction events.
- * Use the {@link BookFilterPagerFragment#newInstance} factory method to
+ * Use the {@link LibraryFragment#newInstance} factory method to
  * create an instance of this fragment.
  * The {@link android.support.v4.view.PagerAdapter} that will provide
  * fragments for each of the sections. We use a
@@ -43,29 +42,30 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
  * may be best to switch to a
  * {@link android.support.v4.app.FragmentStatePagerAdapter}.
  */
-public class BookFilterPagerFragment extends Fragment {
+public class LibraryFragment extends Fragment {
 
     private static final String SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY = "SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY";
     ArrayList<BookCatalogElement> bookCatalogElements = new ArrayList<>();
     private OnBookFilterPagerPageChangedListener mListener;
     private ViewPager mViewPager;
 
-    public BookFilterPagerFragment() {
-        // Required empty public constructor
+    public LibraryFragment() {
+        bookCatalogElements.add(new CategoryTab());
+        bookCatalogElements.add(new AuthoursTab());
+        bookCatalogElements.add(new AllBooksTab());
     }
 
 
-    public static BookFilterPagerFragment newInstance() {
-        return new BookFilterPagerFragment();
+    public static LibraryFragment newInstance() {
+        return new LibraryFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bookCatalogElements.add(new CategoryTab(getContext()));
-        bookCatalogElements.add(new AuthoursTab(getContext()));
-        bookCatalogElements.add(new AllBooksTab(getContext()));
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +76,7 @@ public class BookFilterPagerFragment extends Fragment {
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        mViewPager.setCurrentItem(sharedPref.getInt(SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY,0));
+        mViewPager.setCurrentItem(sharedPref.getInt(SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY, 0));
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -117,17 +117,22 @@ public class BookFilterPagerFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnBookFilterPagerPageChangedListener");
         }
-        if (context instanceof BrowsingActivity)
-            ((BrowsingActivity) context).registerPagerFragment(this);
 
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mListener.registerPagerFragment(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener.unRegisterPagerFragment();
         mListener = null;
-        if (getActivity() instanceof BrowsingActivity)
-            ((BrowsingActivity) getActivity()).unregisterPagerFragment();
+
     }
 
     public void switchTo(int PagerFragmentType) {
@@ -156,6 +161,11 @@ public class BookFilterPagerFragment extends Fragment {
         void OnFilterAllSelected(boolean b);
 
         void mayBeSetTitle(String s);
+
+        void registerPagerFragment(LibraryFragment libraryFragment);
+
+        void unRegisterPagerFragment();
+
     }
 
     /**
@@ -177,7 +187,7 @@ public class BookFilterPagerFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return bookCatalogElements.get(position).getName();
+            return getString(bookCatalogElements.get(position).getName());
         }
 
         @Override

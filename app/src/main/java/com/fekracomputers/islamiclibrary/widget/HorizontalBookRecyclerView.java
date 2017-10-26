@@ -17,6 +17,7 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.adapters.BookListRecyclerViewAdapter;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
+import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.utility.Util;
 
 /**
@@ -49,6 +50,26 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
     public void initialize() {
         inflate(getContext(), R.layout.horizontal_book_listing, this);
+    }
+
+    public View setupRecyclerView(final BooksCollection booksCollection, final BookCardEventsCallback mListener) {
+        final Cursor cursor = booksCollection.getCursor(this.getContext());
+        return setupRecyclerView(mListener,
+                cursor,
+                false,
+                booksCollection.getName(),
+                view -> mListener.onBookCollectionClicked(cursor));
+    }
+
+    public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
+                                                        Cursor bookListCursor,
+                                                        boolean isGrey,
+                                                        String title,
+                                                        OnClickListener onClickListener) {
+        setupRecyclerView(mListener, bookListCursor, isGrey);
+        setTitleText(title);
+        setMoreTextViewOnClickListener(onClickListener);
+        return this;
     }
 
     public void setupRecyclerView(BookCardEventsCallback mListener, Cursor bookListCursor, boolean isGrey) {
@@ -99,6 +120,7 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
     public void notifyDatasetChanged() {
         mBookListRecyclerViewAdapter.notifyDataSetChanged();
     }
+
 
     private class EndItemsPaddingDecoration extends RecyclerView.ItemDecoration {
         private int paddingStart = 0;

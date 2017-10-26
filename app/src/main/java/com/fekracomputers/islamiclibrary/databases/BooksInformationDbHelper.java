@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 import static com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_NOT_PRESENT;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.BROADCAST_ACTION;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID;
@@ -55,7 +57,6 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public static final String COMPRESSION_EXTENSION = "zip";
     public static final Pattern compressedBookFileRegex = Pattern.compile("(^\\d+)\\." + COMPRESSION_EXTENSION + "$");
     public static final Pattern repeatedCompressedBookFileRegex = Pattern.compile("(^\\d+-\\d+)\\." + COMPRESSION_EXTENSION + "$");
-    public static final String CREATE_INDEX_IF_NOT_EXISTS = " CREATE INDEX IF NOT EXISTS ";
     public static final String POPULATE_BOOKS_TITLES_FTS_SQL = "INSERT OR REPLACE INTO " + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME +
             "(" +
             BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_DOC_id + SQL.COMMA +
@@ -73,20 +74,19 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public static final String[] BOOK_LISTING_PROJECTION = new String[]{BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID,
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE,
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME};
-    private static final String AS = " as ";
     private static final String[] AUTHOUR_LISTING_COLUMNS_ARRAY_STORED = {
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID,
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
-            "count(" + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + ")" + AS + BooksInformationDBContract.AuthorEntry.COUNT_OF_BOOKS,
-            "1" + AS + BooksInformationDBContract.AuthorEntry.HAS_DOWNLOADED_BOOKS
+            "count(" + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + ")" + SQL.AS + BooksInformationDBContract.AuthorEntry.COUNT_OF_BOOKS,
+            "1" + SQL.AS + BooksInformationDBContract.AuthorEntry.HAS_DOWNLOADED_BOOKS
     };
     private static final String[] AUTHOUR_LISTING_COLUMNS_ARRAY = {
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID,
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
-            "count(" + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + ")" + AS + BooksInformationDBContract.AuthorEntry.COUNT_OF_BOOKS,
-            "sum(" + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + ")" + " is not null " + AS + BooksInformationDBContract.AuthorEntry.HAS_DOWNLOADED_BOOKS
+            "count(" + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + ")" + SQL.AS + BooksInformationDBContract.AuthorEntry.COUNT_OF_BOOKS,
+            "sum(" + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + ")" + " is not null " + SQL.AS + BooksInformationDBContract.AuthorEntry.HAS_DOWNLOADED_BOOKS
     };
     private static final String[] BOOK_INFORMATION_COLUMNS_ARRAY = new String[]{
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID,
@@ -96,173 +96,174 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS
 
     };
-    private static final String SELECT = "select ";
-    private static final String JOIN = " join ";
-    private static final String ON = " on ";
-    private static final String WHERE = " where ";
-    private static final String Equals = " = ";
 
     private static final String AUTHOURS_JOIN_BOOKS_AUTHORS =
             BooksInformationDBContract.AuthorEntry.TABLE_NAME +
                     " join " + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-                    ON + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
+                    SQL.ON + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
                     "=" + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
                     " left join " + BooksInformationDBContract.StoredBooks.TABLE_NAME +
-                    ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
+                    SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
                     +
                     "=" + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID;
     private static final String JOIN_AUTHOUR_NAME_FTS_SEARCH =
-            JOIN + BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME +
-                    ON +
+            SQL.JOIN + BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME +
+                    SQL.ON +
                     BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_DOC_id
-                    + Equals
+                    + SQL.Equals
                     + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID;
     private static final String AUTHOURS_JOIN_AUTHORS_FTS_JOIN_BOOKS_AUTHORS =
             BooksInformationDBContract.AuthorEntry.TABLE_NAME +
                     " join " + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-                    ON + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
+                    SQL.ON + BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
                     "=" + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
                     JOIN_AUTHOUR_NAME_FTS_SEARCH +
                     " left join " + BooksInformationDBContract.StoredBooks.TABLE_NAME +
-                    ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
+                    SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
                     +
                     "=" + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID;
 
     private static final String STORED_BOOKS_LEFT_JOIN_BOOKS = BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            " Left " + JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-            Equals +
+            " Left " + SQL.JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+            SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
     private static final String STORED_BOOKS_LEFT_JOIN_BOOKS_JOIN_AUTHRS = BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            " Left " + JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-            Equals +
+            " Left " + SQL.JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+            SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-            JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-            ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
+            SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-            JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
-            ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
+            SQL.Equals +
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
-            JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-            ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
+            SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
+    private static final String BOOKS_LEFTJOIN_STORED_BOOKS =
+            BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
+                    " Left " + SQL.JOIN +
+                    BooksInformationDBContract.StoredBooks.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+                    SQL.Equals +
+                    BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
+
     private static final String BOOKS_LEFTJOIN_STORED_BOOKS_JOIN_AUTHRS =
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
-                    " Left " + JOIN +
+                    " Left " + SQL.JOIN +
                     BooksInformationDBContract.StoredBooks.TABLE_NAME +
-                    ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-                    Equals +
+                    SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
     private static final String[] CATEGORY_COLUMNS = {
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID,
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE,
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER,
-            "count(" + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + ")" + AS + BooksInformationDBContract.CategotyEntry.COUNT_OF_BOOKS,
-            "sum(" + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + ")" + " is not null " + AS + BooksInformationDBContract.CategotyEntry.HAS_DOWNLOADED_BOOKS
+            "count(" + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + ")" + SQL.AS + BooksInformationDBContract.CategotyEntry.COUNT_OF_BOOKS,
+            "sum(" + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + ")" + " is not null " + SQL.AS + BooksInformationDBContract.CategotyEntry.HAS_DOWNLOADED_BOOKS
 
     };
     private static final String[] CATEGORY_COLUMNS_STORED = {
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID,
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE,
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER,
-            "count(" + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + ")" + AS + BooksInformationDBContract.CategotyEntry.COUNT_OF_BOOKS
+            "count(" + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + ")" + SQL.AS + BooksInformationDBContract.CategotyEntry.COUNT_OF_BOOKS
     };
     private static final String CATEGORIES_TABLES = BooksInformationDBContract.CategotyEntry.TABLE_NAME +
             " join " + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-            ON + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID +
+            SQL.ON + BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID +
             "=" + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID +
             " left join " + BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
             +
             "=" + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID;
     private static final String STORED_CATEGORIES_TABLES = BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+            SQL.Equals +
             BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
-            JOIN + BooksInformationDBContract.CategotyEntry.TABLE_NAME + ON +
+            SQL.JOIN + BooksInformationDBContract.CategotyEntry.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID;
     private static final String STORED_AUTHORS_TABLES = BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+            SQL.Equals +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-            JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME + ON +
+            SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID;
 
 
     private static final String STORED_AUTHORS_TABLES_JOIN_AUTHOR_FTS = BooksInformationDBContract.StoredBooks.TABLE_NAME +
-            JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-            ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+            SQL.Equals +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-            JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME + ON +
+            SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID
             + JOIN_AUTHOUR_NAME_FTS_SEARCH;
     private static final String BOOKS_JOIN_AUTHORS = BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-            JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
-            ON +
+            SQL.JOIN + BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
+            SQL.ON +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-            JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
-            ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-            Equals +
+            SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
+            SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
+            SQL.Equals +
             BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID;
-    private static final String BOOKS_JOIN_AUTHORS_JOIN_CAT = BOOKS_JOIN_AUTHORS + JOIN +
+    private static final String BOOKS_JOIN_AUTHORS_JOIN_CAT = BOOKS_JOIN_AUTHORS + SQL.JOIN +
             BooksInformationDBContract.BooksCategories.TABLE_NAME +
-            ON +
+            SQL.ON +
             BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-            JOIN + BooksInformationDBContract.CategotyEntry.TABLE_NAME +
-            ON +
+            SQL.JOIN + BooksInformationDBContract.CategotyEntry.TABLE_NAME +
+            SQL.ON +
             BooksInformationDBContract.CategotyEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID +
-            Equals +
+            SQL.Equals +
             BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID;
-    private static final String JOIN_DOWNLOADED_FOR_AUTHORS = JOIN +
-            BooksInformationDBContract.StoredBooks.TABLE_NAME + ON +
+    private static final String JOIN_DOWNLOADED_FOR_AUTHORS = SQL.JOIN +
+            BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
-            + Equals +
+            + SQL.Equals +
             BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID;
-    private static final String JOIN_DOWNLOADED_FOR_CATEGORIES = JOIN +
-            BooksInformationDBContract.StoredBooks.TABLE_NAME + ON +
+    private static final String JOIN_DOWNLOADED_FOR_CATEGORIES = SQL.JOIN +
+            BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID
-            + Equals +
+            + SQL.Equals +
             BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID;
-    private static final String FROM = " from ";
     private static final String FROM_BOOKS_JOIN_AUTHORS =
-            FROM + BOOKS_JOIN_AUTHORS;
-    private static final String FROM_BOOKS_JOIN_AUTHORS_JOIN_CAT = FROM + BOOKS_JOIN_AUTHORS_JOIN_CAT;
-    private static final String ORDER_BY = " order by ";
+            SQL.FROM + BOOKS_JOIN_AUTHORS;
+    private static final String FROM_BOOKS_JOIN_AUTHORS_JOIN_CAT = SQL.FROM + BOOKS_JOIN_AUTHORS_JOIN_CAT;
     private static final String[] DEFULT_CATEGORIES = new String[]{"العقيدة",
             "الفرق والردود",
             "التفاسير",
@@ -304,17 +305,13 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             "محاضرات مفرغة",
             "الدعوة واحوال المسلمين",
             "كتب اسلامية عامة", "علوم اخرى"};
-    private static final String INTEGER = " integer ";
-    private static final String TEXT = " TEXT ";
-    private static final String COMMA = " , ";
-    private static final String UNIQUE = " unique ";
     private static final String CREATE_STORED_INFO = " CREATE TABLE IF NOT EXISTS "
             + BooksInformationDBContract.StoredBooks.TABLE_NAME + "( " +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + INTEGER + UNIQUE + COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + INTEGER + COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + INTEGER + ")";
-    private static final int DATABASE_VERSION = 2;
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + SQL.COMMA +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + SQL.INTEGER + SQL.UNIQUE + SQL.COMMA +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + SQL.INTEGER + SQL.COMMA +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + SQL.INTEGER + ")";
+    private static final int DATABASE_VERSION = 3;
     private static final String CREATE_BOOK_TITLES_FTS_TABLE = "CREATE VIRTUAL TABLE IF NOT EXISTS " +
             BooksInformationDBContract.BookNameTextSearch.TABLE_NAME +
             " USING fts4(content=\"\"" + SQL.COMMA + BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_TITLE + ")";
@@ -328,32 +325,32 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + "(" + BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + ")" +
             "VALUES('optimize')";
 
-    private static final String JOIN_BOOKS_TITLES_FTS_SEARCH = JOIN + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + ON +
+    private static final String JOIN_BOOKS_TITLES_FTS_SEARCH = SQL.JOIN + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + SQL.ON +
             BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_DOC_id
-            + Equals +
+            + SQL.Equals +
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
 
     private static final String BOOKS_LEFT_JOIN_STORED_BOOKS_JOIN_AUTHORS =
             BooksInformationDBContract.BookInformationEntery.TABLE_NAME +
-                    " Left " + JOIN +
+                    " Left " + SQL.JOIN +
                     BooksInformationDBContract.StoredBooks.TABLE_NAME +
-                    ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
-                    Equals +
+                    SQL.ON + BooksInformationDBContract.StoredBooks.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.AuthorEntry.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID +
 
-                    JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-                    ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
-                    Equals +
+                    SQL.JOIN + BooksInformationDBContract.BooksCategories.TABLE_NAME +
+                    SQL.ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID +
+                    SQL.Equals +
                     BooksInformationDBContract.BookInformationEntery.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID;
 
 
@@ -418,6 +415,14 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                         + SQL.WHERE
                         + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + "." + BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_TITLE + " match ? "
                         + ")";
+    }
+
+    public static void broadCastBookDeleted(int bookId, Context context) {
+        Intent bookDeleteBroadCast =
+                new Intent(BROADCAST_ACTION)
+                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_NOT_DOWNLOAD)
+                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+        context.sendOrderedBroadcast(bookDeleteBroadCast, null);
     }
 
     public String getBookName(int book_id) {
@@ -497,17 +502,17 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         try {
 
             authorInformationCursor = db.rawQuery(
-                    SELECT +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + COMMA +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR + COMMA +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION + COMMA +
+                    SQL.SELECT +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + SQL.COMMA +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR + SQL.COMMA +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION + SQL.COMMA +
                             BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME +
 
-                            FROM + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
-                            WHERE + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + " = " +
-                            "(" + SELECT + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
-                            FROM + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
-                            WHERE + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + "=?" +
+                            SQL.FROM + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
+                            SQL.WHERE + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + " = " +
+                            "(" + SQL.SELECT + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID +
+                            SQL.FROM + BooksInformationDBContract.BooksAuthors.TABLE_NAME +
+                            SQL.WHERE + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + "=?" +
                             ")"
                     , new String[]{String.valueOf(book_id)}
             );
@@ -535,15 +540,15 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         Cursor categoryInformationCursor;
         try {
             categoryInformationCursor = db.rawQuery(
-                    SELECT +
-                            BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + COMMA +
+                    SQL.SELECT +
+                            BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + SQL.COMMA +
                             BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE +
 
-                            FROM + BooksInformationDBContract.CategotyEntry.TABLE_NAME +
-                            WHERE + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + " = " +
-                            "(" + SELECT + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID +
-                            FROM + BooksInformationDBContract.BooksCategories.TABLE_NAME +
-                            WHERE + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID + "=?" +
+                            SQL.FROM + BooksInformationDBContract.CategotyEntry.TABLE_NAME +
+                            SQL.WHERE + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + " = " +
+                            "(" + SQL.SELECT + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID +
+                            SQL.FROM + BooksInformationDBContract.BooksCategories.TABLE_NAME +
+                            SQL.WHERE + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID + "=?" +
                             ")"
                     , new String[]{String.valueOf(book_id)}
             );
@@ -687,6 +692,17 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         }
         c.close();
         return selectedBookInfoItems;
+    }
+
+    public Cursor getRecentDownloads(int limit) {
+        return getBooksFiltered(BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.DOT +
+                        BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.IS_NOT_NULL,
+                null,
+                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.DECS,
+                true,
+                limit == 0 ? null : String.valueOf(limit));
+
+
     }
 
     public Cursor getBooksFiltered(String selection, String[] selectionArgs, String orderBy, boolean downloadedOnly, String limit) {
@@ -1029,7 +1045,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
     public long getBookIdByDownloadId(long enquId) {
         return DatabaseUtils.longForQuery(getReadableDatabase(),
-                SELECT +
+                SQL.SELECT +
                         BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID +
                         SQL.FROM +
                         BooksInformationDBContract.StoredBooks.TABLE_NAME +
@@ -1048,6 +1064,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS, downloadStatus);
+        //TODO add
         int i = db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME, contentValues,
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + "=?",
                 new String[]{Long.toString(enqueueId)});
@@ -1076,14 +1093,14 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      * @param status the status to register see {@link DownloadsConstants}
      * @return true if this download reference already exist in the database
      */
-    public boolean setStatus(int bookId, int status) {
+    public void setStatus(int bookId, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        //TODO add time stamp for
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS, status);
         int i = db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME, contentValues,
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{Long.toString(bookId)});
-        return i == 1;
     }
 
     /**
@@ -1117,35 +1134,48 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Timber.d("old datbase version %d and new %d", oldVersion, newVersion);
+        switch (oldVersion) {
+            case 0:
+            case 1:
+                upgradeToversion2(db);
+            case 2:
+                upgradeToVersion3(db);
+        }
+    }
 
-        if (oldVersion < 2 && newVersion == 2) {
-            db.beginTransaction();
-            try {
-                //create the stored books table
-                db.execSQL(CREATE_STORED_INFO);
-                //add coulmn in categories for ordering
-                db.execSQL("ALTER TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + " ADD COLUMN " + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER + " INTEGER");
+    private void upgradeToVersion3(SQLiteDatabase db) {
+        //add downloaded completed timestamp
+        db.execSQL(SQL.ALTER_TABLE + BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.ADD_Coulmn +
+                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.TEXT
+        );
+    }
 
-                //create indexes on each coulmn of join tables
-                db.execSQL(CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i1" + ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + ")");
-                db.execSQL(CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i2" + ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID + ")");
-                db.execSQL(CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksCategories.TABLE_NAME + "_i1" + ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + "(" + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID + ")");
-                db.execSQL(CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksCategories.TABLE_NAME + "_i2" + ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + "(" + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID + ")");
+    private void upgradeToversion2(SQLiteDatabase db) {
+        db.beginTransaction();
+        try {
+            //create the stored books table
+            db.execSQL(CREATE_STORED_INFO);
+            //add coulmn in categories for ordering
+            db.execSQL("ALTER TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + " ADD COLUMN " + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER + " INTEGER");
+            //create indexes on each coulmn of join tables
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i1" + SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + ")");
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i2" + SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID + ")");
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksCategories.TABLE_NAME + "_i1" + SQL.ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + "(" + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID + ")");
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksCategories.TABLE_NAME + "_i2" + SQL.ON + BooksInformationDBContract.BooksCategories.TABLE_NAME + "(" + BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID + ")");
 
-                //adding the default category order
-                for (int i = 0; i < DEFULT_CATEGORIES.length; i++) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER, i + 1);
-                    db.update(BooksInformationDBContract.CategotyEntry.TABLE_NAME,
-                            contentValues,
-                            BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + "=?",
-                            new String[]{DEFULT_CATEGORIES[i]});
-                }
-                db.setVersion(newVersion);
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
+            //adding the default category order
+            for (int i = 0; i < DEFULT_CATEGORIES.length; i++) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER, i + 1);
+                db.update(BooksInformationDBContract.CategotyEntry.TABLE_NAME,
+                        contentValues,
+                        BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + "=?",
+                        new String[]{DEFULT_CATEGORIES[i]});
             }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 
@@ -1221,7 +1251,6 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         }
     }
 
-
     /**
      * @param c           cursor moved byond its last position
      * @param columnIndex the index for enqueId in the Cursor
@@ -1261,15 +1290,6 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
     }
 
-    public static void broadCastBookDeleted(int bookId, Context context) {
-        Intent bookDeleteBroadCast =
-                new Intent(BROADCAST_ACTION)
-                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_NOT_DOWNLOAD)
-                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-        context.sendOrderedBroadcast(bookDeleteBroadCast, null);
-    }
-
-
     public HashSet<Integer> getBookIdsDownloadedOnly() {
         return getBooksIdsFilteredOnDownloadStatus(
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + ">=?",
@@ -1293,4 +1313,49 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         return selectedBookInfoItems;
 
     }
+
+    public Cursor getBooksFilteredwithAttachDatabase(@NonNull String databaseName,
+                                                     @NonNull String databasePath,
+                                                     @NonNull String joinTableName,
+                                                     @NonNull String coulmnBookIdName,
+                                                     @Nullable String[] selctionArgs,
+                                                     @Nullable String selection,
+                                                     @Nullable String orderBy) {
+
+        attachDatabaseIfNedded(databasePath, databaseName);
+
+        return getReadableDatabase().query(BOOKS_LEFTJOIN_STORED_BOOKS_JOIN_AUTHRS +
+                        SQL.JOIN
+                        + databaseName + SQL.DOT + joinTableName +
+                        SQL.ON +
+                        BooksInformationDBContract.BookInformationEntery.TABLE_NAME + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
+                        SQL.EQUALS +
+                        databaseName + SQL.DOT + joinTableName + SQL.DOT + coulmnBookIdName,
+                BOOK_INFORMATION_COLUMNS_ARRAY,
+                selection,
+                selctionArgs,
+                null,
+                null,
+                orderBy,
+                null
+        );
+
+    }
+
+    private void attachDatabaseIfNedded(String databasePath, String databaseName) {
+        boolean b = false;
+        Cursor c = getReadableDatabase().rawQuery("PRAGMA database_list", null);
+        while (c.moveToNext()) {
+            if (c.getString(1).equals(databaseName) && c.getString(2).equals(databasePath)) {
+                b = true;
+                break;
+            }
+        }
+        c.close();
+        if (!b)
+            getReadableDatabase().execSQL("ATTACH DATABASE '" + databasePath + "' AS " + databaseName);
+
+    }
+
+
 }

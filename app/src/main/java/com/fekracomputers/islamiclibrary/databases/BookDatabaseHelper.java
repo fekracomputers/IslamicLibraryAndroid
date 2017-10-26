@@ -830,7 +830,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             }
             db.rawQuery(OPTIMIZE_TITLES_FTS, null);
             //CREATE INDEX `titles_desc` ON `titles` (`pageid` DESC)
-            db.execSQL(BooksInformationDbHelper.CREATE_INDEX_IF_NOT_EXISTS +
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME +
                     "titles_PageId_index" +
                     SQL.ON +
@@ -838,7 +838,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + " DESC " + ")");
 
             //CREATE INDEX `titles_parent` ON `titles` (`parentid` )
-            db.execSQL(BooksInformationDbHelper.CREATE_INDEX_IF_NOT_EXISTS +
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME +
                     "titles_parentId_index" +
                     SQL.ON +
@@ -846,7 +846,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PARENT_ID + ")");
 
             //CREATE  INDEX `partNumberPageNumberIndex` ON `pages` (`partnumber` ,`pagenumber` );
-            db.execSQL(BooksInformationDbHelper.CREATE_INDEX_IF_NOT_EXISTS +
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
                     BookDatabaseContract.PageEntry.TABLE_NAME +
                     "partNumberPageNumberIndex" +
                     SQL.ON +

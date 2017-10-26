@@ -21,13 +21,13 @@ import android.view.inputmethod.EditorInfo;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.adapters.BookListRecyclerViewAdapter;
+import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.databases.SQL;
-import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
 import com.fekracomputers.islamiclibrary.search.model.FTS.Util;
 
 /**
@@ -378,7 +378,7 @@ public class BookListFragment
     }
 
     @Override
-    public void selecteItem(BookCatalogElement bookCatalogElement) {
+    public void selecteItem(int id) {
 
     }
 

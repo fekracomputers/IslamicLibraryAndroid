@@ -22,12 +22,12 @@ import android.view.inputmethod.EditorInfo;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.adapters.AuthorRecyclerViewAdapter;
+import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.databases.SQL;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
-import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
 import com.fekracomputers.islamiclibrary.search.model.FTS.Util;
 
 import static com.fekracomputers.islamiclibrary.R.layout.fragment_author_list;
@@ -335,7 +335,7 @@ public class AuthorListFragment
     }
 
     @Override
-    public void selecteItem(BookCatalogElement bookCatalogElement) {
+    public void selecteItem(int id) {
         //TODO Go to the specified author
     }
 

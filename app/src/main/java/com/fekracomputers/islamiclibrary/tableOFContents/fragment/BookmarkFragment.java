@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.browsing.fragment.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;

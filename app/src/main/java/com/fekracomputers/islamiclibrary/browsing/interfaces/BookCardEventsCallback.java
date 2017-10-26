@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -137,6 +138,10 @@ public abstract class BookCardEventsCallback {
 
     public void onBookDeleteConfirmation(int bookId) {
         BrowsingUtils.deleteBook(bookId, context);
+    }
+
+    public void onBookCollectionClicked(Cursor cursor) {
+        //TODO
     }
 
     public static class BookDownloadReceiver extends BroadcastReceiver {

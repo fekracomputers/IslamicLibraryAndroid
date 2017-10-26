@@ -31,7 +31,6 @@ import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.CoverImagesDownloader;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
-import com.fekracomputers.islamiclibrary.model.BookCatalogElement;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsBookmarksActivity;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
@@ -92,13 +91,10 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         bookId = getArguments().getInt("book_id");
         diplayedInTableOfContent = getActivity().getClass().getSimpleName().equals(TableOfContentsBookmarksActivity.class.getSimpleName());
         BooksInformationDbHelper dbHelper = BooksInformationDbHelper.getInstance(getContext());
         mBookInfo = dbHelper.getBookDetails(bookId);
-
-
     }
 
     @Override
@@ -150,12 +146,8 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
 
         booksInformationDbHelper = BooksInformationDbHelper.
                 getInstance(getContext());
-
         categoryMoreBooksHorizontalBookRecyclerView = new HorizontalBookRecyclerView(getContext());
-        Cursor categoryPreviewCursor = getCategoryPreviewCursor();
-
-        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, categoryPreviewCursor, isGrey);
-
+        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, getCategoryPreviewCursor(), isGrey);
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
         categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
             //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
@@ -177,11 +169,8 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
                             ArabicUtilities.prepareForPrefixingLam(mBookInfo.getAuthorInfo().getName())
                     )
             );
-            authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
-                mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
-
-                //  startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
-            });
+            authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v ->
+                    mListener.onAuthorClicked(mBookInfo.getAuthorInfo()));
             isGrey = !isGrey;
             mLinearLayoutContainer.addView(authorMoreBooksHorizontalBookRecyclerView);
         }
@@ -377,7 +366,7 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
     }
 
     @Override
-    public void selecteItem(BookCatalogElement bookCatalogElement) {
+    public void selecteItem(int id) {
 
     }
 
@@ -398,7 +387,6 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         private final String header;
 
         public InformationCardMoreClickListener(String body, String header) {
-
             this.body = body;
             this.header = header;
         }

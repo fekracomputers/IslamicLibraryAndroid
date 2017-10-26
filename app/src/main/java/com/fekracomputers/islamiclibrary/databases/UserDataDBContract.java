@@ -96,8 +96,40 @@ public class UserDataDBContract {
                 LAST_OPENED_PAGE_ID + SQL.INTEGER + SQL.COMMA +
                 LAST_OPENED_PAGE_NUMBER + SQL.INTEGER + SQL.COMMA +
                 LAST_OPENED_PART_NUMBER + SQL.INTEGER + SQL.COMMA +
-                COLUMN_ACCESS_COUNT + SQL.INTEGER +"DEFAULT 0 "+
+                COLUMN_ACCESS_COUNT + SQL.INTEGER + " DEFAULT 0 " +
                 ")";
     }
-    
+
+    public class BooksCollectionJoinEntry {
+        public static final String Table_NAME = "BooksCollectionJoin";
+        public static final String COLLECTION_ID = "collectionId";
+        public static final String BOOK_ID = "bookId";
+
+
+        static final String CREATE_STATEMENT = "create table "
+                + Table_NAME + "( " +
+                COLLECTION_ID + SQL.INTEGER + SQL.COMMA +
+                BOOK_ID + SQL.INTEGER +
+                ")";
+    }
+
+    public class BooksCollectionEntry {
+        public static final String Table_NAME = "BooksCollection";
+        public static final String COLUMN_ID = "Id";
+        public static final String COLUMN_NAME = "Name";
+        public static final String COLUMN_ORDER = "order";
+        public static final String COLUMN_VISIBILITY = "visibility";
+        public static final String COLUMN_AUTOMATIC_ID = "automaticID";
+
+        static final String CREATE_STATEMENT = "create table "
+                + Table_NAME + "( " +
+                COLUMN_ID + SQL.INTEGER_PRIMARY_KEY + SQL.COMMA +
+                COLUMN_NAME + SQL.TEXT + SQL.COMMA +
+                COLUMN_ORDER + SQL.INTEGER + " DEFAULT 0 " + SQL.COMMA +
+                COLUMN_VISIBILITY + SQL.INTEGER + " DEFAULT 1 " + SQL.COMMA +
+                COLUMN_AUTOMATIC_ID + SQL.INTEGER + " DEFAULT 0 " +
+                ")";
+    }
+
+
 }
