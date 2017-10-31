@@ -22,8 +22,8 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 class BrowsingActivityNavigationControllerDualPan extends BrowsingActivityNavigationController {
 
 
-    public BrowsingActivityNavigationControllerDualPan(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
-        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+    public BrowsingActivityNavigationControllerDualPan(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
         paneNumber = 2;
     }
 
@@ -70,9 +70,8 @@ class BrowsingActivityNavigationControllerDualPan extends BrowsingActivityNaviga
 
     }
 
-    public void showCategoryDetails(int bookCategoryId, String name) {
+    public void showCategoryDetails(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId);
         fragmentTransaction.replace(R.id.book_list_container, fragment, BOOK_LIST_FRAGMENT_TAG);
         fragmentTransaction.commit();
     }

@@ -52,30 +52,29 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
         inflate(getContext(), R.layout.horizontal_book_listing, this);
     }
 
-    public View setupRecyclerView(final BooksCollection booksCollection, final BookCardEventsCallback mListener) {
+    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection, final BookCardEventsCallback mListener) {
         final Cursor cursor = booksCollection.getCursor(this.getContext());
         return setupRecyclerView(mListener,
                 cursor,
-                false,
                 booksCollection.getName(),
                 view -> mListener.onBookCollectionClicked(cursor));
     }
 
     public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
                                                         Cursor bookListCursor,
-                                                        boolean isGrey,
+
                                                         String title,
                                                         OnClickListener onClickListener) {
-        setupRecyclerView(mListener, bookListCursor, isGrey);
+        setupRecyclerView(mListener, bookListCursor);
         setTitleText(title);
         setMoreTextViewOnClickListener(onClickListener);
         return this;
+
     }
 
-    public void setupRecyclerView(BookCardEventsCallback mListener, Cursor bookListCursor, boolean isGrey) {
-        setBackgroundResource(isGrey ?
-                R.color.infoPage_details_gray :
-                R.color.infoPage_details_white);
+
+    public void setupRecyclerView(BookCardEventsCallback mListener, Cursor bookListCursor) {
+
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);

@@ -38,6 +38,15 @@ public class BooksCollection implements Comparable<BooksCollection> {
         return cursor;
     }
 
+    public Cursor reAcquireCursor(Context context) {
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+            cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
+        }
+        return cursor;
+    }
+
+
     @Override
     public int hashCode() {
         return booksCollectionId;

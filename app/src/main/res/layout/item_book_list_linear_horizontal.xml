@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="120dp"
     android:layout_height="290dp"
+    android:layout_marginBottom="16dp"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginTop="8dp"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="8dp"
+
+
     app:cardUseCompatPadding="false">
 
     <LinearLayout
@@ -89,8 +90,8 @@
     <View
         android:id="@+id/download_indicator"
         android:layout_width="match_parent"
-        android:layout_gravity="bottom"
         android:layout_height="8dp"
+        android:layout_gravity="bottom"
         tools:background="@color/indicator_book_not_downloaded" />
 
 

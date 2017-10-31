@@ -23,14 +23,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
+import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.browsing.util.BrowsingUtils;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.CoverImagesDownloader;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
+import com.fekracomputers.islamiclibrary.model.BookCollectionInfo;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsBookmarksActivity;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
@@ -57,6 +60,10 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
     private HorizontalBookRecyclerView categoryMoreBooksHorizontalBookRecyclerView;
     private BooksInformationDbHelper booksInformationDbHelper;
     private BookCardEventsCallback mListener;
+    private BookCollectionInfo bookCollectionInfo;
+    private ImageView favouriteButtonImageView;
+    private ImageView collectionButtonImageView;
+    private BookCollectionsController bookCollectionsController;
 
     public BookInformationFragment() {
         // Required empty public constructor
@@ -95,6 +102,8 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         diplayedInTableOfContent = getActivity().getClass().getSimpleName().equals(TableOfContentsBookmarksActivity.class.getSimpleName());
         BooksInformationDbHelper dbHelper = BooksInformationDbHelper.getInstance(getContext());
         mBookInfo = dbHelper.getBookDetails(bookId);
+        bookCollectionInfo = UserDataDBHelper.getInstance(getContext(), bookId).getBookCollectionInfo();
+        bookCollectionsController = new BookCollectionsController(getContext());
     }
 
     @Override
@@ -136,6 +145,18 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         });
         //endregion
 
+        //region collection info
+
+        favouriteButtonImageView = rootView.findViewById(R.id.fav_button_img_view);
+        collectionButtonImageView = rootView.findViewById(R.id.collection_button_img_view);
+        bindCollections(bookCollectionInfo);
+
+        LinearLayout favButtonLayout = rootView.findViewById(R.id.fav_button_layout);
+        favButtonLayout.setOnClickListener(v -> toggleFavourite());
+
+        //endregion
+
+
         mLinearLayoutContainer = rootView.findViewById(R.id.linear_container);
         isGrey = true;//first card in this region is grey
 
@@ -147,7 +168,9 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         booksInformationDbHelper = BooksInformationDbHelper.
                 getInstance(getContext());
         categoryMoreBooksHorizontalBookRecyclerView = new HorizontalBookRecyclerView(getContext());
-        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, getCategoryPreviewCursor(), isGrey);
+        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, getCategoryPreviewCursor());
+        categoryMoreBooksHorizontalBookRecyclerView.setBackgroundResource(isGrey ? R.color.infoPage_details_gray :
+                R.color.infoPage_details_white);
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
         categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
             //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
@@ -162,7 +185,9 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         if (authorPreviewCursor.getCount() != 0) {
             authorMoreBooksHorizontalBookRecyclerView = new HorizontalBookRecyclerView(getContext());
             authorMoreBooksHorizontalBookRecyclerView.setVisibility(View.VISIBLE);
-            authorMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, authorPreviewCursor, isGrey);
+            authorMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, authorPreviewCursor);
+            categoryMoreBooksHorizontalBookRecyclerView.setBackgroundResource(isGrey ? R.color.infoPage_details_gray :
+                    R.color.infoPage_details_white);
             authorMoreBooksHorizontalBookRecyclerView.setTitleText(
                     getString(
                             R.string.book_info_similar_books_by_authour,
@@ -188,6 +213,21 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         }
 
         return rootView;
+    }
+
+    private void toggleFavourite() {
+        bookCollectionsController.toggleFavourite(bookCollectionInfo);
+        bindCollections(bookCollectionInfo);
+    }
+
+    private void bindCollections(BookCollectionInfo bookCollectionInfo) {
+        favouriteButtonImageView.setImageResource(bookCollectionInfo.isFavourite() ?
+                R.drawable.ic_favorite_pink_with_check_24dp
+                : R.drawable.ic_add_favorite_24dp);
+
+        collectionButtonImageView.setImageResource((!bookCollectionInfo.doesBelongToColletionOtherTHanFavourite()) ?
+                R.drawable.ic_collections_bookmark_black_24dp :
+                R.drawable.ic_collections_bookmark_green_24dp);
     }
 
     private Cursor getAuthorPreviewCursor() {
@@ -308,7 +348,6 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
     @Override
     public void switchTodownloadedOnly(boolean checked) {
         if (categoryMoreBooksHorizontalBookRecyclerView != null) {
-
             categoryMoreBooksHorizontalBookRecyclerView.changeCursor(getCategoryPreviewCursor());
         }
         if (authorMoreBooksHorizontalBookRecyclerView != null) {

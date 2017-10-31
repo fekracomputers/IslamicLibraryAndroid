@@ -32,7 +32,7 @@
     <color name="empty_light">@color/material_grey_700</color>
 
     <color name="info_card_primary_dark">@color/material_grey_300</color>
-    <color name="info_card_primary_light">@color/material_grey_900</color>
+    <color name="info_card_primary_light">@color/action_icon_color</color>
     <color name="info_card_secondary_dark">@color/material_grey_500</color>
     <color name="info_card_secondary_light">@color/material_grey_700</color>
     <color name="info_card_tab_background_dark">@color/material_grey_800</color>
@@ -61,25 +61,25 @@
     <color name="pref_night_theme_button_stroke">@color/pref_button_enabled_dark</color>
     <color name="pref_sepia_theme_button_stroke">@color/pref_button_enabled_light</color>
 
-    <color name="reader_ab_solid_dark">@color/material_grey_900</color>
+    <color name="reader_ab_solid_dark">@color/action_icon_color</color>
     <color name="reader_ab_solid_light">@color/material_grey_200</color>
 
-    <color name="search_card_background_dark">@color/material_grey_900</color>
+    <color name="search_card_background_dark">@color/action_icon_color</color>
     <color name="search_card_background_light">@color/material_grey_200</color>
-    <color name="search_card_header_box_dark">@color/material_grey_900</color>
+    <color name="search_card_header_box_dark">@color/action_icon_color</color>
     <color name="search_card_header_box_light">@color/material_grey_200</color>
-    <color name="search_card_header_box_top_line_dark">@color/material_grey_900</color>
+    <color name="search_card_header_box_top_line_dark">@color/action_icon_color</color>
     <color name="search_card_header_box_top_line_light">@color/material_grey_400</color>
     <color name="search_card_header_text_dark">@color/material_grey_300</color>
-    <color name="search_card_header_text_light">@color/material_grey_900</color>
+    <color name="search_card_header_text_light">@color/action_icon_color</color>
     <color name="search_card_page_dark">@color/material_grey_500</color>
     <color name="search_card_page_light">@color/material_grey_700</color>
     <color name="search_card_query_emphasis_dark">@color/books_corpora_primary_40pc</color>
     <color name="search_card_query_emphasis_light">@color/books_corpora_primary_50pc</color>
     <color name="search_card_result_text_dark">@color/material_grey_300</color>
-    <color name="search_card_result_text_light">@color/material_grey_900</color>
+    <color name="search_card_result_text_light">@color/action_icon_color</color>
     <color name="search_scrub_bar_text_active_dark">@color/material_grey_100</color>
-    <color name="search_scrub_bar_text_active_light">@color/material_grey_900</color>
+    <color name="search_scrub_bar_text_active_light">@color/action_icon_color</color>
     <color name="search_scrub_bar_text_inactive_dark">@color/material_grey_700</color>
     <color name="search_scrub_bar_text_inactive_light">@color/material_grey_400</color>
 
@@ -126,6 +126,7 @@
     <color name="toc_tab_color">#eeeeee</color>
     <color name="toc_item_primary_color">#333333</color>
     <color name="empty_views_placeholder">#616161</color>
+    <color name="action_icon_color">#212121</color>
 
     <array name="colors_material">
         <item>@color/material_red_500</item>

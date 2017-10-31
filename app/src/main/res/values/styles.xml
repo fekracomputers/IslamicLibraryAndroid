@@ -277,7 +277,7 @@
         <item name="grayD400L700">@color/material_grey_400</item>
         <item name="grayD500L600">@color/material_grey_500</item>
         <item name="grayD000L700">@android:color/white</item>
-        <item name="grayD900L200">@color/material_grey_900</item>
+        <item name="grayD900L200">@color/action_icon_color</item>
         <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
         <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_dark_24dp</item>
         <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_dark_24dp</item>
@@ -347,7 +347,7 @@
         <item name="translateLanguageArrow">@drawable/ic_arrow_back_white_24dp</item>
         <item name="translateSpinnerStyle">@style/Translate.SpinnerDarkStyle</item>
         <item name="preferenceSpinnerStyle">@style/Preference.DarkSpinner</item>
-        <item name="skim_background">@color/material_grey_900</item>
+        <item name="skim_background">@color/action_icon_color</item>
         <item name="skimPageError">@color/material_red_500</item>
         <item name="dialogAuthorColor">@color/material_grey_400</item>
         <item name="navigationViewTextAppearance">@style/navigationViewTextAppearance.day</item>

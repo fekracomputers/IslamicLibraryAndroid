@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 import android.view.MenuItem;
@@ -28,31 +29,39 @@ abstract class BrowsingActivityNavigationController {
     protected int paneNumber;
     protected int lastButtomSheetCheckedItemId;
     protected SparseArray<Fragment> fragments = new SparseArray(3);
+    protected BrowsingActivityControllerListener listener;
     private BottomNavigationView bottomNavigationView;
     private int oldPanNumbers;
     private boolean fromRotation;
-    private BrowsingActivity browsingActivity;
+    private FragmentActivity activity;
 
-    protected BrowsingActivityNavigationController(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
+    protected BrowsingActivityNavigationController(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity activity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
         this.oldPanNumbers = oldPanNumbers;
         this.fragmentManager = fragmentManager;
         this.fromRotation = fromRotation;
-        this.browsingActivity = browsingActivity;
+        this.activity = activity;
         this.bottomNavigationView = bottomNavigationView;
+        this.listener = listener;
     }
 
-    public static BrowsingActivityNavigationController create(int paneNumber, int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
+    public static BrowsingActivityNavigationController create(int paneNumber,
+                                                              int oldPanNumbers,
+                                                              FragmentManager fragmentManager,
+                                                              boolean fromRotation,
+                                                              BrowsingActivity browsingActivity,
+                                                              BottomNavigationView bottomNavigationView,
+                                                              BrowsingActivityControllerListener listener) {
         switch (paneNumber) {
             case 1: {
                 if (oldPanNumbers <= 1)
-                    return new BrowsingActivityNavigationControllerSinglePaneAlways(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+                    return new BrowsingActivityNavigationControllerSinglePaneAlways(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
                 else
-                    return new BrowsingActivityNavigationControllerSinglePane(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+                    return new BrowsingActivityNavigationControllerSinglePane(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
             }
             case 2:
-                return new BrowsingActivityNavigationControllerDualPan(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+                return new BrowsingActivityNavigationControllerDualPan(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
             case 3:
-                return new BrowsingActivityNavigationControllerTriplePan(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+                return new BrowsingActivityNavigationControllerTriplePan(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
             default:
                 return null;
         }
@@ -68,7 +77,7 @@ abstract class BrowsingActivityNavigationController {
     }
 
     private void restoreLastCheckedItem() {
-        SharedPreferences sharedPref = browsingActivity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         lastButtomSheetCheckedItemId = sharedPref.getInt(PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID, R.id.bottom_library);
         bottomNavigationView.setSelectedItemId(lastButtomSheetCheckedItemId);
     }
@@ -105,7 +114,7 @@ abstract class BrowsingActivityNavigationController {
 
     private void saveBottomBarPosition(MenuItem item) {
         lastButtomSheetCheckedItemId = item.getItemId();
-        SharedPreferences sharedPref = browsingActivity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID, item.getItemId());
         editor.apply();
@@ -127,13 +136,18 @@ abstract class BrowsingActivityNavigationController {
 
     abstract void showBookInformationFragment(BookInformationFragment bookInformationFragment);
 
-    public abstract void showCategoryDetails(int bookCategoryId, String name);
+    public abstract void showCategoryDetails(Fragment fragment);
 
     public abstract void showAuthorFragment(BookListFragment fragment);
 
     public void switchPagerTo(int pagerFragmentType) {
         if (lastButtomSheetCheckedItemId == R.id.bottom_library)
             pagerFragment.switchTo(pagerFragmentType);
+    }
+
+
+    public interface BrowsingActivityControllerListener {
+        public void setAppbarExpanded(boolean expanded);
     }
 
 

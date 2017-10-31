@@ -355,5 +355,7 @@
     <string name="book_collection_recent_download">popular books</string>
     <string name="book_collection_most_opened">most opened</string>
     <string name="book_collection_most_recent">recent</string>
+    <string name="book_collection_favourite_title">favourite</string>
+    <string name="book_collection_tiitle">collections</string>
     <!--end storage pref-->
 </resources>

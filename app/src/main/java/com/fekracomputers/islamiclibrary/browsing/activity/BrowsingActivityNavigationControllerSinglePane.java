@@ -22,8 +22,8 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNavigationController {
 
 
-    public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
-        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+    public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
         paneNumber = 1;
     }
 
@@ -89,16 +89,19 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
 
     void showBookInformationFragment(BookInformationFragment bookInformationFragment) {
         pushBookInformationFragment(bookInformationFragment);
-
+        listener.setAppbarExpanded(true);
     }
 
-    public void showCategoryDetails(int bookCategoryId, String name) {
-        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategoryId, name);
+    public void showCategoryDetails(Fragment fragment) {
         pushBookListFragment(fragment);
+        listener.setAppbarExpanded(true);
+
     }
 
     public void showAuthorFragment(BookListFragment fragment) {
         pushBookListFragment(fragment);
+        listener.setAppbarExpanded(true);
+
     }
 
 

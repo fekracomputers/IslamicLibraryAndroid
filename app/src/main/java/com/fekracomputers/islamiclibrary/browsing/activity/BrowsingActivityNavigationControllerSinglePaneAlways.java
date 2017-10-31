@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentManager;
  */
 
 public class BrowsingActivityNavigationControllerSinglePaneAlways extends BrowsingActivityNavigationControllerSinglePane {
-    public BrowsingActivityNavigationControllerSinglePaneAlways(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView) {
-        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView);
+    public BrowsingActivityNavigationControllerSinglePaneAlways(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+        super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
     }
 
     @Override

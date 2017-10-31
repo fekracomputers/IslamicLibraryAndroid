@@ -694,9 +694,15 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         return selectedBookInfoItems;
     }
 
+    /**
+     * @param limit number of recently downloaded books to return or 0 for all books
+     * @return cursor with books completed download and indexing sorted decending with latest first
+     */
     public Cursor getRecentDownloads(int limit) {
         return getBooksFiltered(BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.DOT +
-                        BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.IS_NOT_NULL,
+                        BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.IS_NOT_NULL
+                        + SQL.AND + BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + ">=" + DownloadsConstants.STATUS_FTS_INDEXING_ENDED
+                ,
                 null,
                 BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.DECS,
                 true,
@@ -1098,7 +1104,10 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         //TODO add time stamp for
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS, status);
-        int i = db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME, contentValues,
+        if (status == DownloadsConstants.STATUS_FTS_INDEXING_ENDED)
+            contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP, "datetime('now','localtime')");
+        db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
+                contentValues,
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{Long.toString(bookId)});
     }
@@ -1279,6 +1288,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE__JOURNAL_EXTENSION);
         journal.delete();
         deleteBookFromStoredBooks(bookId, context);
+        UserDataDBHelper.getInstance(context).deleteAccessLog(bookId);
 
     }
 
@@ -1328,7 +1338,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                         SQL.JOIN
                         + databaseName + SQL.DOT + joinTableName +
                         SQL.ON +
-                        BooksInformationDBContract.BookInformationEntery.TABLE_NAME + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
+                        BooksInformationDBContract.BookInformationEntery.TABLE_NAME + SQL.DOT + BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID +
                         SQL.EQUALS +
                         databaseName + SQL.DOT + joinTableName + SQL.DOT + coulmnBookIdName,
                 BOOK_INFORMATION_COLUMNS_ARRAY,
@@ -1343,16 +1353,16 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     }
 
     private void attachDatabaseIfNedded(String databasePath, String databaseName) {
-        boolean b = false;
+        boolean found = false;
         Cursor c = getReadableDatabase().rawQuery("PRAGMA database_list", null);
         while (c.moveToNext()) {
             if (c.getString(1).equals(databaseName) && c.getString(2).equals(databasePath)) {
-                b = true;
+                found = true;
                 break;
             }
         }
         c.close();
-        if (!b)
+        if (!found)
             getReadableDatabase().execSQL("ATTACH DATABASE '" + databasePath + "' AS " + databaseName);
 
     }

@@ -117,7 +117,7 @@ public class UserDataDBContract {
         public static final String Table_NAME = "BooksCollection";
         public static final String COLUMN_ID = "Id";
         public static final String COLUMN_NAME = "Name";
-        public static final String COLUMN_ORDER = "order";
+        public static final String COLUMN_ORDER = "CollectionOrder";
         public static final String COLUMN_VISIBILITY = "visibility";
         public static final String COLUMN_AUTOMATIC_ID = "automaticID";
 

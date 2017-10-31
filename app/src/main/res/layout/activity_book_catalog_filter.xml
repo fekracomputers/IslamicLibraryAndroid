@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,6 +10,7 @@
         android:id="@+id/selection_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimaryDark"
         android:gravity="center_vertical|start"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -26,7 +27,9 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_below="@+id/selection_tool_bar">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBar"
@@ -46,8 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:isw_icon_left="@drawable/ic_cloud_done_black_24dp"
-                    app:isw_icon_right="@drawable/ic_cloud_download_black_24dp"
-                    />
+                    app:isw_icon_right="@drawable/ic_cloud_download_black_24dp" />
                 <!--app:isw_thumb_color_left="@color/material_yellow_500"-->
                 <!--app:isw_thumb_color_right="@color/material_blue_500"-->
                 <!--app:isw_inactive_tint_icon_left="@color/material_yellow_500"-->
@@ -64,17 +66,19 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout="@layout/fragment_filter_pager" />
 
-        <android.support.design.widget.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="start|bottom"
-            android:background="@color/colorPrimaryDark"
-            app:itemIconTint="@drawable/nav_item_color_state"
-            app:itemTextColor="@drawable/nav_item_color_state"
-
-            app:menu="@menu/buttom_navigation" />
 
     </android.support.design.widget.CoordinatorLayout>
-</LinearLayout>
+
+    <android.support.design.widget.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="start|bottom"
+        android:background="@color/colorPrimaryDark"
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:itemTextColor="@drawable/nav_item_color_state"
+
+        app:menu="@menu/buttom_navigation" />
+</RelativeLayout>

@@ -115,7 +115,7 @@ public final class BooksInformationDBContract {
         public static final int VALUE_FILESYSTEM_SYNC_FLAG_PRESENT = 1;
         public static final int VALUE_FILESYSTEM_SYNC_FLAG_NOT_PRESENT = 0;
         public static final String COLUMN_NAME_FILESYSTEM_SYNC_FLAG = "filesystem_sync_flag";
-        public static final Object COLUMN_COMPLETED_TIMESTAMP = "DownloadcompletedTimestamp";
+        public static final String COLUMN_COMPLETED_TIMESTAMP = "DownloadcompletedTimestamp";
     }
 
     public static class BookNameTextSearch {

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -76,12 +77,15 @@ public class BrowsingActivity
         NavigationView.OnNavigationItemSelectedListener,
         BookCardEventListener,
         ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener,
-        ConfirmBookDeleteDialogFragment.BookDeleteDialogListener {
+        ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
+        BrowsingActivityNavigationController.BrowsingActivityControllerListener {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
     public static final int BOOK_LIST_FRAGMENT_TYPE = 2;
     public static final int BOOK_INFORMATION_TYPE = 3;
+    public static final int HOME_SCREEN_TYPE = 4;
+
     public static final int ALL_BOOKS_TYPE = -1;
 
     public static final String NUMBER_OF_PANS_KEY = "NUMBER_OF_PANS_KEY";
@@ -195,6 +199,7 @@ public class BrowsingActivity
 
 
     };
+    private AppBarLayout appBarLayout;
 
 
     @Override
@@ -236,7 +241,7 @@ public class BrowsingActivity
             supportActionBar.setDisplayShowTitleEnabled(false);
         }
         mBooksInformationDbHelper = BooksInformationDbHelper.getInstance(BrowsingActivity.this);
-
+        appBarLayout = findViewById(R.id.appBar);
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -283,13 +288,19 @@ public class BrowsingActivity
                 oldPanNumbers,
                 fragmentManager,
                 savedInstanceState != null,
-                this, bottomNavigationView);
+                this,
+                bottomNavigationView,
+                this);
         if (browsingActivityNavigationController != null) {
             browsingActivityNavigationController.intiializePans();
             bottomNavigationView.setOnNavigationItemSelectedListener(browsingActivityNavigationController::handleButtomNavigationItem);
         }
 
 
+    }
+
+    public void setAppbarExpanded(boolean expanded) {
+        appBarLayout.setExpanded(expanded);
     }
 
     private int getmumberOfpans(View filterPagerContainer, View bookInfoContainer) {
@@ -391,7 +402,8 @@ public class BrowsingActivity
 
     @Override
     public void OnCategoryItemClick(BookCategory bookCategory) {
-        browsingActivityNavigationController.showCategoryDetails(bookCategory.getId(), bookCategory.getName());
+        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategory.getId(), bookCategory.getName());
+        browsingActivityNavigationController.showCategoryDetails(fragment);
     }
 
     @Override
@@ -715,8 +727,8 @@ public class BrowsingActivity
         super.onStop();
         bookCardEventsCallback.removeBookDownloadBroadcastListener();
         notifyActivityStopped();
-
     }
+
 
     @Override
     protected void onRestart() {

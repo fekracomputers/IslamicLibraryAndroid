@@ -259,5 +259,7 @@
     <string name="book_collection_recent_download">الكتب الأخر تنزيلا</string>
     <string name="book_collection_most_opened">الكتب الأكثر قراءة</string>
     <string name="book_collection_most_recent">الكتب الأخيرة</string>
+    <string name="book_collection_favourite_title">المفضلة</string>
+    <string name="book_collection_tiitle">المجموعات</string>
 
 </resources>
