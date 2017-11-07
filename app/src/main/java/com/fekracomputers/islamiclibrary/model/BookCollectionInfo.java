@@ -58,5 +58,20 @@ public class BookCollectionInfo {
     public void addToCollection(int collectionId) {
         booksCollectionIds.add(collectionId);
     }
+
+    public boolean doBelongTo(BooksCollection booksCollection) {
+        return doBelongTo(booksCollection.getCollectionsId());
+    }
+
+    public void setBelongToCollection(int collectionId, boolean b) {
+        if (b)
+            addToCollection(collectionId);
+        else
+            removeFromCollection(collectionId);
+    }
+
+    public int getNonFavouriteCollectionCount() {
+        return getNonFavouriteCollections().size();
+    }
 }
 

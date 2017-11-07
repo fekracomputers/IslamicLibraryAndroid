@@ -58,7 +58,7 @@ dependencies {
     compile 'com.android.support:transition:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile 'com.github.bumptech.glide:glide:4.2.0'
+    compile 'com.github.bumptech.glide:glide:4.3.0'
 
     compile 'com.webianks.library:easy-feedback:1.0.2'
 

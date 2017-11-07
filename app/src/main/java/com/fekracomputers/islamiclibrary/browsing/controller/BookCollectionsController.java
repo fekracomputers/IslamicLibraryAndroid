@@ -56,4 +56,18 @@ public class BookCollectionsController {
     public ArrayList<BooksCollection> getBookCollections(BookCollectionInfo bookCollectionInfo, Context context, boolean viewdOnly) {
         return UserDataDBHelper.getInstance(context, bookCollectionInfo.getBookId()).getBookCollections(viewdOnly);
     }
+
+    public ArrayList<BooksCollection> getAllBookCollections(Context context, boolean viewdOnly, boolean nonAutomaticOnly) {
+        return UserDataDBHelper.getInstance(context).getBooksCollections(viewdOnly, nonAutomaticOnly);
+    }
+
+    public BooksCollection createNewCollection(String string) {
+        return UserDataDBHelper.getInstance(context).addBookCollection(string);
+
+    }
+
+    public void updateCollectionStatus(BookCollectionInfo bookCollectionInfo) {
+        UserDataDBHelper.getInstance(context).updateCollectionStatus(bookCollectionInfo.getBookId(), bookCollectionInfo.getBooksCollectionIds());
+
+    }
 }

@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -200,6 +201,9 @@ public class BrowsingActivity
 
     };
     private AppBarLayout appBarLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private DrawerLayout drawer;
+    private DrawerArrowDrawable drawerArrow;
 
 
     @Override
@@ -235,6 +239,11 @@ public class BrowsingActivity
         setContentView(R.layout.activity_browsing);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        drawerArrow = new DrawerArrowDrawable(this);
+        drawerArrow.setColor(0xFFFFFF);
+
+
+        toolbar.setNavigationIcon(drawerArrow);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
@@ -243,9 +252,9 @@ public class BrowsingActivity
         mBooksInformationDbHelper = BooksInformationDbHelper.getInstance(BrowsingActivity.this);
         appBarLayout = findViewById(R.id.appBar);
 
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
@@ -301,6 +310,22 @@ public class BrowsingActivity
 
     public void setAppbarExpanded(boolean expanded) {
         appBarLayout.setExpanded(expanded);
+    }
+
+    @Override
+    public void setUpNavigation(boolean value) {
+        ActionBar actionBar = getSupportActionBar();
+        if (value && actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBarDrawerToggle.setToolbarNavigationClickListener(v -> onBackPressed());
+        } else {
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarDrawerToggle.setToolbarNavigationClickListener(null);
+        }
+
     }
 
     private int getmumberOfpans(View filterPagerContainer, View bookInfoContainer) {
@@ -714,6 +739,12 @@ public class BrowsingActivity
         }
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        browsingActivityNavigationController.onDestroy();
+        super.onDestroy();
     }
 
     @Override

@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
@@ -13,6 +16,7 @@ import android.support.v7.widget.TintTypedArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 
 /**
  * Created by Eugen on 13. 5. 2015.
@@ -95,5 +99,30 @@ public final class Util {
         int intColor = a.getColor(0, defaultColor);
         a.recycle();
         return intColor;
+    }
+
+    public static void setImageButtonEnabled(Context ctxt, boolean enabled, ImageButton item,
+                                             int iconResId) {
+        item.setEnabled(enabled);
+        Drawable originalIcon = ctxt.getResources().getDrawable(iconResId);
+        Drawable icon = enabled ? originalIcon : convertDrawableToGrayScale(originalIcon);
+        item.setImageDrawable(icon);
+    }
+
+    /**
+     * Mutates and applies a filter that converts the given drawable to a Gray
+     * image. This method may be used to simulate the color of disable icons in
+     * Honeycomb's ActionBar.
+     *
+     * @return a mutated version of the given drawable with a color filter
+     * applied.
+     */
+    public static Drawable convertDrawableToGrayScale(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+        Drawable res = drawable.mutate();
+        res.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        return res;
     }
 }

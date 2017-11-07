@@ -22,7 +22,7 @@
     </style>
 
 
-    <style name="AppTheme.MaterialAboutActivity.Fragment" parent="Theme.Mal.Light" >
+    <style name="AppTheme.MaterialAboutActivity.Fragment" parent="Theme.Mal.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -38,8 +38,13 @@
         <item name="windowActionModeOverlay">false</item>
         <item name="actionModeBackground">@color/colorPrimaryDark</item>
         <item name="colorControlHighlight">@color/color_tab_layout_indicator</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
     <style name="AppTheme.NoActionBar.WhiteBackground">
         <item name="android:windowBackground">@color/details_background</item>
     </style>
@@ -775,6 +780,10 @@
         <item name="android:background">#9ea5a6</item>
     </style>
 
+    <style name="AppCollectionDialogFragmnetStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
 
 
 </resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="details_page_description_max_lines">3</integer>
+    <integer name="books_play_grid_width">2</integer>
+    <integer name="details_page_cover_weight">2</integer>
+    <integer name="details_page_details_weight">3</integer>
+    <integer name="play_featured_grid_width">2</integer>
+    <integer name="read_now_columns">1</integer>
+    <integer name="shelf_minimum_column_count">2</integer>
+    <integer name="abc_max_action_buttons">2</integer>
+    <integer name="tutorial_dialog_landscape_width_percent">90</integer>
+    <integer name="tutorial_dialog_landscape_height_percent">90</integer>
+    <item name="translate_spinners_width" type="integer">@integer/books_match_parent</item>
+    <integer name="eob_nis_container_weight">6</integer>
+    <integer name="offers_column_count">1</integer>
+    <integer name="stream_column_count">1</integer>
+    <integer name="abc_config_activityDefaultDur">220</integer>
+    <integer name="abc_config_activityShortDur">150</integer>
+    <integer name="action_bar_anim_time">300</integer>
+    <integer name="action_bar_preview_time">2000</integer>
+    <integer name="bkmrk_d_maxLines">3</integer>
+    <integer name="books_match_parent">-1</integer>
+    <integer name="books_wrap_content">-2</integer>
+    <integer name="cancel_button_image_alpha">127</integer>
+    <integer name="config_activityDefaultDur">220</integer>
+    <integer name="config_activityShortDur">150</integer>
+    <integer name="eob_min_screen_dim_for_covers_dp">440</integer>
+    <integer name="explore_description_max_lines">3</integer>
+    <integer name="explore_subtitle_max_lines">2</integer>
+    <integer name="explore_title_max_lines">3</integer>
+    <integer name="google_play_services_version">8487000</integer>
+    <integer name="onboard_quiz_book_overlay_opacity_percent">80</integer>
+    <integer name="onboard_quiz_genre_overlay_opacity_percent">80</integer>
+    <integer name="play_download_arc_background_transition_interval_ms">264</integer>
+    <integer name="play_download_arc_background_transition_step_ms">33</integer>
+    <integer name="play_download_arc_min_percent">6</integer>
+    <integer name="play_download_download_frame_ms">240</integer>
+    <integer name="play_download_finish_frame_ms">33</integer>
+    <integer name="play_download_press_frame_ms">33</integer>
+    <integer name="play_onboard__drop_count">15</integer>
+    <integer name="play_onboard__drop_duration_ms">2000</integer>
+    <integer name="play_onboard__slide_duration_ms">300</integer>
+    <integer name="play_onboard__splash_duration_ms">2000</integer>
+    <integer name="quick_bookmarks_count">5</integer>
+    <integer name="reader_margin_percent_sides">7</integer>
+    <integer name="reader_margin_percent_top_bottom">8</integer>
+    <item name="short_animation_time" type="integer">@android:integer/config_shortAnimTime</item>
+    <integer name="status_bar_notification_info_maxnum">999</integer>
+    <integer name="unavailable_card_opacity">40</integer>
+</resources>

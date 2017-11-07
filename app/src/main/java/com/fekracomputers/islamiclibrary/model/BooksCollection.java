@@ -41,8 +41,8 @@ public class BooksCollection implements Comparable<BooksCollection> {
     public Cursor reAcquireCursor(Context context) {
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
-            cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
         }
+        cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
         return cursor;
     }
 

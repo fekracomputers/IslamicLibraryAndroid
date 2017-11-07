@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -19,6 +20,7 @@ import com.fekracomputers.islamiclibrary.model.PageInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Database Helper class to Store user data (BookMarks ,Notes ,Highlights and comments)
@@ -541,9 +543,9 @@ public class UserDataDBHelper {
 
         }
 
-        public ArrayList<BooksCollection> getBooksCollections(boolean viewdOnly) {
-            ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
-
+        @Nullable
+        public BooksCollection getBooksCollection(int collectionId) {
+            BooksCollection booksCollection = null;
             Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionEntry.Table_NAME,
                     new String[]{
                             UserDataDBContract.BooksCollectionEntry.COLUMN_ID,
@@ -552,11 +554,52 @@ public class UserDataDBHelper {
                             UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY,
                             UserDataDBContract.BooksCollectionEntry.COLUMN_NAME
                     },
-                    UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?",
-                    new String[]{String.valueOf(viewdOnly ? 1 : 0)},
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_ID + "=?"
+                    ,
+                    new String[]{String.valueOf(collectionId)},
                     null,
                     null,
-                    UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER + "," + UserDataDBContract.BooksCollectionEntry.COLUMN_ID
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER + SQL.DECS + "," + UserDataDBContract.BooksCollectionEntry.COLUMN_ID
+            );
+
+            final int INDEX_COLLECTION_ID = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_ID);
+            final int INDEX_AUTOMATIC_ID = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID);
+            final int INDEX_ORDER = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER);
+            final int INDEX_COLUMN_VISIBILITY = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY);
+            final int INDEX_NAME = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME);
+
+            if (c.moveToFirst()) {
+                int collectionId2 = c.getInt(INDEX_COLLECTION_ID);
+                int automaticID = c.getInt(INDEX_AUTOMATIC_ID);
+                String name = c.getString(INDEX_NAME);
+                boolean visibility = c.getInt(INDEX_COLUMN_VISIBILITY) != 0;
+                int order = c.getInt(INDEX_ORDER);
+                booksCollection = new BooksCollection(order, visibility, automaticID, name, collectionId2);
+            }
+            c.close();
+            return booksCollection;
+        }
+
+        @NonNull
+        public ArrayList<BooksCollection> getBooksCollections(boolean viewdOnly, boolean nonAutomaticOnly) {
+            ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
+            Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionEntry.Table_NAME,
+                    new String[]{
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_ID,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY,
+                            UserDataDBContract.BooksCollectionEntry.COLUMN_NAME
+                    },
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?" +
+                            (nonAutomaticOnly ? SQL.AND +
+                                    UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID +
+                                    "=?" : ""),
+                    nonAutomaticOnly ? new String[]{String.valueOf(viewdOnly ? 1 : 0), String.valueOf(0)} :
+                            new String[]{String.valueOf(viewdOnly ? 1 : 0)},
+                    null,
+                    null,
+                    UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER + SQL.DECS + "," + UserDataDBContract.BooksCollectionEntry.COLUMN_ID
             );
 
             final int INDEX_COLLECTION_ID = c.getColumnIndex(UserDataDBContract.BooksCollectionEntry.COLUMN_ID);
@@ -638,6 +681,7 @@ public class UserDataDBHelper {
                     new String[]{String.valueOf(bookId)});
         }
 
+        @NonNull
         public BookCollectionInfo getBookCollectionInfo(int bookId) {
             Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
                     new String[]{
@@ -657,6 +701,7 @@ public class UserDataDBHelper {
             c.close();
             return new BookCollectionInfo(collectionIds, bookId);
         }
+
 
         public ArrayList<BooksCollection> getBookCollections(int bookId, boolean viewdOnly) {
             ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
@@ -720,6 +765,44 @@ public class UserDataDBHelper {
                                     UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + "=?",
                             new String[]{String.valueOf(bookId), String.valueOf(collectionId)}
                     ) != 0;
+        }
+
+        @Nullable
+        public BooksCollection addBookCollection(String name) {
+            ContentValues contentValue = new ContentValues();
+            contentValue.put(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME, name);
+            int collectionId = (int) getWritableDatabase().insert(UserDataDBContract.BooksCollectionEntry.Table_NAME, null, contentValue);
+            if (collectionId > -1)
+                return getBooksCollection(collectionId);
+            else return null;
+        }
+
+        public void updateCollectionStatus(int bookId, final Set<Integer> NewBooksCollectionIds) {
+            BookCollectionInfo oldBookCollectionInfo = getBookCollectionInfo(bookId);
+            Set<Integer> idsToAdd = new HashSet<>(NewBooksCollectionIds);
+            Set<Integer> oldBooksCollectionIds = oldBookCollectionInfo.getBooksCollectionIds();
+            idsToAdd.removeAll(oldBooksCollectionIds);
+
+            ContentValues contentValue = new ContentValues();
+            SQLiteDatabase db = getWritableDatabase();
+            contentValue.put(UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID, bookId);
+            for (Integer booksCollectionId : idsToAdd) {
+                contentValue.put(UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID, booksCollectionId);
+                db.insertWithOnConflict(UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
+                        null, contentValue, SQLiteDatabase.CONFLICT_IGNORE);
+            }
+
+            Set<Integer> idsToRemove = new HashSet<>(oldBooksCollectionIds);
+            idsToRemove.removeAll(NewBooksCollectionIds);
+            for (Integer booksCollectionId : idsToRemove) {
+                contentValue.put(UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID, booksCollectionId);
+                db.delete(UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
+                        UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID + "=?"
+                                + SQL.AND +
+                                UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + "=?",
+                        new String[]{String.valueOf(booksCollectionId), String.valueOf(booksCollectionId)});
+            }
+
         }
     }
 

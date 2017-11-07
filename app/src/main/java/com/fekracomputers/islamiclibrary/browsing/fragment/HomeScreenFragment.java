@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
@@ -43,12 +42,12 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ScrollView rootView = (ScrollView) inflater.inflate(R.layout.fragment_home_screen, container, false);
-        LinearLayout containerLinearLayout = (LinearLayout) rootView.findViewById(R.id.home_screen_horizontal_list_container);
+        View rootView = inflater.inflate(R.layout.fragment_home_screen, container, false);
+        LinearLayout containerLinearLayout = rootView.findViewById(R.id.home_screen_horizontal_list_container);
 
         booksInformationDbHelper = BooksInformationDbHelper.getInstance(getContext());
         globalUserDBHelper = UserDataDBHelper.getInstance(getContext());
-        ArrayList<BooksCollection> booksCollections = globalUserDBHelper.getBooksCollections(true);
+        ArrayList<BooksCollection> booksCollections = globalUserDBHelper.getBooksCollections(true, false);
         for (BooksCollection booksCollection : booksCollections) {
             HorizontalBookRecyclerView recyclerView = new HorizontalBookRecyclerView(getContext())
                     .setupRecyclerView(booksCollection, mListener);

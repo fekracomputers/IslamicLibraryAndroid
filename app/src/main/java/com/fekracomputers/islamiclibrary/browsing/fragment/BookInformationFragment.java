@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +25,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
+import com.fekracomputers.islamiclibrary.browsing.dialog.CollectionDialogFragmnet;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
@@ -46,7 +48,9 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookInformationFragment extends Fragment implements BrowsingActivityListingFragment {
+public class BookInformationFragment extends Fragment implements
+        BrowsingActivityListingFragment,
+        CollectionDialogFragmnet.CollectionDialogFragmnetListener {
     int bookId;
     int mBookDownloadStatus = DownloadsConstants.STATUS_INVALID;
     private BookInfo mBookInfo;
@@ -64,6 +68,7 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
     private ImageView favouriteButtonImageView;
     private ImageView collectionButtonImageView;
     private BookCollectionsController bookCollectionsController;
+    private TextView collectionCount;
 
     public BookInformationFragment() {
         // Required empty public constructor
@@ -149,10 +154,14 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
 
         favouriteButtonImageView = rootView.findViewById(R.id.fav_button_img_view);
         collectionButtonImageView = rootView.findViewById(R.id.collection_button_img_view);
+        collectionCount = rootView.findViewById(R.id.collection_count);
         bindCollections(bookCollectionInfo);
 
-        LinearLayout favButtonLayout = rootView.findViewById(R.id.fav_button_layout);
+        RelativeLayout favButtonLayout = rootView.findViewById(R.id.fav_button_layout);
         favButtonLayout.setOnClickListener(v -> toggleFavourite());
+
+        RelativeLayout collectionButtonLayout = rootView.findViewById(R.id.collection_button_layout);
+        collectionButtonLayout.setOnClickListener(v -> showCollectionsDialog());
 
         //endregion
 
@@ -215,6 +224,14 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         return rootView;
     }
 
+    private void showCollectionsDialog() {
+        CollectionDialogFragmnet collectionDialogFragmnet = CollectionDialogFragmnet.newInstance(bookCollectionInfo);
+        //see this answer http://stackoverflow.com/a/37794319/3061221
+        FragmentManager fm = getChildFragmentManager();
+        collectionDialogFragmnet.show(fm, CollectionDialogFragmnet.TAG_FRAGMENT_COLLECTION);
+
+    }
+
     private void toggleFavourite() {
         bookCollectionsController.toggleFavourite(bookCollectionInfo);
         bindCollections(bookCollectionInfo);
@@ -226,8 +243,17 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
                 : R.drawable.ic_add_favorite_24dp);
 
         collectionButtonImageView.setImageResource((!bookCollectionInfo.doesBelongToColletionOtherTHanFavourite()) ?
-                R.drawable.ic_collections_bookmark_black_24dp :
+                R.drawable.ic_add_collection :
                 R.drawable.ic_collections_bookmark_green_24dp);
+
+        if (bookCollectionInfo.doesBelongToColletionOtherTHanFavourite()) {
+            collectionCount.setVisibility(View.VISIBLE);
+            collectionCount.setText(getString(R.string.page_number, bookCollectionInfo.getNonFavouriteCollectionCount()));
+
+        } else {
+            collectionCount.setVisibility(View.INVISIBLE);
+            collectionCount.setText("");
+        }
     }
 
     private Cursor getAuthorPreviewCursor() {
@@ -418,6 +444,12 @@ public class BookInformationFragment extends Fragment implements BrowsingActivit
         if (bookId == mBookInfo.getBookId()) {
             bindDownloadStatus(downloadStatus);
         }
+    }
+
+    @Override
+    public void collectionChanged(BookCollectionInfo bookCollectionInfo) {
+        this.bookCollectionInfo = bookCollectionInfo;
+        bindCollections(bookCollectionInfo);
     }
 
 

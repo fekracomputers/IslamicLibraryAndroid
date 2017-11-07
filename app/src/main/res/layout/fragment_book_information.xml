@@ -105,17 +105,15 @@
 
             <View
                 android:id="@+id/book_information_upper_part_separator"
-                style="@style/HorizontalSeparator"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp" />
+                style="@style/HorizontalSeparator" />
 
             <LinearLayout
                 android:id="@+id/book_information_download_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
                 android:weightSum="2">
 
 
@@ -126,7 +124,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/book_info_botton_color"
+                    app:cardBackgroundColor="@color/colorAccent"
                     app:cardElevation="4dp"
                     app:cardUseCompatPadding="true">
 
@@ -173,7 +171,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/fav_button_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -182,24 +180,29 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="16dp">
+                    android:paddingBottom="16dp">
 
                     <ImageView
                         android:id="@+id/fav_button_img_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
+                        android:layout_marginBottom="16dp"
                         app:srcCompat="@drawable/ic_add_favorite_24dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/fav_button_img_view"
+                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
+                        android:paddingTop="8dp"
                         android:text="@string/book_collection_favourite_title" />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/collection_button_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -208,24 +211,40 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical"
-                    android:paddingBottom="16dp"
-
-                    android:paddingTop="16dp">
+                    android:paddingBottom="16dp">
 
                     <ImageView
                         android:id="@+id/collection_button_img_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
+                        android:paddingBottom="8dp"
                         app:srcCompat="@drawable/ic_collections_bookmark_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/collection_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@id/collection_button_img_view"
+                        android:background="@drawable/rounded_textview"
+                        android:gravity="center"
+                        android:textColor="#FFF"
+                        android:textSize="12sp"
+                        android:visibility="invisible"
+                        tools:text="55" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:layout_below="@id/collection_button_img_view"
+                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
+                        android:paddingTop="8dp"
                         android:text="@string/book_collection_tiitle" />
-                </LinearLayout>
+                </RelativeLayout>
 
 
             </LinearLayout>

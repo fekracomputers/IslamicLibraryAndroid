@@ -30,6 +30,7 @@ abstract class BrowsingActivityNavigationController {
     protected int lastButtomSheetCheckedItemId;
     protected SparseArray<Fragment> fragments = new SparseArray(3);
     protected BrowsingActivityControllerListener listener;
+    protected FragmentManager.OnBackStackChangedListener backStackChangedListener;
     private BottomNavigationView bottomNavigationView;
     private int oldPanNumbers;
     private boolean fromRotation;
@@ -99,6 +100,7 @@ abstract class BrowsingActivityNavigationController {
                 .replace(R.id.filter_pager_container, fragment, BOOK_INFORMATION_FRAGMENT_TAG)
                 .addToBackStack(BOOK_INFORMATION_FRAGMENT_ADDED)
                 .commit();
+
     }
 
     boolean handleButtomNavigationItem(MenuItem item) {
@@ -145,9 +147,16 @@ abstract class BrowsingActivityNavigationController {
             pagerFragment.switchTo(pagerFragmentType);
     }
 
+    public void onDestroy() {
+        if (backStackChangedListener != null)
+            fragmentManager.removeOnBackStackChangedListener(backStackChangedListener);
+    }
+
 
     public interface BrowsingActivityControllerListener {
         public void setAppbarExpanded(boolean expanded);
+
+        void setUpNavigation(boolean b);
     }
 
 

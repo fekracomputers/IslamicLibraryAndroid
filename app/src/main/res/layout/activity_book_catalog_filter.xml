@@ -42,7 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="enterAlways|scroll">
+                app:layout_scrollFlags="enterAlways|scroll"
+                app:navigationIcon="?homeAsUpIndicator">
 
                 <com.polyak.iconswitch.IconSwitch
                     android:id="@+id/toolbar_downloaded_only_switch"
@@ -79,6 +80,5 @@
         android:background="@color/colorPrimaryDark"
         app:itemIconTint="@drawable/nav_item_color_state"
         app:itemTextColor="@drawable/nav_item_color_state"
-
         app:menu="@menu/buttom_navigation" />
 </RelativeLayout>

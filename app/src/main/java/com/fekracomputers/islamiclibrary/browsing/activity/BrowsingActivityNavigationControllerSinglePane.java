@@ -4,6 +4,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AdvancedSearchFragment;
@@ -12,6 +13,7 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.HomeScreenFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 
+import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_ADDED;
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_TAG;
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_LIST_FRAGMENT_TAG;
 
@@ -25,6 +27,16 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
     public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
         super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
         paneNumber = 1;
+        backStackChangedListener = () -> {
+            if (fragmentManager.getBackStackEntryCount() == 0) {
+                bottomNavigationView.setVisibility(View.VISIBLE);
+                listener.setUpNavigation(false);
+            } else {
+                bottomNavigationView.setVisibility(View.GONE);
+                listener.setUpNavigation(true);
+            }
+        };
+        fragmentManager.addOnBackStackChangedListener(backStackChangedListener);
     }
 
     @Override
@@ -90,6 +102,15 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
     void showBookInformationFragment(BookInformationFragment bookInformationFragment) {
         pushBookInformationFragment(bookInformationFragment);
         listener.setAppbarExpanded(true);
+    }
+
+    void pushBookInformationFragment(Fragment fragment) {
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.filter_pager_container, fragment, BOOK_INFORMATION_FRAGMENT_TAG)
+                .addToBackStack(BOOK_INFORMATION_FRAGMENT_ADDED)
+                .commit();
+
     }
 
     public void showCategoryDetails(Fragment fragment) {
