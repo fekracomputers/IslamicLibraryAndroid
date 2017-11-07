@@ -28,19 +28,16 @@ import com.fekracomputers.islamiclibrary.R;
  */
 public class DisplayOptionsPopupFragment extends DialogFragment {
 
+    public static final String TAG_FRAGMENT_DISPLAY_OPTIONS = "fragment_display_options";
+    public static final int LAYOUT_OPTIONS = 0;
+    public static final int BRIGHTNESS_OPTIONS = 1;
     private static final String ARG_TYPE = "TYPE";
     private static final String ARA_INITIAL_ZOOM = "initial_zoom";
-    public static final String TAG_FRAGMENT_DISPLAY_OPTIONS = "fragment_display_options";
-
     /**
      * 0 : layout options
      * 1 : brightness
      */
     private int mCurrentView;
-    public static final int LAYOUT_OPTIONS=0;
-    public static final int BRIGHTNESS_OPTIONS=1;
-
-
     private OnPrefDialogInteractionListener mOnPrefDialogInteractionListener;
     private TextView prefTextSizeTV;
 
@@ -64,10 +61,9 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
     }
 
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-         int mInitialZoom=100;
+        int mInitialZoom = 100;
         if (getArguments() != null) {
             mCurrentView = getArguments().getInt(ARG_TYPE);
             mInitialZoom = getArguments().getInt(ARA_INITIAL_ZOOM);
@@ -105,7 +101,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         final ViewGroup prefTextSize = viewAnimator.findViewById(R.id.pref_text_size);
 
         prefTextSizeTV = prefTextSize.findViewById(R.id.setting_text);
-        prefTextSizeTV.setText(getString(R.string.pref_zoom_precent,mInitialZoom));
+        prefTextSizeTV.setText(getString(R.string.pref_zoom_precent, mInitialZoom));
         prefTextSize.findViewById(R.id.button_plus).setOnClickListener(new View.OnClickListener() {
 
             final int update_sign = +1;
@@ -126,10 +122,16 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         });
 
         final SwitchCompat nightModeSwitch = viewAnimator.findViewById(R.id.pref_night_mode);
+        final SwitchCompat tashkeelSwitch = viewAnimator.findViewById(R.id.pref_tashkeel);
         //nightModeSwitch.setOnCheckedChangeListener(null);
         nightModeSwitch.setChecked(mOnPrefDialogInteractionListener.isThemeNightMode());
+        tashkeelSwitch.setChecked(mOnPrefDialogInteractionListener.isTashkeel());
 
-        nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> mOnPrefDialogInteractionListener.setThemeNightMode(nightModeSwitch.isChecked()));
+
+        nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                mOnPrefDialogInteractionListener.setThemeNightMode(nightModeSwitch.isChecked()));
+        tashkeelSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                mOnPrefDialogInteractionListener.setTashkeel(tashkeelSwitch.isChecked()));
 
 
         final ViewGroup prefTheme = viewAnimator.findViewById(R.id.pref_theme);
@@ -155,7 +157,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
 
     public void changeZoom(int direction) {
         int new_zoom = mOnPrefDialogInteractionListener.zoomUpdatedByPercent(direction * 5);
-        prefTextSizeTV.setText(getString(R.string.pref_zoom_precent,new_zoom));
+        prefTextSizeTV.setText(getString(R.string.pref_zoom_precent, new_zoom));
     }
 
     @Override
@@ -214,5 +216,9 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         boolean isThemeNightMode();
 
         void setThemeNightMode(boolean isDesiredThemeNight);
+
+        boolean isTashkeel();
+
+        void setTashkeel(boolean checked);
     }
 }

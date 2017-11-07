@@ -235,6 +235,7 @@
         <item name="menuBookmarkIcon">@drawable/ic_bookmark_selector_light_24dp</item>
         <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_light_24dp
         </item>
+        <item name="settingsTashkeel">@drawable/ic_add_tashkeel_light</item>
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
         </item>
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_holo_24dp</item>
@@ -330,6 +331,8 @@
         </item>
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
         </item>
+        <item name="settingsTashkeel">@drawable/ic_add_tashkeel_dark</item>
+
 
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_dark_24dp</item>
         <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_dark_24dp</item>

@@ -51,6 +51,7 @@ import com.fekracomputers.islamiclibrary.reading.DisplayPrefChangeListener;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
 import com.fekracomputers.islamiclibrary.reading.dialogs.NotePopupFragment;
 import com.fekracomputers.islamiclibrary.utility.AppConstants;
+import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.widget.AnimationUtils;
 
 import static com.fekracomputers.islamiclibrary.R.id.highlight_remove;
@@ -71,6 +72,7 @@ public class BookPageFragment extends Fragment implements
     private static final int ACTION_MODE_NOT_STARTED = 0;
     private static final int ACTION_MODE_STARTED = 1;
     private static final int ACTION_MODE_DISMISSED = 2;
+    private static final String KEY_TASHKEEL_ON = "tashkeelOn";
     private final float SCROLL_THRESHOLD = 10;
     public String page_content;
     UserDataDBHelper userDataDBHelper;
@@ -94,6 +96,7 @@ public class BookPageFragment extends Fragment implements
     private boolean mIsPageBookmarked;
     private ViewStub mBookmarkFrame;
     private PageInfo pageInfo;
+    private boolean tashkeelOn = true;
 
     public BookPageFragment() {
 
@@ -104,7 +107,6 @@ public class BookPageFragment extends Fragment implements
         bundle.putInt(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, bookId);
         bundle.putInt(KEY_PAGER_POSITION, pagerPosition);
         bundle.putInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, pageId);
-
         BookPageFragment bookPageFragment = new BookPageFragment();
         bookPageFragment.setArguments(bundle);
         return bookPageFragment;
@@ -121,6 +123,8 @@ public class BookPageFragment extends Fragment implements
         userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
         BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
         page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
+        tashkeelOn = pageFragmentListener.getTashkeelState();
+        if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
         mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageRowId);
         mPageCitation.setResources(getResources());
         pageInfo = mPageCitation.pageInfo;
@@ -129,6 +133,7 @@ public class BookPageFragment extends Fragment implements
         setHasOptionsMenu(false);
 
     }
+
 
     @Override
     public void onResume() {
@@ -154,7 +159,7 @@ public class BookPageFragment extends Fragment implements
 
         mBookPageWebView = rootView.findViewById(R.id.book_page_web_view);
 
-        initializeWebView(mBookPageWebView);
+        initializeWebView();
 
         final ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(),
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -443,22 +448,28 @@ public class BookPageFragment extends Fragment implements
         notePopupFragment.show(fm, "fragment_note");
     }
 
-    private void initializeWebView(WebView book_page_web_view) {
-        webSettings = book_page_web_view.getSettings();
+    private void initializeWebView() {
+        webSettings = mBookPageWebView.getSettings();
         webSettings.setDefaultTextEncodingName("utf-8");
         boolean isNightMode = pageFragmentListener.isNightMode();
-        if(isNightMode)book_page_web_view.setBackgroundColor(0x333333);
+        if (isNightMode) mBookPageWebView.setBackgroundColor(0x333333);
 
 
         int intialZoom = pageFragmentListener.getDisplayZoom();
 
         webSettings.setTextZoom(intialZoom);
 
-        book_page_web_view.setVerticalScrollBarEnabled(true);
+        mBookPageWebView.setVerticalScrollBarEnabled(true);
         webSettings.setJavaScriptEnabled(true);
 
-        book_page_web_view.addJavascriptInterface(new WebAppInterface(), "selectioniterface");
+        mBookPageWebView.addJavascriptInterface(new WebAppInterface(), "selectioniterface");
 
+        String data = prepareHtml(isNightMode);
+        loadWebView(data);
+    }
+
+    @NonNull
+    private String prepareHtml(boolean isNightMode) {
         StringBuilder stringBuilder = new StringBuilder().append("<html align='justify' dir=\"rtl\">")
                 .append("<head>")
                 .append("</head>")
@@ -469,7 +480,9 @@ public class BookPageFragment extends Fragment implements
         if (isNightMode)
             stringBuilder.append("<link href=\"styles/ReadingNight.css\" rel=\"stylesheet\" type=\"text/css\">");
 
-        stringBuilder.append(page_content).append("</body>").append("<script src=\"scripts/jquery-3.2.1.min.js\"></script>")
+        stringBuilder
+                .append(page_content)
+                .append("</body>").append("<script src=\"scripts/jquery-3.2.1.min.js\"></script>")
                 .append(footNoteScript()).append("<script src='scripts/rangy/rangy-core.js'></script>")
                 .append("<script src='scripts/rangy/rangy-serializer.js'></script>")
                 .append("<script src='scripts/rangy/rangy-highlighter.js'></script>")
@@ -480,9 +493,13 @@ public class BookPageFragment extends Fragment implements
                 .append("</html>");
 
 
-        book_page_web_view.loadDataWithBaseURL(
+        return stringBuilder.toString();
+    }
+
+    private void loadWebView(String data) {
+        mBookPageWebView.loadDataWithBaseURL(
                 ANDROID_ASSET,
-                stringBuilder.toString(),
+                data,
                 "text/html",
                 "utf-8",
                 null);
@@ -724,6 +741,26 @@ public class BookPageFragment extends Fragment implements
             webSettings.setTextZoom(newZoom);
     }
 
+    @Override
+    public void setTashkeel(boolean tashkeelOn) {
+        if (this.tashkeelOn != tashkeelOn) {
+            reloadeWithTashkeelOn(tashkeelOn);
+        }
+    }
+
+    private void reloadeWithTashkeelOn(boolean tashkeelOn) {
+        if (this.tashkeelOn != tashkeelOn) {
+            if (this.tashkeelOn) {
+                page_content = ArabicUtilities.cleanTashkeel(page_content);
+            } else {
+                BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
+                page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
+            }
+            loadWebView(prepareHtml(pageFragmentListener.isNightMode()));
+            this.tashkeelOn = tashkeelOn;
+        }
+    }
+
 
     // Container Activity must implement this interface
     public interface PageFragmentListener {
@@ -740,6 +777,8 @@ public class BookPageFragment extends Fragment implements
         boolean isNightMode();
 
         int getDisplayZoom();
+
+        boolean getTashkeelState();
     }
 
 

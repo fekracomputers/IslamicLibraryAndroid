@@ -9,4 +9,6 @@ import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 
 public interface DisplayPrefChangeListener {
     void setZoom(int newZoom);
+
+    void setTashkeel(boolean tashkeelOn);
 }

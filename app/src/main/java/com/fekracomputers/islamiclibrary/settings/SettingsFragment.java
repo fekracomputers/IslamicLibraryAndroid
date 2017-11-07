@@ -8,11 +8,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-
-import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
-import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
-import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +26,9 @@ import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
+import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 import com.fekracomputers.islamiclibrary.widget.DataListPreference;
 import com.fekracomputers.islamiclibrary.widget.DataListPreferenceDialogFragmentCompat;
@@ -63,16 +61,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String KEY_IS_THEME_NIGHT_MODE = "global_night_mode";
     public static final String KEY_UI_LANG_ARABIC = "ui_lang_arabic";
     public static final String PREF_USE_VOLUME_KEY_NAV = "volumeKeyNavigation";
-
-    private DataListPreference listStoragePref;
-    private MoveFilesAsyncTask moveFilesTask;
-    private List<StorageUtils.Storage> storageList;
-    private LoadStorageOptionsTask loadStorageOptionsTask;
-    private int appSize;
-    private String internalSdcardLocation;
-    private AlertDialog dialog;
-
-
+    public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
     private static final String TAG = SettingsFragment.class.getSimpleName();
     /**
      * A preference value change listener that updates the preference's summary
@@ -140,6 +129,13 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         }
         return true;
     };
+    private DataListPreference listStoragePref;
+    private MoveFilesAsyncTask moveFilesTask;
+    private List<StorageUtils.Storage> storageList;
+    private LoadStorageOptionsTask loadStorageOptionsTask;
+    private int appSize;
+    private String internalSdcardLocation;
+    private AlertDialog dialog;
     private boolean isPaused;
 
     public static SettingsFragment newInstance(String rootKey) {
@@ -397,95 +393,6 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         super.onPause();
     }
 
-
-    private class MoveFilesAsyncTask extends AsyncTask<Void, Void, Boolean> {
-
-        private String newLocation;
-        private ProgressDialog dialog;
-        private Context appContext;
-        private boolean automatic;
-
-        private MoveFilesAsyncTask(Context context, String newLocation, boolean automatic) {
-            this.newLocation = newLocation;
-            this.appContext = context.getApplicationContext();
-            this.automatic = automatic;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(getActivity());
-            dialog.setMessage(appContext.getString(R.string.prefs_copying_app_files));
-
-            dialog.setCancelable(false);
-            dialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return StorageUtils.moveAppFiles(appContext, newLocation, automatic);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (!isPaused) {
-                dialog.dismiss();
-                if (result) {
-                    //StorageUtils.setAppCustomLocation(newLocation, appContext);
-                    if (listStoragePref != null) {
-                        listStoragePref.setValue(newLocation);
-                    }
-                    BooksInformationDbHelper.clearInstance(getContext());
-                    ((SettingsActivity) getContext()).setRestartOnBack(automatic ?
-                            SettingsActivity.RESTART_ON_BACK :
-                            SettingsActivity.EXIT_ON_BACK);
-                    if(!automatic)
-                    Toast.makeText(appContext,
-                            getString(R.string.press_back_then_move_files_using_system_file_manager),
-                            Toast.LENGTH_LONG)
-                            .show();
-
-                } else {
-                    Toast.makeText(appContext,
-                            getString(R.string.prefs_err_moving_app_files),
-                            Toast.LENGTH_LONG)
-                            .show();
-                }
-                dialog = null;
-                moveFilesTask = null;
-            }
-        }
-    }
-
-
-    private class LoadStorageOptionsTask extends AsyncTask<Void, Void, Void> {
-
-        private Context appContext;
-
-        LoadStorageOptionsTask(Context context) {
-            this.appContext = context.getApplicationContext();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            listStoragePref.setSummary(R.string.prefs_calculating_app_size);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            appSize = StorageUtils.getAppUsedSpace(appContext);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (!isPaused) {
-                loadStorageOptions(appContext);
-                loadStorageOptionsTask = null;
-                listStoragePref.setSummary(R.string.prefs_app_location_summary);
-            }
-        }
-    }
-
     private void loadStorageOptions(final Context context) {
         try {
             if (appSize == -1) {
@@ -552,7 +459,6 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         }
     }
 
-
     public void handleMove(final String newLocation, String current) {
 
         final Context context = getActivity();
@@ -574,7 +480,6 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         dialog = builder.create();
         dialog.show();
     }
-
 
     private void showKitKatConfirmation(final String newLocation) {
         final Context context = getActivity();
@@ -607,6 +512,93 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
 
     private void hideStorageListPref() {
         removeAdvancePreference(listStoragePref);
+    }
+
+    private class MoveFilesAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String newLocation;
+        private ProgressDialog dialog;
+        private Context appContext;
+        private boolean automatic;
+
+        private MoveFilesAsyncTask(Context context, String newLocation, boolean automatic) {
+            this.newLocation = newLocation;
+            this.appContext = context.getApplicationContext();
+            this.automatic = automatic;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage(appContext.getString(R.string.prefs_copying_app_files));
+
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return StorageUtils.moveAppFiles(appContext, newLocation, automatic);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!isPaused) {
+                dialog.dismiss();
+                if (result) {
+                    //StorageUtils.setAppCustomLocation(newLocation, appContext);
+                    if (listStoragePref != null) {
+                        listStoragePref.setValue(newLocation);
+                    }
+                    BooksInformationDbHelper.clearInstance(getContext());
+                    ((SettingsActivity) getContext()).setRestartOnBack(automatic ?
+                            SettingsActivity.RESTART_ON_BACK :
+                            SettingsActivity.EXIT_ON_BACK);
+                    if (!automatic)
+                        Toast.makeText(appContext,
+                                getString(R.string.press_back_then_move_files_using_system_file_manager),
+                                Toast.LENGTH_LONG)
+                                .show();
+
+                } else {
+                    Toast.makeText(appContext,
+                            getString(R.string.prefs_err_moving_app_files),
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+                dialog = null;
+                moveFilesTask = null;
+            }
+        }
+    }
+
+    private class LoadStorageOptionsTask extends AsyncTask<Void, Void, Void> {
+
+        private Context appContext;
+
+        LoadStorageOptionsTask(Context context) {
+            this.appContext = context.getApplicationContext();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            listStoragePref.setSummary(R.string.prefs_calculating_app_size);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            appSize = StorageUtils.getAppUsedSpace(appContext);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!isPaused) {
+                loadStorageOptions(appContext);
+                loadStorageOptionsTask = null;
+                listStoragePref.setSummary(R.string.prefs_app_location_summary);
+            }
+        }
     }
 
 

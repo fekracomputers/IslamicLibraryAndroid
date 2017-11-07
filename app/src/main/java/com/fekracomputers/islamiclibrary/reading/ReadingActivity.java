@@ -252,7 +252,12 @@ public class ReadingActivity extends AppCompatActivity implements
         return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_DISPLAY_TEXT_SIZE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.DEFAULT_TEXT_ZOOM, defaultSharedPreferences, mUserDataDBHelper);
     }
 
-    private void zoomUpdatedByValue(int newZoom) {
+    @Override
+    public boolean getTashkeelState() {
+        return isTashkeel();
+    }
+
+    private synchronized void zoomUpdatedByValue(int newZoom) {
         for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
             listener.setZoom(newZoom);
         }
@@ -283,6 +288,25 @@ public class ReadingActivity extends AppCompatActivity implements
         restartOnThemeChange();
 
     }
+
+    @Override
+    public boolean isTashkeel() {
+        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_TASHKEEL_ON,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_TASHKEEL_ON,
+                defaultSharedPreferences,
+                mUserDataDBHelper);
+    }
+
+    @Override
+    public synchronized void setTashkeel(boolean checked) {
+        DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_IS_TASHKEEL_ON,
+                checked,
+                defaultSharedPreferences, mUserDataDBHelper);
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setTashkeel(checked);
+        }
+    }
+
 
     private void restartOnThemeChange() {
         finish();
@@ -1266,7 +1290,7 @@ public class ReadingActivity extends AppCompatActivity implements
             });
 
             seekBar = findViewById(R.id.seek_bar);
-            ViewCompat.setLayoutDirection(seekBar,ViewCompat.LAYOUT_DIRECTION_RTL);
+            ViewCompat.setLayoutDirection(seekBar, ViewCompat.LAYOUT_DIRECTION_RTL);
             seekBar.setMax(PAGE_COUNT);
             seekBar.setProgress(mPager.getCurrentItem());
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

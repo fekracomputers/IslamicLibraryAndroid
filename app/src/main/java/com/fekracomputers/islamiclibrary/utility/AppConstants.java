@@ -11,5 +11,6 @@ public class AppConstants {
         public static final int MAX_TEXT_ZOOM = 200;
         public static final int MIN_TEXT_ZOOM = 50;
         public static final boolean IS_THEME_NIGHT_MODE = false;
+        public static final boolean KEY_IS_TASHKEEL_ON = true;
     }
 }

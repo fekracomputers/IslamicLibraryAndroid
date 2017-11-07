@@ -19,14 +19,19 @@
             android:key="global_night_mode"
             android:title="@string/pref_title_global_night_mode" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="tashkeel_on"
+            android:title="@string/pref_title_tashkeel" />
+
 
         <!--<ColorPreference-->
-            <!--android:defaultValue="@android:color/white"-->
-            <!--android:entries="@array/colors_theme_names"-->
-            <!--android:entryValues="@array/colors_reading_theme"-->
-            <!--android:key="global_theme_color"-->
-            <!--android:title="@string/pref_themes"-->
-            <!--app:asp_columnCount="3" />-->
+        <!--android:defaultValue="@android:color/white"-->
+        <!--android:entries="@array/colors_theme_names"-->
+        <!--android:entryValues="@array/colors_reading_theme"-->
+        <!--android:key="global_theme_color"-->
+        <!--android:title="@string/pref_themes"-->
+        <!--app:asp_columnCount="3" />-->
 
         <!--app:titleTextColor="@color/accent"-->
         <SeekBarPreference

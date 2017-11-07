@@ -11,12 +11,6 @@ import java.util.regex.Pattern;
 
 public class ArabicUtilities {
 
-    /**
-     * matches any character that is not (letter other category or space or newline)
-     * this will leave only the basic arabic letters (and other language which have characters in the
-     * this category) which means this will not match (and hence remove when used with replaceAll("")
-     * english letters ,punctation and other things
-     */
 
     public static final char ALEF = '\u0627';
     public static final char ALEF_MADDA = '\u0622';
@@ -36,6 +30,13 @@ public class ArabicUtilities {
     public static final char SHADDA = '\u0651';
     public static final char SUKUN = '\u0652';
     public static final char HAMZAH = '\u0621';
+    private static final Pattern CLEANING_TASHKEEL = Pattern.compile("[ًٌٍَُِّْ]");
+    /**
+     * matches any character that is not (letter other category or space or newline)
+     * this will leave only the basic arabic letters (and other language which have characters in the
+     * this category) which means this will not match (and hence remove when used with replaceAll("")
+     * english letters ,punctation and other things
+     */
     private static final Pattern CLEANING_PATTERN = Pattern.compile("[^\\p{Lo}\\p{Z}\\n]");
     private static final String ALEF_str = "\u0627";
     private static final String ALEF_MADDA_str = "\u0622";
@@ -47,6 +48,11 @@ public class ArabicUtilities {
     private static final String HEH_STR = "\u0647";
     private static final Pattern equvilancePattern = Pattern.compile(
             ALEF_MADDA_str + "|" + ALEF_HAMZA_ABOVE_str + "|" + ALEF_HAMZA_BELOW_STR + "|" + DOTLESS_YEH_STR + "|" + TEH_MARBUTA_STR);
+
+    public static String cleanTashkeel(String s) {
+        Matcher matcher = CLEANING_TASHKEEL.matcher(s);
+        return matcher.replaceAll("");
+    }
 
     public static String cleanTextForSearchingWithRegex(String s) {
         Matcher matcher = CLEANING_PATTERN.matcher(s);

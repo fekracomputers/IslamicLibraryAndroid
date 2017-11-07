@@ -357,5 +357,6 @@
     <string name="book_collection_most_recent">recent</string>
     <string name="book_collection_favourite_title">favourite</string>
     <string name="book_collection_tiitle">collections</string>
+    <string name="pref_title_tashkeel">tashkeel</string>
     <!--end storage pref-->
 </resources>

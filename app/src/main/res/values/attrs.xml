@@ -10,8 +10,8 @@
     </declare-styleable>
 
 
-    <attr name="settingsTextLarger" format="boolean" />
-    <attr name="settingsTextSmaller" format="boolean" />
+    <attr name="settingsTextLarger" format="reference" />
+    <attr name="settingsTextSmaller" format="reference" />
     <attr name="bind__isOwnedByParent" format="boolean" />
     <attr name="bind__supportsAnimationCapture" format="boolean" />
     <attr name="drawerArrowStyle" format="reference" />
@@ -208,6 +208,7 @@
 
     <attr name="settingsLineHightLarger" format="reference" />
     <attr name="settingsLineHightSmaller" format="reference" />
+    <attr name="settingsTashkeel" format="reference" />
 
     <attr name="settingsPagesFitWidth" format="reference" />
     <attr name="settingsPagesTwo" format="reference" />

@@ -90,6 +90,8 @@
         </item>
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
         </item>
+        <item name="settingsTashkeel">@drawable/ic_add_tashkeel_light</item>
+
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_holo_24dp</item>
         <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_holo_24dp</item>
         <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_light</item>
@@ -184,6 +186,8 @@
         <item name="settingsTextSmaller">@drawable/ic_format_text_size_smaller_dark_24dp</item>
         <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_dark_24dp
         </item>
+        <item name="settingsTashkeel">@drawable/ic_add_tashkeel_dark</item>
+
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
         </item>
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_dark_24dp</item>
