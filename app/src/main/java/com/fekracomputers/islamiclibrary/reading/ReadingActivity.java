@@ -109,6 +109,7 @@ public class ReadingActivity extends AppCompatActivity implements
     private static final String ADD_SEARCH_FRAGMENT_BACK_STACK_ENTRY = "ADD_SEARCH_FRAGMENT_BACK_STACK_ENTRY";
     private static final int FLOATING_PAGE_NUMBER_DELAY_MILLIS = 5000;
     private static final int FADE_ANIMATION_DURATION = 500;
+    private static final String KEY_STATE_NAV_UI_VISIBLE = "KEY_STATE_NAV_UI_VISIBLE";
     private final String TAG = this.getClass().getSimpleName();
     private final Handler mHideHandler = new Handler();
 
@@ -198,17 +199,6 @@ public class ReadingActivity extends AppCompatActivity implements
     private int PAGE_COUNT;
     private boolean mVisible;
     private final Runnable mHideRunnable = this::hide;
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-        }
-        return false;
-    };
     private Title parentTitle;
     private UserDataDBHelper mUserDataDBHelper;
     private boolean isThemeNightMode;
@@ -587,6 +577,22 @@ public class ReadingActivity extends AppCompatActivity implements
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            updateVisibility();
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(KEY_STATE_NAV_UI_VISIBLE, mVisible);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -607,6 +613,12 @@ public class ReadingActivity extends AppCompatActivity implements
         setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
 
         setContentView(R.layout.activity_reading);
+        if (savedInstanceState != null) {
+            mVisible = savedInstanceState.getBoolean(KEY_STATE_NAV_UI_VISIBLE, true);
+        } else {
+            mVisible = true;//This will bw shortly changed
+        }
+
         mNavViewStub = findViewById(R.id.book_nav_view_stub);
         mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
 
@@ -665,7 +677,6 @@ public class ReadingActivity extends AppCompatActivity implements
             }
         });
 
-        mVisible = true;//This will bw shortly changed
 
         if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
             int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
@@ -702,15 +713,27 @@ public class ReadingActivity extends AppCompatActivity implements
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        showFloatingPageNumber();
-        delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        //only if it is the first creation
+        if (savedInstanceState == null) {
+            // Trigger the initial hide() shortly after the activity has been
+            // created, to briefly hint to the user that UI controls
+            // are available.
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+            showFloatingPageNumber();
+        }
+
     }
 
     private void toggle() {
         if (mVisible) {
+            hide();
+        } else {
+            showNavView();
+        }
+    }
+
+    private void updateVisibility() {
+        if (!mVisible) {
             hide();
         } else {
             showNavView();
