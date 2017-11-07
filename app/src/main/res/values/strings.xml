@@ -358,5 +358,7 @@
     <string name="book_collection_favourite_title">favourite</string>
     <string name="book_collection_tiitle">collections</string>
     <string name="pref_title_tashkeel">tashkeel</string>
+    <string name="prefs_keep_screen_on">keep screen on</string>
+    <string name="prefs_keep_screen_on_summary">keep screen on while reading</string>
     <!--end storage pref-->
 </resources>

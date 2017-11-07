@@ -1,5 +1,4 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="pref_general">
 
     <android.support.v7.preference.SwitchPreferenceCompat
@@ -12,6 +11,14 @@
         android:key="volumeKeyNavigation"
         android:summary="@string/prefs_volume_key_navigation_summary"
         android:title="@string/prefs_volume_key_navigation_title" />
+
+    <android.support.v7.preference.SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="keepScreenOn"
+        android:summary="@string/prefs_keep_screen_on_summary"
+        android:title="@string/prefs_keep_screen_on"
+
+        />
 
 
     <com.fekracomputers.islamiclibrary.widget.DataListPreference

@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -114,17 +115,6 @@ public class ReadingActivity extends AppCompatActivity implements
     private final Handler mFloatingPageNumberHandler = new Handler();
     private final List<DisplayPrefChangeListener> displayPrefChangeListeners = new ArrayList<>();
     private final List<ActionModeChangeListener> mActionModeChangeListener = new ArrayList<>();
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-        }
-        return false;
-    };
     boolean mTurnPageByVolumeUpKey = true;
     boolean mTurnPageByVolumeDownKey = true;
     private boolean is_nav_view_inflated = false;
@@ -208,6 +198,17 @@ public class ReadingActivity extends AppCompatActivity implements
     private int PAGE_COUNT;
     private boolean mVisible;
     private final Runnable mHideRunnable = this::hide;
+    /**
+     * Touch listener to use for in-layout UI controls to delay hiding the
+     * system UI. This is to prevent the jarring behavior of controls going away
+     * while interacting with activity UI.
+     */
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        }
+        return false;
+    };
     private Title parentTitle;
     private UserDataDBHelper mUserDataDBHelper;
     private boolean isThemeNightMode;
@@ -515,7 +516,6 @@ public class ReadingActivity extends AppCompatActivity implements
             if (bookmarkImageButton.isSelected() != Checked)
                 bookmarkImageButton.setSelected(Checked);
         }
-
     }
 
     @Override
@@ -527,6 +527,7 @@ public class ReadingActivity extends AppCompatActivity implements
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean navigate = defaultSharedPreferences.
                 getBoolean(SettingsFragment.PREF_USE_VOLUME_KEY_NAV, false);
+
         if (navigate && keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             if (mTurnPageByVolumeDownKey) {
                 if (isSearchViewInflated && searchScrubBar.getVisibility() == View.VISIBLE) {
@@ -578,6 +579,14 @@ public class ReadingActivity extends AppCompatActivity implements
         int newZoom = getDisplayZoom();
         zoomUpdatedByValue(newZoom);
         Util.restartIfLocaleChanged(this, mIsArabic);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        boolean keepScreenOn = sharedPreferences.
+                getBoolean(SettingsFragment.PREF_KEEP_SCREEN_ON, false);
+        if (keepScreenOn)
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -585,6 +594,8 @@ public class ReadingActivity extends AppCompatActivity implements
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         mIsArabic = Util.isArabicUi(this);
+
+
         Intent intent = getIntent();
         bookId = intent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);

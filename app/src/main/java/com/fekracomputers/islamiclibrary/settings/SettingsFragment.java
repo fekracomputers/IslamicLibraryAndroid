@@ -61,6 +61,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String KEY_IS_THEME_NIGHT_MODE = "global_night_mode";
     public static final String KEY_UI_LANG_ARABIC = "ui_lang_arabic";
     public static final String PREF_USE_VOLUME_KEY_NAV = "volumeKeyNavigation";
+    public static final String PREF_KEEP_SCREEN_ON = "keepScreenOn";
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
     private static final String TAG = SettingsFragment.class.getSimpleName();
     /**

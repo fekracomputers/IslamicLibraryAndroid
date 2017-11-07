@@ -261,6 +261,10 @@
     <string name="book_collection_most_recent">الكتب الأخيرة</string>
     <string name="book_collection_favourite_title">المفضلة</string>
     <string name="book_collection_tiitle">المجموعات</string>
+
+
     <string name="pref_title_tashkeel">التشكيل</string>
+    <string name="prefs_keep_screen_on">الإبقاء على الشاشة مفتوحة</string>
+    <string name="prefs_keep_screen_on_summary">الإبقاء على الشاشة مفتوحة خلال القراءة</string>
 
 </resources>
