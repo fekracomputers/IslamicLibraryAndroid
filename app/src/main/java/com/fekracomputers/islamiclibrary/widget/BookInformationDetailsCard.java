@@ -47,8 +47,6 @@ public class BookInformationDetailsCard extends LinearLayout {
     private void initialize() {
         inflate(getContext(), R.layout.widget_book_info_card, this);
         setOrientation(VERTICAL);
-
-
     }
 
     public void setup(CharSequence header, CharSequence body, boolean isGrey, View.OnClickListener moreOnClickListener) {

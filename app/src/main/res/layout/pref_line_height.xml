@@ -14,7 +14,7 @@
     android:paddingStart="@dimen/pref_outer_pad_horiz">
 
     <ImageButton
-        android:id="@+id/button_minus"
+        android:id="@+id/button_minus_line_hight"
         style="@style/Preference.Button"
         android:contentDescription="@string/decrease_line_height"
         android:scaleType="center"
@@ -24,7 +24,7 @@
         style="@style/Preference.Numeric"
         android:text="@string/pref_line_height_label_initial_text" />
     <ImageButton
-        android:id="@+id/button_plus"
+        android:id="@+id/button_plus_line_hight"
         style="@style/Preference.Button"
         android:contentDescription="@string/increase_line_height"
         android:scaleType="center"

@@ -8,6 +8,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:layout_marginTop="8dp"
+    card_view:contentPadding="@dimen/content_padding"
     android:background="@color/book_card_background"
     card_view:cardBackgroundColor="@color/book_card_background"
     card_view:cardCornerRadius="4dp"

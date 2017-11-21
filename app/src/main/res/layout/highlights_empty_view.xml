@@ -3,27 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    android:orientation="vertical">
-
+    <TextView
+        android:id="@+id/no_bookmarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/no_highlights"
+        android:textColor="@color/empty_views_placeholder"
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/no_bookmark_image_view"
         android:layout_width="250dp"
         android:layout_height="250dp"
+        android:layout_below="@+id/no_bookmarks"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         app:srcCompat="@drawable/ic_comment_black_24dp" />
 
     <TextView
+        android:id="@+id/how_to_add_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/no_bookmark_image_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
         android:gravity="center"
-        android:padding="16dp"
+
         android:text="@string/before_first_note"
         android:textColor="@color/empty_views_placeholder"
         android:textSize="20sp" />

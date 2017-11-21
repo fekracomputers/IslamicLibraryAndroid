@@ -799,7 +799,7 @@ public class BookPageFragment extends Fragment implements
 
         @JavascriptInterface
         public void setSerializedHighlights(String serializedHighlights) {
-            userDataDBHelper.setSerializedHighlights(pageInfo, serializedHighlights);
+            handler.post(() -> userDataDBHelper.setSerializedHighlights(pageInfo, serializedHighlights));
 
         }
 

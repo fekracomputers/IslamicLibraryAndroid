@@ -116,6 +116,14 @@
     <dimen name="info_card_tab_indicator_height">3.0dip</dimen>
     <dimen name="margin_thirty_two">32dp</dimen>
     <dimen name="margin_thirty">30dp</dimen>
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="padding_tiny">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_standard">16dp</dimen>
+    <integer name="num_columns">2</integer>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="content_padding">-7</dimen>
+
 </resources>

@@ -8,6 +8,15 @@
         <attr name="metaButtonBarStyle" format="reference" />
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
+    <declare-styleable name="NoteCard">
+        <attr name="showBook" format="boolean" />
+        <attr name="showAuthor" format="boolean" />
+        <attr name="showCollection" format="boolean" />
+        <attr name="showCategory" format="boolean" />
+        <attr name="editable" format="boolean" />
+
+    </declare-styleable>
+
 
 
     <attr name="settingsTextLarger" format="reference" />
@@ -213,7 +222,7 @@
     <attr name="settingsPagesFitWidth" format="reference" />
     <attr name="settingsPagesTwo" format="reference" />
 
-    <attr name="menuBookmarkIcon" format="reference"/>
+    <attr name="menuBookmarkIcon" format="reference" />
 
     <attr name="marginNoteIconOutlineColor" format="reference" />
     <attr name="searchCardBackgroundTop" format="reference" />

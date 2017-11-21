@@ -360,5 +360,9 @@
     <string name="pref_title_tashkeel">tashkeel</string>
     <string name="prefs_keep_screen_on">keep screen on</string>
     <string name="prefs_keep_screen_on_summary">keep screen on while reading</string>
+    <string name="bottom_nav_notes_bookmarks">notes</string>
+    <string name="notes">Notes</string>
+    <string name="no_bookmark">No bookmarks yet</string>
+    <string name="no_highlights">No highlights yet</string>
     <!--end storage pref-->
 </resources>

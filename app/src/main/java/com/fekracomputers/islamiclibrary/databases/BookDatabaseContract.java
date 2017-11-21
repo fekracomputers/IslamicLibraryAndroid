@@ -43,6 +43,7 @@ public class BookDatabaseContract {
         public static final String KEY_AUTHOUR_NAME = "author0name";
         public static final String KEY_AUTHOR_ID = "author0id";
         public static final String KEY_CATEGORY_LEVEL = "category0level";
+        public static final String KEY_CATEGORY_ID = "category0level";
         public static final String KEY_CATEGORY_TITLE = "category0title";
         public static final String KEY_BOOK_INFORMATION = "bookinformation";
         public static final String KEY_BOOK_CARD = "bookcard";

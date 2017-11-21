@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.fekracomputers.islamiclibrary.widget.NoteCard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,43 +11,8 @@
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="false"
-
-    >
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:id="@+id/highlight_title_card"
-            android:layout_alignParentTop="true"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/text_view_highlight_text"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:padding="8dp"
-                tools:background="@color/highlight_yellow"
-                tools:text="بسم الله الرحمن الرحيم" />
-        </android.support.v7.widget.CardView>
-
-        <EditText
-            android:id="@+id/toc_card_body"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:layout_below="@id/highlight_title_card"
-            android:inputType="textMultiLine"
-            android:padding="8dp"
-            tools:background="@color/highlight_blue" />
-
-        <include layout="@layout/toc_card_bottom_line" />
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+    app:editable="false"
+    app:showAuthor="false"
+    app:showBook="false"
+    app:showCategory="false"
+    app:showCollection="false" />

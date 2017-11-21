@@ -15,7 +15,6 @@ import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
-import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.widget.HorizontalBookRecyclerView;
@@ -26,8 +25,7 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
 
     private final ArrayList<Pair<HorizontalBookRecyclerView, BooksCollection>> horizontalBookRecyclerViews = new ArrayList<>();
     private BookCardEventsCallback mListener;
-    private BooksInformationDbHelper booksInformationDbHelper;
-    private UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper;
+    private ArrayList<BooksCollection> booksCollections;
 
     public HomeScreenFragment() {
         // Required empty public constructor
@@ -37,6 +35,8 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper = UserDataDBHelper.getInstance(getContext());
+        booksCollections = globalUserDBHelper.getBooksCollections(true, false);
     }
 
     @Nullable
@@ -45,9 +45,6 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
         View rootView = inflater.inflate(R.layout.fragment_home_screen, container, false);
         LinearLayout containerLinearLayout = rootView.findViewById(R.id.home_screen_horizontal_list_container);
 
-        booksInformationDbHelper = BooksInformationDbHelper.getInstance(getContext());
-        globalUserDBHelper = UserDataDBHelper.getInstance(getContext());
-        ArrayList<BooksCollection> booksCollections = globalUserDBHelper.getBooksCollections(true, false);
         for (BooksCollection booksCollection : booksCollections) {
             HorizontalBookRecyclerView recyclerView = new HorizontalBookRecyclerView(getContext())
                     .setupRecyclerView(booksCollection, mListener);

@@ -18,7 +18,8 @@ public class HighlightTest {
     PageInfo pagId=new PageInfo(10,0,0);
     @Test
     public void deserializeGeneric() throws Exception {
-        ArrayList<ContentValues> highlightsReturn = Highlight.deserializeGeneric(serialized1,pagId,ContentValues.class,0);
+        ArrayList<ContentValues> highlightsReturn = Highlight.deserializeToContentValues(serialized1,pagId,0);
+
         ArrayList<ContentValues> highlightsGiven = new ArrayList<>();
 
         ContentValues contentValues = new ContentValues();

@@ -19,14 +19,12 @@ import java.util.regex.Pattern;
  * Created by Mohammad Yahia on 21/12/2016.
  */
 
-public class Highlight implements Comparable<Highlight> {
-
-
+public class Highlight extends UserNote implements Comparable<Highlight> {
     private static final SparseIntArray highlightColorMap = new SparseIntArray();
     private static final SparseIntArray highlightDarkColorMap = new SparseIntArray();
+    private static final Pattern HIGHLIGHT_CLASS_PATTERN = Pattern.compile("^highlight(\\d+)$");
+    private static final Pattern HIGHLIGHT_PATTERN = Pattern.compile("^type:(\\w+)(?:\\|\\d+\\$\\d+\\$\\d+\\$\\w+\\$\\d*\\$[^|\\$]+(?:\\$[^|\\$]+)*)*$");
     public static boolean sortByDate = false;
-    private static final SimpleDateFormat SATABASE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-
 
     /** TODO binding the highlight class name to its color is currently in 4 places
      * highlight.css
@@ -45,43 +43,30 @@ public class Highlight implements Comparable<Highlight> {
         highlightDarkColorMap.append(4, 0xFFedf6e3);
     }
 
-    public String timeStampString;
-    public int bookId;
-    public PageInfo pageInfo;
     public String text;
     public int id;
     public String className;
     public int containerElementId;
-    public Title parentTitle;
     public String noteText;
-    public long rowId;
-    private static final Pattern HIGHLIGHT_CLASS_PATTERN = Pattern.compile("^highlight(\\d+)$");
-    private static final Pattern HIGHLIGHT_PATTERN = Pattern.compile("^type:(\\w+)(?:\\|\\d+\\$\\d+\\$\\d+\\$\\w+\\$\\d*\\$[^|\\$]+(?:\\$[^|\\$]+)*)+$");
 
-    public Highlight(String text, int id, String className, int containerElementId, String timeStampString, int bookId, int pageId, int partNumber, int pageNumber, Title parentTitle, long rowId, String noteText) {
+    public Highlight(String text, int id, String className, int containerElementId, String timeStampString, PageInfo pageInfo, int bookId, Title parentTitle, String noteText) {
+        super(bookId, pageInfo, parentTitle, timeStampString);
         this.text = text;
         this.id = id;
         this.className = className;
         this.containerElementId = containerElementId;
-        this.timeStampString = timeStampString;
-        this.bookId = bookId;
-        this.pageInfo=new PageInfo(pageId, partNumber, pageNumber);
-        this.parentTitle = parentTitle;
-        this.rowId = rowId;
         this.noteText = noteText;
     }
 
 
     Highlight(String text, int id, String className, int containerElementId, PageInfo pageInfo, String noteText, int bookId) {
+        super(bookId, pageInfo);
         this.text = text;
         this.id = id;
         this.className = className;
         this.containerElementId = containerElementId;
-        this.pageInfo = pageInfo;//TODO this is not good
         this.noteText = noteText;
-        this.bookId = bookId;
     }
-
 
 
     @ColorInt
@@ -106,18 +91,17 @@ public class Highlight implements Comparable<Highlight> {
         return highlightDarkColorMap.get(classNumber);
     }
 
-    public static <T> ArrayList<T> deserializeGeneric(String serialized, PageInfo pageInfo, Class<ContentValues> clazz, int bookId) {
+    public static ArrayList<ContentValues> deserializeToContentValues(String serialized,
+                                                                      PageInfo pageInfo,
+                                                                      int bookId) {
 
         Matcher matcher = HIGHLIGHT_PATTERN.matcher(serialized);
         if (matcher.matches()) {
-
             String[] serializedHighlights = serialized.split("\\|");
-            ArrayList<T> highlights = new ArrayList<>();
+            ArrayList<ContentValues> highlights = new ArrayList<>();
             for (int i = 1; i < serializedHighlights.length; i++) {
-
                 String[] parts;
                 parts = serializedHighlights[i].split("\\$");
-
 
           /*
                 var parts = [
@@ -136,22 +120,19 @@ public class Highlight implements Comparable<Highlight> {
                 }
                 String note = null;
                 if (parts.length == 7 && !parts[6].isEmpty()) note = parts[6];
-                Highlight highlight = new Highlight(parts[5], Integer.valueOf(parts[2]), parts[3], containerElementId, pageInfo, note,bookId);
-                if (clazz.equals(Highlight.class)) {
-                    highlights.add((T) highlight);
+                Highlight highlight = new Highlight(parts[5], Integer.valueOf(parts[2]), parts[3], containerElementId, pageInfo, note, bookId);
 
-                } else if (clazz.equals(ContentValues.class)) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID, bookId);
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID, highlight.pageInfo.pageId);
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID, highlight.id);
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_CLASS_NAME, highlight.className);
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID, highlight.containerElementId);
-                    contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_TEXT, highlight.text);
-                    highlights.add((T) contentValues);
-                }
-
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID, bookId);
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID, highlight.pageInfo.pageId);
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID, highlight.id);
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_CLASS_NAME, highlight.className);
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID, highlight.containerElementId);
+                contentValues.put(UserDataDBContract.HighlightEntry.COLUMN_TEXT, highlight.text);
+                highlights.add(contentValues);
             }
+
+
             return highlights;
 
         } else {
@@ -162,7 +143,7 @@ public class Highlight implements Comparable<Highlight> {
     }
 
 
-    public static ArrayList<Highlight> deserialize(String serialized, PageInfo pageInfo,int bookId) {
+    public static ArrayList<Highlight> deserialize(String serialized, PageInfo pageInfo, int bookId) {
         final Pattern pattern = Pattern.compile("^type:(\\w+)(?:\\|(\\d+)\\$(\\d+)\\$(\\d+)\\$(\\w+)\\$(\\d*)\\$([^|]+))+$");
         Matcher matcher = pattern.matcher(serialized);
         if (matcher.matches()) {
@@ -190,7 +171,7 @@ public class Highlight implements Comparable<Highlight> {
                 }
                 String note = null;
                 if (parts.length == 7 && !parts[6].isEmpty()) note = parts[6];
-                Highlight highlight = new Highlight(parts[5], Integer.valueOf(parts[2]), parts[3], containerElementId, pageInfo, note,bookId);
+                Highlight highlight = new Highlight(parts[5], Integer.valueOf(parts[2]), parts[3], containerElementId, pageInfo, note, bookId);
 
                 highlights.add(highlight);
             }
@@ -208,7 +189,7 @@ public class Highlight implements Comparable<Highlight> {
         if (!sortByDate) {
             return this.pageInfo.pageId - highlight.pageInfo.pageId;
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
             try {
 

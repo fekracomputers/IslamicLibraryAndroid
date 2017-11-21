@@ -6,19 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.model.Highlight;
-import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
 import com.fekracomputers.islamiclibrary.tableOFContents.fragment.HighlightFragment;
+import com.fekracomputers.islamiclibrary.widget.NoteCard;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +25,28 @@ import java.util.List;
 public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<HighlightRecyclerViewAdapter.ViewHolder> {
 
     private static final String KEY_HIGHLIGHTS_SORT_INDEX = "HighlightsSortKey";
+    private static final ArrayList<Comparator<Highlight>> comparators = new ArrayList<>();
+
+    static {
+        /*
+            <string-array name="highlight_list_sorting" >
+        <item>@string/library_sort_by_page</item>
+        <item>@string/library_sort_by_date</item>
+        <item>@string/library_sort_by_color</item>
+         */
+        comparators.add((o1, o2) -> o1.pageInfo.pageId - o2.pageInfo.pageId);
+        comparators.add((o1, o2) -> {
+            try {
+                return o1.getDateTime().compareTo(o2.getDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        });
+        comparators.add((o1, o2) -> o1.className.compareTo(o2.className));
+
+    }
+
     private final List<Highlight> highlightList;
     private final HighlightFragment.onHighlightClickListener mListener;
     private final SharedPreferences sharedPref;
@@ -55,47 +74,14 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.highlight = highlightList.get(position);
-
-        holder.partPageNumberTextView.setText(String.valueOf(holder.highlight.pageInfo.pageNumber));
-        holder.partPageNumberTextView.setText(
-                TableOfContentsUtils.formatPageAndPartNumber(mListener.getBookPartsInfo(),
-                        holder.highlight.pageInfo,
-                        R.string.part_and_page_with_text,
-                        R.string.page_number_with_label,
-                        mContext.getResources()));
-
-        holder.HighlightTextTextView.setText(holder.highlight.text);
-        holder.HighlightTextTextView.setBackgroundColor(Highlight.getHighlightColor(holder.highlight.className));
-
-        if (holder.highlight.hasNote()) {
-            holder.noteTextTextView.setText(holder.highlight.noteText);
-            holder.noteTextTextView.setBackgroundColor(Highlight.getDarkHighlightColor(holder.highlight.className));
-            holder.noteTextTextView.setVisibility(View.VISIBLE);
-            
-        } else {
-            holder.noteTextTextView.setVisibility(View.GONE);
-
-        }
-
-        try {
-            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, mContext.getResources().getConfiguration().locale);
-
-            Date date = holder.highlight.getDateTime();
-            holder.dateTimeTextView.setText(dateFormat.format(date));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-
-        holder.mView.setOnClickListener(v -> mListener.onHighlightClicked(holder.highlight));
+        final Highlight highlight = highlightList.get(position);
+        holder.noteCard.bind(highlight, mListener.getBookPartsInfo());
+        holder.noteCard.setOnClickListener(v -> mListener.onHighlightClicked(highlight));
     }
 
     @Override
     public long getItemId(int position) {
-        return highlightList.get(position).rowId;
+        return highlightList.get(position).id;
     }
 
     public void sortBy(int which) {
@@ -107,28 +93,6 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
         Collections.sort(highlightList, comparators.get(which));
         notifyDataSetChanged();
     }
-    private static final ArrayList<Comparator<Highlight>> comparators = new ArrayList<>();
-
-    static {
-        /*
-            <string-array name="highlight_list_sorting" >
-        <item>@string/library_sort_by_page</item>
-        <item>@string/library_sort_by_date</item>
-        <item>@string/library_sort_by_color</item>
-         */
-        comparators.add((o1, o2) -> o1.pageInfo.pageId - o2.pageInfo.pageId);
-        comparators.add((o1, o2) -> {
-            try {
-                return o1.getDateTime().compareTo(o2.getDateTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        });
-        comparators.add((o1, o2) -> o1.className.compareTo(o2.className));
-
-    }
-
 
     @Override
     public int getItemCount() {
@@ -152,27 +116,14 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView partPageNumberTextView;
-        public final TextView dateTimeTextView;
-        private final TextView noteTextTextView;
-        private final TextView HighlightTextTextView;
-        public Highlight highlight;
+        public final NoteCard noteCard;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-
-            partPageNumberTextView = view.findViewById(R.id.page_part_number);
-            dateTimeTextView = view.findViewById(R.id.date_time);
-            noteTextTextView = view.findViewById(R.id.toc_card_body);
-            HighlightTextTextView = view.findViewById(R.id.text_view_highlight_text);
+            noteCard = (NoteCard) view;
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + partPageNumberTextView.getText() + "'";
-        }
+
     }
 
 }

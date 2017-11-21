@@ -51,7 +51,6 @@ public class UserDataDBContract {
         public static final String COLUMN_CONTAINER_ELEMENT_ID = "containerElementId";
         public static final String COLUMN_TEXT = "text";
         public static final String COLUMN_NAME_TIME_STAMP = "timeStamp";
-        public static final String COLUMN_NAME_ROW_ID = "rowid";
         public static final String COLUMN_NOTE_TEXT = "noteText";
         static final String TABLE_HIGHLIGHTS_CREATE = "create table "
                 + TABLE_NAME + "( " +

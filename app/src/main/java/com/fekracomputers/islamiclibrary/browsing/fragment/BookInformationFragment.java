@@ -106,7 +106,7 @@ public class BookInformationFragment extends Fragment implements
         bookId = getArguments().getInt("book_id");
         diplayedInTableOfContent = getActivity().getClass().getSimpleName().equals(TableOfContentsBookmarksActivity.class.getSimpleName());
         BooksInformationDbHelper dbHelper = BooksInformationDbHelper.getInstance(getContext());
-        mBookInfo = dbHelper.getBookDetails(bookId);
+        mBookInfo = dbHelper.getBookInfo(bookId);
         bookCollectionInfo = UserDataDBHelper.getInstance(getContext(), bookId).getBookCollectionInfo();
         bookCollectionsController = new BookCollectionsController(getContext());
     }

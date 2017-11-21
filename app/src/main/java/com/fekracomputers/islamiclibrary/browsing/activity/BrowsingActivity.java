@@ -79,7 +79,8 @@ public class BrowsingActivity
         BookCardEventListener,
         ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener,
         ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
-        BrowsingActivityNavigationController.BrowsingActivityControllerListener {
+        BrowsingActivityNavigationController.BrowsingActivityControllerListener
+        {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -786,6 +787,7 @@ public class BrowsingActivity
     public void onBookDeleteDialogDialogPositiveClick(int bookId) {
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
+
 
 
     private class BookSelectionActionModeCallback {

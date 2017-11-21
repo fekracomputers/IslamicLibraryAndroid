@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:paddingBottom="16dp"
     android:paddingTop="16dp">
 
@@ -20,9 +22,10 @@
         android:id="@+id/recyclerView"
         android:name="com.fekracomputers.islamiclibrary.view.reading.BookmarkFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+
         app:layoutManager="LinearLayoutManager"
         tools:context=".tableOFContents.fragment.BookmarkFragment"
         tools:listitem="@layout/item_highlight" />

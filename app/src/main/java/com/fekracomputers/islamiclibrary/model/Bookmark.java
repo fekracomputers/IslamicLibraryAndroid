@@ -10,19 +10,11 @@ import java.util.Locale;
 /**
  * Created by Mohammad Yahia on 15/11/2016.
  */
-public class Bookmark implements Comparable<Bookmark> {
-    private static final SimpleDateFormat SATABASE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+public class Bookmark extends UserNote implements Comparable<Bookmark> {
     public static boolean sortByDate = false;
-    public int bookId;
-    public String timeStampString;
-    public Title parentTitle;
-    public PageInfo pageInfo;
 
-    public Bookmark(int bookId, int pageId, int pageNumber, int partNumber, String timeStampString, Title parentTitle) {
-        this.bookId = bookId;
-        this.timeStampString = timeStampString;
-        this.parentTitle = parentTitle;
-        this.pageInfo = new PageInfo(pageId, partNumber, pageNumber);
+    public Bookmark(int bookId, PageInfo pageInfo, String timeStampString, Title parentTitle) {
+        super(bookId, pageInfo, parentTitle, timeStampString);
     }
 
     @Override
@@ -31,12 +23,9 @@ public class Bookmark implements Comparable<Bookmark> {
             return this.pageInfo.pageId - bookmark.pageInfo.pageId;
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-
             try {
+                return sdf.parse(this.timeStampString).compareTo(sdf.parse(bookmark.timeStampString));
 
-                sdf.parse(this.timeStampString).compareTo(sdf.parse(bookmark.timeStampString));
-
-                return 0;
             } catch (ParseException e) {
                 e.printStackTrace();
                 return 0;

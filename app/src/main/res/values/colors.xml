@@ -127,6 +127,8 @@
     <color name="toc_item_primary_color">#333333</color>
     <color name="empty_views_placeholder">#616161</color>
     <color name="action_icon_color">#212121</color>
+    <color name="gray">#eeeeeeee</color>
+    <color name="transparent">#00000000</color>
 
     <array name="colors_material">
         <item>@color/material_red_500</item>

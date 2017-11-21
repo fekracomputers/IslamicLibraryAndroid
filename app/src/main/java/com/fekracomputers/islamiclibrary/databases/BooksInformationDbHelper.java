@@ -454,7 +454,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
     }
 
-    public BookInfo getBookDetails(int book_id) {
+    public BookInfo getBookInfo(int book_id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor bookInformationCursor;
@@ -701,6 +701,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public Cursor getRecentDownloads(int limit) {
         return getBooksFiltered(BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.DOT +
                         BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.IS_NOT_NULL
+                        + SQL.AND + BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + "!=" + "''"
                         + SQL.AND + BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + ">=" + DownloadsConstants.STATUS_FTS_INDEXING_ENDED
                 ,
                 null,
@@ -1101,15 +1102,22 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      */
     public void setStatus(int bookId, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
+        if (status == DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+            db.execSQL("UPDATE " + BooksInformationDBContract.StoredBooks.TABLE_NAME + " SET " +
+                            BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP
+                            + "=" + "datetime('now','localtime')" +
+                            SQL.WHERE + BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
+                    new String[]{Long.toString(bookId)}
+            );
+        }
         ContentValues contentValues = new ContentValues();
-        //TODO add time stamp for
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS, status);
-        if (status == DownloadsConstants.STATUS_FTS_INDEXING_ENDED)
-            contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP, "datetime('now','localtime')");
         db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 contentValues,
                 BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{Long.toString(bookId)});
+
+
     }
 
     /**

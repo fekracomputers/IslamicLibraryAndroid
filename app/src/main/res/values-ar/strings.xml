@@ -266,5 +266,9 @@
     <string name="pref_title_tashkeel">التشكيل</string>
     <string name="prefs_keep_screen_on">الإبقاء على الشاشة مفتوحة</string>
     <string name="prefs_keep_screen_on_summary">الإبقاء على الشاشة مفتوحة خلال القراءة</string>
+    <string name="bottom_nav_notes_bookmarks">الفوائد</string>
+    <string name="notes">ملاحظات</string>
+    <string name="no_bookmark">لم تضف مرجعيات بعد</string>
+    <string name="no_highlights">لا توجد ملاحظات بعد</string>
 
 </resources>

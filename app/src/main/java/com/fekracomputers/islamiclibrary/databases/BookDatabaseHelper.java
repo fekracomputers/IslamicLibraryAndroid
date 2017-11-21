@@ -9,8 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
+import com.fekracomputers.islamiclibrary.model.AuthorInfo;
+import com.fekracomputers.islamiclibrary.model.BookCategory;
+import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.PageCitation;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
@@ -24,6 +26,7 @@ import com.fekracomputers.islamiclibrary.utility.SystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -879,14 +882,13 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
         boolean pageTextSearchExists = false;
         if (c.moveToFirst()) {
             String foundCreateStatement = c.getString(0);
-            pageTextSearchExists = foundCreateStatement
-                    .equalsIgnoreCase(CREATE_BOOK_FTS_TABLE.replace("IF NOT ",""));
+            pageTextSearchExists = foundCreateStatement.contains(BookDatabaseContract.pageTextSearch.TABLE_NAME);
         }
         boolean titlesTextSearchExists = false;
         if (pageTextSearchExists && c.moveToNext()) {
             String foundCreateStatement = c.getString(0);
-            titlesTextSearchExists =foundCreateStatement
-                    .equalsIgnoreCase(CREATE_TITLES_FTS_TABLE.replace("IF NOT ",""));
+            titlesTextSearchExists = foundCreateStatement
+                    .contains(BookDatabaseContract.titlesTextSearch.TABLE_NAME);
         }
 
         c.close();
@@ -909,7 +911,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
         Cursor c = getReadableDatabase().query(" sqlite_master ",
                 new String[]{"sql"},
                 "type='table'",
-               null,
+                null,
                 null,
                 null,
                 null);
@@ -922,7 +924,33 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             createStatements.remove(createStatment.toUpperCase());
         }
 
-       c.close();
+        c.close();
         return createStatements.size() == 0;
+    }
+
+    public BookInfo getBookInfo() {
+        Cursor c = getReadableDatabase().query(BookDatabaseContract.InfoEntry.TABLE_NAME,
+                new String[]{BookDatabaseContract.InfoEntry.COLUMN_NAME_NAME, BookDatabaseContract.InfoEntry.COLUMN_NAME_VALUE}
+                , null, null, null, null, null
+        );
+        HashMap<String, String> map = new HashMap<>();
+        while (c.moveToNext()) {
+            map.put(c.getString(0), c.getString(1));
+        }
+        c.close();
+        return new BookInfo(bookId,
+                map.get(BookDatabaseContract.InfoEntry.KEY_BOOK_TITLE),
+                map.get(BookDatabaseContract.InfoEntry.KEY_BOOK_INFORMATION),
+                map.get(BookDatabaseContract.InfoEntry.KEY_BOOK_CARD),
+                new AuthorInfo(
+                        Integer.valueOf(map.get(BookDatabaseContract.InfoEntry.KEY_AUTHOR_ID)),
+                        map.get(BookDatabaseContract.InfoEntry.KEY_AUTHOUR_NAME),
+                        map.get(BookDatabaseContract.InfoEntry.KEY_AUTHOR_INFORMATION),
+                        Integer.valueOf(map.get(BookDatabaseContract.InfoEntry.KEY_AUTHOR_DEATH_HIGRI_YEAR))
+                ),
+                new BookCategory(
+                        Integer.valueOf(map.get(BookDatabaseContract.InfoEntry.KEY_CATEGORY_ID)),
+                        map.get(BookDatabaseContract.InfoEntry.KEY_CATEGORY_TITLE))
+        );
     }
 }

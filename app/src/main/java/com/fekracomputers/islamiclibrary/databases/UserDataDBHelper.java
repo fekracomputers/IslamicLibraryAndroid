@@ -11,14 +11,20 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.BookmarkItem;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.HighlightItem;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.model.BookCollectionInfo;
+import com.fekracomputers.islamiclibrary.model.BookInfo;
+import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.Bookmark;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.model.Highlight;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -135,7 +141,7 @@ public class UserDataDBHelper {
     public static class GlobalUserDBHelper extends SQLiteOpenHelper {
         public static final int MOST_RECENT_BOOK_COLLECTION_AUTO_ID = 1;
         public static final int BOOK_COLLECTION_MOST_OPENED_AUTO_ID = 2;
-        public static final int BOOK_COLLECTION_MOST_DOWNLOADED_AUTO_ID = 3;
+        public static final int BOOK_COLLECTION_latest_DOWNLOADED_AUTO_ID = 3;
         public static final int COUNT_AUTO_COLLECTION_VER_2 = 3;
         public static final int FAVOURITE_COLLECTION_ID = 4;
         private static final String DATABASE_NAME = "user_data";
@@ -268,7 +274,7 @@ public class UserDataDBHelper {
                 int pageId = c.getInt(INDEX_PAGE_ID);
                 PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
 
-                bookmarksList.add(new Bookmark(bookId, pageId, pageInfo.pageNumber, pageInfo.partNumber, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId)));
+                bookmarksList.add(new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId)));
             }
             c.close();
             return bookmarksList;
@@ -297,7 +303,6 @@ public class UserDataDBHelper {
                             UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID,
                             UserDataDBContract.HighlightEntry.COLUMN_TEXT,
                             UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP,
-                            UserDataDBContract.HighlightEntry.COLUMN_NAME_ROW_ID,
                             UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT
                     },
                     UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID + "=?",
@@ -314,7 +319,6 @@ public class UserDataDBHelper {
             final int INDEX_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_TEXT);
             final int INDEX_NOTE_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT);
             final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP);
-            final int INDEX_ROW_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_ROW_ID);
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(mContext, bookId);
 
             while (c.moveToNext()) {
@@ -326,20 +330,31 @@ public class UserDataDBHelper {
                 String timeStamp = c.getString(INDEX_TIME_STAMP);
                 String text = c.getString(INDEX_TEXT);
                 String noteText = c.getString(INDEX_NOTE_TEXT);
-                long rowId = c.getLong(INDEX_ROW_ID);
 
-                highlightArrayList.add(new Highlight(text, highlightId, className, elementId, timeStamp, bookId, pageId, pageInfo.partNumber, pageInfo.pageNumber, bookDatabaseHelper.getParentTitle(pageId), rowId, noteText));
+                highlightArrayList.add(new Highlight(text,
+                        highlightId,
+                        className,
+                        elementId,
+                        timeStamp,
+                        pageInfo,
+                        bookId,
+                        bookDatabaseHelper.getParentTitle(pageId),
+                        noteText)
+                );
             }
             c.close();
             return highlightArrayList;
         }
 
         private void deserializeHighlightsAndSave(String serializedHighlights, PageInfo pageInfo, int bookId) {
-            ArrayList<ContentValues> highlights = Highlight.deserializeGeneric(serializedHighlights, pageInfo, ContentValues.class, bookId);
+            ArrayList<ContentValues> highlights = Highlight.deserializeToContentValues(serializedHighlights,
+                    pageInfo,
+                    bookId);
             ArrayList<Integer> existingHighlightsId = new ArrayList<>(highlights.size());
 
             for (ContentValues highlight_current : highlights) {
-                existingHighlightsId.add(highlight_current.getAsInteger(UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID));
+                existingHighlightsId
+                        .add(highlight_current.getAsInteger(UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID));
             }
             String existingHighlightsIdString = existingHighlightsId.toString();
 
@@ -349,12 +364,21 @@ public class UserDataDBHelper {
 
             db.beginTransaction();
             try {
-                db.delete(UserDataDBContract.HighlightEntry.TABLE_NAME,
-                        UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID + "=?" + " and " +
-                                UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID + "=?" + " and "
-                                + UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID + " NOT IN  " + existingHighlightsIdString,
-                        new String[]{String.valueOf(bookId), String.valueOf(pageInfo.pageId)}
-                );
+                if (highlights.size() != 0) {
+                    db.delete(UserDataDBContract.HighlightEntry.TABLE_NAME,
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID + "=?" + " and " +
+                                    UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID + "=?" + " and "
+                                    + UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID + " NOT IN  " +
+                                    existingHighlightsIdString,
+                            new String[]{String.valueOf(bookId), String.valueOf(pageInfo.pageId)}
+                    );
+                } else {
+                    db.delete(UserDataDBContract.HighlightEntry.TABLE_NAME,
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID + "=?" + " and " +
+                                    UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID + "=?",
+                            new String[]{String.valueOf(bookId), String.valueOf(pageInfo.pageId)}
+                    );
+                }
 
                 for (ContentValues highlight : highlights) {
                     db.insertWithOnConflict(
@@ -395,7 +419,6 @@ public class UserDataDBHelper {
                             UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID,
                             UserDataDBContract.HighlightEntry.COLUMN_TEXT,
                             UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP,
-                            UserDataDBContract.HighlightEntry.COLUMN_NAME_ROW_ID,
                             UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT
                     },
                     UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID + "=?" + " and " +
@@ -413,7 +436,6 @@ public class UserDataDBHelper {
             final int INDEX_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_TEXT);
             final int INDEX_NOTE_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT);
             final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP);
-            final int INDEX_ROW_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_ROW_ID);
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(mContext, bookId);
             Highlight highlight = null;
             if (c.moveToFirst()) {
@@ -423,8 +445,7 @@ public class UserDataDBHelper {
                 String timeStamp = c.getString(INDEX_TIME_STAMP);
                 String text = c.getString(INDEX_TEXT);
                 String noteText = c.getString(INDEX_NOTE_TEXT);
-                long rowId = c.getLong(INDEX_ROW_ID);
-                highlight = new Highlight(text, highlightId, className, elementId, timeStamp, bookId, pageId, pageInfo.partNumber, pageInfo.pageNumber, bookDatabaseHelper.getParentTitle(pageId), rowId, noteText);
+                highlight = new Highlight(text, highlightId, className, elementId, timeStamp, pageInfo, bookId, bookDatabaseHelper.getParentTitle(pageId), noteText);
             }
             c.close();
             return highlight;
@@ -664,7 +685,7 @@ public class UserDataDBHelper {
                                     UserDataDBContract.AccessInformationEntry.COLUMN_ACCESS_COUNT + SQL.IS_NOT_NULL,
                             DATABASE_NAME + SQL.DOT + UserDataDBContract.AccessInformationEntry.Table_NAME + SQL.DOT +
                                     UserDataDBContract.AccessInformationEntry.COLUMN_ACCESS_COUNT + SQL.DECS);
-                case BOOK_COLLECTION_MOST_DOWNLOADED_AUTO_ID://book_collection_recent_download
+                case BOOK_COLLECTION_latest_DOWNLOADED_AUTO_ID://book_collection_recent_download
                     return BooksInformationDbHelper.getInstance(context).getRecentDownloads(100);
 
             }
@@ -803,6 +824,109 @@ public class UserDataDBHelper {
                         new String[]{String.valueOf(booksCollectionId), String.valueOf(booksCollectionId)});
             }
 
+        }
+
+        public Collection<UserNoteItem> getUserNotes() {
+            ArrayList<UserNoteItem> userNotes = new ArrayList<>();
+            userNotes.addAll(getBookmarkItems());
+            userNotes.addAll(getHighlightItems());
+            return userNotes;
+        }
+
+        public ArrayList<UserNoteItem> getBookmarkItems() throws IllegalArgumentException {
+//            if (!order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID) ||
+//                    !order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID)) {
+//                throw new IllegalArgumentException("order must be {@link UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID} or" +
+//                        " UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP}");
+//
+//            }
+
+            ArrayList<UserNoteItem> bookmarksList = new ArrayList<>();
+
+            Cursor c = getReadableDatabase()
+                    .query(UserDataDBContract.BookmarkEntry.TABLE_NAME,
+                            new String[]{
+                                    UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID,
+                                    UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID,
+                                    UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP},
+                            null,
+                            null,
+                            null,
+                            null,
+                            UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID
+                    );
+            final int INDEX_BOOK_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID);
+            final int INDEX_PAGE_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);
+            final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP);
+            while (c.moveToNext()) {
+                int bookId = c.getInt(INDEX_BOOK_ID);
+                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+                int pageId = c.getInt(INDEX_PAGE_ID);
+                BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
+                BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+                PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
+                Bookmark bookmark = new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId));
+                bookmarksList.add(new BookmarkItem(bookmark, bookPartsInfo, bookInfo));
+            }
+            c.close();
+            return bookmarksList;
+        }
+
+        public ArrayList<UserNoteItem> getHighlightItems() {
+            ArrayList<UserNoteItem> highlightArrayList = new ArrayList<>();
+
+            Cursor c = getReadableDatabase().query(UserDataDBContract.HighlightEntry.TABLE_NAME,
+                    new String[]{
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID,
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID,
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID,
+                            UserDataDBContract.HighlightEntry.COLUMN_CLASS_NAME,
+                            UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID,
+                            UserDataDBContract.HighlightEntry.COLUMN_TEXT,
+                            UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP,
+                            UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID
+            );
+            final int INDEX_BOOK_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_BOOK_ID);
+            final int INDEX_PAGE_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_PAGE_ID);
+            final int INDEX_HIGHLIGHT_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_HIGHLIGHT_ID);
+            final int INDEX_CLASS_NAME = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_CLASS_NAME);
+            final int INDEX_ELEMENT_ID = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_CONTAINER_ELEMENT_ID);
+            final int INDEX_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_TEXT);
+            final int INDEX_NOTE_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT);
+            final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP);
+            while (c.moveToNext()) {
+                int bookId = c.getInt(INDEX_BOOK_ID);
+                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+                int pageId = c.getInt(INDEX_PAGE_ID);
+                BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
+                BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+                PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
+                int highlightId = c.getInt(INDEX_HIGHLIGHT_ID);
+                String className = c.getString(INDEX_CLASS_NAME);
+                int elementId = c.getInt(INDEX_ELEMENT_ID);
+                String timeStamp = c.getString(INDEX_TIME_STAMP);
+                String text = c.getString(INDEX_TEXT);
+                String noteText = c.getString(INDEX_NOTE_TEXT);
+
+                highlightArrayList.add(new HighlightItem(new Highlight(text,
+                        highlightId,
+                        className,
+                        elementId,
+                        timeStamp,
+                        pageInfo,
+                        bookId,
+                        bookDatabaseHelper.getParentTitle(pageId),
+                        noteText), bookPartsInfo, bookInfo)
+                );
+            }
+            c.close();
+            return highlightArrayList;
         }
     }
 

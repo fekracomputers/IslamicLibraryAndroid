@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fekracomputers.islamiclibrary.widget.BookmarkCard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="4dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="false"
+    app:showBook="true"
+    tools:context=".tableOFContents.TableOfContentsBookmarksActivity">
+
+</com.fekracomputers.islamiclibrary.widget.BookmarkCard>

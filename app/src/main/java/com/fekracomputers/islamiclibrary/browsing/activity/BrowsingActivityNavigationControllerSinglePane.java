@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.browsing.fragment.AdvancedSearchFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
+import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.HomeScreenFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 
@@ -83,8 +83,11 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
                 default:
                     fragment = new LibraryFragment();
                     break;
-                case R.id.bottom_nav_search:
-                    fragment = new AdvancedSearchFragment();
+//                case R.id.bottom_nav_search:
+//                    fragment = new AdvancedSearchFragment();
+//                    break;
+                case R.id.bottom_nav_user_notes:
+                    fragment=GlobalUserNotesFragment.newInstance();
                     break;
             }
             fragments.put(itemId, fragment);
