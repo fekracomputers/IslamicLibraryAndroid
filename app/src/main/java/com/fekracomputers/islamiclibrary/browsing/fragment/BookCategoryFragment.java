@@ -267,9 +267,8 @@ public class BookCategoryFragment
     }
 
     @Override
-    public void selecteItem(int id) {
+    public void selectAllItems(int id) {
         mRecyclerView.scrollToPosition(mBookCategoryRecyclerViewAdapter.getPositonById(id));
-
     }
 
 

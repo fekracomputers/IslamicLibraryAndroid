@@ -27,25 +27,35 @@ public class BooksCollection implements Comparable<BooksCollection> {
         this.booksCollectionId = booksCollectionId;
     }
 
+    public static BooksCollection fakeCollection(int collectionId) {
+        return new BooksCollection(0, true, 0, "", collectionId);
+    }
+
     public String getName() {
         return name;
     }
 
-    public Cursor getCursor(Context context) {
+    private Cursor getNewCursor(Context context) {
         if (cursor == null || cursor.isClosed()) {
             cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
         }
         return cursor;
     }
 
-    public Cursor reAcquireCursor(Context context) {
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
-        return cursor;
-    }
+    public Cursor reAcquireCursor(Context context, boolean refresh) {
 
+        if (refresh) {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            return getNewCursor(context);
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            return cursor;
+        } else {
+            return getNewCursor(context);
+        }
+    }
 
     @Override
     public int hashCode() {
@@ -60,7 +70,13 @@ public class BooksCollection implements Comparable<BooksCollection> {
     @Override
     public int compareTo(@NonNull BooksCollection o) {
         //if you cant understand this then press alt-enter and convert ?: ti if else recursivly until it is full expanded :)
-        return order != o.order ? order < o.order ? -1 : 1 : booksCollectionId < o.booksCollectionId ? -1 : booksCollectionId == o.booksCollectionId ? 0 : 1;
+        return order != o.order ?
+                order < o.order ?
+                        -1 :
+                        1 :
+                booksCollectionId < o.booksCollectionId ? -1 :
+                        booksCollectionId == o.booksCollectionId ? 0 :
+                                1;
     }
 
     public boolean isVisibility() {

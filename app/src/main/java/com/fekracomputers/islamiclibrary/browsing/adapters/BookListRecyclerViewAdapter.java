@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,7 +192,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         super.setHasStableIds(true);
     }
 
-
+@Nullable
     public Cursor getCursor() {
         return mCursor;
     }

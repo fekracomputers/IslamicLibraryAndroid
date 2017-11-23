@@ -18,7 +18,6 @@ import com.fekracomputers.islamiclibrary.browsing.adapters.BookListRecyclerViewA
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
-import com.fekracomputers.islamiclibrary.utility.Util;
 
 /**
  * بسم الله الرحمن الرحيم
@@ -52,8 +51,16 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
         inflate(getContext(), R.layout.horizontal_book_listing, this);
     }
 
-    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection, final BookCardEventsCallback mListener) {
-        final Cursor cursor = booksCollection.getCursor(this.getContext());
+    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
+                                                        final BookCardEventsCallback mListener) {
+        return setupRecyclerView(booksCollection, mListener, true);
+    }
+
+
+    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
+                                                        final BookCardEventsCallback mListener,
+                                                        boolean forceRefresh) {
+        final Cursor cursor = booksCollection.reAcquireCursor(this.getContext(), forceRefresh);
         return setupRecyclerView(mListener,
                 cursor,
                 booksCollection.getName(),
@@ -62,7 +69,6 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
     public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
                                                         Cursor bookListCursor,
-
                                                         String title,
                                                         OnClickListener onClickListener) {
         setupRecyclerView(mListener, bookListCursor);
@@ -74,8 +80,6 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
 
     public void setupRecyclerView(BookCardEventsCallback mListener, Cursor bookListCursor) {
-
-
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -86,18 +90,8 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
                 idCoulmnName,
                 mListener);
         mBookListRecyclerViewAdapter.setLayoutManagerType(BookListRecyclerViewAdapter.LINEAR_HORIZONTAL_LAYOUT_MANAGER);
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mBookListRecyclerViewAdapter);
-        recyclerView.addItemDecoration(
-                new EndItemsPaddingDecoration(
-                        Util.dpToPxOffset(getContext(), 8),
-                        Util.dpToPxOffset(getContext(), 8),
-                        //       ViewCompat.getLayoutDirection(recyclerView) == ViewCompat.LAYOUT_DIRECTION_RTL,
-                        true,
-                        bookListCursor.getCount() - 1)
-        );
-
     }
 
     public void setTitleText(CharSequence charSequence) {
@@ -113,7 +107,11 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
     }
 
     public void closeCursor() {
-        mBookListRecyclerViewAdapter.getCursor().close();
+        Cursor cursor = mBookListRecyclerViewAdapter.getCursor();
+        if (cursor != null) {
+            cursor.close();
+
+        }
     }
 
     public void notifyDatasetChanged() {

@@ -10,7 +10,7 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
-import com.fekracomputers.islamiclibrary.browsing.fragment.HomeScreenFragment;
+import com.fekracomputers.islamiclibrary.homeScreen.HomeScreenFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_ADDED;

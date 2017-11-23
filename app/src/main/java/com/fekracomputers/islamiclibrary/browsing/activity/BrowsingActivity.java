@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
+import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBatchDownloadDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBookDeleteDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AuthorListFragment;
@@ -40,6 +41,7 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
+import com.fekracomputers.islamiclibrary.homeScreen.HomeScreenCallBack;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
@@ -79,8 +81,8 @@ public class BrowsingActivity
         BookCardEventListener,
         ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener,
         ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
-        BrowsingActivityNavigationController.BrowsingActivityControllerListener
-        {
+        BrowsingActivityNavigationController.BrowsingActivityControllerListener,
+        BookCollectionsController.BookCollectionsControllerCallback {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -160,7 +162,7 @@ public class BrowsingActivity
             browsingActivityNavigationController.switchPagerTo(AUTHOR_LIST_FRAGMENT_TYPE);
             for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
                 if (browsingActivityListingFragment.getType() == AUTHOR_LIST_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selecteItem(authorInfo.getId());
+                    browsingActivityListingFragment.selectAllItems(authorInfo.getId());
                 }
             }
         }
@@ -172,7 +174,7 @@ public class BrowsingActivity
 
             for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
                 if (browsingActivityListingFragment.getType() == BOOK_CATEGORY_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selecteItem(category.getId());
+                    browsingActivityListingFragment.selectAllItems(category.getId());
                 }
             }
         }
@@ -203,8 +205,8 @@ public class BrowsingActivity
     };
     private AppBarLayout appBarLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private DrawerLayout drawer;
-    private DrawerArrowDrawable drawerArrow;
+    @Nullable
+    private HomeScreenCallBack homeScreenCallBack;
 
 
     @Override
@@ -240,7 +242,7 @@ public class BrowsingActivity
         setContentView(R.layout.activity_browsing);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawerArrow = new DrawerArrowDrawable(this);
+        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this);
         drawerArrow.setColor(0xFFFFFF);
 
 
@@ -253,7 +255,7 @@ public class BrowsingActivity
         mBooksInformationDbHelper = BooksInformationDbHelper.getInstance(BrowsingActivity.this);
         appBarLayout = findViewById(R.id.appBar);
 
-        drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(actionBarDrawerToggle);
@@ -592,6 +594,29 @@ public class BrowsingActivity
 
     }
 
+    @Override
+    public synchronized void notifyBookCollectionCahnged(int collectionId) {
+        if (homeScreenCallBack != null)
+            homeScreenCallBack.notifyBookCollectionCahnged(collectionId);
+    }
+
+    @Override
+    public synchronized void registerHomeScreen(HomeScreenCallBack homeScreenCallBack) {
+        this.homeScreenCallBack = homeScreenCallBack;
+    }
+
+    @Override
+    public synchronized void unRegisterHomeScreen(HomeScreenCallBack homeScreenCallBack) {
+        this.homeScreenCallBack = null;
+    }
+
+    @Override
+    public synchronized void notifyCollectuinAdded(int collectionsId) {
+        if (homeScreenCallBack != null)
+            homeScreenCallBack.notifyBookCollectionAdded(collectionsId);
+
+    }
+
     private void notifyActivityRestarted() {
         for (BrowsingActivityListingFragment pagerTab : pagerTabs) {
             pagerTab.reAcquireCursors();
@@ -745,6 +770,7 @@ public class BrowsingActivity
     @Override
     protected void onDestroy() {
         browsingActivityNavigationController.onDestroy();
+        notifyActivityStopped();
         super.onDestroy();
     }
 
@@ -758,15 +784,14 @@ public class BrowsingActivity
     public void onStop() {
         super.onStop();
         bookCardEventsCallback.removeBookDownloadBroadcastListener();
-        notifyActivityStopped();
     }
 
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        notifyActivityRestarted();
-    }
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        notifyActivityRestarted();
+//    }
 
     @Override
     public BookCardEventsCallback getBookCardEventCallback() {
@@ -787,7 +812,6 @@ public class BrowsingActivity
     public void onBookDeleteDialogDialogPositiveClick(int bookId) {
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
-
 
 
     private class BookSelectionActionModeCallback {

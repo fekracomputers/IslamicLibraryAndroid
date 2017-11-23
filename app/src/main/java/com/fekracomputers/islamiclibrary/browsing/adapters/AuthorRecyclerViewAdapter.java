@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,10 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AuthorListFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
+import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.databases.SQL;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
+import com.fekracomputers.islamiclibrary.search.model.FTS.Util;
 
 import java.util.List;
 
@@ -28,22 +32,48 @@ import static com.fekracomputers.islamiclibrary.browsing.adapters.RecyclerViewPa
 public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecyclerViewAdapter.ViewHolder> {
 
 
+    private static final String[][] mOrderBy = {
+            new String[]{
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME},
+            new String[]{
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR
+            },
+            new String[]{
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.ORDER_BY_NUMBER_OF_BOOKS,
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
+                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
+            },
+    };
     private final int COULMN_HAS_DOWNLOADED_BOOKS;
     private final int COULMN_NUMBER_OF_BOOKS;
     private final Context context;
-    private int itemCount;
     private final int COULMN_AUTHOUR_ID;
     private final int COLUMN_AUTHOUR_NAME_ID;
     private final int COLUMN_AUTHOUR_DEATH_DATE_ID;
+    private final CursorListFragment cursorListFragment;
+    private int itemCount;
     private Cursor mCursor;
-    private boolean mDataValid;
     private int mRowIdColumn = -1;
     private DataSetObserver mDataSetObserver;
     private AuthorListFragment.OnAuthorItemClickListener mListener;
     private int layoutManagerType;
+    private BooksInformationDbHelper booksInformationDbHelper;
 
-    public AuthorRecyclerViewAdapter(Cursor cursor, String IdColumnName, AuthorListFragment.OnAuthorItemClickListener listener, Context context) {
+    public AuthorRecyclerViewAdapter(
+            String IdColumnName,
+            AuthorListFragment.OnAuthorItemClickListener listener,
+            Context context,
+
+            CursorListFragment cursorListFragment) {
+        this.booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
+        Cursor cursor = getCursor(
+                cursorListFragment.shouldDisplayDownloadOnly(),
+                cursorListFragment.getQueryString(),
+                cursorListFragment.getCurrentSortIndex());
         this.context = context;
+        this.cursorListFragment = cursorListFragment;
         init(cursor, cursor.getColumnIndex(IdColumnName));
         COLUMN_AUTHOUR_NAME_ID = cursor.getColumnIndexOrThrow(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME);
         COULMN_AUTHOUR_ID = cursor.getColumnIndexOrThrow(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID);
@@ -116,14 +146,23 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
     public void onBindViewHolder(AuthorRecyclerViewAdapter.ViewHolder viewHolder, int position) {
         position = viewHolder.getAdapterPosition();
         Log.d("adapter", position + "");
-        if (!mDataValid) {
-            throw new IllegalStateException("this should only be called when the cursor is valid");
+        if (!isCursorValid()) {
+            reAcquireCursors();
+            if (!isCursorValid()) {
+                throw new IllegalStateException("this should only be called when the cursor is valid");
+            }
         }
         if (!mCursor.moveToPosition(position)) {
             throw new IllegalStateException("couldn't move cursor to position " + position);
         }
 
         onBindViewHolder(viewHolder, mCursor);
+    }
+
+    private void reAcquireCursors() {
+        reAcquireCursors(cursorListFragment.shouldDisplayDownloadOnly(),
+                cursorListFragment.getQueryString(),
+                cursorListFragment.getCurrentSortIndex());
     }
 
     private void onBindViewHolder(final AuthorRecyclerViewAdapter.ViewHolder holder, final Cursor movedCursor) {
@@ -166,6 +205,10 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
 
     }
 
+    private boolean isCursorValid() {
+        return mCursor != null;
+    }
+
     /**
      * @param cursor      the {@link Cursor} to display its rows
      * @param RowIdColumn zero based index of primary key coulmn of the cursor supplyed
@@ -173,7 +216,6 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
     private void init(Cursor cursor, int RowIdColumn) {
         mRowIdColumn = RowIdColumn;
         mCursor = cursor;
-        mDataValid = cursor != null;
         mDataSetObserver = new AuthorRecyclerViewAdapter.NotifyingDataSetObserver();
 
         if (mCursor != null) {
@@ -182,16 +224,17 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         super.setHasStableIds(true);
     }
 
-
-    public Cursor getCursor() {
-        return mCursor;
-    }
-
     @Override
     public int getItemCount() {
-        if (mDataValid && mCursor != null) {
+        if (isCursorValid() && mCursor != null) {
             return itemCount;
+        } else {
+            reAcquireCursors();
+            if (isCursorValid() && mCursor != null) {
+                return itemCount;
+            }
         }
+
         return 0;
 
     }
@@ -199,8 +242,13 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
 
     @Override
     public long getItemId(int position) {
-        if (mDataValid && mCursor != null && mCursor.moveToPosition(position)) {
+        if (isCursorValid() && mCursor != null && mCursor.moveToPosition(position)) {
             return mCursor.getLong(mRowIdColumn);
+        } else {
+            reAcquireCursors();
+            if (isCursorValid() && mCursor != null) {
+                return itemCount;
+            }
         }
         return 0;
     }
@@ -235,21 +283,89 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
                 mCursor.registerDataSetObserver(mDataSetObserver);
             }
             itemCount = newCursor.getCount();
-            mDataValid = true;
             notifyDataSetChanged();
         } else {
             mRowIdColumn = -1;
-            mDataValid = false;
             notifyDataSetChanged();
             //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
         return oldCursor;
     }
 
+    public Cursor getCursor(boolean downloadedOnly,
+                            @Nullable String mSearchQuery,
+                            int mCurrentSortIndex) {
+        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+            return getCursor(mSearchQuery, downloadedOnly, mCurrentSortIndex);
+        } else {
+            return booksInformationDbHelper.getAuthorsFiltered(null, null, mOrderBy[mCurrentSortIndex], downloadedOnly);
+        }
+    }
+
+    private Cursor getCursor(String newText, boolean downloadedOnly, int mCurrentSortIndex) {
+        return booksInformationDbHelper.getAuthorsFiltered(
+                BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + "." + BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_NAME + " match ? ",
+                new String[]{Util.getSearchPrefixQueryString(newText)},
+                mOrderBy[mCurrentSortIndex],
+                downloadedOnly);
+    }
+
+    public void reAcquireCursors(boolean downloadedOnly, String mSearchQuery, int mCurrentSortIndex) {
+        changeCursor(getCursor(downloadedOnly, mSearchQuery, mCurrentSortIndex));
+        notifyDataSetChanged();
+    }
+
+    public void switchTodownloadedOnly(boolean checked, String mSearchQuery, int mCurrentSortIndex) {
+        changeCursor(getCursor(checked, mSearchQuery, mCurrentSortIndex));
+
+    }
+
+    public void closeCursors() {
+        if (mCursor != null && !mCursor.isClosed()) {
+            mCursor.close();
+            mCursor = null;
+        }
+    }
+
+    public void performFilter(String query) {
+        String mSearchQuery = cursorListFragment.getQueryString();
+        if ((mSearchQuery == null || mSearchQuery.isEmpty()) && !(query == null || query.isEmpty())) {
+            //first click on search icon
+            cursorListFragment.setQueryString(query);
+            cursorListFragment.saveScrollPosition();
+
+        } else if (!(mSearchQuery == null || mSearchQuery.isEmpty()) && (query == null || query.isEmpty())) {
+            //clearing the search query
+            cursorListFragment.setQueryString(query);
+            Cursor bookListCursor = getCursor(cursorListFragment.shouldDisplayDownloadOnly(),
+                    mSearchQuery, cursorListFragment.getCurrentSortIndex());
+            changeCursor(bookListCursor);
+            cursorListFragment.reScroll();
+        } else {
+            mSearchQuery = query;
+            Cursor bookListCursor = getCursor(cursorListFragment.shouldDisplayDownloadOnly(),
+                    mSearchQuery, cursorListFragment.getCurrentSortIndex());
+            changeCursor(bookListCursor);
+        }
+
+    }
+
+
+    public interface CursorListFragment {
+        String getQueryString();
+
+        void setQueryString(String query);
+
+        int getCurrentSortIndex();
+
+        boolean shouldDisplayDownloadOnly();
+
+        void saveScrollPosition();
+
+        void reScroll();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-
         private final TextView authourNumberOfBooksTextView;
         TextView authorNameTv;
         TextView authorDeathYear;
@@ -261,7 +377,6 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
 
         public ViewHolder(final View authourView) {
             super(authourView);
-
             authorNameTv = authourView.findViewById(R.id.author_name);
             authorDeathYear = authourView.findViewById(R.id.death_year);
             authourNumberOfBooksTextView = authourView.findViewById(R.id.number_of_books_text_view);
@@ -278,7 +393,6 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
                     handled = mListener.OnAuthorItemLongClicked(authourId);
                     mCheckBox.setChecked(handled);
                 }
-
                 return handled;
             });
             mCheckBox.setOnClickListener(v -> mListener.onAuthorSelected(authourId, ((CheckBox) v).isChecked()));
@@ -294,7 +408,6 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
                 mCheckBox.setChecked(isChecked);
             else
                 mCheckBox.setChecked(mListener.isAuthorSelected(authourId));
-
         }
     }
 
@@ -302,17 +415,15 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         @Override
         public void onChanged() {
             super.onChanged();
-            mDataValid = true;
             notifyDataSetChanged();
         }
 
         @Override
         public void onInvalidated() {
             super.onInvalidated();
-            mDataValid = false;
+            closeCursors();
             notifyDataSetChanged();
             //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
     }
-
 }

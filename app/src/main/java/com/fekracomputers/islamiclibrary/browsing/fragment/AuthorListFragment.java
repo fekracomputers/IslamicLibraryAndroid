@@ -25,10 +25,7 @@ import com.fekracomputers.islamiclibrary.browsing.adapters.AuthorRecyclerViewAda
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
-import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
-import com.fekracomputers.islamiclibrary.databases.SQL;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
-import com.fekracomputers.islamiclibrary.search.model.FTS.Util;
 
 import static com.fekracomputers.islamiclibrary.R.layout.fragment_author_list;
 
@@ -41,7 +38,8 @@ import static com.fekracomputers.islamiclibrary.R.layout.fragment_author_list;
 public class AuthorListFragment
         extends Fragment
         implements BrowsingActivityListingFragment,
-        SortListDialogFragment.OnSortDialogListener {
+        SortListDialogFragment.OnSortDialogListener,
+        AuthorRecyclerViewAdapter.CursorListFragment {
     public static final int GRID_LAYOUT_MANAGER = 0;
     public static final int LINEAR_LAYOUT_MANAGER = 1;
     private static final String TAG = "AuthorListFragment";
@@ -49,26 +47,12 @@ public class AuthorListFragment
     private static final int SPAN_COUNT = 3;
     private static final String KEY_SHARED_PREF_AUTHOR_LAYOUT_TYPE = "AuthorListFragmentLayoutType";
     private static final String KEY_Author_LIST_SORT_INDEX_ONLY = "AuthorListFragmentSortIndex";
-    private static final String[][] mOrderBy = {
-            new String[]{
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME},
-            new String[]{
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR
-            },
-            new String[]{
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.ORDER_BY_NUMBER_OF_BOOKS,
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
-                    BooksInformationDBContract.AuthorEntry.TABLE_NAME + SQL.DOTSEPARATOR + BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME,
-            },
-    };
+
     protected int mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
     protected AuthorRecyclerViewAdapter mAuthorRecyclerViewAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     private OnAuthorItemClickListener mListener;
-    private BooksInformationDbHelper booksInformationDbHelper;
     private int mCurrentSortIndex;
     private String mSearchQuery;
     private int mSavedScrollPositionBeforSearch;
@@ -89,7 +73,6 @@ public class AuthorListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        booksInformationDbHelper = BooksInformationDbHelper.getInstance(this.getContext());
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentLayoutManagerType = sharedPref.getInt(KEY_SHARED_PREF_AUTHOR_LAYOUT_TYPE, LINEAR_LAYOUT_MANAGER);
 
@@ -108,9 +91,12 @@ public class AuthorListFragment
         }
 
         mCurrentSortIndex = sharedPref.getInt(KEY_Author_LIST_SORT_INDEX_ONLY, 0);
-        Cursor authorInfoCursor = getCursor(mListener.shouldDisplayDownloadedOnly());
-        mAuthorRecyclerViewAdapter = new AuthorRecyclerViewAdapter(authorInfoCursor,
-                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID, mListener, getContext());
+
+        mAuthorRecyclerViewAdapter = new AuthorRecyclerViewAdapter(
+                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID,
+                mListener,
+                getContext(),
+                this);
         setHasOptionsMenu(true);
 
     }
@@ -145,43 +131,11 @@ public class AuthorListFragment
 
             @Override
             public boolean onQueryTextChange(String query) {
-                if ((mSearchQuery == null || mSearchQuery.isEmpty()) && !(query == null || query.isEmpty())) {
-                    //first click on search icon
-                    mSearchQuery = query;
-                    mSavedScrollPositionBeforSearch = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                            .findFirstCompletelyVisibleItemPosition();
-                } else if (!(mSearchQuery == null || mSearchQuery.isEmpty()) && (query == null || query.isEmpty())) {
-                    //clearing the search query
-                    mSearchQuery = query;
-                    Cursor bookListCursor = getCursor(mListener.shouldDisplayDownloadedOnly());
-                    mAuthorRecyclerViewAdapter.changeCursor(bookListCursor);
-                    (mRecyclerView.getLayoutManager()).scrollToPosition(mSavedScrollPositionBeforSearch);
-                } else {
-                    mSearchQuery = query;
-                    Cursor bookListCursor = getCursor(mListener.shouldDisplayDownloadedOnly());
-                    mAuthorRecyclerViewAdapter.changeCursor(bookListCursor);
-                }
+                mAuthorRecyclerViewAdapter.performFilter(query);
                 return true;
             }
         });
 
-    }
-
-
-    private Cursor getCursor(boolean downloadedOnly) {
-        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
-            return getCursor(mSearchQuery, downloadedOnly);
-        } else {
-            return booksInformationDbHelper.getAuthorsFiltered(null, null, mOrderBy[mCurrentSortIndex], downloadedOnly);
-        }
-    }
-
-    private Cursor getCursor(String newText, boolean downloadedOnly) {
-        return booksInformationDbHelper.getAuthorsFiltered(
-                BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + "." + BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_NAME + " match ? ",
-                new String[]{Util.getSearchPrefixQueryString(newText)},
-                mOrderBy[mCurrentSortIndex],
-                downloadedOnly);
     }
 
 
@@ -212,7 +166,7 @@ public class AuthorListFragment
     public void sortMethodSelected(int which) {
         mCurrentSortIndex = which;
         boolean downloadedOnly = mListener.shouldDisplayDownloadedOnly();
-        Cursor bookListCursor = getCursor(downloadedOnly);
+        Cursor bookListCursor = mAuthorRecyclerViewAdapter.getCursor(downloadedOnly, mSearchQuery, mCurrentSortIndex);
         mAuthorRecyclerViewAdapter.changeCursor(bookListCursor);
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -319,23 +273,23 @@ public class AuthorListFragment
 
     @Override
     public void switchTodownloadedOnly(boolean checked) {
-        mAuthorRecyclerViewAdapter.changeCursor(getCursor(checked));
+        mAuthorRecyclerViewAdapter.switchTodownloadedOnly(checked, mSearchQuery, mCurrentSortIndex);
     }
 
     @Override
     public void reAcquireCursors() {
         boolean downloadedOnly = mListener.shouldDisplayDownloadedOnly();
-        mAuthorRecyclerViewAdapter.changeCursor(getCursor(downloadedOnly));
-        mAuthorRecyclerViewAdapter.notifyDataSetChanged();
+        mAuthorRecyclerViewAdapter.reAcquireCursors(downloadedOnly, mSearchQuery, mCurrentSortIndex);
+
     }
 
     @Override
     public void closeCursors() {
-        mAuthorRecyclerViewAdapter.getCursor().close();
+        mAuthorRecyclerViewAdapter.closeCursors();
     }
 
     @Override
-    public void selecteItem(int id) {
+    public void selectAllItems(int id) {
         //TODO Go to the specified author
     }
 
@@ -362,6 +316,38 @@ public class AuthorListFragment
     @Override
     public int getType() {
         return BrowsingActivity.AUTHOR_LIST_FRAGMENT_TYPE;
+    }
+
+    @Override
+    public String getQueryString() {
+        return mSearchQuery;
+    }
+
+    @Override
+    public void setQueryString(String query) {
+        mSearchQuery = query;
+    }
+
+    @Override
+    public int getCurrentSortIndex() {
+        return mCurrentSortIndex;
+    }
+
+    @Override
+    public boolean shouldDisplayDownloadOnly() {
+        return mListener.shouldDisplayDownloadedOnly();
+    }
+
+    @Override
+    public void saveScrollPosition() {
+        mSavedScrollPositionBeforSearch = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                .findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public void reScroll() {
+        (mRecyclerView.getLayoutManager()).scrollToPosition(mSavedScrollPositionBeforSearch);
+
     }
 
     public enum LayoutManagerType {

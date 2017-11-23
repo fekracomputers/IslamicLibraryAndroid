@@ -374,11 +374,14 @@ public class BookListFragment
 
     @Override
     public void closeCursors() {
-        bookListRecyclerViewAdapter.getCursor().close();
+        Cursor cursor = bookListRecyclerViewAdapter.getCursor();
+        if (cursor != null) {
+            cursor.close();
+        }
     }
 
     @Override
-    public void selecteItem(int id) {
+    public void selectAllItems(int id) {
 
     }
 

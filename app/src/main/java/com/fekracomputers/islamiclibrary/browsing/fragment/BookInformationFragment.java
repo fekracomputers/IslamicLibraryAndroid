@@ -25,7 +25,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
-import com.fekracomputers.islamiclibrary.browsing.dialog.CollectionDialogFragmnet;
+import com.fekracomputers.islamiclibrary.homeScreen.CollectionDialogFragmnet;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
@@ -63,7 +63,7 @@ public class BookInformationFragment extends Fragment implements
     private HorizontalBookRecyclerView authorMoreBooksHorizontalBookRecyclerView;
     private HorizontalBookRecyclerView categoryMoreBooksHorizontalBookRecyclerView;
     private BooksInformationDbHelper booksInformationDbHelper;
-    private BookCardEventsCallback mListener;
+    private BookCardEventsCallback bookCardEventsCallback;
     private BookCollectionInfo bookCollectionInfo;
     private ImageView favouriteButtonImageView;
     private ImageView collectionButtonImageView;
@@ -108,7 +108,7 @@ public class BookInformationFragment extends Fragment implements
         BooksInformationDbHelper dbHelper = BooksInformationDbHelper.getInstance(getContext());
         mBookInfo = dbHelper.getBookInfo(bookId);
         bookCollectionInfo = UserDataDBHelper.getInstance(getContext(), bookId).getBookCollectionInfo();
-        bookCollectionsController = new BookCollectionsController(getContext());
+        bookCollectionsController = new BookCollectionsController(getContext(), null);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class BookInformationFragment extends Fragment implements
         TextView bookCategoryTextView = rootView.findViewById(R.id.book_category);
         bookCategoryTextView.setText(mBookInfo.getCategory().getName());
         bookCategoryTextView.setOnClickListener(v -> {
-            mListener.onCategoryClicked(mBookInfo.getCategory());
+            bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
             // startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
         });
 
@@ -144,7 +144,7 @@ public class BookInformationFragment extends Fragment implements
         TextView bookAuthorTextView = rootView.findViewById(R.id.book_author);
         bookAuthorTextView.setText(mBookInfo.getAuthorName());
         bookAuthorTextView.setOnClickListener(v -> {
-            mListener.onAuthorClicked(mBookInfo.getAuthorInfo());
+            bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo());
 
 //                startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
         });
@@ -177,13 +177,13 @@ public class BookInformationFragment extends Fragment implements
         booksInformationDbHelper = BooksInformationDbHelper.
                 getInstance(getContext());
         categoryMoreBooksHorizontalBookRecyclerView = new HorizontalBookRecyclerView(getContext());
-        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, getCategoryPreviewCursor());
+        categoryMoreBooksHorizontalBookRecyclerView.setupRecyclerView(bookCardEventsCallback, getCategoryPreviewCursor());
         categoryMoreBooksHorizontalBookRecyclerView.setBackgroundResource(isGrey ? R.color.infoPage_details_gray :
                 R.color.infoPage_details_white);
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
         categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
             //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
-            mListener.onCategoryClicked(mBookInfo.getCategory());
+            bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
 
         });
         isGrey = !isGrey;
@@ -194,7 +194,7 @@ public class BookInformationFragment extends Fragment implements
         if (authorPreviewCursor.getCount() != 0) {
             authorMoreBooksHorizontalBookRecyclerView = new HorizontalBookRecyclerView(getContext());
             authorMoreBooksHorizontalBookRecyclerView.setVisibility(View.VISIBLE);
-            authorMoreBooksHorizontalBookRecyclerView.setupRecyclerView(mListener, authorPreviewCursor);
+            authorMoreBooksHorizontalBookRecyclerView.setupRecyclerView(bookCardEventsCallback, authorPreviewCursor);
             categoryMoreBooksHorizontalBookRecyclerView.setBackgroundResource(isGrey ? R.color.infoPage_details_gray :
                     R.color.infoPage_details_white);
             authorMoreBooksHorizontalBookRecyclerView.setTitleText(
@@ -204,7 +204,7 @@ public class BookInformationFragment extends Fragment implements
                     )
             );
             authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v ->
-                    mListener.onAuthorClicked(mBookInfo.getAuthorInfo()));
+                    bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo()));
             isGrey = !isGrey;
             mLinearLayoutContainer.addView(authorMoreBooksHorizontalBookRecyclerView);
         }
@@ -263,7 +263,7 @@ public class BookInformationFragment extends Fragment implements
                         BooksInformationDBContract.BooksAuthors.TABLE_NAME + "." + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + "!=?",
                 new String[]{String.valueOf(mBookInfo.getAuthorInfo().getId()), String.valueOf(mBookInfo.getBookId())},
                 null,
-                mListener.shouldDisplayDownloadedOnly(),
+                bookCardEventsCallback.shouldDisplayDownloadedOnly(),
                 null);
     }
 
@@ -274,7 +274,7 @@ public class BookInformationFragment extends Fragment implements
                         BooksInformationDBContract.BooksCategories.TABLE_NAME + "." + BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID + "!=?",
                 new String[]{String.valueOf(mBookInfo.getCategory().getId()), String.valueOf(mBookInfo.getBookId())},
                 null,
-                mListener.shouldDisplayDownloadedOnly(),
+                bookCardEventsCallback.shouldDisplayDownloadedOnly(),
                 null);
     }
 
@@ -347,19 +347,21 @@ public class BookInformationFragment extends Fragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof BookCardEventListener) {
-            mListener = ((BookCardEventListener) context).getBookCardEventCallback();
+            bookCardEventsCallback = ((BookCardEventListener) context).getBookCardEventCallback();
             ((BookCardEventListener) context).registerListener(this);
 
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement BookCardEventsCallback");
         }
+
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        bookCardEventsCallback = null;
         if (getActivity() instanceof BookCardEventListener)
             ((BookCardEventListener) getActivity()).unRegisterListener(this);
     }
@@ -367,7 +369,7 @@ public class BookInformationFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mListener.mayBeSetTitle("");
+        bookCardEventsCallback.mayBeSetTitle("");
 
     }
 
@@ -431,7 +433,7 @@ public class BookInformationFragment extends Fragment implements
     }
 
     @Override
-    public void selecteItem(int id) {
+    public void selectAllItems(int id) {
 
     }
 

@@ -20,5 +20,5 @@ public interface BrowsingActivityListingFragment {
 
     void closeCursors();
 
-    void selecteItem(int id);
+    void selectAllItems(int id);
 }

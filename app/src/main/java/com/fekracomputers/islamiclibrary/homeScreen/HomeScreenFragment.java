@@ -1,56 +1,54 @@
-package com.fekracomputers.islamiclibrary.browsing.fragment;
+package com.fekracomputers.islamiclibrary.homeScreen;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
+import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
-import com.fekracomputers.islamiclibrary.widget.HorizontalBookRecyclerView;
 
 import java.util.ArrayList;
 
-public class HomeScreenFragment extends Fragment implements BrowsingActivityListingFragment {
+public class HomeScreenFragment extends Fragment
+        implements BrowsingActivityListingFragment,
+        HomeScreenCallBack {
 
-    private final ArrayList<Pair<HorizontalBookRecyclerView, BooksCollection>> horizontalBookRecyclerViews = new ArrayList<>();
     private BookCardEventsCallback mListener;
     private ArrayList<BooksCollection> booksCollections;
+    private HomeScreenRecyclerViewAdapter homeScreenRecyclerViewAdapter;
 
     public HomeScreenFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper = UserDataDBHelper.getInstance(getContext());
         booksCollections = globalUserDBHelper.getBooksCollections(true, false);
+        homeScreenRecyclerViewAdapter = new HomeScreenRecyclerViewAdapter(booksCollections, mListener, getContext());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home_screen, container, false);
-        LinearLayout containerLinearLayout = rootView.findViewById(R.id.home_screen_horizontal_list_container);
-
-        for (BooksCollection booksCollection : booksCollections) {
-            HorizontalBookRecyclerView recyclerView = new HorizontalBookRecyclerView(getContext())
-                    .setupRecyclerView(booksCollection, mListener);
-            horizontalBookRecyclerViews.add(new Pair<>(recyclerView, booksCollection));
-            containerLinearLayout.addView(recyclerView);
-        }
+        RecyclerView containerLinearLayout = rootView.findViewById(R.id.home_screen_horizontal_list_container);
+        containerLinearLayout.setHasFixedSize(true);
+        containerLinearLayout.setAdapter(homeScreenRecyclerViewAdapter);
+        containerLinearLayout.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         return rootView;
     }
 
@@ -60,6 +58,7 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
         if (context instanceof BookCardEventListener) {
             mListener = ((BookCardEventListener) context).getBookCardEventCallback();
             ((BookCardEventListener) context).registerListener(this);
+            ((BookCollectionsController.BookCollectionsControllerCallback) context).registerHomeScreen(this);
 
         } else {
             throw new RuntimeException(context.toString()
@@ -73,28 +72,25 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
         mListener = null;
         if (getActivity() instanceof BookCardEventListener)
             ((BookCardEventListener) getActivity()).unRegisterListener(this);
+        ((BookCollectionsController.BookCollectionsControllerCallback) getActivity()).unRegisterHomeScreen(this);
+
     }
 
-    private void notifyAllRecyclersDatasetChanged() {
-        for (Pair<HorizontalBookRecyclerView, BooksCollection> horizontalBookRecyclerView : horizontalBookRecyclerViews) {
-            horizontalBookRecyclerView.first.notifyDatasetChanged();
-        }
-    }
 
     @Override
     public void actionModeDestroyed() {
-        notifyAllRecyclersDatasetChanged();
+        homeScreenRecyclerViewAdapter.notifyAllRecyclersDatasetChanged();
     }
 
     @Override
     public void actionModeStarted() {
-        notifyAllRecyclersDatasetChanged();
+        homeScreenRecyclerViewAdapter.notifyAllRecyclersDatasetChanged();
 
     }
 
     @Override
     public void bookSelectionStatusUpdate() {
-        notifyAllRecyclersDatasetChanged();
+        homeScreenRecyclerViewAdapter.notifyAllRecyclersDatasetChanged();
     }
 
     @Override
@@ -114,20 +110,33 @@ public class HomeScreenFragment extends Fragment implements BrowsingActivityList
 
     @Override
     public void reAcquireCursors() {
-        for (Pair<HorizontalBookRecyclerView, BooksCollection> horizontalBookRecyclerView : horizontalBookRecyclerViews) {
-            horizontalBookRecyclerView.first.changeCursor(horizontalBookRecyclerView.second.reAcquireCursor(getContext()));
-        }
+        homeScreenRecyclerViewAdapter.notifyAllToReAquireCursors();
     }
 
     @Override
     public void closeCursors() {
-        for (Pair<HorizontalBookRecyclerView, BooksCollection> horizontalBookRecyclerView : horizontalBookRecyclerViews) {
-            horizontalBookRecyclerView.first.closeCursor();
-        }
+        homeScreenRecyclerViewAdapter.notifyAllRecyclersCloseCursors();
     }
 
     @Override
-    public void selecteItem(int id) {
+    public void selectAllItems(int id) {
+
+    }
+
+    @Override
+    public void notifyBookCollectionCahnged(int collectionId) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionChanged(collectionId);
+
+    }
+
+    @Override
+    public void notifyBookCollectionAdded(int collectionId) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionAdded(collectionId);
+    }
+
+    @Override
+    public void notifyBookCollectionRemoved(int collectionId) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionRemoved(collectionId);
 
     }
 }

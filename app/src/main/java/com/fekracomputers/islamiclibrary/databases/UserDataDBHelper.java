@@ -816,12 +816,11 @@ public class UserDataDBHelper {
             Set<Integer> idsToRemove = new HashSet<>(oldBooksCollectionIds);
             idsToRemove.removeAll(NewBooksCollectionIds);
             for (Integer booksCollectionId : idsToRemove) {
-                contentValue.put(UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID, booksCollectionId);
                 db.delete(UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
                         UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID + "=?"
                                 + SQL.AND +
                                 UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + "=?",
-                        new String[]{String.valueOf(booksCollectionId), String.valueOf(booksCollectionId)});
+                        new String[]{String.valueOf(bookId), String.valueOf(booksCollectionId)});
             }
 
         }
