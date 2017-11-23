@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
-import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBatchDownloadDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.dialog.ConfirmBookDeleteDialogFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.AuthorListFragment;
@@ -41,15 +40,18 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
-import com.fekracomputers.islamiclibrary.homeScreen.HomeScreenCallBack;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.service.RefreshBooksWithDirectoryService;
 import com.fekracomputers.islamiclibrary.download.view.DownloadProgressActivity;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
+import com.fekracomputers.islamiclibrary.homeScreen.callbacks.BookCollectionsCallBack;
+import com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
+import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.search.view.SearchRequestPopupFragment;
 import com.fekracomputers.islamiclibrary.search.view.SearchResultActivity;
 import com.fekracomputers.islamiclibrary.search.view.SearchResultFragment;
@@ -63,6 +65,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment.KEY_COLLECTION_ID;
+import static com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment.KEY_OLD_NAME;
 import static com.fekracomputers.islamiclibrary.search.view.SearchResultFragment.ARG_IS_GLOBAL_SEARCH;
 
 /**
@@ -82,7 +86,8 @@ public class BrowsingActivity
         ConfirmBatchDownloadDialogFragment.BatchDownloadConfirmationListener,
         ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
         BrowsingActivityNavigationController.BrowsingActivityControllerListener,
-        BookCollectionsController.BookCollectionsControllerCallback {
+        BookCollectionsController.BookCollectionsControllerCallback,
+        RenameCollectionDialogFragment.RenameCollectionListener{
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -171,7 +176,6 @@ public class BrowsingActivity
         public void onCategoryClicked(BookCategory category) {
             BrowsingActivity.this.OnCategoryItemClick(category);
             browsingActivityNavigationController.switchPagerTo(BOOK_CATEGORY_FRAGMENT_TYPE);
-
             for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
                 if (browsingActivityListingFragment.getType() == BOOK_CATEGORY_FRAGMENT_TYPE) {
                     browsingActivityListingFragment.selectAllItems(category.getId());
@@ -206,7 +210,7 @@ public class BrowsingActivity
     private AppBarLayout appBarLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     @Nullable
-    private HomeScreenCallBack homeScreenCallBack;
+    private BookCollectionsCallBack bookCollectionsCallBack;
 
 
     @Override
@@ -595,25 +599,59 @@ public class BrowsingActivity
     }
 
     @Override
+    public void onCollectionRenamed(int collectionId, String newName) {
+        if (bookCollectionsCallBack != null)
+            bookCollectionsCallBack.onBookCollectionRenamed(collectionId,newName);
+    }
+
+
+    @Override
     public synchronized void notifyBookCollectionCahnged(int collectionId) {
-        if (homeScreenCallBack != null)
-            homeScreenCallBack.notifyBookCollectionCahnged(collectionId);
+        if (bookCollectionsCallBack != null)
+            bookCollectionsCallBack.onBookCollectionCahnged(collectionId);
     }
 
     @Override
-    public synchronized void registerHomeScreen(HomeScreenCallBack homeScreenCallBack) {
-        this.homeScreenCallBack = homeScreenCallBack;
+    public synchronized void registerHomeScreen(BookCollectionsCallBack bookCollectionsCallBack) {
+        this.bookCollectionsCallBack = bookCollectionsCallBack;
     }
 
     @Override
-    public synchronized void unRegisterHomeScreen(HomeScreenCallBack homeScreenCallBack) {
-        this.homeScreenCallBack = null;
+    public synchronized void unRegisterHomeScreen(BookCollectionsCallBack bookCollectionsCallBack) {
+        this.bookCollectionsCallBack = null;
     }
 
     @Override
-    public synchronized void notifyCollectuinAdded(int collectionsId) {
-        if (homeScreenCallBack != null)
-            homeScreenCallBack.notifyBookCollectionAdded(collectionsId);
+    public synchronized void notifyCollectionAdded(int collectionsId) {
+        if (bookCollectionsCallBack != null)
+            bookCollectionsCallBack.onBookCollectionAdded(collectionsId);
+
+    }
+
+    @Override
+    public synchronized void notifyCollectionRemoved(int collectionsId) {
+        if (bookCollectionsCallBack != null)
+            bookCollectionsCallBack.onBookCollectionRemoved(collectionsId);
+    }
+
+
+
+    @Override
+    public synchronized void notifyBookCollectionMoved(int  collectionsId,int oldPosition, int newPosition) {
+        if (bookCollectionsCallBack != null)
+            bookCollectionsCallBack.onBookCollectionMoved(collectionsId,
+                    oldPosition,
+                    newPosition);
+    }
+
+    @Override
+    public void showRenameDialog(BooksCollection booksCollection) {
+        Bundle confirmBatchDownloadDialogFragmentBundle = new Bundle();
+        confirmBatchDownloadDialogFragmentBundle.putString(KEY_OLD_NAME, booksCollection.getName());
+        confirmBatchDownloadDialogFragmentBundle.putInt(KEY_COLLECTION_ID, booksCollection.getCollectionsId());
+        DialogFragment renameCollectionDialogFragment = new RenameCollectionDialogFragment();
+        renameCollectionDialogFragment.setArguments(confirmBatchDownloadDialogFragmentBundle);
+        renameCollectionDialogFragment.show(getSupportFragmentManager(), "renameCollectionDialogFragment");
 
     }
 
@@ -812,6 +850,7 @@ public class BrowsingActivity
     public void onBookDeleteDialogDialogPositiveClick(int bookId) {
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
+
 
 
     private class BookSelectionActionModeCallback {

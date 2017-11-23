@@ -27,7 +27,7 @@
         tools:text="@string/book_details_card_test" />
 
     <TextView
-        android:id="@+id/more_tv"
+        android:id="@+id/more_overflow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

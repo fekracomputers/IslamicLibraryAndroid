@@ -2,8 +2,10 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 
+import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 
 /**
@@ -93,5 +95,31 @@ public class BooksCollection implements Comparable<BooksCollection> {
 
     public int getAutomaticId() {
         return automaticID;
+    }
+
+
+    @MenuRes
+    public int getMoreMenuRes() {
+        if (isAutomatic()) {
+            return R.menu.automatic_collection;
+        } else {
+            if (!isFavourie()) {
+                return R.menu.user_collection;
+            } else {
+                return R.menu.favourite_collection;
+            }
+        }
+    }
+
+    private boolean isFavourie() {
+        return booksCollectionId == UserDataDBHelper.GlobalUserDBHelper.FAVOURITE_COLLECTION_ID;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

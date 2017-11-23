@@ -1,10 +1,12 @@
-package com.fekracomputers.islamiclibrary.browsing.controller;
+package com.fekracomputers.islamiclibrary.homeScreen.controller;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.PopupMenu;
 
-import com.fekracomputers.islamiclibrary.homeScreen.HomeScreenCallBack;
+import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
+import com.fekracomputers.islamiclibrary.homeScreen.callbacks.BookCollectionsCallBack;
 import com.fekracomputers.islamiclibrary.model.BookCollectionInfo;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 
@@ -16,6 +18,7 @@ import java.util.HashSet;
  */
 
 public class BookCollectionsController {
+
     private Context context;
     @Nullable
     private BookCollectionsControllerCallback bookCollectionsControllerCallback;
@@ -40,7 +43,6 @@ public class BookCollectionsController {
         }
 
     }
-
 
     public void addToFavourite(BookCollectionInfo bookCollectionInfo) {
         addToCollection(bookCollectionInfo, UserDataDBHelper.GlobalUserDBHelper.FAVOURITE_COLLECTION_ID);
@@ -82,7 +84,7 @@ public class BookCollectionsController {
 
     public BooksCollection createNewCollection(String string) {
         BooksCollection booksCollection = UserDataDBHelper.getInstance(context).addBookCollection(string);
-        bookCollectionsControllerCallback.notifyCollectuinAdded(booksCollection.getCollectionsId());
+        bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection.getCollectionsId());
         return booksCollection;
     }
 
@@ -98,13 +100,81 @@ public class BookCollectionsController {
         }
     }
 
+    public PopupMenu.OnMenuItemClickListener getMoreMenuListener(BooksCollection booksCollection,
+                                                                 Context context
+    ) {
+        return item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_item_show_all:
+                    return true;
+                case R.id.menu_select_all:
+                    return true;
+                case R.id.menu_item_rename: {
+                    bookCollectionsControllerCallback.showRenameDialog(booksCollection);
+                    return true;
+                }
+                case R.id.menu_item_clear:
+                    UserDataDBHelper.getInstance(context).
+                            clearCollection(booksCollection.getCollectionsId());
+                    bookCollectionsControllerCallback.notifyBookCollectionCahnged(booksCollection.getCollectionsId());
+                    return true;
+                case R.id.menu_item_hide:
+                    UserDataDBHelper.getInstance(context).
+                            hideCollectionDown(booksCollection.getCollectionsId());
+                    bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection.getCollectionsId());
+                    return true;
+
+                case R.id.menu_delete_collection:
+                    UserDataDBHelper.getInstance(context).
+                            deleteCollection(booksCollection.getCollectionsId());
+                    bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection.getCollectionsId());
+                    return true;
+                case R.id.menu_move_up: {
+                    int oldPosition = booksCollection.getOrder();
+                    int newPosition = UserDataDBHelper.getInstance(context).
+                            moveCollectionUp(booksCollection.getCollectionsId(), oldPosition);
+                    bookCollectionsControllerCallback.notifyBookCollectionMoved(
+                            booksCollection.getCollectionsId(),
+                            oldPosition,
+                            newPosition);
+                    return true;
+                }
+                case R.id.menu_move_down: {
+                    int oldPosition = booksCollection.getOrder();
+                    int newPosition = UserDataDBHelper.getInstance(context).
+                            moveCollectionDown(booksCollection.getCollectionsId(), oldPosition);
+                    bookCollectionsControllerCallback.notifyBookCollectionMoved(
+                            booksCollection.getCollectionsId(),
+                            oldPosition,
+                            newPosition);
+                    return true;
+
+                }
+                default:
+                    return false;
+            }
+
+        };
+    }
+
+    public void renameCollection(int collectionId, String newName) {
+        UserDataDBHelper.getInstance(context).
+                renameCollection(collectionId, newName);
+    }
+
     public interface BookCollectionsControllerCallback {
         void notifyBookCollectionCahnged(int collectionId);
 
-        void registerHomeScreen(HomeScreenCallBack homeScreenCallBack);
+        void registerHomeScreen(BookCollectionsCallBack bookCollectionsCallBack);
 
-        void unRegisterHomeScreen(HomeScreenCallBack homeScreenCallBack);
+        void unRegisterHomeScreen(BookCollectionsCallBack bookCollectionsCallBack);
 
-        void notifyCollectuinAdded(int collectionsId);
+        void notifyCollectionAdded(int collectionsId);
+
+        void notifyCollectionRemoved(int collectionsId);
+
+        void notifyBookCollectionMoved(int collectionsId, int oldPosition, int newPosition);
+
+        void showRenameDialog(BooksCollection booksCollection);
     }
 }

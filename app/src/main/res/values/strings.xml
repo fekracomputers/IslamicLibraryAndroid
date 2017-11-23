@@ -364,5 +364,15 @@
     <string name="notes">Notes</string>
     <string name="no_bookmark">No bookmarks yet</string>
     <string name="no_highlights">No highlights yet</string>
+    <string name="menu_item_show_all">Show all</string>
+    <string name="menu_item_clear">clear collection</string>
+    <string name="menu_item_hide">hide</string>
+    <string name="menu_select_all">select all</string>
+    <string name="menu_delete_collection">delete collection</string>
+    <string name="menu_move_up">move up</string>
+    <string name="menu_move_down">move down</string>
+    <string name="menu_item_rename">Rename</string>
+    <string name="dialog_msg_rename">Enter the new name</string>
+    <string name="dialog_title_rename">Rename Collection</string>
     <!--end storage pref-->
 </resources>

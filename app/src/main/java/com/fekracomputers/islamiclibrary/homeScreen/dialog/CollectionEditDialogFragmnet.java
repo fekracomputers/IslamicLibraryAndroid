@@ -1,4 +1,4 @@
-package com.fekracomputers.islamiclibrary.homeScreen;
+package com.fekracomputers.islamiclibrary.homeScreen.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,13 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
+import com.fekracomputers.islamiclibrary.homeScreen.adapters.CollectionRecyclerViewAdapter;
 import com.fekracomputers.islamiclibrary.model.BookCollectionInfo;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.utility.Util;
@@ -33,22 +32,19 @@ import java.util.HashSet;
  * Created by Mohammad on 1/11/2017.
  */
 
-public class CollectionDialogFragmnet extends DialogFragment {
-    public static final java.lang.String TAG_FRAGMENT_COLLECTION = "CollectionDialogFragmnet";
-    private static final String KEY_BOOK_ID = "CollectionDialogFragmnet.KEY_BOOK_ID";
-    private static final String KEY_COLLECTION_IDS = "collectionDialogFragmnet.KEY_COLLECTION_IDS";
+public class CollectionEditDialogFragmnet extends DialogFragment {
+    public static final String TAG_FRAGMENT_COLLECTION = "CollectionEditDialogFragmnet";
+    private static final String KEY_COLLECTION_IDS = "KEY_COLLECTION_IDS";
     private BookCollectionInfo bookCollectionInfo;
     private CollectionDialogFragmnetListener listener;
     private ArrayList<BooksCollection> bookCollections;
     private BookCollectionsController bookCollectionsController;
     private HashSet<Integer> oldBookIdCollectionSet;
-    private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
+    private BookCollectionsController.BookCollectionsControllerCallback collectionsControllerCallback;
 
-    public static CollectionDialogFragmnet newInstance(BookCollectionInfo bookCollectionInfo) {
-        CollectionDialogFragmnet frag = new CollectionDialogFragmnet();
+    public static CollectionEditDialogFragmnet newInstance(BookCollectionInfo bookCollectionInfo) {
+        CollectionEditDialogFragmnet frag = new CollectionEditDialogFragmnet();
         Bundle args = new Bundle();
-        int bookId = bookCollectionInfo.getBookId();
-        args.putInt(KEY_BOOK_ID, bookId);
         args.putIntegerArrayList(KEY_COLLECTION_IDS, new ArrayList<>(bookCollectionInfo.getBooksCollectionIds()));
         frag.setArguments(args);
         return frag;
@@ -63,9 +59,7 @@ public class CollectionDialogFragmnet extends DialogFragment {
         oldBookIdCollectionSet = collectionsIdsArrayList == null ?
                 new HashSet<>(0)
                 : new HashSet<>(collectionsIdsArrayList);
-        int bookId = arguments.getInt(KEY_BOOK_ID);
-        bookCollectionInfo = new BookCollectionInfo(oldBookIdCollectionSet, bookId);
-        bookCollectionsController = new BookCollectionsController(getContext(), bookCollectionsControllerCallback);
+        bookCollectionsController = new BookCollectionsController(getContext(), collectionsControllerCallback);
         bookCollections = bookCollectionsController.getAllBookCollections(getContext(), true, true);
     }
 
@@ -88,7 +82,9 @@ public class CollectionDialogFragmnet extends DialogFragment {
         adapter.setHasStableIds(true);
         collectionRecyclerView.setHasFixedSize(true);
         collectionRecyclerView.setAdapter(adapter);
-        collectionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        collectionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL,
+                false));
         Button okButton = rootView.findViewById(R.id.btn_ok);
         okButton.setOnClickListener(v -> {
             listener.collectionChanged(bookCollectionInfo);
@@ -151,7 +147,7 @@ public class CollectionDialogFragmnet extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof BookCollectionsController.BookCollectionsControllerCallback) {
-            bookCollectionsControllerCallback =
+            collectionsControllerCallback =
                     ((BookCollectionsController.BookCollectionsControllerCallback) context);
 
         } else {
@@ -164,7 +160,7 @@ public class CollectionDialogFragmnet extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         if (getActivity() instanceof BookCollectionsController.BookCollectionsControllerCallback) {
-            bookCollectionsControllerCallback = null;
+            collectionsControllerCallback = null;
         }
     }
 
@@ -172,51 +168,5 @@ public class CollectionDialogFragmnet extends DialogFragment {
         void collectionChanged(BookCollectionInfo bookCollectionInfo);
     }
 
-    private class CollectionRecyclerViewAdapter extends RecyclerView.Adapter<CollectionRecyclerViewAdapter.ViewHolder> {
-        public CollectionRecyclerViewAdapter() {
 
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_collection_with_check_box, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            BooksCollection booksCollection = bookCollections.get(position);
-            holder.booksCollection = booksCollection;
-            holder.collectionNameTextView.setText(booksCollection.getName());
-            holder.checkBox.setChecked(bookCollectionInfo.doBelongTo(booksCollection));
-        }
-
-        @Override
-        public int getItemCount() {
-            return bookCollections.size();
-        }
-
-        public long getItemId(int position) {
-            return bookCollections.get(position).getCollectionsId();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView collectionNameTextView;
-            final CheckBox checkBox;
-            BooksCollection booksCollection;
-
-            ViewHolder(View view) {
-                super(view);
-                collectionNameTextView = view.findViewById(R.id.title);
-                checkBox = view.findViewById(R.id.checkbox);
-                checkBox.setOnClickListener(v ->
-                        bookCollectionInfo
-                                .setBelongToCollection(
-                                        booksCollection.getCollectionsId(),
-                                        ((CheckBox) v).isChecked()));
-            }
-        }
-
-    }
 }

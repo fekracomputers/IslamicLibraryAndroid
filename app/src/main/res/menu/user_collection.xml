@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/menu_item_show_all"
+        android:title="@string/menu_item_show_all" />
+    <item
+        android:id="@id/menu_item_clear"
+        android:title="@string/menu_item_clear" />
+    <item
+        android:id="@id/menu_item_hide"
+        android:title="@string/menu_item_hide" />
+    <item
+        android:id="@id/menu_select_all"
+        android:title="@string/menu_select_all" />
+    <item
+        android:id="@id/menu_delete_collection"
+        android:title="@string/menu_delete_collection" />
+    <item
+        android:id="@id/menu_move_up"
+        android:title="@string/menu_move_up" />
+    <item
+        android:id="@id/menu_move_down"
+        android:title="@string/menu_move_down" />
+    <item
+        android:id="@id/menu_item_rename"
+        android:title="@string/menu_item_rename" />
+</menu>

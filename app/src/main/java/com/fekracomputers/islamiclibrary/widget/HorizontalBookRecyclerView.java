@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.adapters.BookListRecyclerViewAdapter;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
@@ -51,29 +53,30 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
         inflate(getContext(), R.layout.horizontal_book_listing, this);
     }
 
-    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
-                                                        final BookCardEventsCallback mListener) {
-        return setupRecyclerView(booksCollection, mListener, true);
-    }
-
 
     public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
                                                         final BookCardEventsCallback mListener,
-                                                        boolean forceRefresh) {
+                                                        BookCollectionsController bookCollectionsController,
+                                                        boolean forceRefresh
+    ) {
         final Cursor cursor = booksCollection.reAcquireCursor(this.getContext(), forceRefresh);
         return setupRecyclerView(mListener,
                 cursor,
                 booksCollection.getName(),
-                view -> mListener.onBookCollectionClicked(cursor));
+                bookCollectionsController.getMoreMenuListener(booksCollection,this.getContext()),
+                booksCollection.getMoreMenuRes()
+        );
+
     }
 
     public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
                                                         Cursor bookListCursor,
                                                         String title,
-                                                        OnClickListener onClickListener) {
+                                                        PopupMenu.OnMenuItemClickListener onMenuItemClickListener,
+                                                        int moreMenuRes) {
         setupRecyclerView(mListener, bookListCursor);
         setTitleText(title);
-        setMoreTextViewOnClickListener(onClickListener);
+        setOverFlowMenuListener(onMenuItemClickListener, moreMenuRes);
         return this;
 
     }
@@ -98,8 +101,15 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
         ((TextView) findViewById(R.id.title_tv)).setText(charSequence);
     }
 
-    public void setMoreTextViewOnClickListener(View.OnClickListener onClickListener) {
-        findViewById(R.id.more_tv).setOnClickListener(onClickListener);
+    public void setOverFlowMenuListener(PopupMenu.OnMenuItemClickListener onClickListener, int moreMenuRes) {
+        if (moreMenuRes > 0) {
+            findViewById(R.id.more_overflow).setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(getContext(), v);
+                popup.setOnMenuItemClickListener(onClickListener);
+                popup.inflate(moreMenuRes);
+                popup.show();
+            });
+        }
     }
 
     public void changeCursor(Cursor newCursor) {
@@ -116,6 +126,10 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
     public void notifyDatasetChanged() {
         mBookListRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    public void rename(String string) {
+        setTitleText(string);
     }
 
 

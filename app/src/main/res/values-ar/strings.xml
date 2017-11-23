@@ -270,5 +270,15 @@
     <string name="notes">ملاحظات</string>
     <string name="no_bookmark">لم تضف مرجعيات بعد</string>
     <string name="no_highlights">لا توجد ملاحظات بعد</string>
+    <string name="menu_item_show_all">عرض الكل</string>
+    <string name="menu_item_clear">إخلاء المجموعة</string>
+    <string name="menu_item_hide">إخفاء</string>
+    <string name="menu_select_all">تحديد الكل</string>
+    <string name="menu_delete_collection">حذف المجموعة</string>
+    <string name="menu_move_up">تحريك لأعلى</string>
+    <string name="menu_move_down">تحريك لأسفل</string>
+    <string name="menu_item_rename">إعادة تسمية</string>
+    <string name="dialog_msg_rename">أدخل الاسم الجديد</string>
+    <string name="dialog_title_rename">تغيير اسم المجموعة</string>
 
 </resources>

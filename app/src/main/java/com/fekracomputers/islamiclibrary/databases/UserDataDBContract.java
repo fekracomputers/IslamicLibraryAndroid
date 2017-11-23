@@ -124,7 +124,7 @@ public class UserDataDBContract {
                 + Table_NAME + "( " +
                 COLUMN_ID + SQL.INTEGER_PRIMARY_KEY + SQL.COMMA +
                 COLUMN_NAME + SQL.TEXT + SQL.COMMA +
-                COLUMN_ORDER + SQL.INTEGER + " DEFAULT 0 " + SQL.COMMA +
+                COLUMN_ORDER + SQL.INTEGER_UNIQUE  + SQL.COMMA +
                 COLUMN_VISIBILITY + SQL.INTEGER + " DEFAULT 1 " + SQL.COMMA +
                 COLUMN_AUTOMATIC_ID + SQL.INTEGER + " DEFAULT 0 " +
                 ")";

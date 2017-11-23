@@ -1,4 +1,4 @@
-package com.fekracomputers.islamiclibrary.homeScreen;
+package com.fekracomputers.islamiclibrary.homeScreen.adapters;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.widget.HorizontalBookRecyclerView;
 
@@ -21,15 +22,18 @@ import java.util.TreeMap;
 
 public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScreenRecyclerViewAdapter.CollectionViewHolder> {
 
+    private static final int NAME_CHANGE_UPDATE = 1;
     private TreeMap<Integer, BooksCollection> booksCollections = new TreeMap<>();
     private BookCardEventsCallback bookCardEventsCallback;
     private Context context;
     private boolean closeCursors = false;
+    private BookCollectionsController collectionController;
 
 
     public HomeScreenRecyclerViewAdapter(ArrayList<BooksCollection> booksCollections,
                                          BookCardEventsCallback bookCardEventsCallback,
-                                         Context context) {
+                                         Context context, BookCollectionsController collectionController) {
+        this.collectionController = collectionController;
         setHasStableIds(true);
         for (BooksCollection booksCollection : booksCollections) {
             this.booksCollections.put(booksCollection.getCollectionsId(), booksCollection);
@@ -80,14 +84,27 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
     @Override
     public void onBindViewHolder(CollectionViewHolder holder, int position, List<Object> payloads) {
         if (payloads == null || payloads.size() == 0) {
-            onBindViewHolder(holder,position);
+            onBindViewHolder(holder, position);
         } else {
-            BooksCollection booksCollection = getBookCollectionByPosition(booksCollections, position);
-            if (!closeCursors) {
-                holder.setupRecyclerView(booksCollection, bookCardEventsCallback, true);
-            } else {
-                holder.horizontalBookRecyclerView.closeCursor();
+            for (Object payload : payloads) {
+                if (payload instanceof UpdatePayload) {
+                    UpdatePayload payload1 = (UpdatePayload) payload;
+                    if (payload1.requestCode == NAME_CHANGE_UPDATE) {
+                        holder.horizontalBookRecyclerView.rename(payload1.getString());
+                    }
+
+                } else {
+                    BooksCollection booksCollection = getBookCollectionByPosition(booksCollections, position);
+                    if (!closeCursors) {
+                        holder.setupRecyclerView(booksCollection, bookCardEventsCallback, true);
+                    } else {
+                        holder.horizontalBookRecyclerView.closeCursor();
+                    }
+                }
+
             }
+
+
         }
 
     }
@@ -104,36 +121,62 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
 
     public void notifyAllRecyclersDatasetChanged() {
         closeCursors = false;
-        notifyItemRangeChanged(0,booksCollections.size(),new Object());
+        notifyItemRangeChanged(0, booksCollections.size(), new Object());
     }
 
     public void notifyAllToReAquireCursors() {
         closeCursors = false;
-        notifyItemRangeChanged(0,booksCollections.size(),new Object());
+        notifyItemRangeChanged(0, booksCollections.size(), new Object());
     }
 
     public void notifyAllRecyclersCloseCursors() {
         closeCursors = true;
-        notifyItemRangeChanged(0,booksCollections.size(),new Object());
+        notifyItemRangeChanged(0, booksCollections.size(), new Object());
     }
 
     public void notifyBookCollectionChanged(int collectionId) {
         closeCursors = false;
-        notifyItemChanged(getBookCollectionPositionByID(booksCollections, collectionId),new Object());
+        notifyItemChanged(getBookCollectionPositionByID(booksCollections, collectionId), new Object());
     }
 
-    void notifyBookCollectionRemoved(int collectionId) {
+    public void notifyBookCollectionRemoved(int collectionId) {
         closeCursors = false;
         notifyItemRemoved(getBookCollectionPositionByID(booksCollections, collectionId));
     }
 
-    void notifyBookCollectionAdded(int collectionId) {
+    public void notifyBookCollectionAdded(int collectionId) {
         closeCursors = false;
         UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper = UserDataDBHelper.getInstance(context);
         BooksCollection booksCollection = globalUserDBHelper.getBooksCollection(collectionId);
         booksCollections.put(booksCollection.getCollectionsId(), booksCollection);
-        notifyItemInserted(getBookCollectionPositionByID(booksCollections,collectionId));
+        notifyItemInserted(getBookCollectionPositionByID(booksCollections, collectionId));
         //notifyDataSetChanged();
+    }
+
+    public void notifyBookCollectionRenamed(int collectionId, String newName) {
+
+        notifyItemChanged(getBookCollectionPositionByID(booksCollections, collectionId),
+                new UpdatePayload(NAME_CHANGE_UPDATE, newName));
+        collectionController.renameCollection(collectionId,newName);
+    }
+
+    public void notifyBookCollectionMoved(int collectionsId, int oldPosition, int newPosition) {
+        notifyItemMoved(oldPosition, newPosition);
+    }
+
+
+    class UpdatePayload {
+        int requestCode;
+        String dataString;
+
+        public UpdatePayload(int requestCode, String dataString) {
+            this.requestCode = requestCode;
+            this.dataString = dataString;
+        }
+
+        public String getString() {
+            return dataString;
+        }
     }
 
     class CollectionViewHolder extends RecyclerView.ViewHolder {
@@ -147,7 +190,9 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         void setupRecyclerView(BooksCollection booksCollection,
                                BookCardEventsCallback bookCardEventsCallback,
                                boolean forceRefresh) {
-            horizontalBookRecyclerView.setupRecyclerView(booksCollection, bookCardEventsCallback, forceRefresh);
+            horizontalBookRecyclerView.setupRecyclerView(booksCollection,
+                    bookCardEventsCallback
+                    , collectionController, forceRefresh);
         }
 
         public void refreshFromDatabase(int position) {

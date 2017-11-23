@@ -54,7 +54,7 @@ public class BookInformationDetailsCard extends LinearLayout {
                 R.color.infoPage_details_gray :
                 R.color.infoPage_details_white);
 
-        final TextView mMoreTextView = findViewById(R.id.more_tv);
+        final TextView mMoreTextView = findViewById(R.id.more_overflow);
         mMoreTextView.setOnClickListener(moreOnClickListener);
 
         TextView headerTextView = findViewById(R.id.header_tv);

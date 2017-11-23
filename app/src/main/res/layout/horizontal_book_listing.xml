@@ -19,21 +19,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:ellipsize="end"
-        android:layout_toRightOf="@+id/more_tv"
+        android:layout_toRightOf="@+id/more_overflow"
         android:layout_below="@id/top_h_separator"
         tools:text="كتب من نفس القسم" />
 
-    <TextView
-        android:id="@+id/more_tv"
-        style="@style/infoPageHeader.for_recycler"
+    <ImageButton
+        android:id="@+id/more_overflow"
+        style="@style/OverflowButtonGreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/top_h_separator"
-        android:layout_marginLeft="8dp"
-        android:clickable="true"
-        android:text="@string/more"
-        android:textColor="@color/book_info_linked_text" />
+        android:contentDescription="@string/more"
+         />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

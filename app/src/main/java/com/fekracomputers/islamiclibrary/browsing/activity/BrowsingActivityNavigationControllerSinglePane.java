@@ -10,7 +10,7 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
-import com.fekracomputers.islamiclibrary.homeScreen.HomeScreenFragment;
+import com.fekracomputers.islamiclibrary.homeScreen.fragment.HomeFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
 
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_ADDED;
@@ -77,7 +77,7 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
         if (fragments.get(itemId) == null) {
             switch (itemId) {
                 case R.id.bottom_nav_home:
-                    fragment = new HomeScreenFragment();
+                    fragment = new HomeFragment();
                     break;
                 case R.id.bottom_library:
                 default:

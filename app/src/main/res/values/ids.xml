@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="book_info_container" type="id" />
+    <item name="menu_item_show_all" type="id" />
+    <item name="menu_item_clear" type="id" />
+    <item name="menu_item_hide" type="id" />
+    <item name="menu_select_all" type="id" />
+    <item name="menu_delete_collection" type="id" />
+    <item name="menu_move_up" type="id" />
+    <item name="menu_move_down" type="id" />
+    <item name="menu_item_rename" type="id" />
 </resources>

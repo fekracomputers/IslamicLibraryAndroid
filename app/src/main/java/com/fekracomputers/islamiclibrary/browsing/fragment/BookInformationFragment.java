@@ -24,8 +24,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
-import com.fekracomputers.islamiclibrary.browsing.controller.BookCollectionsController;
-import com.fekracomputers.islamiclibrary.homeScreen.CollectionDialogFragmnet;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListener;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
@@ -50,7 +49,7 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
  */
 public class BookInformationFragment extends Fragment implements
         BrowsingActivityListingFragment,
-        CollectionDialogFragmnet.CollectionDialogFragmnetListener {
+        BookCollectionDialogFragmnet.CollectionDialogFragmnetListener {
     int bookId;
     int mBookDownloadStatus = DownloadsConstants.STATUS_INVALID;
     private BookInfo mBookInfo;
@@ -69,6 +68,8 @@ public class BookInformationFragment extends Fragment implements
     private ImageView collectionButtonImageView;
     private BookCollectionsController bookCollectionsController;
     private TextView collectionCount;
+    private AuthorListFragment.OnAuthorItemClickListener authorItemClickListener;
+    private BookCategoryFragment.OnCategoryItemClickListener categoryItemClickListener;
 
     public BookInformationFragment() {
         // Required empty public constructor
@@ -181,11 +182,15 @@ public class BookInformationFragment extends Fragment implements
         categoryMoreBooksHorizontalBookRecyclerView.setBackgroundResource(isGrey ? R.color.infoPage_details_gray :
                 R.color.infoPage_details_white);
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
-        categoryMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v -> {
-            //  startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
-            bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
-
-        });
+        categoryMoreBooksHorizontalBookRecyclerView.setOverFlowMenuListener(item -> {
+            if (item.getItemId() == R.id.menu_item_show_all) {
+                bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
+                return true;
+            } else if (item.getItemId() == R.id.menu_select_all) {
+                categoryItemClickListener.OnCategoryItemLongClicked(mBookInfo.getCategory().getId());
+                return true;
+            } else return false;
+        }, R.menu.book_info_horizontal_recycler_listener);
         isGrey = !isGrey;
         mLinearLayoutContainer.addView(categoryMoreBooksHorizontalBookRecyclerView);
 
@@ -203,8 +208,15 @@ public class BookInformationFragment extends Fragment implements
                             ArabicUtilities.prepareForPrefixingLam(mBookInfo.getAuthorInfo().getName())
                     )
             );
-            authorMoreBooksHorizontalBookRecyclerView.setMoreTextViewOnClickListener(v ->
-                    bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo()));
+            authorMoreBooksHorizontalBookRecyclerView.setOverFlowMenuListener(item -> {
+                if (item.getItemId() == R.id.menu_item_show_all) {
+                    bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo());
+                    return true;
+                } else if (item.getItemId() == R.id.menu_select_all) {
+                    authorItemClickListener.onAuthorSelected(mBookInfo.getAuthorInfo().getId(), true);
+                    return true;
+                } else return false;
+            }, R.menu.book_info_horizontal_recycler_listener);
             isGrey = !isGrey;
             mLinearLayoutContainer.addView(authorMoreBooksHorizontalBookRecyclerView);
         }
@@ -225,10 +237,10 @@ public class BookInformationFragment extends Fragment implements
     }
 
     private void showCollectionsDialog() {
-        CollectionDialogFragmnet collectionDialogFragmnet = CollectionDialogFragmnet.newInstance(bookCollectionInfo);
+        BookCollectionDialogFragmnet bookCollectionDialogFragmnet = BookCollectionDialogFragmnet.newInstance(bookCollectionInfo);
         //see this answer http://stackoverflow.com/a/37794319/3061221
         FragmentManager fm = getChildFragmentManager();
-        collectionDialogFragmnet.show(fm, CollectionDialogFragmnet.TAG_FRAGMENT_COLLECTION);
+        bookCollectionDialogFragmnet.show(fm, BookCollectionDialogFragmnet.TAG_FRAGMENT_COLLECTION);
 
     }
 
@@ -353,6 +365,20 @@ public class BookInformationFragment extends Fragment implements
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement BookCardEventsCallback");
+        }
+
+        if (context instanceof AuthorListFragment.OnAuthorItemClickListener) {
+            authorItemClickListener = (AuthorListFragment.OnAuthorItemClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement AuthorListFragment.OnAuthorItemClickListener");
+        }
+
+        if (context instanceof BookCategoryFragment.OnCategoryItemClickListener) {
+            categoryItemClickListener = (BookCategoryFragment.OnCategoryItemClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement BookCategoryFragment.OnCategoryItemClickListener");
         }
 
 

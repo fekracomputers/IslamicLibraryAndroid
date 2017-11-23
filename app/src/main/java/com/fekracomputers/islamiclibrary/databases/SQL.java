@@ -32,4 +32,6 @@ public class SQL {
     public static final String IS_NOT_NULL = " IS NOT NULL ";
     public static final String ADD_Coulmn = " ADD COLUMN ";
     public static final String ALTER_TABLE = " ALTER TABLE ";
+    public static final String INTEGER_NOT_NULL_UNIQUE = " INTEGER NOT NULL UNIQUE ";
+    public static final String INTEGER_UNIQUE = " INTEGER UNIQUE ";
 }
