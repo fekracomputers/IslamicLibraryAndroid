@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +20,7 @@ import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
+import com.fekracomputers.islamiclibrary.model.BooksCollection;
 
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_NOTIFY_WITHOUT_BOOK_ID;
 
@@ -94,7 +94,7 @@ public abstract class BookCardEventsCallback {
         }
     }
 
-    public void onAuthorClicked(AuthorInfo authorInfo) {
+    public void showAllAuthorBooks(AuthorInfo authorInfo) {
         final Intent intent = new Intent(context, BookListActivity.class);
         intent.putExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID, authorInfo.getId());
         intent.putExtra(BookListFragment.FILTERTYPE, BookListFragment.FILTERBYAuthour);
@@ -102,12 +102,16 @@ public abstract class BookCardEventsCallback {
         context.startActivity(intent);
     }
 
-    public void onCategoryClicked(BookCategory category) {
+    public void showAllCategoryBooks(BookCategory category) {
         final Intent intent = new Intent(context, BookListActivity.class);
         intent.putExtra(BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID, category.getId());
         intent.putExtra(BookListFragment.FILTERTYPE, BookListFragment.FILTERBYCATEGORY);
         intent.putExtra(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_TITLE, category.getName());
         context.startActivity(intent);
+    }
+
+    public void showAllCollectionBooks(BooksCollection booksCollection) {
+        //TODO
     }
 
     public void onMoreButtonClicked(final BookInfo bookInfo, View v) {
@@ -140,8 +144,16 @@ public abstract class BookCardEventsCallback {
         BrowsingUtils.deleteBook(bookId, context);
     }
 
-    public void onBookCollectionClicked(Cursor cursor) {
-        //TODO
+    public void selectAllCategoryBooks(int CategoryId) {
+
+    }
+
+    public void selectAllAuthorsBooks(int authorId) {
+    }
+
+    public void selectAllCollectionBooks(BooksCollection booksCollection)
+    {
+
     }
 
     public static class BookDownloadReceiver extends BroadcastReceiver {

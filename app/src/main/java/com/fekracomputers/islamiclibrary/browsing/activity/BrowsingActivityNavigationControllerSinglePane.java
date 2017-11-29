@@ -128,6 +128,12 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
 
     }
 
+    @Override
+    public void showCollectionDetails(BookListFragment fragment) {
+        pushBookListFragment(fragment);
+        listener.setAppbarExpanded(true);
+    }
+
 
 }
 

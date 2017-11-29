@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.model.BooksCollection;
+import com.google.gson.Gson;
 
 /**
  * بسم الله الرحمن الرحيم
@@ -17,7 +19,7 @@ import com.fekracomputers.islamiclibrary.R;
 public class RenameCollectionDialogFragment extends DialogFragment {
 
     public static final java.lang.String KEY_OLD_NAME = "homeScreen.RenameCollectionDialogFragment.KEY_OLD_NAME";
-    public static final java.lang.String KEY_COLLECTION_ID = "homeScreen.RenameCollectionDialogFragment.KEY_COLLECTION_ID";
+    public static final java.lang.String KEY_COLLECTION_GSON = "homeScreen.RenameCollectionDialogFragment.KEY_COLLECTION_GSON";
     // Use this instance of the interface to deliver action events
     RenameCollectionListener mListener;
 
@@ -32,7 +34,12 @@ public class RenameCollectionDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
 
         String oldName = getArguments().getString(KEY_OLD_NAME);
-        int collectionId = getArguments().getInt(KEY_COLLECTION_ID);
+
+
+        String collectionSerialized = getArguments().getString(KEY_COLLECTION_GSON);
+        Gson gson = new Gson();
+        BooksCollection bookCollection = gson.fromJson(collectionSerialized, BooksCollection.class);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final EditText editText = new EditText(getActivity());
         editText.setText(oldName);
@@ -43,7 +50,7 @@ public class RenameCollectionDialogFragment extends DialogFragment {
                 .setView(editText)
                 .setPositiveButton(R.string.ok, (dialog, whichButton) -> {
                     String newName = editText.getText().toString();
-                    mListener.onCollectionRenamed(collectionId,newName);
+                    mListener.onCollectionRenamed(bookCollection, newName);
                 })
                 .setNegativeButton(R.string.cancel, (dialog, whichButton) -> {
                     dismiss();
@@ -64,7 +71,7 @@ public class RenameCollectionDialogFragment extends DialogFragment {
 
 
     public interface RenameCollectionListener {
-        void onCollectionRenamed(int collectionId,String newName);
+        void onCollectionRenamed(BooksCollection bookCollection, String newName);
     }
 
 

@@ -26,6 +26,7 @@ import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -1331,6 +1332,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         return selectedBookInfoItems;
 
     }
+
 
     public Cursor getBooksFilteredwithAttachDatabase(@NonNull String databaseName,
                                                      @NonNull String databasePath,

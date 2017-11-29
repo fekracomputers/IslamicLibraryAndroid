@@ -280,5 +280,7 @@
     <string name="menu_item_rename">إعادة تسمية</string>
     <string name="dialog_msg_rename">أدخل الاسم الجديد</string>
     <string name="dialog_title_rename">تغيير اسم المجموعة</string>
+    <string name="menu_edit_home_screen" >تعديل الشاشة الرئيسية</string>
+    <string name="menu_add_collection">إضافة مجموعة</string>
 
 </resources>

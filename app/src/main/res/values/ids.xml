@@ -9,4 +9,5 @@
     <item name="menu_move_up" type="id" />
     <item name="menu_move_down" type="id" />
     <item name="menu_item_rename" type="id" />
+    <item name="menu_item_show" type="id" />
 </resources>

@@ -152,6 +152,10 @@ abstract class BrowsingActivityNavigationController {
             fragmentManager.removeOnBackStackChangedListener(backStackChangedListener);
     }
 
+    public void showCollectionDetails(BookListFragment fragment) {
+
+    }
+
 
     public interface BrowsingActivityControllerListener {
         public void setAppbarExpanded(boolean expanded);

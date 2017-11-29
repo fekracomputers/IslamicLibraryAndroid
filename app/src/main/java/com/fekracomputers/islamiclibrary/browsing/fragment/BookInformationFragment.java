@@ -68,8 +68,8 @@ public class BookInformationFragment extends Fragment implements
     private ImageView collectionButtonImageView;
     private BookCollectionsController bookCollectionsController;
     private TextView collectionCount;
-    private AuthorListFragment.OnAuthorItemClickListener authorItemClickListener;
-    private BookCategoryFragment.OnCategoryItemClickListener categoryItemClickListener;
+
+    private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
 
     public BookInformationFragment() {
         // Required empty public constructor
@@ -109,7 +109,7 @@ public class BookInformationFragment extends Fragment implements
         BooksInformationDbHelper dbHelper = BooksInformationDbHelper.getInstance(getContext());
         mBookInfo = dbHelper.getBookInfo(bookId);
         bookCollectionInfo = UserDataDBHelper.getInstance(getContext(), bookId).getBookCollectionInfo();
-        bookCollectionsController = new BookCollectionsController(getContext(), null);
+        bookCollectionsController = new BookCollectionsController(getContext(), bookCollectionsControllerCallback);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class BookInformationFragment extends Fragment implements
         TextView bookCategoryTextView = rootView.findViewById(R.id.book_category);
         bookCategoryTextView.setText(mBookInfo.getCategory().getName());
         bookCategoryTextView.setOnClickListener(v -> {
-            bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
+            bookCardEventsCallback.showAllCategoryBooks(mBookInfo.getCategory());
             // startBookListActivityForCategory(mBookInfo.getCategory().getId(), mBookInfo.getCategory().getName());
         });
 
@@ -145,7 +145,7 @@ public class BookInformationFragment extends Fragment implements
         TextView bookAuthorTextView = rootView.findViewById(R.id.book_author);
         bookAuthorTextView.setText(mBookInfo.getAuthorName());
         bookAuthorTextView.setOnClickListener(v -> {
-            bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo());
+            bookCardEventsCallback.showAllAuthorBooks(mBookInfo.getAuthorInfo());
 
 //                startBookListActivityForAuthor(mBookInfo.getAuthorInfo().getId(), mBookInfo.getAuthorInfo().getName());
         });
@@ -184,13 +184,14 @@ public class BookInformationFragment extends Fragment implements
         categoryMoreBooksHorizontalBookRecyclerView.setTitleText(getString(R.string.book_info_similar_books));
         categoryMoreBooksHorizontalBookRecyclerView.setOverFlowMenuListener(item -> {
             if (item.getItemId() == R.id.menu_item_show_all) {
-                bookCardEventsCallback.onCategoryClicked(mBookInfo.getCategory());
+                bookCardEventsCallback.showAllCategoryBooks(mBookInfo.getCategory());
                 return true;
             } else if (item.getItemId() == R.id.menu_select_all) {
-                categoryItemClickListener.OnCategoryItemLongClicked(mBookInfo.getCategory().getId());
+                bookCardEventsCallback.selectAllCategoryBooks(mBookInfo.getCategory().getId());
                 return true;
             } else return false;
         }, R.menu.book_info_horizontal_recycler_listener);
+
         isGrey = !isGrey;
         mLinearLayoutContainer.addView(categoryMoreBooksHorizontalBookRecyclerView);
 
@@ -210,13 +211,14 @@ public class BookInformationFragment extends Fragment implements
             );
             authorMoreBooksHorizontalBookRecyclerView.setOverFlowMenuListener(item -> {
                 if (item.getItemId() == R.id.menu_item_show_all) {
-                    bookCardEventsCallback.onAuthorClicked(mBookInfo.getAuthorInfo());
+                    bookCardEventsCallback.showAllAuthorBooks(mBookInfo.getAuthorInfo());
                     return true;
                 } else if (item.getItemId() == R.id.menu_select_all) {
-                    authorItemClickListener.onAuthorSelected(mBookInfo.getAuthorInfo().getId(), true);
+                    bookCardEventsCallback.selectAllAuthorsBooks(mBookInfo.getAuthorInfo().getId());
                     return true;
                 } else return false;
             }, R.menu.book_info_horizontal_recycler_listener);
+
             isGrey = !isGrey;
             mLinearLayoutContainer.addView(authorMoreBooksHorizontalBookRecyclerView);
         }
@@ -367,19 +369,27 @@ public class BookInformationFragment extends Fragment implements
                     + " must implement BookCardEventsCallback");
         }
 
-        if (context instanceof AuthorListFragment.OnAuthorItemClickListener) {
-            authorItemClickListener = (AuthorListFragment.OnAuthorItemClickListener) context;
+        if (context instanceof BookCollectionsController.BookCollectionsControllerCallback) {
+            bookCollectionsControllerCallback = ((BookCollectionsController.BookCollectionsControllerCallback) context);
+
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement AuthorListFragment.OnAuthorItemClickListener");
+                    + " must implement BookCollectionsController.BookCollectionsControllerCallback");
         }
 
-        if (context instanceof BookCategoryFragment.OnCategoryItemClickListener) {
-            categoryItemClickListener = (BookCategoryFragment.OnCategoryItemClickListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement BookCategoryFragment.OnCategoryItemClickListener");
-        }
+//        if (context instanceof AuthorListFragment.OnAuthorItemClickListener) {
+//            authorItemClickListener = (AuthorListFragment.OnAuthorItemClickListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement AuthorListFragment.OnAuthorItemClickListener");
+//        }
+//
+//        if (context instanceof BookCategoryFragment.OnCategoryItemClickListener) {
+//            categoryItemClickListener = (BookCategoryFragment.OnCategoryItemClickListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement BookCategoryFragment.OnCategoryItemClickListener");
+//        }
 
 
     }

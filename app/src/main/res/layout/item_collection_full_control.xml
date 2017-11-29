@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_margin="4dp"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:orientation="vertical">
 
     <TextView
@@ -13,22 +13,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
         tools:text="مجموعة الأحاديث" />
 
     <LinearLayout
+        android:id="@+id/button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <Switch
-            android:id="@id/menu_item_clear"
-            android:layout_width="0dp"
+            android:id="@id/menu_item_hide"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:text="@string/menu_item_hide" />
 
         <ImageButton
-            android:id="@+id/clear_collection"
+            android:id="@id/menu_item_clear"
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -72,14 +77,6 @@
             android:contentDescription="@string/menu_move_down"
             app:srcCompat="@drawable/ic_arrow_downward_black_24dp" />
 
-        <ImageButton
-            android:id="@id/menu_item_hide"
-            style="@style/Widget.AppCompat.ActionButton"
-            android:layout_width="0dp"
 
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/menu_item_hide"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
     </LinearLayout>
-</LinearLayout>
+</android.support.v7.widget.CardView>

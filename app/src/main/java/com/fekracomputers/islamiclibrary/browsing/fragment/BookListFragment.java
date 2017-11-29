@@ -28,6 +28,8 @@ import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityLis
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.databases.SQL;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBContract;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.search.model.FTS.Util;
 
 /**
@@ -46,8 +48,11 @@ public class BookListFragment
     public static final int FILTERALL = 0;
     public static final int FILTERBYCATEGORY = 1;
     public static final int FILTERBYAuthour = 2;
+    public static final int FILTER_BY_COLLECTION = 3;
+
     public static final String KEY_CAT_ID = "category_id";
     public static final String KEY_AUTOUR_ID = "autour_id";
+    public static final String KEY_COLLECTION_ID = "collection_id";
     public static final String KEY_LAYOUT_MANAGER = "BookListFragmentLayoutManager";
     public static final int GRID_LAYOUT_MANAGER = 0;
     public static final int LINEAR_LAYOUT_MANAGER = 1;
@@ -102,6 +107,11 @@ public class BookListFragment
                 args.putInt(KEY_AUTOUR_ID, id);
                 args.putString(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME, name);
                 break;
+            case FILTER_BY_COLLECTION:
+                args.putInt(KEY_COLLECTION_ID, id);
+                args.putString(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME, name);
+                break;
+
             default:
         }
         BookListFragment bookListFragment = new BookListFragment();
@@ -130,6 +140,10 @@ public class BookListFragment
             case FILTERBYAuthour:
                 id = args.getInt(KEY_AUTOUR_ID, 0);
                 title = args.getString(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME);
+                break;
+            case FILTER_BY_COLLECTION:
+                id = args.getInt(KEY_COLLECTION_ID, 0);
+                title = args.getString(UserDataDBContract.BooksCollectionEntry.COLUMN_NAME);
                 break;
             default:
         }
@@ -426,6 +440,9 @@ public class BookListFragment
                             new String[]{String.valueOf(id)},
                             mOrderBy[mCurrentSortIndex],
                             downloadedOnly, null);
+                    break;
+                case FILTER_BY_COLLECTION:
+                    bookListCursor= UserDataDBHelper.getInstance(getContext()).getBooksCollectionCursor(id);
                     break;
                 default:
                 case FILTERALL:

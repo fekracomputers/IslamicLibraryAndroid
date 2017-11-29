@@ -1,20 +1,18 @@
 package com.fekracomputers.islamiclibrary.homeScreen.adapters;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.dictiography.collections.IndexedTreeSet;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
-import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.widget.HorizontalBookRecyclerView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by Mohammad on 22/11/2017.
@@ -23,10 +21,13 @@ import java.util.TreeMap;
 public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScreenRecyclerViewAdapter.CollectionViewHolder> {
 
     private static final int NAME_CHANGE_UPDATE = 1;
-    private TreeMap<Integer, BooksCollection> booksCollections = new TreeMap<>();
+    private static final int FORCE_REFRESH_UPDATE = 2;
+    private static final int CLOSE_CURSOR_UPDATE = 3;
+
+
+    private IndexedTreeSet<BookCollectionRecyclable> booksCollections = new IndexedTreeSet<>();
     private BookCardEventsCallback bookCardEventsCallback;
     private Context context;
-    private boolean closeCursors = false;
     private BookCollectionsController collectionController;
 
 
@@ -36,33 +37,13 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         this.collectionController = collectionController;
         setHasStableIds(true);
         for (BooksCollection booksCollection : booksCollections) {
-            this.booksCollections.put(booksCollection.getCollectionsId(), booksCollection);
+            this.booksCollections.add(new BookCollectionRecyclable(booksCollection));
         }
 
         this.bookCardEventsCallback = bookCardEventsCallback;
         this.context = context;
     }
 
-    private static int getBookCollectionPositionByID(TreeMap<Integer, BooksCollection> booksCollections,
-                                                     int collectionId) {
-        return booksCollections.containsKey(collectionId) ?
-                booksCollections.headMap(collectionId).size() : -1;
-    }
-
-    @Nullable
-    static BooksCollection getBookCollectionByPosition(TreeMap<Integer, BooksCollection> booksCollections, int position) {
-        return booksCollections.get(getBookCollectionIDByPosition(booksCollections, position));
-    }
-
-    static int getBookCollectionIDByPosition(TreeMap<Integer, BooksCollection> booksCollections, int position) {
-        Iterator<Integer> iterator = booksCollections.keySet().iterator();
-        Integer booksCollection = null;
-        for (int i = -1; i < position && iterator.hasNext(); ) {
-            i++;
-            booksCollection = iterator.next();
-        }
-        return booksCollection;
-    }
 
     @Override
     public CollectionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,46 +53,47 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
 
     @Override
     public void onBindViewHolder(CollectionViewHolder holder, int position) {
-        BooksCollection booksCollection = getBookCollectionByPosition(booksCollections, position);
-        if (!closeCursors) {
-            holder.setupRecyclerView(booksCollection, bookCardEventsCallback, false);
-        } else {
-            holder.horizontalBookRecyclerView.closeCursor();
-        }
-
+        BooksCollection booksCollection = booksCollections.exact(position).getBooksCollection();
+        holder.setupRecyclerView(booksCollection, bookCardEventsCallback, false);
     }
 
     @Override
     public void onBindViewHolder(CollectionViewHolder holder, int position, List<Object> payloads) {
         if (payloads == null || payloads.size() == 0) {
-            onBindViewHolder(holder, position);
+            BookCollectionRecyclable exact = booksCollections.exact(position);
+            if (!exact.isDirty())
+                onBindViewHolder(holder, position);
+            else
+                handlePayloadUpdate(holder, position, exact.getUpdatePayload());
+
         } else {
             for (Object payload : payloads) {
                 if (payload instanceof UpdatePayload) {
                     UpdatePayload payload1 = (UpdatePayload) payload;
-                    if (payload1.requestCode == NAME_CHANGE_UPDATE) {
-                        holder.horizontalBookRecyclerView.rename(payload1.getString());
-                    }
-
-                } else {
-                    BooksCollection booksCollection = getBookCollectionByPosition(booksCollections, position);
-                    if (!closeCursors) {
-                        holder.setupRecyclerView(booksCollection, bookCardEventsCallback, true);
-                    } else {
-                        holder.horizontalBookRecyclerView.closeCursor();
-                    }
+                    handlePayloadUpdate(holder, position, payload1);
                 }
 
+
             }
-
-
         }
+    }
 
+    private void handlePayloadUpdate(CollectionViewHolder holder, int position, @NonNull UpdatePayload payload1) {
+        if (payload1.requestCode == NAME_CHANGE_UPDATE) {
+            holder.horizontalBookRecyclerView.rename(payload1.getString());
+        } else if (payload1.requestCode == FORCE_REFRESH_UPDATE) {
+            BooksCollection booksCollection = booksCollections.exact(position).getBooksCollection();
+            holder.setupRecyclerView(booksCollection, bookCardEventsCallback, true);
+
+        } else if (payload1.requestCode == CLOSE_CURSOR_UPDATE) {
+            holder.horizontalBookRecyclerView.closeCursor();
+        }
+        booksCollections.exact(position).setUpdatePayload(null);
     }
 
     @Override
     public long getItemId(int position) {
-        return getBookCollectionIDByPosition(booksCollections, position);
+        return booksCollections.exact(position).getBooksCollection().getCollectionsId();
     }
 
     @Override
@@ -120,48 +102,72 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
     }
 
     public void notifyAllRecyclersDatasetChanged() {
-        closeCursors = false;
-        notifyItemRangeChanged(0, booksCollections.size(), new Object());
+        UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
+        for (BookCollectionRecyclable booksCollection : booksCollections) {
+            booksCollection.setUpdatePayload(payload);
+        }
+        notifyItemRangeChanged(0, booksCollections.size(), payload);
     }
 
     public void notifyAllToReAquireCursors() {
-        closeCursors = false;
-        notifyItemRangeChanged(0, booksCollections.size(), new Object());
+        UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
+        for (BookCollectionRecyclable booksCollection : booksCollections) {
+            booksCollection.setUpdatePayload(payload);
+        }
+        notifyItemRangeChanged(0, booksCollections.size(), payload);
     }
 
     public void notifyAllRecyclersCloseCursors() {
-        closeCursors = true;
-        notifyItemRangeChanged(0, booksCollections.size(), new Object());
+        UpdatePayload payload = new UpdatePayload(CLOSE_CURSOR_UPDATE);
+        for (BookCollectionRecyclable booksCollection : booksCollections) {
+            booksCollection.setUpdatePayload(payload);
+        }
+        notifyItemRangeChanged(0, booksCollections.size(), payload);
     }
 
-    public void notifyBookCollectionChanged(int collectionId) {
-        closeCursors = false;
-        notifyItemChanged(getBookCollectionPositionByID(booksCollections, collectionId), new Object());
+    public void notifyBookCollectionChanged(BooksCollection booksCollection) {
+        UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
+        int order = booksCollection.getOrder();
+
+        booksCollections.exact(order).setUpdatePayload(payload);
+        notifyItemChanged(order, payload);
     }
 
-    public void notifyBookCollectionRemoved(int collectionId) {
-        closeCursors = false;
-        notifyItemRemoved(getBookCollectionPositionByID(booksCollections, collectionId));
+    public void notifyBookCollectionRemoved(BooksCollection booksCollection) {
+        booksCollections.remove(new BookCollectionRecyclable(booksCollection));
+        notifyItemRemoved(booksCollection.getOrder());
     }
 
-    public void notifyBookCollectionAdded(int collectionId) {
-        closeCursors = false;
-        UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper = UserDataDBHelper.getInstance(context);
-        BooksCollection booksCollection = globalUserDBHelper.getBooksCollection(collectionId);
-        booksCollections.put(booksCollection.getCollectionsId(), booksCollection);
-        notifyItemInserted(getBookCollectionPositionByID(booksCollections, collectionId));
-        //notifyDataSetChanged();
+    public void notifyBookCollectionAdded(BooksCollection booksCollection) {
+        UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
+        if (booksCollections.add(new BookCollectionRecyclable(booksCollection, payload)))
+            notifyItemInserted(booksCollection.getOrder());
     }
 
-    public void notifyBookCollectionRenamed(int collectionId, String newName) {
+    public void notifyBookCollectionRenamed(BooksCollection booksCollection, String newName) {
 
-        notifyItemChanged(getBookCollectionPositionByID(booksCollections, collectionId),
+        notifyItemChanged(booksCollection.getOrder(),
                 new UpdatePayload(NAME_CHANGE_UPDATE, newName));
-        collectionController.renameCollection(collectionId,newName);
+        collectionController.renameCollection(booksCollection, newName);
     }
 
     public void notifyBookCollectionMoved(int collectionsId, int oldPosition, int newPosition) {
-        notifyItemMoved(oldPosition, newPosition);
+        final BookCollectionRecyclable collectionOne = booksCollections.exact(oldPosition);
+        final BookCollectionRecyclable collectionTwo = booksCollections.exact(newPosition);
+        if (collectionOne.getBooksCollection().getOrder() != newPosition &&
+                collectionTwo.getBooksCollection().getOrder() != oldPosition) {
+            booksCollections.remove(collectionOne);
+            booksCollections.remove(collectionTwo);
+
+            collectionOne.getBooksCollection().setOrder(newPosition);
+            collectionTwo.getBooksCollection().setOrder(oldPosition);
+
+            booksCollections.add(collectionOne);
+            booksCollections.add(collectionTwo);
+
+            notifyItemMoved(oldPosition, newPosition);
+            notifyItemMoved(newPosition, oldPosition);
+        }
     }
 
 
@@ -172,6 +178,11 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         public UpdatePayload(int requestCode, String dataString) {
             this.requestCode = requestCode;
             this.dataString = dataString;
+        }
+
+        public UpdatePayload(int requestCode) {
+            this.requestCode = requestCode;
+
         }
 
         public String getString() {
@@ -197,7 +208,7 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
 
         public void refreshFromDatabase(int position) {
             horizontalBookRecyclerView
-                    .changeCursor(getBookCollectionByPosition(booksCollections, position)
+                    .changeCursor(booksCollections.exact(position).getBooksCollection()
                             .reAcquireCursor(context, true));
         }
     }

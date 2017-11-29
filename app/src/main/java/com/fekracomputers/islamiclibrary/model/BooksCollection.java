@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 
@@ -33,8 +34,30 @@ public class BooksCollection implements Comparable<BooksCollection> {
         return new BooksCollection(0, true, 0, "", collectionId);
     }
 
+    @DrawableRes
+    public static int getActionResId(int id) {
+        switch (id) {
+            case R.id.menu_item_clear:
+                return R.drawable.ic_clear_all_black_24dp;
+            case R.id.menu_delete_collection:
+                return R.drawable.ic_delete_black_24dp;
+            case R.id.menu_item_rename:
+                return R.drawable.ic_edit_black_24dp;
+            case R.id.menu_move_up:
+                return R.drawable.ic_arrow_upward_black_24dp;
+            case R.id.menu_move_down:
+                return R.drawable.ic_arrow_downward_black_24dp;
+            default:
+                return 0;
+        }
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     private Cursor getNewCursor(Context context) {
@@ -81,7 +104,7 @@ public class BooksCollection implements Comparable<BooksCollection> {
                                 1;
     }
 
-    public boolean isVisibility() {
+    public boolean isVisibile() {
         return visibility;
     }
 
@@ -96,7 +119,6 @@ public class BooksCollection implements Comparable<BooksCollection> {
     public int getAutomaticId() {
         return automaticID;
     }
-
 
     @MenuRes
     public int getMoreMenuRes() {
@@ -121,5 +143,22 @@ public class BooksCollection implements Comparable<BooksCollection> {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public boolean isActionSupported(int id) {
+        switch (id) {
+            case R.id.menu_item_clear:
+                return !isAutomatic();
+            case R.id.menu_delete_collection:
+                return !isAutomatic()&&!isFavourie();
+            case R.id.menu_item_rename:
+                return !isAutomatic()&&!isFavourie();
+            case R.id.menu_move_up:
+                return true;
+            case R.id.menu_move_down:
+                return true;
+            default:
+                return false;
+        }
     }
 }

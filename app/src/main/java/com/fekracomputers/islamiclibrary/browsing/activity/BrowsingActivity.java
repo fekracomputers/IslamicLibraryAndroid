@@ -42,12 +42,13 @@ import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallb
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.service.RefreshBooksWithDirectoryService;
 import com.fekracomputers.islamiclibrary.download.view.DownloadProgressActivity;
-import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.homeScreen.callbacks.BookCollectionsCallBack;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
@@ -59,13 +60,14 @@ import com.fekracomputers.islamiclibrary.settings.AboutActivity;
 import com.fekracomputers.islamiclibrary.settings.AboutUtil;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
 import com.fekracomputers.islamiclibrary.utility.Util;
+import com.google.gson.Gson;
 import com.polyak.iconswitch.IconSwitch;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment.KEY_COLLECTION_ID;
+import static com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment.KEY_COLLECTION_GSON;
 import static com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialogFragment.KEY_OLD_NAME;
 import static com.fekracomputers.islamiclibrary.search.view.SearchResultFragment.ARG_IS_GLOBAL_SEARCH;
 
@@ -87,7 +89,7 @@ public class BrowsingActivity
         ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
         BrowsingActivityNavigationController.BrowsingActivityControllerListener,
         BookCollectionsController.BookCollectionsControllerCallback,
-        RenameCollectionDialogFragment.RenameCollectionListener{
+        RenameCollectionDialogFragment.RenameCollectionListener {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -162,25 +164,39 @@ public class BrowsingActivity
         }
 
         @Override
-        public void onAuthorClicked(AuthorInfo authorInfo) {
+        public void showAllAuthorBooks(AuthorInfo authorInfo) {
             BrowsingActivity.this.OnAuthorItemItemClick(authorInfo);
-            browsingActivityNavigationController.switchPagerTo(AUTHOR_LIST_FRAGMENT_TYPE);
-            for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
-                if (browsingActivityListingFragment.getType() == AUTHOR_LIST_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selectAllItems(authorInfo.getId());
-                }
-            }
         }
 
         @Override
-        public void onCategoryClicked(BookCategory category) {
+        public void showAllCategoryBooks(BookCategory category) {
             BrowsingActivity.this.OnCategoryItemClick(category);
-            browsingActivityNavigationController.switchPagerTo(BOOK_CATEGORY_FRAGMENT_TYPE);
-            for (BrowsingActivityListingFragment browsingActivityListingFragment : pagerTabs) {
-                if (browsingActivityListingFragment.getType() == BOOK_CATEGORY_FRAGMENT_TYPE) {
-                    browsingActivityListingFragment.selectAllItems(category.getId());
-                }
-            }
+        }
+
+        @Override
+        public void showAllCollectionBooks(BooksCollection booksCollection) {
+            BookListFragment fragment = BookListFragment.newInstance(
+                    BookListFragment.FILTER_BY_COLLECTION,
+                    booksCollection.getCollectionsId(),
+                    booksCollection.getName());
+            browsingActivityNavigationController.showCollectionDetails(fragment);        }
+
+        @Override
+        public void selectAllCategoryBooks(int CategoryId) {
+            BrowsingActivity.this.onCategorySelected(CategoryId,true);
+
+        }
+
+        @Override
+        public void selectAllAuthorsBooks(int authorId) {
+            BrowsingActivity.this.onAuthorSelected(authorId,true);
+        }
+
+        @Override
+        public void selectAllCollectionBooks(BooksCollection booksCollection) {
+            UserDataDBHelper.GlobalUserDBHelper userDBHelper = UserDataDBHelper.getInstance(context);
+            selectedBooksIds.addAll(userDBHelper.getBooksSetCollectionId(booksCollection, shouldDisplayDownloadedOnly()));
+            notifySelectionStateChanged(HOME_SCREEN_TYPE);
         }
 
 
@@ -209,8 +225,8 @@ public class BrowsingActivity
     };
     private AppBarLayout appBarLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    @Nullable
-    private BookCollectionsCallBack bookCollectionsCallBack;
+    @NonNull
+    private ArrayList<BookCollectionsCallBack> bookCollectionsCallBack = new ArrayList<>();
 
 
     @Override
@@ -434,7 +450,10 @@ public class BrowsingActivity
 
     @Override
     public void OnCategoryItemClick(BookCategory bookCategory) {
-        BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYCATEGORY, bookCategory.getId(), bookCategory.getName());
+        BookListFragment fragment = BookListFragment.newInstance(
+                BookListFragment.FILTERBYCATEGORY,
+                bookCategory.getId(),
+                bookCategory.getName());
         browsingActivityNavigationController.showCategoryDetails(fragment);
     }
 
@@ -443,6 +462,7 @@ public class BrowsingActivity
         if (mActionMode != null) {
             return false;
         }
+
 
         mActionMode = new BookSelectionActionModeCallback();
         mActionMode.startBookSelectionActionMode(this);
@@ -599,56 +619,67 @@ public class BrowsingActivity
     }
 
     @Override
-    public void onCollectionRenamed(int collectionId, String newName) {
-        if (bookCollectionsCallBack != null)
-            bookCollectionsCallBack.onBookCollectionRenamed(collectionId,newName);
+    public void onCollectionRenamed(BooksCollection bookCollection, String newName) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionRenamed(bookCollection, newName);
+        }
     }
 
 
     @Override
-    public synchronized void notifyBookCollectionCahnged(int collectionId) {
-        if (bookCollectionsCallBack != null)
-            bookCollectionsCallBack.onBookCollectionCahnged(collectionId);
+    public synchronized void notifyBookCollectionCahnged(BooksCollection booksCollection) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionCahnged(booksCollection);
+        }
     }
 
     @Override
-    public synchronized void registerHomeScreen(BookCollectionsCallBack bookCollectionsCallBack) {
-        this.bookCollectionsCallBack = bookCollectionsCallBack;
+    public synchronized void registerBookCollectionCallBack(BookCollectionsCallBack bookCollectionsCallBack) {
+        this.bookCollectionsCallBack.add(bookCollectionsCallBack);
     }
 
     @Override
-    public synchronized void unRegisterHomeScreen(BookCollectionsCallBack bookCollectionsCallBack) {
-        this.bookCollectionsCallBack = null;
+    public synchronized void unRegisterBookCollectionCallBack(BookCollectionsCallBack bookCollectionsCallBack) {
+        this.bookCollectionsCallBack.remove(bookCollectionsCallBack);
     }
 
     @Override
-    public synchronized void notifyCollectionAdded(int collectionsId) {
-        if (bookCollectionsCallBack != null)
-            bookCollectionsCallBack.onBookCollectionAdded(collectionsId);
+    public synchronized void notifyCollectionAdded(BooksCollection booksCollection) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionAdded(booksCollection);
+        }
 
     }
 
     @Override
-    public synchronized void notifyCollectionRemoved(int collectionsId) {
-        if (bookCollectionsCallBack != null)
-            bookCollectionsCallBack.onBookCollectionRemoved(collectionsId);
+    public synchronized void notifyCollectionRemoved(BooksCollection booksCollection) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionRemoved(booksCollection);
+        }
     }
 
 
-
     @Override
-    public synchronized void notifyBookCollectionMoved(int  collectionsId,int oldPosition, int newPosition) {
-        if (bookCollectionsCallBack != null)
-            bookCollectionsCallBack.onBookCollectionMoved(collectionsId,
-                    oldPosition,
-                    newPosition);
+    public synchronized void notifyBookCollectionMoved(int collectionsId, int oldPosition, int newPosition) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionMoved(collectionsId,
+                        oldPosition,
+                        newPosition);
+        }
     }
 
     @Override
     public void showRenameDialog(BooksCollection booksCollection) {
         Bundle confirmBatchDownloadDialogFragmentBundle = new Bundle();
         confirmBatchDownloadDialogFragmentBundle.putString(KEY_OLD_NAME, booksCollection.getName());
-        confirmBatchDownloadDialogFragmentBundle.putInt(KEY_COLLECTION_ID, booksCollection.getCollectionsId());
+        Gson gson = new Gson();
+        String json = gson.toJson(booksCollection);
+        confirmBatchDownloadDialogFragmentBundle.putString(KEY_COLLECTION_GSON, json);
         DialogFragment renameCollectionDialogFragment = new RenameCollectionDialogFragment();
         renameCollectionDialogFragment.setArguments(confirmBatchDownloadDialogFragmentBundle);
         renameCollectionDialogFragment.show(getSupportFragmentManager(), "renameCollectionDialogFragment");
@@ -850,7 +881,6 @@ public class BrowsingActivity
     public void onBookDeleteDialogDialogPositiveClick(int bookId) {
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
     }
-
 
 
     private class BookSelectionActionModeCallback {

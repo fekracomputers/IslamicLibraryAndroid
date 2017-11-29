@@ -23,6 +23,7 @@ import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsCo
 import com.fekracomputers.islamiclibrary.model.BookCollectionInfo;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 import com.fekracomputers.islamiclibrary.utility.Util;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,22 +35,20 @@ import java.util.HashSet;
 
 public class BookCollectionDialogFragmnet extends DialogFragment {
     public static final java.lang.String TAG_FRAGMENT_COLLECTION = "BookCollectionDialogFragmnet";
-    private static final String KEY_BOOK_ID = "BookCollectionDialogFragmnet.KEY_BOOK_ID";
     private static final String KEY_COLLECTION_IDS = "collectionDialogFragmnet.KEY_COLLECTION_IDS";
     private BookCollectionInfo bookCollectionInfo;
     private CollectionDialogFragmnetListener listener;
     private ArrayList<BooksCollection> bookCollections;
     private BookCollectionsController bookCollectionsController;
-    private HashSet<Integer> oldBookIdCollectionSet;
+    private HashSet<BooksCollection> oldBookIdCollectionSet;
     private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
     private BookCollectionRecyclerViewAdapter bookCollectionRecyclerViewAdapter;
 
     public static BookCollectionDialogFragmnet newInstance(BookCollectionInfo bookCollectionInfo) {
         BookCollectionDialogFragmnet frag = new BookCollectionDialogFragmnet();
         Bundle args = new Bundle();
-        int bookId = bookCollectionInfo.getBookId();
-        args.putInt(KEY_BOOK_ID, bookId);
-        args.putIntegerArrayList(KEY_COLLECTION_IDS, new ArrayList<>(bookCollectionInfo.getBooksCollectionIds()));
+        Gson gson = new Gson();
+        args.putString(KEY_COLLECTION_IDS, gson.toJson(bookCollectionInfo));
         frag.setArguments(args);
         return frag;
     }
@@ -59,12 +58,11 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.ThemeOverlay_AppCompat_Dialog_Alert);
         Bundle arguments = getArguments();
-        ArrayList<Integer> collectionsIdsArrayList = arguments.getIntegerArrayList(KEY_COLLECTION_IDS);
-        oldBookIdCollectionSet = collectionsIdsArrayList == null ?
-                new HashSet<>(0)
-                : new HashSet<>(collectionsIdsArrayList);
-        int bookId = arguments.getInt(KEY_BOOK_ID);
-        bookCollectionInfo = new BookCollectionInfo(oldBookIdCollectionSet, bookId);
+
+
+        Gson gson = new Gson();
+        String serializedBookCollectionInfo = arguments.getString(KEY_COLLECTION_IDS);
+        bookCollectionInfo = gson.fromJson(serializedBookCollectionInfo, BookCollectionInfo.class);
         bookCollectionsController = new BookCollectionsController(getContext(), bookCollectionsControllerCallback);
         bookCollections = bookCollectionsController.getAllBookCollections(getContext(), true, true);
         bookCollectionRecyclerViewAdapter = new BookCollectionRecyclerViewAdapter(bookCollections, bookCollectionInfo);
@@ -102,6 +100,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         {
             bookCollectionsController.createNewCollection(newCollectionName.getText().toString());
             bookCollections = bookCollectionsController.getAllBookCollections(getContext(), true, true);
+            bookCollectionRecyclerViewAdapter.setCollections(bookCollections);
             bookCollectionRecyclerViewAdapter.notifyDataSetChanged();
             collectionRecyclerView.scrollToPosition(bookCollections.size() - 1);
             newCollectionName.setText("");

@@ -4,9 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,9 +21,10 @@ import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListen
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
+import com.fekracomputers.islamiclibrary.homeScreen.adapters.HomeScreenRecyclerViewAdapter;
 import com.fekracomputers.islamiclibrary.homeScreen.callbacks.BookCollectionsCallBack;
 import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
-import com.fekracomputers.islamiclibrary.homeScreen.adapters.HomeScreenRecyclerViewAdapter;
+import com.fekracomputers.islamiclibrary.homeScreen.dialog.CollectionEditDialogFragmnet;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 
 import java.util.ArrayList;
@@ -36,8 +42,39 @@ public class HomeFragment extends Fragment
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.fragment_home_screen, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_edit_home_screen: {
+                FragmentManager fragmentManager = getFragmentManager();
+                CollectionEditDialogFragmnet collectionEditDialogFragmnet = new CollectionEditDialogFragmnet();
+                Bundle args = new Bundle();
+                collectionEditDialogFragmnet.setArguments(args);
+
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                transaction
+                        .add(R.id.drawer_layout, collectionEditDialogFragmnet)
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            break;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         UserDataDBHelper.GlobalUserDBHelper globalUserDBHelper = UserDataDBHelper.getInstance(getContext());
         ArrayList<BooksCollection> booksCollections = globalUserDBHelper.getBooksCollections(true,
                 false);
@@ -67,7 +104,7 @@ public class HomeFragment extends Fragment
             bookCardEventsCallback = ((BookCardEventListener) context).getBookCardEventCallback();
             ((BookCardEventListener) context).registerListener(this);
             bookCollectionsControllerCallback = (BookCollectionsController.BookCollectionsControllerCallback) context;
-            bookCollectionsControllerCallback.registerHomeScreen(this);
+            bookCollectionsControllerCallback.registerBookCollectionCallBack(this);
 
         } else {
             throw new RuntimeException(context.toString()
@@ -81,7 +118,7 @@ public class HomeFragment extends Fragment
         bookCardEventsCallback = null;
         if (getActivity() instanceof BookCardEventListener)
             ((BookCardEventListener) getActivity()).unRegisterListener(this);
-        ((BookCollectionsController.BookCollectionsControllerCallback) getActivity()).unRegisterHomeScreen(this);
+        ((BookCollectionsController.BookCollectionsControllerCallback) getActivity()).unRegisterBookCollectionCallBack(this);
 
     }
 
@@ -133,25 +170,25 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public void onBookCollectionCahnged(int collectionId) {
-        homeScreenRecyclerViewAdapter.notifyBookCollectionChanged(collectionId);
+    public void onBookCollectionCahnged(BooksCollection booksCollection) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionChanged(booksCollection);
 
     }
 
     @Override
-    public void onBookCollectionAdded(int collectionId) {
-        homeScreenRecyclerViewAdapter.notifyBookCollectionAdded(collectionId);
+    public void onBookCollectionAdded(BooksCollection booksCollection) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionAdded(booksCollection);
     }
 
     @Override
-    public void onBookCollectionRemoved(int collectionId) {
-        homeScreenRecyclerViewAdapter.notifyBookCollectionRemoved(collectionId);
+    public void onBookCollectionRemoved(BooksCollection booksCollection) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionRemoved(booksCollection);
 
     }
 
     @Override
-    public void onBookCollectionRenamed(int collectionId, String newName) {
-        homeScreenRecyclerViewAdapter.notifyBookCollectionRenamed(collectionId, newName);
+    public void onBookCollectionRenamed(BooksCollection booksCollection, String newName) {
+        homeScreenRecyclerViewAdapter.notifyBookCollectionRenamed(booksCollection, newName);
 
     }
 

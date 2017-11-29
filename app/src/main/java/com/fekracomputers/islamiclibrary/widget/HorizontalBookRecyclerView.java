@@ -55,19 +55,25 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
 
     public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
-                                                        final BookCardEventsCallback mListener,
+                                                        final BookCardEventsCallback bookCardEventsCallback,
                                                         BookCollectionsController bookCollectionsController,
                                                         boolean forceRefresh
     ) {
         final Cursor cursor = booksCollection.reAcquireCursor(this.getContext(), forceRefresh);
-        return setupRecyclerView(mListener,
+        return setupRecyclerView(bookCardEventsCallback,
                 cursor,
                 booksCollection.getName(),
-                bookCollectionsController.getMoreMenuListener(booksCollection,this.getContext()),
-                booksCollection.getMoreMenuRes()
+                item ->
+                        bookCollectionsController
+                                .collectionActionHandler(
+                                        item.getItemId(),
+                                        booksCollection,
+                                        this.getContext(),
+                                        bookCardEventsCallback)
+                , booksCollection.getMoreMenuRes()
         );
-
     }
+
 
     public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
                                                         Cursor bookListCursor,

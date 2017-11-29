@@ -65,6 +65,7 @@ dependencies {
     implementation 'com.github.daniel-stoneuk:material-about-library:2.2.3-support26.1.0'
     implementation 'com.jakewharton.timber:timber:4.5.1'
     implementation 'com.polyak:icon-switch:1.0.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {

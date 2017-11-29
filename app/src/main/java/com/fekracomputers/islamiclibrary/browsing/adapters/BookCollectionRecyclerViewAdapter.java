@@ -27,6 +27,10 @@ public class BookCollectionRecyclerViewAdapter extends RecyclerView.Adapter<Book
         this.bookCollectionInfo = bookCollectionInfo;
     }
 
+    public void setCollections(ArrayList<BooksCollection> bookCollections) {
+        this.bookCollections = bookCollections;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -51,6 +55,8 @@ public class BookCollectionRecyclerViewAdapter extends RecyclerView.Adapter<Book
         return bookCollections.get(position).getCollectionsId();
     }
 
+
+
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView collectionNameTextView;
         final CheckBox checkBox;
@@ -63,7 +69,7 @@ public class BookCollectionRecyclerViewAdapter extends RecyclerView.Adapter<Book
             checkBox.setOnClickListener(v ->
                     bookCollectionInfo
                             .setBelongToCollection(
-                                    booksCollection.getCollectionsId(),
+                                    booksCollection,
                                     ((CheckBox) v).isChecked()));
         }
     }
