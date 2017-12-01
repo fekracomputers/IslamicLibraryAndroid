@@ -376,5 +376,7 @@
     <string name="dialog_title_rename">Rename Collection</string>
     <string name="menu_edit_home_screen" >Edit home screen</string>
     <string name="menu_add_collection">Add Collection</string>
+    <string name="menu_delete_note">delete note</string>
+    <string name="menu_edit_note_color">Edit Note Color</string>
     <!--end storage pref-->
 </resources>

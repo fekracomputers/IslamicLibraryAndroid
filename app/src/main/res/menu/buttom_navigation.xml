@@ -12,7 +12,7 @@
         android:title="@string/bottom_library" />
 
     <item
-        android:id="@+id/bottom_nav_user_notes"
+        android:id="@id/bottom_nav_user_notes"
         android:visible="false"
         android:icon="@drawable/ic_bookmark_nav_24dp"
         android:title="@string/bottom_nav_notes_bookmarks"

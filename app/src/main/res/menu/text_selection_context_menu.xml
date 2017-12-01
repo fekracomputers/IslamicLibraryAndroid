@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_copy_text"
-        android:icon="@drawable/ic_content_copy_black_24dp"
+        android:icon="?ReadingContextContentCopy"
         android:onClick="onContextualMenuItemClicked"
         android:title="@string/action_copy_text"
         app:showAsAction="always" />
@@ -11,14 +11,14 @@
 
     <item
         android:id="@+id/action_select_all_text"
-        android:icon="@drawable/ic_select_all_black_24dp"
+        android:icon="?ReadingContextSelectAll"
         android:onClick="onContextualMenuItemClicked"
         android:title="@string/action_select_all"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_share_text"
-        android:icon="@drawable/ic_share_black_24dp"
+        android:icon="?ReadingContextShare"
         android:onClick="onContextualMenuItemClicked"
         android:title="@string/action_share_text"
         app:showAsAction="always"
@@ -27,14 +27,14 @@
 
     <item
         android:id="@+id/action_add_comment"
-        android:icon="@drawable/ic_note_add_black_24dp"
+        android:icon="?ReadingContextNoteAdd"
         android:visible="false"
         android:onClick="onContextualMenuItemClicked"
         android:title="@string/action_add_note"
         app:showAsAction="always" />
 
     <item
-        android:icon="@drawable/ic_border_color_black_24dp"
+        android:icon="?ReadingContextBorderColor"
         android:id="@+id/action_add_highlight"
         android:title="@string/menu_highlight"
         app:showAsAction="always">
@@ -71,7 +71,7 @@
             <item
                 android:id="@+id/highlight_remove"
                 android:layout_width="0dp"
-                android:icon="@drawable/ic_highlight_off_black_24dp"
+                android:icon="?ReadingContextHighlightOff"
                 android:onClick="onContextualMenuItemClicked"
                 android:visible="false"
                 android:title="@string/menu_remove_highlight" />

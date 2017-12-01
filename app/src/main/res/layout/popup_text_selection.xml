@@ -37,7 +37,7 @@
                 android:layout_weight="1"
 
                 android:title="@string/action_copy_text"
-                card_view:srcCompat="@drawable/ic_content_copy_black_24dp" />
+                card_view:srcCompat="@drawable/ic_content_copy_light_24dp" />
 
 
             <ImageButton
@@ -48,7 +48,7 @@
                 android:layout_weight="1"
 
                 android:title="@string/action_copy_text"
-                card_view:srcCompat="@drawable/ic_select_all_black_24dp" />
+                card_view:srcCompat="@drawable/ic_select_all_light_24dp" />
 
 
             <ImageButton
@@ -59,7 +59,7 @@
                 android:layout_weight="1"
 
                 android:title="@string/action_share_text"
-                card_view:srcCompat="@drawable/ic_share_black_24dp"
+                card_view:srcCompat="@drawable/ic_share_light_24dp"
 
                 />
 
@@ -72,7 +72,7 @@
 
                 android:title="@string/action_add_note"
                 android:visibility="gone"
-                card_view:srcCompat="@drawable/ic_note_add_black_24dp"
+                card_view:srcCompat="@drawable/ic_note_add_light_24dp"
 
                 />
 
@@ -141,7 +141,7 @@
 
                 android:title="@string/menu_remove_highlight"
                 android:visibility="gone"
-                card_view:srcCompat="@drawable/ic_highlight_off_black_24dp" />
+                card_view:srcCompat="@drawable/ic_highlight_off_light_24dp" />
 
         </LinearLayout>
 

@@ -282,5 +282,7 @@
     <string name="dialog_title_rename">تغيير اسم المجموعة</string>
     <string name="menu_edit_home_screen" >تعديل الشاشة الرئيسية</string>
     <string name="menu_add_collection">إضافة مجموعة</string>
+    <string name="menu_delete_note">حذف الملاحظة</string>
+    <string name="menu_edit_note_color">تعديل لون الملاحظة</string>
 
 </resources>

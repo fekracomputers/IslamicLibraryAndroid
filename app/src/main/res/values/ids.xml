@@ -10,4 +10,5 @@
     <item name="menu_move_down" type="id" />
     <item name="menu_item_rename" type="id" />
     <item name="menu_item_show" type="id" />
+    <item name="bottom_nav_user_notes" type="id" />
 </resources>

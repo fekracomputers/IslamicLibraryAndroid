@@ -41,7 +41,7 @@
                 android:title="@string/action_rate" />
             <item
                 android:id="@+id/nav_share_app"
-                android:icon="@drawable/ic_share_black_24dp"
+                android:icon="@drawable/ic_share_light_24dp"
                 android:title="@string/action_share" />
             <item
                 android:id="@+id/nav_settings"

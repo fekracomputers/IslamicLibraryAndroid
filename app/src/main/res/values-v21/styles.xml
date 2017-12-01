@@ -60,6 +60,13 @@
         <item name="switchOnThumb">@color/books_corpora_dark</item>
         <item name="switchOffThumb">@color/switch_thumb_material_light</item>
         <item name="switchOffTrack">@android:color/black</item>
+        <item name="ReadingContextContentCopy">@drawable/ic_content_copy_light_24dp</item>
+        <item name="ReadingContextShare">@drawable/ic_share_light_24dp</item>
+        <item name="ReadingContextNoteAdd">@drawable/ic_note_add_light_24dp</item>
+        <item name="ReadingContextBorderColor">@drawable/ic_border_color_light_24dp</item>
+        <item name="ReadingContextHighlightOff">@drawable/ic_highlight_off_light_24dp</item>
+        <item name="ReadingContextSelectAll">@drawable/ic_select_all_light_24dp</item>
+
         <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_light</item>
         <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_light</item>
         <item name="scrubberDrawable">@drawable/scrubber_knob</item>
@@ -145,6 +152,7 @@
         <item name="grayD000L700">@android:color/white</item>
         <item name="grayD900L200">@color/action_icon_color</item>
         <item name="menuSearch">@drawable/ic_search_dark_24dp</item>
+        <item name="ReadingContextSelectAll">@drawable/ic_select_all_dark_24dp</item>
         <item name="settingsLightingTab">@drawable/ic_settings_lighting_tab_dark_24dp</item>
         <item name="settingsLayoutTab">@drawable/ic_settings_layout_tab_dark_24dp</item>
         <item name="cardBackgroundDrawable">@drawable/card_background_default_dark</item>
@@ -159,6 +167,11 @@
         <item name="switchOnThumb">@color/books_corpora_dark</item>
         <item name="switchOffThumb">@color/switch_thumb_material_dark</item>
         <item name="switchOffTrack">@android:color/white</item>
+        <item name="ReadingContextContentCopy">@drawable/ic_content_copy_dark_24dp</item>
+        <item name="ReadingContextShare">@drawable/ic_share_dark_24dp</item>
+        <item name="ReadingContextNoteAdd">@drawable/ic_note_add_dark_24dp</item>
+        <item name="ReadingContextBorderColor">@drawable/ic_border_color_dark_24dp</item>
+        <item name="ReadingContextHighlightOff">@drawable/ic_highlight_off_dark_24dp</item>
         <item name="scrubberBrightnessThumb">@drawable/scrubber_control_selector_holo_dark</item>
         <item name="scrubberBackgroundDrawable">@color/reader_ab_solid_dark</item>
         <item name="scrubberDrawable">@drawable/scrubber_knob</item>

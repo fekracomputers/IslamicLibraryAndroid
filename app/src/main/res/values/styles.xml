@@ -45,6 +45,7 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
+
     <style name="AppTheme.NoActionBar.WhiteBackground">
         <item name="android:windowBackground">@color/details_background</item>
     </style>
@@ -218,6 +219,7 @@
         <item name="searchScrubBarTextActiveColor">@color/search_scrub_bar_text_active_light</item>
         <item name="searchScrubBarTextInactiveColor">@color/search_scrub_bar_text_inactive_light
         </item>
+        <item name="ReadingContextSelectAll">@drawable/ic_select_all_light_24dp</item>
         <item name="audioFrameDrawable">@drawable/audio_view_frame_light</item>
         <item name="illo_rotate">@drawable/ic_illo_fit_width_rotate_82dp</item>
         <item name="illo_scroll">@drawable/ic_illo_fit_width_scroll_82dp</item>
@@ -238,6 +240,13 @@
         <item name="settingsTashkeel">@drawable/ic_add_tashkeel_light</item>
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
         </item>
+
+        <item name="ReadingContextContentCopy">@drawable/ic_content_copy_light_24dp</item>
+        <item name="ReadingContextShare">@drawable/ic_share_light_24dp</item>
+        <item name="ReadingContextNoteAdd">@drawable/ic_note_add_light_24dp</item>
+        <item name="ReadingContextBorderColor">@drawable/ic_border_color_light_24dp</item>
+        <item name="ReadingContextHighlightOff">@drawable/ic_highlight_off_light_24dp</item>
+        
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_holo_24dp</item>
         <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_holo_24dp</item>
         <item name="settingsAlignmentJustify">@drawable/ic_settings_alignment_light</item>
@@ -332,7 +341,12 @@
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
         </item>
         <item name="settingsTashkeel">@drawable/ic_add_tashkeel_dark</item>
-
+        <item name="ReadingContextContentCopy">@drawable/ic_content_copy_dark_24dp</item>
+        <item name="ReadingContextShare">@drawable/ic_share_dark_24dp</item>
+        <item name="ReadingContextNoteAdd">@drawable/ic_note_add_dark_24dp</item>
+        <item name="ReadingContextBorderColor">@drawable/ic_border_color_dark_24dp</item>
+        <item name="ReadingContextHighlightOff">@drawable/ic_highlight_off_dark_24dp</item>
+        <item name="ReadingContextSelectAll">@drawable/ic_select_all_dark_24dp</item>
 
         <item name="settingsPagesFitWidth">@drawable/ic_settings_pages_fitwidth_dark_24dp</item>
         <item name="settingsPagesTwo">@drawable/ic_settings_pages_two_dark_24dp</item>

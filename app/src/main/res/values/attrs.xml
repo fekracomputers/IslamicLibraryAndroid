@@ -18,7 +18,6 @@
     </declare-styleable>
 
 
-
     <attr name="settingsTextLarger" format="reference" />
     <attr name="settingsTextSmaller" format="reference" />
     <attr name="bind__isOwnedByParent" format="boolean" />
@@ -180,6 +179,13 @@
     <attr name="cardSecondaryColor" format="reference" />
     <attr name="cardTabBackgroundDrawable" format="reference" />
     <attr name="menuSearch" format="reference" />
+
+    <attr name="ReadingContextContentCopy" format="reference" />
+    <attr name="ReadingContextShare" format="reference" />
+    <attr name="ReadingContextNoteAdd" format="reference" />
+    <attr name="ReadingContextBorderColor" format="reference" />
+    <attr name="ReadingContextHighlightOff" format="reference" />
+    <attr name="ReadingContextSelectAll" format="reference" />
 
     <attr name="cardTabHighlightColor" format="reference" />
     <attr name="booksPrimaryTextColor" format="reference" />
