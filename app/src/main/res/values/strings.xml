@@ -378,5 +378,6 @@
     <string name="menu_add_collection">Add Collection</string>
     <string name="menu_delete_note">delete note</string>
     <string name="menu_edit_note_color">Edit Note Color</string>
+    <string name="show_collecttion">Show</string>
     <!--end storage pref-->
 </resources>

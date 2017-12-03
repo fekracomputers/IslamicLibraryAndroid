@@ -13,4 +13,5 @@ public interface BookCollectionsCallBack {
     void onBookCollectionRenamed(BooksCollection booksCollection, String newName);
     void onBookCollectionMoved(int collectionsId, int oldPosition, int newPosition);
 
+    void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible);
 }

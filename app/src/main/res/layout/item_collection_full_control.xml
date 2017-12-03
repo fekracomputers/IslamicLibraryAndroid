@@ -30,7 +30,7 @@
             android:id="@id/menu_item_hide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/menu_item_hide" />
+            android:text="@string/show_collecttion" />
 
         <ImageButton
             android:id="@id/menu_item_clear"

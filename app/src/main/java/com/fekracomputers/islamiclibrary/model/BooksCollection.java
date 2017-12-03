@@ -161,4 +161,8 @@ public class BooksCollection implements Comparable<BooksCollection> {
                 return false;
         }
     }
+
+    public void setVisibility(boolean visibility) {
+        this.visibility = visibility;
+    }
 }

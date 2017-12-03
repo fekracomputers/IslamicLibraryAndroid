@@ -614,6 +614,26 @@ public class UserDataDBHelper {
         @NonNull
         public ArrayList<BooksCollection> getBooksCollections(boolean viewdOnly, boolean nonAutomaticOnly) {
             ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
+
+            String selection;
+            String[] selectionArgs;
+
+            if (!viewdOnly && !nonAutomaticOnly) {
+                selection = null;
+                selectionArgs = null;
+            } else if (viewdOnly && !nonAutomaticOnly) {
+                selection = UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?";
+                selectionArgs = new String[]{String.valueOf(1)};
+            } else if (!viewdOnly) {
+                selection = UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID + "=?";
+                selectionArgs = new String[]{String.valueOf(0)};
+            } else {
+                selection = UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?" +
+                        SQL.AND +
+                        UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID + "=?";
+                selectionArgs = new String[]{String.valueOf(1), String.valueOf(0)};
+            }
+
             Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionEntry.Table_NAME,
                     new String[]{
                             UserDataDBContract.BooksCollectionEntry.COLUMN_ID,
@@ -622,12 +642,8 @@ public class UserDataDBHelper {
                             UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY,
                             UserDataDBContract.BooksCollectionEntry.COLUMN_NAME
                     },
-                    UserDataDBContract.BooksCollectionEntry.COLUMN_VISIBILITY + "=?" +
-                            (nonAutomaticOnly ? SQL.AND +
-                                    UserDataDBContract.BooksCollectionEntry.COLUMN_AUTOMATIC_ID +
-                                    "=?" : ""),
-                    nonAutomaticOnly ? new String[]{String.valueOf(viewdOnly ? 1 : 0), String.valueOf(0)} :
-                            new String[]{String.valueOf(viewdOnly ? 1 : 0)},
+                    selection,
+                    selectionArgs,
                     null,
                     null,
                     UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER
@@ -657,7 +673,7 @@ public class UserDataDBHelper {
             if (!booksCollection.isAutomatic()) {
                 Cursor c = getReadableDatabase().query(UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
                         new String[]{UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID},
-                        UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID + "=?",
+                        UserDataDBContract.BooksCollectionJoinEntry.COLLECTION_ID + "=?",
                         new String[]{String.valueOf(booksCollection.getCollectionsId())},
                         null,
                         null,
@@ -874,10 +890,10 @@ public class UserDataDBHelper {
             return Integer.parseInt(DatabaseUtils.stringForQuery(getReadableDatabase(),
                     SQL.SELECT + UserDataDBContract.BooksCollectionEntry.COLUMN_ID +
                             SQL.FROM +
-                            UserDataDBContract.BooksCollectionEntry.Table_NAME+
+                            UserDataDBContract.BooksCollectionEntry.Table_NAME +
                             SQL.WHERE +
                             UserDataDBContract.BooksCollectionEntry.COLUMN_ORDER + "=?"
-                           ,
+                    ,
                     new String[]{String.valueOf(order)}
             ));
         }

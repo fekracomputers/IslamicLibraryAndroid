@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.browsing.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,19 +25,20 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 
 abstract class BrowsingActivityNavigationController {
     private static final String PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID = "PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID";
-    protected FragmentManager fragmentManager;
-    protected LibraryFragment pagerFragment;
-    protected int paneNumber;
-    protected int lastButtomSheetCheckedItemId;
-    protected SparseArray<Fragment> fragments = new SparseArray(3);
+    FragmentManager fragmentManager;
+    private LibraryFragment pagerFragment;
+    int paneNumber;
+    int lastButtomSheetCheckedItemId;
+    protected SparseArray<Fragment> fragments = new SparseArray<>(3);
     protected BrowsingActivityControllerListener listener;
-    protected FragmentManager.OnBackStackChangedListener backStackChangedListener;
+    FragmentManager.OnBackStackChangedListener backStackChangedListener;
+    @Nullable
     private BottomNavigationView bottomNavigationView;
     private int oldPanNumbers;
     private boolean fromRotation;
     private FragmentActivity activity;
 
-    protected BrowsingActivityNavigationController(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity activity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+    BrowsingActivityNavigationController(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity activity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
         this.oldPanNumbers = oldPanNumbers;
         this.fragmentManager = fragmentManager;
         this.fromRotation = fromRotation;
@@ -68,7 +70,7 @@ abstract class BrowsingActivityNavigationController {
         }
     }
 
-    protected void intiializePans() {
+    void intiializePans() {
         restoreLastCheckedItem();
         if (!fromRotation) {
             intitalizePansFresh(fragmentManager);
@@ -80,7 +82,9 @@ abstract class BrowsingActivityNavigationController {
     private void restoreLastCheckedItem() {
         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         lastButtomSheetCheckedItemId = sharedPref.getInt(PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID, R.id.bottom_library);
-        bottomNavigationView.setSelectedItemId(lastButtomSheetCheckedItemId);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setSelectedItemId(lastButtomSheetCheckedItemId);
+        }
     }
 
     protected abstract void intializePansAfterRotation(int oldPanNumbers, FragmentManager fragmentManager);
@@ -123,15 +127,15 @@ abstract class BrowsingActivityNavigationController {
     }
 
 
-    public void registerPagerFragment(LibraryFragment libraryFragment) {
+    void registerPagerFragment(LibraryFragment libraryFragment) {
         pagerFragment = libraryFragment;
     }
 
-    public void unRegisterPagerFragment() {
+    void unRegisterPagerFragment() {
         pagerFragment = null;
     }
 
-    public boolean shouldCloseSelectionMode() {
+    boolean shouldCloseSelectionMode() {
         return pagerFragment != null && pagerFragment.isVisible();
     }
 
@@ -147,7 +151,7 @@ abstract class BrowsingActivityNavigationController {
             pagerFragment.switchTo(pagerFragmentType);
     }
 
-    public void onDestroy() {
+    void onDestroy() {
         if (backStackChangedListener != null)
             fragmentManager.removeOnBackStackChangedListener(backStackChangedListener);
     }

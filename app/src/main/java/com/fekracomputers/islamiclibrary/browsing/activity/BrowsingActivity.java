@@ -179,24 +179,29 @@ public class BrowsingActivity
                     BookListFragment.FILTER_BY_COLLECTION,
                     booksCollection.getCollectionsId(),
                     booksCollection.getName());
-            browsingActivityNavigationController.showCollectionDetails(fragment);        }
+            browsingActivityNavigationController.showCollectionDetails(fragment);
+        }
 
         @Override
         public void selectAllCategoryBooks(int CategoryId) {
-            BrowsingActivity.this.onCategorySelected(CategoryId,true);
+            BrowsingActivity.this.onCategorySelected(CategoryId, true);
 
         }
 
         @Override
         public void selectAllAuthorsBooks(int authorId) {
-            BrowsingActivity.this.onAuthorSelected(authorId,true);
+            BrowsingActivity.this.onAuthorSelected(authorId, true);
         }
 
         @Override
         public void selectAllCollectionBooks(BooksCollection booksCollection) {
+            if (mActionMode == null) {
+                mActionMode = new BookSelectionActionModeCallback();
+                mActionMode.startBookSelectionActionMode(BrowsingActivity.this);
+            }
             UserDataDBHelper.GlobalUserDBHelper userDBHelper = UserDataDBHelper.getInstance(context);
             selectedBooksIds.addAll(userDBHelper.getBooksSetCollectionId(booksCollection, shouldDisplayDownloadedOnly()));
-            notifySelectionStateChanged(HOME_SCREEN_TYPE);
+            notifySelectionStateChanged();
         }
 
 
@@ -223,6 +228,8 @@ public class BrowsingActivity
 
 
     };
+
+
     private AppBarLayout appBarLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     @NonNull
@@ -311,6 +318,8 @@ public class BrowsingActivity
 
 
         mPaneNumber = getmumberOfpans(filterPagerContainer, bookInfoContainer);
+
+        @Nullable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         int oldPanNumbers = savedInstanceState == null ? 0 : savedInstanceState.getInt(NUMBER_OF_PANS_KEY);
@@ -325,7 +334,9 @@ public class BrowsingActivity
                 this);
         if (browsingActivityNavigationController != null) {
             browsingActivityNavigationController.intiializePans();
-            bottomNavigationView.setOnNavigationItemSelectedListener(browsingActivityNavigationController::handleButtomNavigationItem);
+            if (bottomNavigationView != null) {
+                bottomNavigationView.setOnNavigationItemSelectedListener(browsingActivityNavigationController::handleButtomNavigationItem);
+            }
         }
 
 
@@ -611,6 +622,13 @@ public class BrowsingActivity
 
     }
 
+    private synchronized void notifySelectionStateChanged() {
+        for (int tab_number = 0; tab_number < pagerTabs.size(); tab_number++) {
+            BrowsingActivityListingFragment pagerTab = pagerTabs.get(tab_number);
+            pagerTab.bookSelectionStatusUpdate();
+        }
+    }
+
     protected synchronized void notifySelectionActionModeSarted() {
         for (BrowsingActivityListingFragment pagerTab : pagerTabs) {
             pagerTab.actionModeStarted();
@@ -684,6 +702,15 @@ public class BrowsingActivity
         renameCollectionDialogFragment.setArguments(confirmBatchDownloadDialogFragmentBundle);
         renameCollectionDialogFragment.show(getSupportFragmentManager(), "renameCollectionDialogFragment");
 
+    }
+
+    @Override
+    public synchronized void notifyCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+        for (BookCollectionsCallBack collectionsCallBack : bookCollectionsCallBack) {
+            if (collectionsCallBack != null)
+                collectionsCallBack.onBookCollectionVisibilityChanged(booksCollection,
+                        isVisible);
+        }
     }
 
     private void notifyActivityRestarted() {

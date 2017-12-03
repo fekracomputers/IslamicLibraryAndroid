@@ -43,7 +43,6 @@ public class CollectionRecyclerViewAdapter
         holder.booksCollection = booksCollection;
         holder.setEnabledButtons();
         holder.collectionNameTextView.setText(booksCollection.getName());
-        holder.hideSwitch.setChecked(holder.booksCollection.isVisibile());
     }
 
     @Override
@@ -93,6 +92,10 @@ public class CollectionRecyclerViewAdapter
         }
     }
 
+    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+        notifyItemChanged(booksCollection.getOrder());
+    }
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView collectionNameTextView;
@@ -126,13 +129,7 @@ public class CollectionRecyclerViewAdapter
 
         void setEnabledButtons() {
             if (booksCollection != null) {
-
-                hideSwitch.setOnCheckedChangeListener(null);
-                hideSwitch.setChecked(booksCollection.isVisibile());
-                hideSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                        bookCollectionsController.updateCollectionVisibility(booksCollection, isChecked)
-                );
-
+                bindVisibility(booksCollection.isVisibile());
                 int childCount = buttonBar.getChildCount();
                 for (int i = 1; i < childCount; i++) {
                     ImageButton imageButton = (ImageButton) buttonBar.getChildAt(i);
@@ -145,6 +142,19 @@ public class CollectionRecyclerViewAdapter
                 }
             }
 
+        }
+
+        private void bindVisibility(boolean visible) {
+            if ((booksCollection.isVisibile() != visible)) {
+                booksCollection.setVisibility(visible);
+                bookCollectionsController.updateCollectionVisibility(booksCollection, visible);
+
+            }
+            if ((hideSwitch.isChecked() != visible)) {
+                hideSwitch.setOnCheckedChangeListener(null);
+                hideSwitch.setChecked(visible);
+            }
+            hideSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> bindVisibility(isChecked));
         }
     }
 }

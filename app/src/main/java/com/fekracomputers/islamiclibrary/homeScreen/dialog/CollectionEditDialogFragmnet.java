@@ -45,7 +45,7 @@ public class CollectionEditDialogFragmnet extends DialogFragment implements Book
         super.onCreate(savedInstanceState);
         bookCollectionsController = new BookCollectionsController(getContext(), collectionsControllerCallback);
         ArrayList<BooksCollection> booksCollections = bookCollectionsController
-                .getAllBookCollections(getContext(), true, false);
+                .getAllBookCollections(getContext(), false, false);
 
         collectionRecyclerViewAdapter = new CollectionRecyclerViewAdapter(booksCollections,
                 bookCollectionsController);
@@ -162,6 +162,12 @@ public class CollectionEditDialogFragmnet extends DialogFragment implements Book
     @Override
     public void onBookCollectionMoved(int collectionsId, int oldPosition, int newPosition) {
         collectionRecyclerViewAdapter.onBookCollectionMoved(collectionsId, oldPosition, newPosition);
+    }
+
+    @Override
+    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+        collectionRecyclerViewAdapter.onBookCollectionVisibilityChanged(booksCollection, isVisible);
+
     }
 
 

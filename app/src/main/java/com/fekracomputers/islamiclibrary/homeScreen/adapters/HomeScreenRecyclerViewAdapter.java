@@ -170,6 +170,12 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         }
     }
 
+    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+        if (isVisible) notifyBookCollectionAdded(booksCollection);
+        else notifyBookCollectionRemoved(booksCollection);
+
+    }
+
 
     class UpdatePayload {
         int requestCode;

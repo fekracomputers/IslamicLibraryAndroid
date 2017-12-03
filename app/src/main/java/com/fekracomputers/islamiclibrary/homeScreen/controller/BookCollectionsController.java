@@ -86,7 +86,9 @@ public class BookCollectionsController {
 
     public BooksCollection createNewCollection(String string) {
         BooksCollection booksCollection = UserDataDBHelper.getInstance(context).addBookCollection(string);
-        bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection);
+        if (bookCollectionsControllerCallback != null) {
+            bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection);
+        }
         return booksCollection;
     }
 
@@ -118,48 +120,62 @@ public class BookCollectionsController {
                 bookCardEventsCallback.selectAllCollectionBooks(booksCollection);
                 return true;
             case R.id.menu_item_rename: {
-                bookCollectionsControllerCallback.showRenameDialog(booksCollection);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.showRenameDialog(booksCollection);
+                }
                 return true;
             }
             case R.id.menu_item_clear:
                 UserDataDBHelper.getInstance(context).
                         clearCollection(booksCollection.getCollectionsId());
-                bookCollectionsControllerCallback.notifyBookCollectionCahnged(booksCollection);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyBookCollectionCahnged(booksCollection);
+                }
                 return true;
             case R.id.menu_item_hide:
                 UserDataDBHelper.getInstance(context).
                         changeCollectionVisibility(booksCollection.getCollectionsId(), false);
-                bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection);
+                }
                 return true;
             case R.id.menu_item_show:
                 UserDataDBHelper.getInstance(context).
                         changeCollectionVisibility(booksCollection.getCollectionsId(), true);
-                bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection);
+                }
                 return true;
 
             case R.id.menu_delete_collection:
                 UserDataDBHelper.getInstance(context).
                         deleteCollection(booksCollection.getCollectionsId());
-                bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection);
+                }
                 return true;
             case R.id.menu_move_up: {
                 int oldPosition = booksCollection.getOrder();
                 int newPosition = UserDataDBHelper.getInstance(context).
                         moveCollectionUp(booksCollection.getCollectionsId(), oldPosition);
-                bookCollectionsControllerCallback.notifyBookCollectionMoved(
-                        booksCollection.getCollectionsId(),
-                        oldPosition,
-                        newPosition);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyBookCollectionMoved(
+                            booksCollection.getCollectionsId(),
+                            oldPosition,
+                            newPosition);
+                }
                 return true;
             }
             case R.id.menu_move_down: {
                 int oldPosition = booksCollection.getOrder();
                 int newPosition = UserDataDBHelper.getInstance(context).
                         moveCollectionDown(booksCollection.getCollectionsId(), oldPosition);
-                bookCollectionsControllerCallback.notifyBookCollectionMoved(
-                        booksCollection.getCollectionsId(),
-                        oldPosition,
-                        newPosition);
+                if (bookCollectionsControllerCallback != null) {
+                    bookCollectionsControllerCallback.notifyBookCollectionMoved(
+                            booksCollection.getCollectionsId(),
+                            oldPosition,
+                            newPosition);
+                }
                 return true;
 
             }
@@ -169,15 +185,12 @@ public class BookCollectionsController {
     }
 
     public void updateCollectionVisibility(BooksCollection booksCollection, boolean isVisible) {
-        if (!isVisible) {
             UserDataDBHelper.getInstance(context).
-                    changeCollectionVisibility(booksCollection.getCollectionsId(), false);
-            bookCollectionsControllerCallback.notifyCollectionRemoved(booksCollection);
-        } else {
-            UserDataDBHelper.getInstance(context).
-                    changeCollectionVisibility(booksCollection.getCollectionsId(), true);
-            bookCollectionsControllerCallback.notifyCollectionAdded(booksCollection);
-        }
+                    changeCollectionVisibility(booksCollection.getCollectionsId(), isVisible);
+            if (bookCollectionsControllerCallback != null) {
+                bookCollectionsControllerCallback.notifyCollectionVisibilityChanged(booksCollection,isVisible);
+            }
+
     }
 
     public void renameCollection(BooksCollection collectionId, String newName) {
@@ -199,5 +212,7 @@ public class BookCollectionsController {
         void notifyBookCollectionMoved(int collectionsId, int oldPosition, int newPosition);
 
         void showRenameDialog(BooksCollection booksCollection);
+
+        void notifyCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible);
     }
 }

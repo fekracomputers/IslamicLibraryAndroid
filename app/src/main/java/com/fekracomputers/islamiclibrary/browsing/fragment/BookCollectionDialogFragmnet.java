@@ -64,7 +64,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         String serializedBookCollectionInfo = arguments.getString(KEY_COLLECTION_IDS);
         bookCollectionInfo = gson.fromJson(serializedBookCollectionInfo, BookCollectionInfo.class);
         bookCollectionsController = new BookCollectionsController(getContext(), bookCollectionsControllerCallback);
-        bookCollections = bookCollectionsController.getAllBookCollections(getContext(), true, true);
+        bookCollections = bookCollectionsController.getAllBookCollections(getContext(), false, true);
         bookCollectionRecyclerViewAdapter = new BookCollectionRecyclerViewAdapter(bookCollections, bookCollectionInfo);
 
     }
@@ -99,7 +99,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         addCollectionButton.setOnClickListener(v ->
         {
             bookCollectionsController.createNewCollection(newCollectionName.getText().toString());
-            bookCollections = bookCollectionsController.getAllBookCollections(getContext(), true, true);
+            bookCollections = bookCollectionsController.getAllBookCollections(getContext(), false, true);
             bookCollectionRecyclerViewAdapter.setCollections(bookCollections);
             bookCollectionRecyclerViewAdapter.notifyDataSetChanged();
             collectionRecyclerView.scrollToPosition(bookCollections.size() - 1);

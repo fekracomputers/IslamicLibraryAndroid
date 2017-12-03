@@ -87,7 +87,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         shareCardBuilder
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text(R.string.action_share)
-                        .icon(R.drawable.ic_share_black_24dp)
+                        .icon(R.drawable.ic_share_light_24dp)
                         .setOnClickAction(() -> AboutUtil.ShareAppLink(context))
                         .build())
                 .addItem(new MaterialAboutActionItem.Builder()

@@ -372,25 +372,10 @@ public class BookInformationFragment extends Fragment implements
         if (context instanceof BookCollectionsController.BookCollectionsControllerCallback) {
             bookCollectionsControllerCallback = ((BookCollectionsController.BookCollectionsControllerCallback) context);
 
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement BookCollectionsController.BookCollectionsControllerCallback");
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement BookCollectionsController.BookCollectionsControllerCallback");
         }
-
-//        if (context instanceof AuthorListFragment.OnAuthorItemClickListener) {
-//            authorItemClickListener = (AuthorListFragment.OnAuthorItemClickListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement AuthorListFragment.OnAuthorItemClickListener");
-//        }
-//
-//        if (context instanceof BookCategoryFragment.OnCategoryItemClickListener) {
-//            categoryItemClickListener = (BookCategoryFragment.OnCategoryItemClickListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement BookCategoryFragment.OnCategoryItemClickListener");
-//        }
-
 
     }
 

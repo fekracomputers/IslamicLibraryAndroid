@@ -284,5 +284,6 @@
     <string name="menu_add_collection">إضافة مجموعة</string>
     <string name="menu_delete_note">حذف الملاحظة</string>
     <string name="menu_edit_note_color">تعديل لون الملاحظة</string>
+    <string name="show_collecttion">إظهار</string>
 
 </resources>

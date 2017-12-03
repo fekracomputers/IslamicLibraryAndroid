@@ -198,4 +198,10 @@ public class HomeFragment extends Fragment
 
     }
 
+    @Override
+    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+        homeScreenRecyclerViewAdapter.onBookCollectionVisibilityChanged(booksCollection, isVisible);
+
+    }
+
 }
