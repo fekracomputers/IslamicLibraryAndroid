@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
+import com.fekracomputers.islamiclibrary.model.UserNote;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.ExpandableHeaderItem;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UpdatableExpandingGroup;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
-import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
-import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
-import com.fekracomputers.islamiclibrary.model.UserNote;
 
 import java.util.ArrayList;
 
@@ -33,6 +33,8 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
 
     private UserNoteGroupAdapter.UserNoteInterActionListener mListener;
     private UserDataDBHelper.GlobalUserDBHelper userDatabase;
+    private ArrayList<UserNoteItem> bookmarkItems;
+    private ArrayList<UserNoteItem> highlightItems;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,6 +67,8 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         userDatabase = UserDataDBHelper.getInstance(getContext());
+        bookmarkItems = userDatabase.getBookmarkItems();
+        highlightItems = userDatabase.getHighlightItems();
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
             public void onUserNoteClicked(UserNote userNote) {
@@ -86,8 +90,6 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         View view = inflater.inflate(R.layout.fragment_global_user_list, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         ViewStub zeroView = view.findViewById(R.id.zero_global_user_notes);
-        ArrayList<UserNoteItem> bookmarkItems = userDatabase.getBookmarkItems();
-        ArrayList<UserNoteItem> highlightItems = userDatabase.getHighlightItems();
 
         if ((bookmarkItems.isEmpty() && highlightItems.isEmpty())) {
             recyclerView.setVisibility(View.GONE);

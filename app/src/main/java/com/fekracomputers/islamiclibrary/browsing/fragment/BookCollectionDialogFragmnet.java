@@ -26,7 +26,6 @@ import com.fekracomputers.islamiclibrary.utility.Util;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 /**
@@ -40,7 +39,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
     private CollectionDialogFragmnetListener listener;
     private ArrayList<BooksCollection> bookCollections;
     private BookCollectionsController bookCollectionsController;
-    private HashSet<BooksCollection> oldBookIdCollectionSet;
+    @Nullable
     private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
     private BookCollectionRecyclerViewAdapter bookCollectionRecyclerViewAdapter;
 
@@ -91,7 +90,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         Button okButton = rootView.findViewById(R.id.btn_ok);
         okButton.setOnClickListener(v -> {
             listener.collectionChanged(bookCollectionInfo);
-            bookCollectionsController.updateCollectionStatus(bookCollectionInfo, oldBookIdCollectionSet);
+            bookCollectionsController.updateCollectionStatus(bookCollectionInfo, bookCollections);
             dismiss();
         });
         EditText newCollectionName = rootView.findViewById(R.id.new_collection_edit_text);
@@ -154,9 +153,6 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
             bookCollectionsControllerCallback =
                     ((BookCollectionsController.BookCollectionsControllerCallback) context);
 
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement BookCollectionsController.BookCollectionsControllerCallback");
         }
     }
 

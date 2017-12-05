@@ -204,7 +204,6 @@ public class ReadingActivity extends AppCompatActivity implements
     private boolean isThemeNightMode;
     private boolean mIsInSearchMode = false;
     private SearchView mSearchView;
-    private SharedPreferences defaultSharedPreferences;
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
 
     private void showPageNumberPickerDialog() {
@@ -226,6 +225,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     public synchronized int zoomUpdatedByPercent(int percent) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         int oldZoom = getDisplayZoom();
         int newZoom = oldZoom + percent;
         if (newZoom <= AppConstants.DISPLAY_PREFERENCES_DEFAULTS.MAX_TEXT_ZOOM &&
@@ -240,7 +240,11 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     public int getDisplayZoom() {
-        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_DISPLAY_TEXT_SIZE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.DEFAULT_TEXT_ZOOM, defaultSharedPreferences, mUserDataDBHelper);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return DisplayPreferenceUtilities.getDisplayPreference(
+                SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.DEFAULT_TEXT_ZOOM,
+                defaultSharedPreferences, mUserDataDBHelper);
     }
 
     @Override
@@ -256,6 +260,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public void onZoomChangedByPinch(int value) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
                 value, defaultSharedPreferences
                 , mUserDataDBHelper);
@@ -264,6 +269,8 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public boolean isThemeNightMode() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE,
                 AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE,
                 defaultSharedPreferences,
@@ -273,6 +280,8 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public void setThemeNightMode(boolean isDesiredThemeLight) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE,
                 isDesiredThemeLight,
                 defaultSharedPreferences, mUserDataDBHelper);
@@ -282,6 +291,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public boolean isTashkeel() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_TASHKEEL_ON,
                 AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_TASHKEEL_ON,
                 defaultSharedPreferences,
@@ -290,6 +300,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public synchronized void setTashkeel(boolean checked) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_IS_TASHKEEL_ON,
                 checked,
                 defaultSharedPreferences, mUserDataDBHelper);
@@ -515,6 +526,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean navigate = defaultSharedPreferences.
                 getBoolean(SettingsFragment.PREF_USE_VOLUME_KEY_NAV, false);
 
@@ -546,6 +558,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean navigate = defaultSharedPreferences.
                 getBoolean(SettingsFragment.PREF_USE_VOLUME_KEY_NAV, false);
         boolean b = false;
@@ -563,7 +576,13 @@ public class ReadingActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        boolean newIsNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean newIsNightMode = DisplayPreferenceUtilities.getDisplayPreference(
+
+                SettingsFragment.KEY_IS_THEME_NIGHT_MODE,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE,
+                defaultSharedPreferences,
+                mUserDataDBHelper);
         if (newIsNightMode != isThemeNightMode)
             restartOnThemeChange();
         int newZoom = getDisplayZoom();
@@ -607,7 +626,7 @@ public class ReadingActivity extends AppCompatActivity implements
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);
         mUserDataDBHelper.logBookAccess();
 
-        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         isThemeNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
         setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);

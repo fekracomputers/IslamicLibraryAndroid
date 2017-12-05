@@ -93,11 +93,15 @@ public class BookCollectionsController {
     }
 
     public void updateCollectionStatus(BookCollectionInfo bookCollectionInfo,
-                                       @Nullable HashSet<BooksCollection> oldBookIdCollectionSet) {
+                                       @Nullable ArrayList<BooksCollection> oldBookIdCollectionSet) {
         UserDataDBHelper.getInstance(context).
                 updateCollectionStatus(bookCollectionInfo.getBookId(), bookCollectionInfo.getBooksCollectionsIds());
-        if (oldBookIdCollectionSet == null) oldBookIdCollectionSet = new HashSet<>(0);
-        HashSet<BooksCollection> toBeNotified = new HashSet<>(oldBookIdCollectionSet);
+        HashSet<BooksCollection> toBeNotified;
+        if (oldBookIdCollectionSet != null)
+            toBeNotified = new HashSet<>(oldBookIdCollectionSet);
+        else
+            toBeNotified = new HashSet<>();
+
         toBeNotified.addAll(bookCollectionInfo.getBooksCollections());
         if (bookCollectionsControllerCallback != null) {
             for (BooksCollection booksCollection : toBeNotified) {
@@ -185,11 +189,11 @@ public class BookCollectionsController {
     }
 
     public void updateCollectionVisibility(BooksCollection booksCollection, boolean isVisible) {
-            UserDataDBHelper.getInstance(context).
-                    changeCollectionVisibility(booksCollection.getCollectionsId(), isVisible);
-            if (bookCollectionsControllerCallback != null) {
-                bookCollectionsControllerCallback.notifyCollectionVisibilityChanged(booksCollection,isVisible);
-            }
+        UserDataDBHelper.getInstance(context).
+                changeCollectionVisibility(booksCollection.getCollectionsId(), isVisible);
+        if (bookCollectionsControllerCallback != null) {
+            bookCollectionsControllerCallback.notifyCollectionVisibilityChanged(booksCollection, isVisible);
+        }
 
     }
 

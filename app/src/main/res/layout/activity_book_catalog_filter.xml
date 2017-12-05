@@ -22,7 +22,7 @@
             style="@style/Widget.AppCompat.ActionButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+            app:srcCompat="@drawable/ic_close_white_24dp" />
     </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.CoordinatorLayout

@@ -86,5 +86,12 @@ public class BookListActivity extends BrowsingActivity {
 //do nothing
     }
 
+    @Override
+    protected void onDestroy() {
+
+
+        super.onDestroy();
+    }
+
 
 }

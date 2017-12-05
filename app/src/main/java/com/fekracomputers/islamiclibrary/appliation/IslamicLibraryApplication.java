@@ -8,17 +8,20 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.settings.SettingsFragment;
 
 import java.util.Locale;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
- *
- *  locale changing from Quran Andoid
+ * locale changing from Quran Andoid
  */
 public class IslamicLibraryApplication extends Application {
 //    static {
@@ -31,6 +34,8 @@ public class IslamicLibraryApplication extends Application {
         super.onCreate();
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new ProductionTree());
         }
     }
 
@@ -65,6 +70,24 @@ public class IslamicLibraryApplication extends Application {
             config.setLayoutDirection(config.locale);
         }
         resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
+
+    private class ProductionTree extends Timber.Tree {
+        ProductionTree() {
+            Fabric.with(IslamicLibraryApplication.this, new Crashlytics(), new Answers());
+        }
+
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            Crashlytics.log(message);
+            if (t != null) {
+                Crashlytics.logException(t);
+            }
+            // If this is an error or a warning, log it as a exception so we see it in Crashlytics.
+            if (priority > Log.WARN) {
+                Crashlytics.logException(new Throwable(message));
+            }
+        }
     }
 }
 

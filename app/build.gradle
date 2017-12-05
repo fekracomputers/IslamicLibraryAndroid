@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
@@ -12,8 +13,8 @@ android {
         applicationId "com.fekracomputers.islamiclibrary"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 11
-        versionName "0.11.0"
+        versionCode 12
+        versionName "1.0.0"
         vectorDrawables.useSupportLibrary = false
     }
 
@@ -37,6 +38,7 @@ android {
 //        textReport true
 //        htmlReport true
 //        htmlOutput file("lint-report.html")
+        checkReleaseBuilds false
         abortOnError false
         warningsAsErrors false
     }
@@ -67,10 +69,17 @@ dependencies {
     implementation 'com.polyak:icon-switch:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':groupie_library')
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+    compile 'com.google.firebase:firebase-core:11.6.2'
 }
+apply plugin: 'com.google.gms.google-services'
+

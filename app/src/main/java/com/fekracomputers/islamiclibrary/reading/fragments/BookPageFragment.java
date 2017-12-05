@@ -122,13 +122,13 @@ public class BookPageFragment extends Fragment implements
         mPagerPosition = args.getInt(KEY_PAGER_POSITION, 0);
         userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
         BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
         tashkeelOn = pageFragmentListener.getTashkeelState();
         if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
         mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageRowId);
         mPageCitation.setResources(getResources());
         pageInfo = mPageCitation.pageInfo;
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         setHasOptionsMenu(false);
 

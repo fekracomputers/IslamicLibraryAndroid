@@ -121,6 +121,7 @@ public class BrowsingActivity
      */
     View bookListContainer;
     BooksInformationDbHelper mBooksInformationDbHelper;
+    @Nullable
     private BrowsingActivityNavigationController browsingActivityNavigationController;
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
@@ -179,7 +180,9 @@ public class BrowsingActivity
                     BookListFragment.FILTER_BY_COLLECTION,
                     booksCollection.getCollectionsId(),
                     booksCollection.getName());
-            browsingActivityNavigationController.showCollectionDetails(fragment);
+            if (browsingActivityNavigationController != null) {
+                browsingActivityNavigationController.showCollectionDetails(fragment);
+            }
         }
 
         @Override
@@ -223,7 +226,9 @@ public class BrowsingActivity
 
         @Override
         public void OnBookTitleClick(int bookId, String bookTitle) {
-            browsingActivityNavigationController.showBookInformationFragment(BookInformationFragment.newInstance(bookId));
+            if (browsingActivityNavigationController != null) {
+                browsingActivityNavigationController.showBookInformationFragment(BookInformationFragment.newInstance(bookId));
+            }
         }
 
 
@@ -347,9 +352,9 @@ public class BrowsingActivity
     }
 
     @Override
-    public void setUpNavigation(boolean value) {
+    public void setUpNavigation(boolean zeroBackStack) {
         ActionBar actionBar = getSupportActionBar();
-        if (value && actionBar != null) {
+        if (zeroBackStack && actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -453,7 +458,11 @@ public class BrowsingActivity
             Toast.makeText(this, R.string.refreshing_on_background, Toast.LENGTH_LONG).show();
             return true;
         } else if (id == android.R.id.home) {
-            Toast.makeText(this, mActionMode == null ? "true" : "false", Toast.LENGTH_LONG).show();
+            if (actionBarDrawerToggle != null && !actionBarDrawerToggle.onOptionsItemSelected(item)) {
+                super.onBackPressed();
+
+            }
+            //Toast.makeText(this, mActionMode == null ? "true" : "false", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -465,7 +474,9 @@ public class BrowsingActivity
                 BookListFragment.FILTERBYCATEGORY,
                 bookCategory.getId(),
                 bookCategory.getName());
-        browsingActivityNavigationController.showCategoryDetails(fragment);
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.showCategoryDetails(fragment);
+        }
     }
 
     @Override
@@ -587,7 +598,9 @@ public class BrowsingActivity
         BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYAuthour,
                 authorInfo.getId(),
                 authorInfo.getName());
-        browsingActivityNavigationController.showAuthorFragment(fragment);
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.showAuthorFragment(fragment);
+        }
 
 
     }
@@ -830,15 +843,14 @@ public class BrowsingActivity
         return true;
     }
 
-    private boolean startActionModeFromDrawer() {
+    private void startActionModeFromDrawer() {
         if (mActionMode != null) {
-            return true;
+            return;
         }
 
         mActionMode = new BookSelectionActionModeCallback();
         mActionMode.startBookSelectionActionMode(this);
         notifySelectionActionModeSarted();
-        return false;
     }
 
     @Override
@@ -854,10 +866,12 @@ public class BrowsingActivity
     }
 
     private void mayBecloseSelectionMode() {
-        if (browsingActivityNavigationController.shouldCloseSelectionMode()) {
-            mActionMode.onDestroyActionMode();
-        } else {
-            super.onBackPressed();
+        if (browsingActivityNavigationController != null) {
+            if (browsingActivityNavigationController.shouldCloseSelectionMode()) {
+                mActionMode.onDestroyActionMode();
+            } else {
+                super.onBackPressed();
+            }
         }
 
 
@@ -865,7 +879,9 @@ public class BrowsingActivity
 
     @Override
     protected void onDestroy() {
-        browsingActivityNavigationController.onDestroy();
+        if (browsingActivityNavigationController != null) {
+            browsingActivityNavigationController.onDestroy();
+        }
         notifyActivityStopped();
         super.onDestroy();
     }
@@ -963,16 +979,20 @@ public class BrowsingActivity
         }
 
         @Nullable
-        BookSelectionActionModeCallback startBookSelectionActionMode(final BrowsingActivity browsingActivity) {
+        void startBookSelectionActionMode(final BrowsingActivity browsingActivity) {
             selectionToolBar = browsingActivity.findViewById(R.id.selection_tool_bar);
             menu = selectionToolBar.getMenu();
             if (menu == null || !menu.hasVisibleItems()) {
                 selectionToolBar.inflateMenu(R.menu.book_selection_action_menu);
-                selectionToolBar.findViewById(R.id.up_button).setOnClickListener(v -> browsingActivity.onBackPressed());
+                selectionToolBar.findViewById(R.id.up_button).setOnClickListener(v -> {
+                    if (mActionMode != null) mActionMode.onDestroyActionMode();
+                });
 
                 menu = selectionToolBar.getMenu();
                 selectionToolBar.setOnMenuItemClickListener(this::onActionItemClicked);
             }
+            selectionToolBar.showOverflowMenu();
+
             browsingActivity.notifySelectionActionModeSarted();
             boolean displayDownloadOnly = browsingActivity.shouldDisplayDownloadedOnly();
             menu.findItem(R.id.batch_download)
@@ -1000,7 +1020,6 @@ public class BrowsingActivity
                 }
             });
 
-            return this;
         }
 
         public Menu getMenu() {
