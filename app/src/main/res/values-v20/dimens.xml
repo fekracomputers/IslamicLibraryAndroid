@@ -1,3 +1,3 @@
 <resources>
-     <dimen name="content_padding">0</dimen>
+    <dimen name="content_padding">0dp</dimen>
 </resources>

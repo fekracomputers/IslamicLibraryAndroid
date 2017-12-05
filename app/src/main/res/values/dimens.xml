@@ -124,6 +124,6 @@
     <dimen name="padding_standard">16dp</dimen>
     <integer name="num_columns">2</integer>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="content_padding">-7</dimen>
+    <dimen name="content_padding">-7dp</dimen>
 
 </resources>
