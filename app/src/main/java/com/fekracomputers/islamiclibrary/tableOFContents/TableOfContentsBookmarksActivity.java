@@ -69,7 +69,8 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         public void notifyBookDownloadStatusUpdate() {
             for (BrowsingActivityListingFragment browsingActivityListingFragment : mDownloadStatusUpdateListener) {
                 browsingActivityListingFragment.reAcquireCursors();
-            }        }
+            }
+        }
 
     };
 
@@ -92,7 +93,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         bookId = intent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
         bookName = intent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
         setContentView(R.layout.activity_book_toc_bookmarks);
-
+        bookCardEventsCallback.intializeListener();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
@@ -186,15 +187,10 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         finish();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        bookCardEventsCallback.intializeListener();
-    }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         bookCardEventsCallback.removeBookDownloadBroadcastListener();
     }
 

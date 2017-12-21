@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.tableOFContents.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -36,8 +37,8 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
 
     private int bookId;
     private onBookmarkClickListener mListener;
+    @Nullable
     private BookmarkRecyclerViewAdapter bookmarkRecyclerViewAdapter;
-    private boolean sortedByPage = true;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -64,7 +65,9 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
-                SortListDialogFragment sortListDialogFragment = SortListDialogFragment.newInstance(R.array.bookmark_list_sorting, bookmarkRecyclerViewAdapter.getmCurrentSortIndex());
+                SortListDialogFragment sortListDialogFragment = SortListDialogFragment.newInstance(
+                        R.array.bookmark_list_sorting,
+                        bookmarkRecyclerViewAdapter != null ? bookmarkRecyclerViewAdapter.getmCurrentSortIndex() : 0);
                 //see this answer http://stackoverflow.com/a/37794319/3061221
                 FragmentManager fm = getChildFragmentManager();
                 sortListDialogFragment.show(fm, "fragment_sort");
@@ -76,7 +79,9 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
 
     @Override
     public void sortMethodSelected(int which) {
-        bookmarkRecyclerViewAdapter.sortBy(which);
+        if (bookmarkRecyclerViewAdapter != null) {
+            bookmarkRecyclerViewAdapter.sortBy(which);
+        }
     }
 
     @Override
@@ -105,7 +110,7 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
         if (bookmarks.size() != 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-            bookmarkRecyclerViewAdapter = new BookmarkRecyclerViewAdapter(bookmarks, mListener, getContext(), userDataDBHelper,  getActivity().getPreferences(Context.MODE_PRIVATE));
+            bookmarkRecyclerViewAdapter = new BookmarkRecyclerViewAdapter(bookmarks, mListener, getContext(), userDataDBHelper, getActivity().getPreferences(Context.MODE_PRIVATE));
             bookmarkRecyclerViewAdapter.setHasStableIds(true);
             recyclerView.setAdapter(bookmarkRecyclerViewAdapter);
         } else {

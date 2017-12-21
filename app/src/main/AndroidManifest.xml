@@ -88,8 +88,8 @@
 
         <receiver
             android:name=".download.reciver.LocalDownloadBroadCastReciver"
-            android:exported="false"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter android:priority="100">
                 <action android:name="com.fekracomputers.islamiclibrary.download.BROADCAST" />
             </intent-filter>
@@ -132,6 +132,10 @@
         <service
             android:name=".download.service.RefreshBooksWithDirectoryService"
             android:exported="false"></service>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

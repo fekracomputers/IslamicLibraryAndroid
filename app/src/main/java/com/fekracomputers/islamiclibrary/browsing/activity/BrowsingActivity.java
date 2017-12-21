@@ -265,6 +265,7 @@ public class BrowsingActivity
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         mIsArabic = Util.isArabicUi(this);
         super.onCreate(savedInstanceState);
+        bookCardEventsCallback.intializeListener();
         inflateUi(savedInstanceState);
 
     }
@@ -879,25 +880,13 @@ public class BrowsingActivity
 
     @Override
     protected void onDestroy() {
+        bookCardEventsCallback.removeBookDownloadBroadcastListener();
         if (browsingActivityNavigationController != null) {
             browsingActivityNavigationController.onDestroy();
         }
         notifyActivityStopped();
         super.onDestroy();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        bookCardEventsCallback.intializeListener();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        bookCardEventsCallback.removeBookDownloadBroadcastListener();
-    }
-
 
 //    @Override
 //    protected void onRestart() {

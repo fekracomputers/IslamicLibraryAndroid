@@ -51,52 +51,64 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
 
     }
 
-    public Long getDownloadedSize() {
-        return bytesDownloadedSoFar;
-    }
 
-    public Long getTotalSize() {
-        return totalSizeBytes;
-    }
-
-    public long getId() {
-        return enquId;
-    }
-
-    public int getProgressPercent() {
-        return (int) ((bytesDownloadedSoFar * 100L) / totalSizeBytes);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    @StringRes
-    public int getStatusTextResId() {
-        int statusText = 0;
+    public static String getReasonDebugString(int status, int reason) {
+        String reasonText = "unKnown_status";
         switch (status) {
             case DownloadManager.STATUS_FAILED:
-                statusText = (R.string.STATUS_FAILED);
+                switch (reason) {
+                    case DownloadManager.ERROR_CANNOT_RESUME:
+                        reasonText = "ERROR_CANNOT_RESUME";
+                        break;
+                    case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+                        reasonText = "(ERROR_DEVICE_NOT_FOUND)";
+                        break;
+                    case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
+                        reasonText = "(ERROR_FILE_ALREADY_EXISTS)";
+                        break;
+                    case DownloadManager.ERROR_FILE_ERROR:
+                        reasonText = "(ERROR_FILE_ERROR)";
+                        break;
+                    case DownloadManager.ERROR_HTTP_DATA_ERROR:
+                        reasonText = "(ERROR_HTTP_DATA_ERROR)";
+                        break;
+                    case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+                        reasonText = "(ERROR_INSUFFICIENT_SPACE)";
+                        break;
+                    case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+                        reasonText = "(ERROR_TOO_MANY_REDIRECTS)";
+                        break;
+                    case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+                        reasonText = "(ERROR_UNHANDLED_HTTP_CODE)";
+                        break;
+                    case DownloadManager.ERROR_UNKNOWN:
+                        reasonText = "(ERROR_UNKNOWN)";
+                        break;
+                }
                 break;
-            case DownloadManager.STATUS_PAUSED:
-                statusText = (R.string.STATUS_PAUSED);
-
+            case DownloadManager.STATUS_PAUSED: {
+                switch (reason) {
+                    case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
+                        reasonText = "PAUSED_QUEUED_FOR_WIFI";
+                        break;
+                    case DownloadManager.PAUSED_UNKNOWN:
+                        reasonText = "PAUSED_UNKNOWN";
+                        break;
+                    case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
+                        reasonText = "PAUSED_WAITING_FOR_NETWORK";
+                        break;
+                    case DownloadManager.PAUSED_WAITING_TO_RETRY:
+                        reasonText = "PAUSED_WAITING_TO_RETRY";
+                        break;
+                }
                 break;
-            case DownloadManager.STATUS_PENDING:
-                statusText = (R.string.STATUS_PENDING);
-                break;
-            case DownloadManager.STATUS_RUNNING:
-                statusText = (R.string.STATUS_RUNNING);
-                break;
-            case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = (R.string.STATUS_SUCCESSFUL);
-                break;
+            }
         }
-        return statusText;
+        return reasonText;
     }
 
     @StringRes
-    public int getReasonTextResId() {
+    public static int getReasonTextResId(int status, int reason) {
         int reasonText = R.string.unKnown_status;
         switch (status) {
             case DownloadManager.STATUS_FAILED:
@@ -151,6 +163,50 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
         return reasonText;
     }
 
+    public Long getDownloadedSize() {
+        return bytesDownloadedSoFar;
+    }
+
+    public Long getTotalSize() {
+        return totalSizeBytes;
+    }
+
+    public long getId() {
+        return enquId;
+    }
+
+    public int getProgressPercent() {
+        return (int) ((bytesDownloadedSoFar * 100L) / totalSizeBytes);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    @StringRes
+    public int getStatusTextResId() {
+        int statusText = 0;
+        switch (status) {
+            case DownloadManager.STATUS_FAILED:
+                statusText = (R.string.STATUS_FAILED);
+                break;
+            case DownloadManager.STATUS_PAUSED:
+                statusText = (R.string.STATUS_PAUSED);
+
+                break;
+            case DownloadManager.STATUS_PENDING:
+                statusText = (R.string.STATUS_PENDING);
+                break;
+            case DownloadManager.STATUS_RUNNING:
+                statusText = (R.string.STATUS_RUNNING);
+                break;
+            case DownloadManager.STATUS_SUCCESSFUL:
+                statusText = (R.string.STATUS_SUCCESSFUL);
+                break;
+        }
+        return statusText;
+    }
+
     public long getLastModifiedTimestamp() {
         return lastModifiedTimestamp;
     }
@@ -173,6 +229,9 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
                 '}';
     }
 
+    public int getReasonTextResId() {
+        return getReasonTextResId(status, reason);
+    }
 
 
     public static class DownloadInfoDiffCallback extends DiffUtil.Callback {

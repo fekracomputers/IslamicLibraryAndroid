@@ -13,9 +13,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
+import com.fekracomputers.islamiclibrary.download.reciver.FileDownloadException;
 import com.fekracomputers.islamiclibrary.download.service.UnZipIntentService;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
@@ -25,8 +25,8 @@ import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -51,13 +51,14 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_EXTENTION = "sqlite";
     public static final String DATABASE_COMPRESSED_EXTENTION = "zip";
     public static final String DATABASE_NAME = "BooksInformationDB";
+    public static final Pattern REPEATED_COMPRESSED_DATABASE_FULL_NAME = Pattern.compile("^" + DATABASE_NAME + "-(\\d+)\\." + DATABASE_COMPRESSED_EXTENTION + "$");
     public static final String DATABASE_FULL_NAME = DATABASE_NAME + "." + DATABASE_EXTENTION;
     public static final String DATABASE_EXTENSION = "sqlite";
     public static final String DATABASE__JOURNAL_EXTENSION = "sqlite-journal";
     public static final Pattern uncompressedBookFileRegex = Pattern.compile("(^\\d+)\\." + DATABASE_EXTENSION + "$");
     public static final String COMPRESSION_EXTENSION = "zip";
     public static final Pattern compressedBookFileRegex = Pattern.compile("(^\\d+)\\." + COMPRESSION_EXTENSION + "$");
-    public static final Pattern repeatedCompressedBookFileRegex = Pattern.compile("(^\\d+-\\d+)\\." + COMPRESSION_EXTENSION + "$");
+    public static final Pattern repeatedCompressedBookFileRegex = Pattern.compile("^(\\d+)-(\\d+)\\." + COMPRESSION_EXTENSION + "$");
     public static final String POPULATE_BOOKS_TITLES_FTS_SQL = "INSERT OR REPLACE INTO " + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME +
             "(" +
             BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_DOC_id + SQL.COMMA +
@@ -366,7 +367,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     /**
      * Static Factory method for this singleton class
      * <p>
-     * Consider using {@link #databaseExists()} before calling this method
+     * Consider using {@link #databaseFileExists()} before calling this method
      *
      * @return the instance if the Book Information Database already exists else returns  null
      */
@@ -377,7 +378,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                     DATABASE_FULL_NAME;
         }
         if (sInstance == null) {
-            if (!databaseExists()) return null;
+            if (!databaseFileExists()) return null;
             sInstance = new BooksInformationDbHelper(context, sDatabasePath, null, DATABASE_VERSION);
         }
         return sInstance;
@@ -392,11 +393,11 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     /**
      * @return true if a file named as the bookInformation database exists, doesn't check its content
      */
-    public static boolean databaseExists() {
+    public static boolean databaseFileExists() {
         return new File(sDatabasePath).exists();
     }
 
-    public static boolean databaseExists(@NonNull Context context) {
+    public static boolean databaseFileExists(@NonNull Context context) {
         if (sDatabasePath == null) {
             sDatabasePath = StorageUtils.getIslamicLibraryShamelaBooksDir(context) + File.separator +
                     DATABASE_FULL_NAME;
@@ -491,7 +492,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             bookInformationCursor.close();
 
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when queryBookListing: ", e);
+            Timber.e("Catch a SQLiteException when queryBookListing: ", e);
         }
         return null;
     }
@@ -530,7 +531,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             authorInformationCursor.close();
 
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when getAuthorInfoByBookId: ", e);
+            Timber.e("Catch a SQLiteException when getAuthorInfoByBookId: ", e);
         }
         return null;
 
@@ -565,7 +566,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             categoryInformationCursor.close();
 
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when getBookCategory: ", e);
+            Timber.e("Catch a SQLiteException when getBookCategory: ", e);
         }
 
         return null;
@@ -641,7 +642,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                 bookCategories.add(bookCategory);
             }
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when queryBookListing: ", e);
+            Timber.e("Catch a SQLiteException when queryBookListing: ", e);
         } finally {
             if (c != null) {
                 c.close();
@@ -725,10 +726,10 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             tables = BOOKS_LEFTJOIN_STORED_BOOKS_JOIN_AUTHRS;
         } else if (downloadedOnly && !joinFTS) {
             tables = STORED_BOOKS_LEFT_JOIN_BOOKS_JOIN_AUTHRS;
-        } else if (!downloadedOnly && joinFTS) {
+        } else if (!downloadedOnly) {
             tables = BOOKS_LEFTJOIN_STORED_BOOKS_JOIN_AUTHRS;
 
-        } else if (downloadedOnly && joinFTS) {
+        } else {
             tables = STORED_BOOKS_LEFT_JOIN_BOOKS_JOIN_AUTHRS;
 
         }
@@ -746,14 +747,13 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             );
 
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when queryBookListing: ", e);
+            Timber.e("Catch a SQLiteException when queryBookListing: ", e);
         }
         return c;
     }
 
     /**
      * @param selection      selection a
-     * @param selectionArgs
      * @param orderBy        How to order the rows, formatted as an SQL ORDER BY clause
      *                       (excluding the ORDER BY itself). Passing null will use the default sort order,
      *                       which may be unordered.
@@ -775,11 +775,11 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             tables = STORED_AUTHORS_TABLES;
             selectionCoulnsArray = AUTHOUR_LISTING_COLUMNS_ARRAY_STORED;
 
-        } else if (!downloadedOnly && joinFTS) {
+        } else if (!downloadedOnly) {
             tables = AUTHOURS_JOIN_AUTHORS_FTS_JOIN_BOOKS_AUTHORS;
             selectionCoulnsArray = AUTHOUR_LISTING_COLUMNS_ARRAY;
 
-        } else if (downloadedOnly && joinFTS) {
+        } else {
             tables = STORED_AUTHORS_TABLES_JOIN_AUTHOR_FTS;
             selectionCoulnsArray = AUTHOUR_LISTING_COLUMNS_ARRAY_STORED;
 
@@ -796,7 +796,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                     null);
 
         } catch (SQLException e) {
-            Log.e(TAG, "Catch a SQLiteException when queryBookListing: ", e);
+            Timber.e("Catch a SQLiteException when queryBookListing: ", e);
         }
         return c;
     }
@@ -860,7 +860,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      * @param db
      * @param bookId book to check
      */
-    private void checkFileInDbOrInsert(SQLiteDatabase db, int bookId, Context context
+    private void checkFileInDbOrInsert(SQLiteDatabase db, int bookId, Context context, String filePath
     ) {
 
         Cursor c = db.query(BooksInformationDBContract.StoredBooks.TABLE_NAME,
@@ -871,38 +871,35 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         );
         if (c.moveToFirst()) {//the book already added
             int status = c.getInt(0);
-            if (status >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {//this book is alrready in the db and fully confiured
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
-                        BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
-                db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
-                        contentValues, BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
-                        new String[]{String.valueOf(bookId)});
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
+                    BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
+            db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
+                    contentValues, BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
+                    new String[]{String.valueOf(bookId)});
 
-            } else if (status <= DownloadsConstants.STATUS_UNZIP_ENDED) {
+            if (status <= DownloadsConstants.STATUS_UNZIP_ENDED) {
                 BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
                 if (bookDatabaseHelper.isFtsSearchable()) {
                     updateStoredBookStatus(db, bookId, DownloadsConstants.STATUS_FTS_INDEXING_ENDED);
                 } else {
-                    queryIndexing(bookId, context);
+                    requestIndexing(bookId, context, filePath);
                     updateStoredBookStatus(db, bookId, DownloadsConstants.STATUS_UNZIP_ENDED);
                 }
                 bookDatabaseHelper.close();
-            } else if (status == DownloadsConstants.STATUS_FTS_INDEXING_STARTED)
-            //it started but was not marked as finished may be it is now being indexed or may be it was corrupted
-            //This must not happen since the database transaction should roll back
-            {
-                queryIndexing(bookId, context);
+            } else if (status == DownloadsConstants.STATUS_FTS_INDEXING_STARTED) {
+                //it started but was not marked as finished may be it is now being indexed or may be it was corrupted
+                //This must not happen since the database transaction should roll back
+
+                requestIndexing(bookId, context, filePath);
                 updateStoredBookStatus(db, bookId, DownloadsConstants.STATUS_UNZIP_ENDED);
             }
 
 
-        } else//book wasn't added before
-        {
+        } else {//book wasn't added before
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
             if (bookDatabaseHelper.isFtsSearchable()) {//the book is fully configured
                 insertStoredBook(db, bookId, DownloadsConstants.STATUS_FTS_INDEXING_ENDED);
-
                 Intent localIntent =
                         new Intent(BROADCAST_ACTION)
                                 // Puts the status into the Intent
@@ -919,29 +916,30 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                                 .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
                                 .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
                 context.sendOrderedBroadcast(localIntent, null);
-                queryIndexing(bookId, context);
+                requestIndexing(bookId, context, filePath);
 
             }
-
-
             bookDatabaseHelper.close();
         }
         c.close();
     }
 
-    private void queryIndexing(int bookId, Context context) {
+    private void requestIndexing(int bookId, Context context, String filePath) {
         Intent ftsIndexingServiceIntent = new Intent(context, FtsIndexingService.class);
         ftsIndexingServiceIntent.putExtra(EXTRA_DOWNLOAD_BOOK_ID, bookId);
+        ftsIndexingServiceIntent.putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath);
         context.startService(ftsIndexingServiceIntent);
     }
 
     private void updateStoredBookStatus(SQLiteDatabase db, int bookId, int status) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS, status);
-        contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG, BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
+        contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
+                BooksInformationDBContract.StoredBooks.VALUE_FILESYSTEM_SYNC_FLAG_PRESENT);
         db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 contentValues, BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "=?",
                 new String[]{String.valueOf(bookId)});
+
     }
 
     private void insertStoredBook(SQLiteDatabase db, int bookId, int status) {
@@ -960,7 +958,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
      * @return true if the directory  already exist and files were refreshed , false if the directory didn't exist or was empty in yhis case the directory is created
      */
 
-    public boolean refreshBooksDbWithDirectory(Context context) {
+    public void refreshBooksDbWithDirectory(Context context) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
@@ -968,24 +966,26 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         db.update(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                 contentValues, null, null);
 
+
         File booksDir = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context));
         if (!(booksDir.exists() && booksDir.isDirectory())) {
             booksDir.mkdirs();
-            return false;
         } else {
             String[] files = booksDir.list();
             if (files.length == 0) {
-                return false;
+                return;
             }
 
             db.beginTransaction();
             try {
                 for (String file : files) {
+                    String fullFilePath = booksDir + File.separator + file;
+
                     //validate file name against <integer>.sqlite
                     Matcher matcher = uncompressedBookFileRegex.matcher(file);
                     if (matcher.matches()) {
                         int book_id = Integer.parseInt(matcher.group(1));
-                        checkFileInDbOrInsert(db, book_id, context);
+                        checkFileInDbOrInsert(db, book_id, context, fullFilePath);
                     } else {
                         Matcher compressedMatcher = compressedBookFileRegex.matcher(file);
                         if (compressedMatcher.matches()) {
@@ -999,7 +999,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                             context.sendOrderedBroadcast(localIntent, null);
 
                             Intent serviceIntent = new Intent(context, UnZipIntentService.class);
-                            serviceIntent.putExtra(UnZipIntentService.EXTRA_FILE_PATH, booksDir + File.separator + file);
+                            serviceIntent.putExtra(UnZipIntentService.EXTRA_FILE_PATH, fullFilePath);
                             context.startService(serviceIntent);
                             // Broadcasts the Intent to receivers in this app.
 
@@ -1010,6 +1010,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             } finally {
                 db.endTransaction();
             }
+
             //delete book entries that doesn't have files in file system
             db.delete(BooksInformationDBContract.StoredBooks.TABLE_NAME,
                     BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + "=?",
@@ -1017,8 +1018,8 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             );
 
         }
-        return true;
     }
+
 
     public ArrayList<Long> getPendingDownloads() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1153,13 +1154,124 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Timber.d("old datbase version %d and new %d", oldVersion, newVersion);
-        switch (oldVersion) {
-            case 0:
-            case 1:
-                upgradeToversion2(db);
-            case 2:
-                upgradeToVersion3(db);
+
+        try {
+            switch (oldVersion) {
+                case 0:
+                case 1:
+                    upgradeToversion2(db);
+                case 2:
+                    upgradeToVersion3(db);
+            }
+        } catch (Exception e) {
+            //upgrading the database failed
+            Timber.e(e, "upgrading the BookInformation database failed");
+            //delete the file from file system
+            deleteBookInformationFile();
+            throw new FileDownloadException(
+                    "upgrading database failed",
+                    e,
+                    DownloadsConstants.BOOK_INFORMATION_DUMMY_ID,
+                    sDatabasePath, 0);
+
         }
+    }
+
+    public void deleteBookInformationFile() {
+        if (!new File(sDatabasePath).delete()) {
+            Timber.e("Deleting BookInformation failed after failing to upgrade: ",
+                    new IOException("error deleting file at" + sDatabasePath));
+        }
+    }
+
+    public void vlidate() throws Exception {
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        readableDatabase
+                .query(BooksInformationDBContract.AuthorEntry.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID,
+                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION,
+                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
+                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_Birth_HIJRI_YEAR},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.BookInformationEntery.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE,
+                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_CARD,
+                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_INFORMATION,
+                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID,
+                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ADD_DATE,
+                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ACCESS_COUNT},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.CategotyEntry.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID,
+                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE,
+                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER,
+                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_PARENT_ID},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.BooksAuthors.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID,
+                                BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.BooksCategories.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID,
+                                BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.StoredBooks.TABLE_NAME
+                        , new String[]{},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+        readableDatabase
+                .query(BooksInformationDBContract.StoredBooks.TABLE_NAME
+                        , new String[]{BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID,
+                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID,
+                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS,
+                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
+                                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null, "1").close();
+
+        Cursor c = getReadableDatabase().query(" sqlite_master ",
+                new String[]{"sql"},
+                "type='table' AND (name=? OR name=?)",
+                new String[]{BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME,
+                        BooksInformationDBContract.BookNameTextSearch.TABLE_NAME},
+                null,
+                null,
+                null);
+        if (c.getCount() != 2)
+            throw new IllegalArgumentException("Book Information TextSearch not found");
+        c.close();
+
     }
 
     private void upgradeToVersion3(SQLiteDatabase db) {
@@ -1168,6 +1280,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                 BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.TEXT
         );
     }
+
 
     private void upgradeToversion2(SQLiteDatabase db) {
         db.beginTransaction();
@@ -1255,7 +1368,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
             return true;
         } catch (SQLException e) {
-            Log.e(TAG, "indexFts: ", e);
+            Timber.e("indexFts: ", e);
             return false;
         } finally {
             db.endTransaction();

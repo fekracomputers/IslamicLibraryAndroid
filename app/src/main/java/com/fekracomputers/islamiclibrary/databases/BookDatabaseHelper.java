@@ -7,8 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 import android.util.SparseArray;
+
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
@@ -26,10 +26,13 @@ import com.fekracomputers.islamiclibrary.utility.SystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
+
+import timber.log.Timber;
 
 
 public class BookDatabaseHelper extends SQLiteOpenHelper {
@@ -512,7 +515,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             c.close();
             return page_content;
         } catch (Exception e) {
-            Log.e(TAG, "getPageContentByPageId(" + pageId + ")" + "from book" + mBookPath, e);
+            Timber.e("getPageContentByPageId(" + pageId + ")" + "from book" + mBookPath, e);
         } finally {
             c.close();
         }
@@ -589,7 +592,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
         try {
             pageId = c.getInt(0);
         } catch (SQLException e) {
-            Log.e(TAG, "getPageId: ", e);
+            Timber.e("getPageId: ", e);
         } finally {
             c.close();
         }
@@ -925,7 +928,12 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
         }
 
         c.close();
-        return createStatements.size() == 0;
+
+
+        boolean validBook = createStatements.size() == 0;
+        if (!validBook)
+            Timber.e("invalid book %d,create statment %s", bookId, Arrays.toString(createStatements.toArray()));
+        return validBook;
     }
 
     public BookInfo getBookInfo() {

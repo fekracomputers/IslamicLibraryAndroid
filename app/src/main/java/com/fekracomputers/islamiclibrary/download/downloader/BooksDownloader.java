@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -29,6 +30,7 @@ public class BooksDownloader {
 
     private final String TAG = this.getClass().getSimpleName();
     private Context mContext;
+    @Nullable
     private String booksPath;
 
 
@@ -115,7 +117,11 @@ public class BooksDownloader {
 
         //Setting description of request
         //request.setDescription("Android Data download using DownloadManager.");
-        request.setDestinationUri(Uri.fromFile(new File(booksPath, BooksInformationDbHelper.DATABASE_NAME + "." + extension)));
+
+        File file = new File(booksPath, BooksInformationDbHelper.DATABASE_NAME + "." + extension);
+        Uri uri1 = Uri.fromFile(file);
+        request.setDestinationUri(uri1);
+
         request.setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
         //Enqueue download and save into referenceId

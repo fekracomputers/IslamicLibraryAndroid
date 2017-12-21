@@ -39,4 +39,5 @@ public final class DownloadsConstants {
     public static final int BOOK_INFORMATION_DUMMY_ID = -10;
 
     public static final String EXTRA_DOWNLOAD_FAILLED_REASON = "com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON";
+    public static final int STATUS_BOOKINFORMATION_FAILED = 100;
 }

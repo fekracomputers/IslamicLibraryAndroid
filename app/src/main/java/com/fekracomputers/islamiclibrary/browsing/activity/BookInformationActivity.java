@@ -57,6 +57,7 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_information);
+        bookCardEventsCallback.intializeListener();
         Intent callingIntent = getIntent();
         int bookId = callingIntent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
         String bookName = callingIntent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
@@ -84,18 +85,11 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        bookCardEventsCallback.intializeListener();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         bookCardEventsCallback.removeBookDownloadBroadcastListener();
-    }
 
+    }
 
     @Override
     public BookCardEventsCallback getBookCardEventCallback() {

@@ -1,2 +1,1 @@
-include ':app', ':groupie_library'
-project(':groupie_library').projectDir = new File('groupie/library')
+include ':app'

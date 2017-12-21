@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Database Helper class to Store user data (BookMarks ,Notes ,Highlights and comments)
@@ -399,7 +400,7 @@ public class UserDataDBHelper {
                 }
                 db.setTransactionSuccessful();
             } catch (SQLException e) {
-                Log.e(TAG, "deserializeHighlightsAndSave: ", e);
+                Timber.e("deserializeHighlightsAndSave: ", e);
             } finally {
                 db.endTransaction();
             }

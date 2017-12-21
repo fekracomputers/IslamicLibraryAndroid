@@ -7,6 +7,11 @@ import android.database.SQLException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
+import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedReceiver;
+import com.fekracomputers.islamiclibrary.download.service.UnZipIntentService;
+
+import java.io.File;
+import java.io.IOException;
 
 import timber.log.Timber;
 
@@ -37,50 +42,64 @@ public class FtsIndexingService extends IntentService {
                             .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_STARTED)
                             .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
             sendOrderedBroadcast(ftsIndexingStartedBroadCast, null);
-
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
             try {
-                if (bookDatabaseHelper.indexFts()) {
-                    Intent ftsIndexingEndedBroadCast =
-                            new Intent(BROADCAST_ACTION)
-                                    .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
-                                    .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-                    sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
-                } else //the indexing failed
-                {
-                    Intent ftsIndexingEndedBroadCast =
-                            new Intent(BROADCAST_ACTION)
-                                    .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
-                                    .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-                    sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                if (bookDatabaseHelper.isValidBook()) {
+                    if (bookDatabaseHelper.indexFts()) {
+                        Intent ftsIndexingEndedBroadCast =
+                                new Intent(BROADCAST_ACTION)
+                                        .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
+                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                        sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                    } else {//the indexing failed
+
+                        Intent ftsIndexingEndedBroadCast =
+                                new Intent(BROADCAST_ACTION)
+                                        .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
+                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                        sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                    }
+                } else {
+                    if (intent.hasExtra(UnZipIntentService.EXTRA_FILE_PATH)) {
+                        String filePath = intent.getStringExtra(UnZipIntentService.EXTRA_FILE_PATH);
+                        //delete the file from file system
+                        if (!new File(filePath).delete()) {
+                            Timber.e("Deleting file: ", new IOException("error deleting file at" + filePath));
+                        }
+                        BookDownloadCompletedReceiver.broadCastBookDownloadFailed(bookId, "invalidDatabase", this);
+                    }
                 }
             } catch (SQLException e) {
-                //TODO we should check the reason here
-                //BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
-                //booksInformationDbHelper.d
-                Timber.e("exception while indexing",e);
-
+                Timber.e(e);
             }
 
-        } else //Index book Information Database
-        {
+        } else { //Index book Information Database
+            String filePath = intent.getStringExtra(UnZipIntentService.EXTRA_FILE_PATH);
             Intent ftsIndexingStartedBroadCast =
                     new Intent(BROADCAST_ACTION)
-                            .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_STARTED);
+                            .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_STARTED)
+                            .putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath);
             sendOrderedBroadcast(ftsIndexingStartedBroadCast, null);
-
             BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
             if (booksInformationDbHelper != null) {
                 if (booksInformationDbHelper.indexFts()) {
                     Intent ftsIndexingEndedBroadCast =
                             new Intent(BROADCAST_ACTION)
-                                    .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_ENDED);
+                                    .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_ENDED)
+                                    .putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath);
                     sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
-                } else //the indexing failed
-                {
+                } else { //the indexing failed
+                    Timber.e("indexing book information failed");
+                    if (intent.hasExtra(UnZipIntentService.EXTRA_FILE_PATH)) {
+                        //delete the file from file system
+                        if (!new File(filePath).delete()) {
+                            Timber.e("Deleting BookInformation: ", new IOException("error deleting file at" + filePath));
+                        }
+                    }
                     Intent ftsIndexingEndedBroadCast =
                             new Intent(BROADCAST_ACTION)
-                                    .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_UNZIP_ENDED);
+                                    .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FAILED)
+                                    .putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath);
                     sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
                 }
             }

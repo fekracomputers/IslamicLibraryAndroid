@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
 import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.settings.SettingsFragment;
 
@@ -74,17 +73,17 @@ public class IslamicLibraryApplication extends Application {
 
     private class ProductionTree extends Timber.Tree {
         ProductionTree() {
-            Fabric.with(IslamicLibraryApplication.this, new Crashlytics(), new Answers());
+            Fabric.with(IslamicLibraryApplication.this, new Crashlytics());
         }
 
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
-            Crashlytics.log(message);
+            Crashlytics.log(priority, message, tag);
             if (t != null) {
                 Crashlytics.logException(t);
             }
             // If this is an error or a warning, log it as a exception so we see it in Crashlytics.
-            if (priority > Log.WARN) {
+            if (priority >= Log.ERROR) {
                 Crashlytics.logException(new Throwable(message));
             }
         }

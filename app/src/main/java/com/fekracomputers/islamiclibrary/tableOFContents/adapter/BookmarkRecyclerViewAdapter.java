@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.Bookmark;
+import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
 import com.fekracomputers.islamiclibrary.tableOFContents.fragment.BookmarkFragment;
 
@@ -68,7 +69,10 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
 
     @Override
     public long getItemId(int position) {
-        return bookmarkList.get(position).pageInfo.pageId;
+        PageInfo pageInfo = bookmarkList.get(position).pageInfo;
+        if (pageInfo != null) {
+            return pageInfo.pageId;
+        } else return super.getItemId(position);
     }
 
     @Override

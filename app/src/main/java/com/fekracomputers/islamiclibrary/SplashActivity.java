@@ -10,9 +10,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
@@ -33,9 +33,11 @@ import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 import static com.fekracomputers.islamiclibrary.utility.StorageUtils.getIslamicLibraryBaseDirectory;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements CloseDialogFragment.CloseDialogFragmentListener {
     private static final int WRITE_EXTERNAL_STORAGE_PERMESSION = 0;
 
     private static final long SPLASH_TIME_OUT = 300;
@@ -46,36 +48,30 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent =getIntent();
-        if(intent.getBooleanExtra(SettingsActivity.KEY_KILL_APP,false))
-        {
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra(SettingsActivity.KEY_KILL_APP, false)) {
             finish();
             System.exit(0);
         }
-
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mProgressBar = findViewById(R.id.progressBar1);
         mTextView = findViewById(R.id.progressTextView);
-
+        mReceiver = new BookInformationDownloadReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadsConstants.BROADCAST_ACTION));
         checkStorage();
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mReceiver = new BookInformationDownloadReceiver();
-        registerReceiver(mReceiver, new IntentFilter(
-                DownloadsConstants.BROADCAST_ACTION));
-    }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        unregisterReceiver(mReceiver);
+    public void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
         mReceiver = null;
     }
 
@@ -210,10 +206,19 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkBookInformationDatabase() {
         //a better condition would be to check the directory
-        if (BooksInformationDbHelper.databaseExists(SplashActivity.this)) {
-            finishSplashAndLaunchMainActivity();
-        } else if (StorageUtils.isOldDirectoriesExists(this)) {
+        if (BooksInformationDbHelper.databaseFileExists(SplashActivity.this)) {
+            BooksInformationDbHelper instance = BooksInformationDbHelper.getInstance(this);
+            try {
+                instance.vlidate();
+                finishSplashAndLaunchMainActivity();
+            } catch (Exception e) {
+                Timber.e(e);
+                instance.deleteBookInformationFile();
+                showBookInformationFailurMessage();
+            }
 
+        } else if (StorageUtils.isOldDirectoriesExists(this)) {
+            Timber.e("isOldDirectoriesExists");
             new AsyncTask<Void, Integer, Void>() {
                 @Override
                 protected void onPreExecute() {
@@ -240,12 +245,12 @@ public class SplashActivity extends AppCompatActivity {
                         String[] files = oldPath.list();
                         for (int i = 0; i < files.length; i++) {
                             String book = files[i];
-                            File from = new File(oldBooksPath+File.separator +book);
-                            if(!from.isDirectory()) {
+                            File from = new File(oldBooksPath + File.separator + book);
+                            if (!from.isDirectory()) {
                                 File to = new File(oldBooksPath +
                                         File.separator +
-                                        DownloadFileConstants.SHAMELA_BOOKS_DIR+
-                                        File.separator+
+                                        DownloadFileConstants.SHAMELA_BOOKS_DIR +
+                                        File.separator +
                                         book);
                                 from.renameTo(to);
                             }
@@ -267,7 +272,6 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }.execute();
 
-
         } else {
             new InitialSetupThread().start();
         }
@@ -278,6 +282,16 @@ public class SplashActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 WRITE_EXTERNAL_STORAGE_PERMESSION);
         StorageUtils.setSdcardPermissionsDialogPresented(this);
+    }
+
+    @Override
+    public void onOkPressed() {
+        finish();
+    }
+
+    private void showBookInformationFailurMessage() {
+        DialogFragment dialogFragment = new CloseDialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "CloseDialogFragment");
     }
 
     private class InitialSetupThread extends Thread {
@@ -297,24 +311,34 @@ public class SplashActivity extends AppCompatActivity {
             });
 
             while (downloading) {
-
                 DownloadManager.Query q = new DownloadManager.Query();
                 q.setFilterById(downloadId);
-
                 Cursor cursor = manager.query(q);
-                cursor.moveToFirst();
-                int bytes_downloaded = cursor.getInt(cursor
-                        .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                if (cursor.moveToFirst()) {
+                    int bytes_downloaded = cursor.getInt(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
 
-                if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                    downloading = false;
+                    int downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                    if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                        downloading = false;
+                    } else if (downloadStatus == DownloadManager.STATUS_FAILED) {
+                        showBookInformationFailurMessage();
+                        break;
+                    }
+                    cursor.close();
+                    long dl_progress;
+                    if (bytes_total > 0) {
+                        dl_progress = (bytes_downloaded * 100L / bytes_total);
+                    } else {
+                        dl_progress = 0;
+                    }
+
+                    runOnUiThread(() -> mProgressBar.setProgress((int) dl_progress));
+                } else {
+                    runOnUiThread(SplashActivity.this::showBookInformationFailurMessage);
+                    break;
                 }
-                cursor.close();
-
-                final long dl_progress = (bytes_downloaded * 100L / bytes_total);
-
-                runOnUiThread(() -> mProgressBar.setProgress((int) dl_progress));
             }
             runOnUiThread(() -> {
                 mProgressBar.setVisibility(View.VISIBLE);
@@ -325,7 +349,6 @@ public class SplashActivity extends AppCompatActivity {
             });
         }
     }
-
 
     private class BookInformationDownloadReceiver extends BroadcastReceiver {
 
@@ -341,13 +364,15 @@ public class SplashActivity extends AppCompatActivity {
          */
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_INVALID) == DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_ENDED) {
+            int intExtra = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_INVALID);
+            if (intExtra == DownloadsConstants.STATUS_BOOKINFORMATION_FTS_INDEXING_ENDED) {
                 finishSplashAndLaunchMainActivity();
+            } else if (intExtra == DownloadsConstants.STATUS_BOOKINFORMATION_FAILED) {
+                showBookInformationFailurMessage();
             }
+
         }
     }
-
-
 }
     
 

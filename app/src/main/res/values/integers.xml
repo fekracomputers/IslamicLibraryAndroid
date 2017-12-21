@@ -28,7 +28,6 @@
     <integer name="explore_description_max_lines">3</integer>
     <integer name="explore_subtitle_max_lines">2</integer>
     <integer name="explore_title_max_lines">3</integer>
-    <integer name="google_play_services_version">8487000</integer>
     <integer name="onboard_quiz_book_overlay_opacity_percent">80</integer>
     <integer name="onboard_quiz_genre_overlay_opacity_percent">80</integer>
     <integer name="play_download_arc_background_transition_interval_ms">264</integer>

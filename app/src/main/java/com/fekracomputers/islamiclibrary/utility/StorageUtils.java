@@ -46,8 +46,8 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadFileConst
 public class StorageUtils {
 
     public static String getIslamicLibraryShamelaBooksDir(Context context) {
-        return getIslamicLibraryBaseDirectory(context) + File.separator + DownloadFileConstants.SHAMELA_BOOKS_DIR;
-
+        String base = getIslamicLibraryBaseDirectory(context);
+        return base == null ? null : base + File.separator + DownloadFileConstants.SHAMELA_BOOKS_DIR;
 //        return Environment.getExternalStorageDirectory().getAbsolutePath() +
 //                File.separator + DownloadFileConstants.ISLAMIC_LIBRARY_BASE_DIRECTORY;
     }

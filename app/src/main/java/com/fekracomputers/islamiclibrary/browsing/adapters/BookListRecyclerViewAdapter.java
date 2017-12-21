@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
@@ -161,11 +166,27 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
             holder.bookCheckBox.setChecked(mListener.isBookSelected(holder.bookInfo.getBookId()));
         }
         holder.bindDownloadStatus(bookDownloadStatus);
-        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.no_book_image);
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.no_book_image)
+                .error(R.drawable.no_book_image);
         Glide.with(mContext)
                 .setDefaultRequestOptions(requestOptions)
+
                 .load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId()))
-                .into(holder.bookCoverImageView);
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                })
+                .into(holder.bookCoverImageView)
+
+        ;
 
 
         //TODO Is it better to attach the listener here or in the constuctor of view holder

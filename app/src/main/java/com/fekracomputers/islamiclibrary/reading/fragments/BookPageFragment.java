@@ -78,7 +78,6 @@ public class BookPageFragment extends Fragment implements
     UserDataDBHelper userDataDBHelper;
     int pageRowId;
     private PageFragmentListener pageFragmentListener;
-    private WebSettings webSettings;
     private int bookId;
     private WebView mBookPageWebView;
     private int mIsInActionMode = ACTION_MODE_NOT_STARTED;
@@ -124,8 +123,6 @@ public class BookPageFragment extends Fragment implements
         BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
-        tashkeelOn = pageFragmentListener.getTashkeelState();
-        if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
         mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageRowId);
         mPageCitation.setResources(getResources());
         pageInfo = mPageCitation.pageInfo;
@@ -159,7 +156,12 @@ public class BookPageFragment extends Fragment implements
 
         mBookPageWebView = rootView.findViewById(R.id.book_page_web_view);
 
-        initializeWebView();
+        WebSettings webSettings = mBookPageWebView.getSettings();
+        webSettings.setDefaultTextEncodingName("utf-8");
+        mBookPageWebView.setVerticalScrollBarEnabled(true);
+        webSettings.setJavaScriptEnabled(true);
+        mBookPageWebView.addJavascriptInterface(new WebAppInterface(), "selectioniterface");
+        initializeWebView(mBookPageWebView, webSettings);
 
         final ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(),
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -448,24 +450,19 @@ public class BookPageFragment extends Fragment implements
         notePopupFragment.show(fm, "fragment_note");
     }
 
-    private void initializeWebView() {
-        webSettings = mBookPageWebView.getSettings();
-        webSettings.setDefaultTextEncodingName("utf-8");
-        boolean isNightMode = pageFragmentListener.isNightMode();
-        if (isNightMode) mBookPageWebView.setBackgroundColor(0x333333);
+    private void initializeWebView(WebView webView, WebSettings webSettings) {
+        tashkeelOn = pageFragmentListener.getTashkeelState();
+        if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
 
+        boolean isNightMode = pageFragmentListener.isNightMode();
+        if (isNightMode) webView.setBackgroundColor(0x333333);
 
         int intialZoom = pageFragmentListener.getDisplayZoom();
-
         webSettings.setTextZoom(intialZoom);
 
-        mBookPageWebView.setVerticalScrollBarEnabled(true);
-        webSettings.setJavaScriptEnabled(true);
-
-        mBookPageWebView.addJavascriptInterface(new WebAppInterface(), "selectioniterface");
 
         String data = prepareHtml(isNightMode);
-        loadWebView(data);
+        loadWebView(data, webView);
     }
 
     @NonNull
@@ -496,8 +493,8 @@ public class BookPageFragment extends Fragment implements
         return stringBuilder.toString();
     }
 
-    private void loadWebView(String data) {
-        mBookPageWebView.loadDataWithBaseURL(
+    private void loadWebView(String data, WebView webView) {
+        webView.loadDataWithBaseURL(
                 ANDROID_ASSET,
                 data,
                 "text/html",
@@ -737,6 +734,7 @@ public class BookPageFragment extends Fragment implements
 
     @Override
     public void setZoom(int newZoom) {
+        WebSettings webSettings = mBookPageWebView.getSettings();
         if (newZoom != webSettings.getTextZoom())
             webSettings.setTextZoom(newZoom);
     }
@@ -756,7 +754,7 @@ public class BookPageFragment extends Fragment implements
                 BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
                 page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
             }
-            loadWebView(prepareHtml(pageFragmentListener.isNightMode()));
+            initializeWebView(mBookPageWebView, mBookPageWebView.getSettings());
             this.tashkeelOn = tashkeelOn;
         }
     }

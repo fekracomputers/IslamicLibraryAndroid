@@ -70,6 +70,7 @@
     <string name="base_url" translatable="false">http://booksapi.islam-db.com/data</string>
     <string name="url_covers" translatable="false">covers</string>
     <string name="dialog_information_database_not_available">Book Information Database not available,\n download it?</string>
+    <string name="book_information_error_close">Sorry!!\nthere is a problem with Book Information Database\nwe will close the app try reopening it</string>
     <string name="cancel">Cancel</string>
     <string name="Ok">OK</string>
     <string name="wait_for_download">Retry after the Book Information Databse downloaded</string>
@@ -374,7 +375,7 @@
     <string name="menu_item_rename">Rename</string>
     <string name="dialog_msg_rename">Enter the new name</string>
     <string name="dialog_title_rename">Rename Collection</string>
-    <string name="menu_edit_home_screen" >Edit home screen</string>
+    <string name="menu_edit_home_screen">Edit home screen</string>
     <string name="menu_add_collection">Add Collection</string>
     <string name="menu_delete_note">delete note</string>
     <string name="menu_edit_note_color">Edit Note Color</string>

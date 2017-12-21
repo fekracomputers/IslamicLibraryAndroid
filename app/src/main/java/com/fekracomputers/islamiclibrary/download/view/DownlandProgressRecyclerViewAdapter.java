@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.download.model.DownloadInfo;
+import com.fekracomputers.islamiclibrary.download.reciver.LocalDownloadBroadCastReciver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -33,6 +34,7 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadInfo.Down
 class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandProgressRecyclerViewAdapter.DownloadProgressViewHolder> {
     private List<DownloadInfo> downloadInfos;
     private Context context;
+    private Deque<DownloadInfoUpdate> pendingUpdates = new ArrayDeque<>();
 
     public DownlandProgressRecyclerViewAdapter(Context context) {
         this.context = context;
@@ -66,7 +68,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
                             holder.bindDownloadBytes(o.getLong(DownloadInfo.DownloadInfoDiffCallback.KEY_DOWNLOADED_BYTES));
                             break;
                         case KEY_STATUS_RES_ID:
-                            holder.bindStatusAndReason(o.getInt(KEY_STATUS_RES_ID),o.getInt(KEY_REASON_RES_ID));
+                            holder.bindStatusAndReason(o.getInt(KEY_STATUS_RES_ID), o.getInt(KEY_REASON_RES_ID));
                             break;
                     }
                 }
@@ -93,8 +95,6 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
         } else
             return 0;
     }
-    private Deque<DownloadInfoUpdate> pendingUpdates = new ArrayDeque<>();
-
 
     void updateItems(final DownloadInfoUpdate newItems) {
         pendingUpdates.push(newItems);
@@ -112,6 +112,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
             applyDiffResult(latest);
         }
     }
+
     // This method does the work of actually updating
     // the backing data and notifying the adapter
     private void dispatchUpdates(DownloadInfoUpdate newItems) {
@@ -121,8 +122,6 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
         downloadInfos.addAll(newItems.downloadInfos);
 
     }
-
-
 
     class DownloadProgressViewHolder extends RecyclerView.ViewHolder {
         static final int PERCENTSMOOTHINGFACTOR = 100;
@@ -145,19 +144,24 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
 
             cancelButton.setOnClickListener(v -> {
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-                downloadManager.remove(downloadInfo.getId());
+                if (downloadManager != null) {
+                    downloadManager.remove(downloadInfo.getId());
+                }
+                LocalDownloadBroadCastReciver.broadCastDownloadCanceled(context, downloadInfo.getId());
             });
         }
+
 
         void bind(DownloadInfo downloadInfo) {
             this.downloadInfo = downloadInfo;
             bindProgress(downloadInfo.getProgressPercent());
             downloadTitle.setText(downloadInfo.getTitle());
-            bindStatusAndReason(downloadInfo.getStatusTextResId(),downloadInfo.getReasonTextResId());
-            bindDownloadBytes(downloadInfo.getDownloadedSize(),downloadInfo.getTotalSize());
+            bindStatusAndReason(downloadInfo.getStatusTextResId(), downloadInfo.getReasonTextResId());
+            bindDownloadBytes(downloadInfo.getDownloadedSize(), downloadInfo.getTotalSize());
 
         }
-        private void bindStatusAndReason(int statusResId,int reasonResId) {
+
+        private void bindStatusAndReason(int statusResId, int reasonResId) {
             if (statusResId != R.string.STATUS_RUNNING) {
                 downladStatusTextView.setVisibility(View.VISIBLE);
                 reasonTextView.setVisibility(View.VISIBLE);
@@ -168,6 +172,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
                 reasonTextView.setVisibility(View.GONE);
             }
         }
+
         private void bindStatus(int statusResId) {
             downladStatusTextView.setText(context.getString(statusResId));
 
@@ -178,27 +183,27 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
         }
 
         private void bindProgress(int percent) {
-            progressBar.setProgress(percent* PERCENTSMOOTHINGFACTOR);
+            progressBar.setProgress(percent * PERCENTSMOOTHINGFACTOR);
         }
 
         private void updateProgress(int from, int to) {
-            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", from* PERCENTSMOOTHINGFACTOR, to* PERCENTSMOOTHINGFACTOR);
+            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", from * PERCENTSMOOTHINGFACTOR, to * PERCENTSMOOTHINGFACTOR);
             animation.setDuration(500);// 0.5 second
             animation.setInterpolator(new DecelerateInterpolator());
             animation.start();
         }
 
         private void bindDownloadBytes(long bytesDownloadedSoFar, long totalSize) {
-            String bytesDownloadedSoFarFormatted=android.text.format.Formatter.formatShortFileSize(context, bytesDownloadedSoFar);
-            String toTalSizeFormatted=android.text.format.Formatter.formatShortFileSize(context, totalSize);
-            bytesDownloadedSoFarTextView.setText(context.getString(R.string.downloaded_size,bytesDownloadedSoFarFormatted,toTalSizeFormatted));
+            String bytesDownloadedSoFarFormatted = android.text.format.Formatter.formatShortFileSize(context, bytesDownloadedSoFar);
+            String toTalSizeFormatted = android.text.format.Formatter.formatShortFileSize(context, totalSize);
+            bytesDownloadedSoFarTextView.setText(context.getString(R.string.downloaded_size, bytesDownloadedSoFarFormatted, toTalSizeFormatted));
         }
 
 
         void bindDownloadBytes(long bytesDownloadedSoFar) {
-            String bytesDownloadedSoFarFormatted=android.text.format.Formatter.formatShortFileSize(context, bytesDownloadedSoFar);
-            String toTalSizeFormatted=android.text.format.Formatter.formatShortFileSize(context, this.downloadInfo.getTotalSize());
-            bytesDownloadedSoFarTextView.setText(context.getString(R.string.downloaded_size,bytesDownloadedSoFarFormatted,toTalSizeFormatted));
+            String bytesDownloadedSoFarFormatted = android.text.format.Formatter.formatShortFileSize(context, bytesDownloadedSoFar);
+            String toTalSizeFormatted = android.text.format.Formatter.formatShortFileSize(context, this.downloadInfo.getTotalSize());
+            bytesDownloadedSoFarTextView.setText(context.getString(R.string.downloaded_size, bytesDownloadedSoFarFormatted, toTalSizeFormatted));
         }
     }
 }

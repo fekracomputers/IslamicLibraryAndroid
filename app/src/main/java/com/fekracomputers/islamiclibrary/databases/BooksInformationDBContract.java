@@ -68,9 +68,9 @@ public final class BooksInformationDBContract {
         public static final String TABLE_NAME = "categories";
         public static final String COLUMN_NAME_ID = "id";
         public static final String COLUMN_NAME_TITLE = "title";
-        public static final String COLUMN_NAME_PARENT_ID = "parentid";
         public static final String COLUMN_NAME_CATEGORY_TITLE = "category_title";
         public static final String COLUMN_NAME_CATEGORY_ORDER = "catOrder";
+        public static final String COLUMN_NAME_PARENT_ID = "parentid";
         public static final String COUNT_OF_BOOKS = "count_of_author_books";
         public static final String HAS_DOWNLOADED_BOOKS = "has_downloaded_books";
     }
