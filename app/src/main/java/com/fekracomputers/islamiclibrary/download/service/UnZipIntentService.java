@@ -71,6 +71,7 @@ public class UnZipIntentService extends IntentService {
                     deleteFileWithException(zipFilePath);
                 } else if (repeatedCompressedBookFileRegex.matcher(fileName).matches()) {
                     Matcher matcher = repeatedCompressedBookFileRegex.matcher(fileName);
+                    matcher.matches();
                     String correctFilename = matcher.group(1);
                     int bookId = Integer.parseInt(correctFilename);
                     unZipBook(zipFilePath, bookId);

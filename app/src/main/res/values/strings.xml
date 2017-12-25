@@ -380,5 +380,37 @@
     <string name="menu_delete_note">delete note</string>
     <string name="menu_edit_note_color">Edit Note Color</string>
     <string name="show_collecttion">Show</string>
+    <string name="donations_description">disc</string>
     <!--end storage pref-->
+    <string name="title_activity_main">Trivial Drive v2</string>
+
+    <string name="alert_no_gas">Oh, no! You are out of gas! Try buying some!</string>
+    <string name="alert_drove">Vroooom, you drove a few miles.</string>
+    <string name="alert_fill_gas">You filled &#188; tank. Your tank is now %1$d/4 full!</string>
+    <string name="alert_error_consuming">Error while consuming: %1$s</string>
+    <string name="alert_already_purchased">Item is already purchased</string>
+
+    <string name="error_no_skus">We didn\'t find any SKUs to display&#8230; Check your internet
+        connection and make sure your Google Developer Console was setup correctly.</string>
+    <string name="error_billing_unavailable">Billing unavailable. Make sure your Google Play app
+        is setup correctly</string>
+    <string name="error_billing_default">Billing unavailable. Please check your device.</string>
+
+    <string name="button_drive">Drive</string>
+    <string name="button_purchase">Purchase</string>
+    <string name="button_buy">Buy</string>
+    <string name="button_own">Own</string>
+    <string name="button_update">Update</string>
+    <string name="button_change">Change</string>
+    <string name="button_full_tank">Full tank</string>
+    <string name="toast_full_tank">Your tank is full, please use some gas before buying
+        more.</string>
+
+    <string name="header_inapp">One-time deals</string>
+    <string name="header_subscriptions">Subscriptions</string>
+
+    <string name="content_description_app_loading_image">App loading image</string>
+    <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
+    <string name="content_desc_gas_gauge_indicator">Gas gauge indicator</string>
+    <string name="content_desc_free_vs_premium_indicator">Free or Premium Image Indicator</string>
 </resources>

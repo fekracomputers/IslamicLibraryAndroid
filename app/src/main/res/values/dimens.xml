@@ -126,4 +126,26 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="content_padding">-7dp</dimen>
 
+    <dimen name="single_padding">8dp</dimen>
+    <dimen name="double_padding">16dp</dimen>
+
+    <dimen name="header_gap">8dp</dimen>
+    <dimen name="row_gap">1px</dimen>
+    <dimen name="button_width">152dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="title_margin">8dp</dimen>
+    <dimen name="image_margin">32dp</dimen>
+
+    <dimen name="sku_details_row_height">216dp</dimen>
+    <dimen name="sku_details_row_padding">24dp</dimen>
+    <dimen name="sku_details_row_text_size">16sp</dimen>
+    <dimen name="sku_details_row_description_text_size">15sp</dimen>
+
+    <dimen name="sku_details_row_header_height">64dp</dimen>
+
+    <!-- CardViewStyle -->
+    <dimen name="card_view_margin">8dp</dimen>
+    <dimen name="card_view_card_corner_radius">2dp</dimen>
+    <dimen name="card_view_card_elevation">2sp</dimen>
+
 </resources>

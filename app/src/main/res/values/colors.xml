@@ -148,6 +148,13 @@
         <item>@color/material_orange_500</item>
         <item>@color/material_deep_orange_500</item>
     </array>
+    <color name="ascent_color">#4285F4</color>
 
+    <color name="list_bg_color">#eeeeee</color>
+    <color name="row_header_bg_color">#ffffff</color>
+    <color name="row_bg_color">#ffffff</color>
+
+    <color name="disabled_color">#90b1b0</color>
+    <color name="gold">#ffbf00</color>
 
 </resources>
