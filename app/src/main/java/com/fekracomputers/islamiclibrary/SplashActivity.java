@@ -290,8 +290,11 @@ public class SplashActivity extends AppCompatActivity implements CloseDialogFrag
     }
 
     private void showBookInformationFailurMessage() {
-        DialogFragment dialogFragment = new CloseDialogFragment();
-        dialogFragment.show(getSupportFragmentManager(), "CloseDialogFragment");
+        if (getWindow() != null && getWindow().getDecorView().isShown()) {
+            DialogFragment dialogFragment = new CloseDialogFragment();
+            dialogFragment.show(getSupportFragmentManager(), "CloseDialogFragment");
+        } else
+            Toast.makeText(this, R.string.book_information_error_close, Toast.LENGTH_LONG).show();
     }
 
     private class InitialSetupThread extends Thread {
