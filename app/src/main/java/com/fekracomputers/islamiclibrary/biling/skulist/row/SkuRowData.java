@@ -17,8 +17,9 @@ package com.fekracomputers.islamiclibrary.biling.skulist.row;
 
 import com.android.billingclient.api.BillingClient.SkuType;
 import com.android.billingclient.api.SkuDetails;
-import com.example.billingmodule.skulist.SkusAdapter;
-import com.example.billingmodule.skulist.SkusAdapter.RowTypeDef;
+import com.fekracomputers.islamiclibrary.biling.skulist.SkusAdapter;
+
+import static com.fekracomputers.islamiclibrary.biling.skulist.SkusAdapter.RowTypeDef;
 
 /**
  * A model for SkusAdapter's row
