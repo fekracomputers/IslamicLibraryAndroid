@@ -11,6 +11,8 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
+import static com.fekracomputers.islamiclibrary.databases.DBValidator.DataBaseType.BOOK_DATABASE_TYPE;
+import static com.fekracomputers.islamiclibrary.databases.DBValidator.DataBaseType.BOOK_INFORATION_DATABASE_TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
@@ -18,8 +20,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 
 public class DBValidator {
-    static final int BOOK_INFORATION_DATABASE_TYPE = 0;
-    static final int BOOK_DATABASE_TYPE = 1;
+
     private ArrayList<TableInformation> schema = new ArrayList<>();
     private boolean startValue = true;
     private ArrayList<Boolean> result;
@@ -135,5 +136,8 @@ public class DBValidator {
     @Retention(SOURCE)
     @IntDef({BOOK_INFORATION_DATABASE_TYPE, BOOK_DATABASE_TYPE})
     @interface DataBaseType {
+        int BOOK_INFORATION_DATABASE_TYPE = 0;
+        int BOOK_DATABASE_TYPE = 1;
     }
+
 }

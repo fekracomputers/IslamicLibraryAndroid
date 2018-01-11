@@ -920,7 +920,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
 
     public boolean isValidBook() {
-        DBValidator dBValidator = new DBValidator(DBValidator.BOOK_DATABASE_TYPE);
+        DBValidator dBValidator = new DBValidator(DBValidator.DataBaseType.BOOK_DATABASE_TYPE);
         dBValidator.validate(this);
         return dBValidator.isValid();
     }
