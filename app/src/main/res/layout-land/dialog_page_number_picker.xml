@@ -22,6 +22,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/part"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText" />
@@ -38,6 +39,7 @@
                 android:maxLines="1"
                 android:minEms="3"
                 android:padding="8.0dip"
+                android:singleLine="true"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText"
                 android:textColorHint="@color/material_grey_500"
@@ -50,6 +52,7 @@
                 android:layout_marginRight="3.0sp"
                 android:enabled="false"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/page_part_from"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText" />
@@ -60,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText"
                 tools:text="50" />
@@ -85,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/page"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText" />
@@ -101,6 +106,7 @@
                 android:maxLines="1"
                 android:minEms="3"
                 android:padding="8.0dip"
+                android:singleLine="true"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText"
                 android:textColorHint="@color/material_grey_500"
@@ -113,6 +119,7 @@
                 android:layout_marginRight="3.0sp"
                 android:enabled="false"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/page_part_from"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText" />
@@ -123,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:maxLines="1"
+                android:singleLine="true"
                 android:textAppearance="?navigationViewTextAppearance"
                 android:textColor="?blueThemedText"
                 tools:text="3000" />

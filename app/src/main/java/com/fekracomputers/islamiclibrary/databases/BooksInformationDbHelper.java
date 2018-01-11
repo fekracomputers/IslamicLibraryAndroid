@@ -47,7 +47,6 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
 
 public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
-
     public static final String DATABASE_EXTENTION = "sqlite";
     public static final String DATABASE_COMPRESSED_EXTENTION = "zip";
     public static final String DATABASE_NAME = "BooksInformationDB";
@@ -61,16 +60,16 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     public static final Pattern repeatedCompressedBookFileRegex = Pattern.compile("^(\\d+)-(\\d+)\\." + COMPRESSION_EXTENSION + "$");
     public static final String POPULATE_BOOKS_TITLES_FTS_SQL = "INSERT OR REPLACE INTO " + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME +
             "(" +
-            BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_DOC_id + SQL.COMMA +
+            BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_DOC_id + "," +
             BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_TITLE +
             ")" +
-            "VALUES (" + "?" + SQL.COMMA + " ?" + ")";
+            "VALUES (" + "?" + "," + " ?" + ")";
     public static final String POPULATE_AUTHORS_NAMES_FTS_SQL = "INSERT OR REPLACE INTO " + BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME +
             "(" +
-            BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_DOC_id + SQL.COMMA +
+            BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_DOC_id + "," +
             BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_NAME +
             ")" +
-            "VALUES (" + "?" + SQL.COMMA + " ?" + ")";
+            "VALUES (" + "?" + "," + " ?" + ")";
     private static final String COMMEMORATOR = " , ";
     private static final String DOTSEPARATOR = ".";
     public static final String[] BOOK_LISTING_PROJECTION = new String[]{BooksInformationDBContract.BooksAuthors.TABLE_NAME + DOTSEPARATOR + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID,
@@ -308,21 +307,30 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             "الدعوة واحوال المسلمين",
             "كتب اسلامية عامة", "علوم اخرى"};
     private static final String CREATE_STORED_INFO = " CREATE TABLE IF NOT EXISTS "
+            + BooksInformationDBContract.StoredBooks.TABLE_NAME_V3 + "( " +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + SQL.INTEGER + SQL.UNIQUE + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + SQL.INTEGER + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG_V3 + SQL.INTEGER + ")";
+    private static final String CREATE_STORED_INFO_v4 = " CREATE TABLE IF NOT EXISTS "
             + BooksInformationDBContract.StoredBooks.TABLE_NAME + "( " +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + SQL.COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + SQL.INTEGER + SQL.UNIQUE + SQL.COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + SQL.INTEGER + SQL.COMMA +
-            BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + SQL.INTEGER + ")";
-    private static final int DATABASE_VERSION = 3;
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + SQL.INTEGER + SQL.UNIQUE + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + SQL.INTEGER + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + SQL.INTEGER + "," +
+            BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.TEXT + ")";
+    ;
+
+    private static final int DATABASE_VERSION = 4;
     private static final String CREATE_BOOK_TITLES_FTS_TABLE = "CREATE VIRTUAL TABLE IF NOT EXISTS " +
             BooksInformationDBContract.BookNameTextSearch.TABLE_NAME +
-            " USING fts4(content=\"\"" + SQL.COMMA + BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_TITLE + ")";
+            " USING fts4(content=\"\"" + "," + BooksInformationDBContract.BookNameTextSearch.COLUMN_NAME_TITLE + ")";
     private static final String OPTIMIZE_BOOK_TITLES_FTS = " INSERT INTO " +
             BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + "(" + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME + ")" +
             "VALUES('optimize')";
     private static final String CREATE_AUTHORS_NAMES_FTS_TABLE = "CREATE VIRTUAL TABLE IF NOT EXISTS " +
             BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME +
-            " USING fts4(content=\"\"" + SQL.COMMA + " " + BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_NAME + ")";
+            " USING fts4(content=\"\"" + "," + " " + BooksInformationDBContract.AuthorsNamesTextSearch.COLUMN_NAME_NAME + ")";
     private static final String OPTIMIZE_AUTHORS_NAME_FTS = " INSERT INTO " +
             BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + "(" + BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME + ")" +
             "VALUES('optimize')";
@@ -427,6 +435,18 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         context.sendOrderedBroadcast(bookDeleteBroadCast, null);
     }
 
+    public static void deleteBookInformationFile() {
+        if (!new File(sDatabasePath).delete()) {
+            Timber.e("Deleting BookInformation failed after failing to upgrade: ",
+                    new IOException("error deleting file at" + sDatabasePath));
+        }
+    }
+
+    @NonNull
+    public static String getPathFromBookId(int bookId, Context context, boolean journal) {
+        return StorageUtils.getIslamicLibraryShamelaBooksDir(context) + File.separator + bookId + "." + (journal ? DATABASE__JOURNAL_EXTENSION : DATABASE_EXTENSION);
+    }
+
     public String getBookName(int book_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.query(BooksInformationDBContract.BookInformationEntery.TABLE_NAME,
@@ -505,9 +525,9 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
             authorInformationCursor = db.rawQuery(
                     SQL.SELECT +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + SQL.COMMA +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR + SQL.COMMA +
-                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION + SQL.COMMA +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID + "," +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR + "," +
+                            BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION + "," +
                             BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME +
 
                             SQL.FROM + BooksInformationDBContract.AuthorEntry.TABLE_NAME +
@@ -543,7 +563,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         try {
             categoryInformationCursor = db.rawQuery(
                     SQL.SELECT +
-                            BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + SQL.COMMA +
+                            BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + "," +
                             BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE +
 
                             SQL.FROM + BooksInformationDBContract.CategotyEntry.TABLE_NAME +
@@ -1020,7 +1040,6 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         }
     }
 
-
     public ArrayList<Long> getPendingDownloads() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.query(STORED_BOOKS_LEFT_JOIN_BOOKS,
@@ -1159,9 +1178,11 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             switch (oldVersion) {
                 case 0:
                 case 1:
-                    upgradeToversion2(db);
+                    upgradeToVersion2(db);
                 case 2:
                     upgradeToVersion3(db);
+                case 3:
+                    upgradeToVersion4(db);
             }
         } catch (Exception e) {
             //upgrading the database failed
@@ -1177,118 +1198,20 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteBookInformationFile() {
-        if (!new File(sDatabasePath).delete()) {
-            Timber.e("Deleting BookInformation failed after failing to upgrade: ",
-                    new IOException("error deleting file at" + sDatabasePath));
-        }
+    public boolean isValid() {
+        DBValidator dBValidator = new DBValidator(DBValidator.BOOK_INFORATION_DATABASE_TYPE);
+        dBValidator.validate(this);
+        return dBValidator.isValid();
     }
 
-    public void vlidate() throws Exception {
-        SQLiteDatabase readableDatabase = getReadableDatabase();
-        readableDatabase
-                .query(BooksInformationDBContract.AuthorEntry.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.AuthorEntry.COLUMN_NAME_ID,
-                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_INFORMATION,
-                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_DEATH_HIJRI_YEAR,
-                                BooksInformationDBContract.AuthorEntry.COLUMN_NAME_Birth_HIJRI_YEAR},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.BookInformationEntery.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE,
-                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_CARD,
-                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_INFORMATION,
-                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID,
-                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ADD_DATE,
-                                BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ACCESS_COUNT},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.CategotyEntry.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID,
-                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE,
-                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER,
-                                BooksInformationDBContract.CategotyEntry.COLUMN_NAME_PARENT_ID},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.BooksAuthors.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID,
-                                BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.BooksCategories.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.BooksCategories.COLUMN_NAME_BOOK_ID,
-                                BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.StoredBooks.TABLE_NAME
-                        , new String[]{},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-        readableDatabase
-                .query(BooksInformationDBContract.StoredBooks.TABLE_NAME
-                        , new String[]{BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID,
-                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID,
-                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS,
-                                BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG,
-                                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP},
-                        null,
-                        null,
-                        null,
-                        null,
-                        null, "1").close();
-
-        Cursor c = getReadableDatabase().query(" sqlite_master ",
-                new String[]{"sql"},
-                "type='table' AND (name=? OR name=?)",
-                new String[]{BooksInformationDBContract.AuthorsNamesTextSearch.TABLE_NAME,
-                        BooksInformationDBContract.BookNameTextSearch.TABLE_NAME},
-                null,
-                null,
-                null);
-        if (c.getCount() != 2)
-            throw new IllegalArgumentException("Book Information TextSearch not found");
-        c.close();
-
-    }
-
-    private void upgradeToVersion3(SQLiteDatabase db) {
-        //add downloaded completed timestamp
-        db.execSQL(SQL.ALTER_TABLE + BooksInformationDBContract.StoredBooks.TABLE_NAME + SQL.ADD_Coulmn +
-                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP + SQL.TEXT
-        );
-    }
-
-
-    private void upgradeToversion2(SQLiteDatabase db) {
+    private void upgradeToVersion2(SQLiteDatabase db) throws Exception {
         db.beginTransaction();
         try {
             //create the stored books table
             db.execSQL(CREATE_STORED_INFO);
             //add coulmn in categories for ordering
-            db.execSQL("ALTER TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + " ADD COLUMN " + BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER + " INTEGER");
+            db.execSQL("ALTER TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + " ADD COLUMN " +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER_3 + " INTEGER");
             //create indexes on each coulmn of join tables
             db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i1" + SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID + ")");
             db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "_i2" + SQL.ON + BooksInformationDBContract.BooksAuthors.TABLE_NAME + "(" + BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID + ")");
@@ -1298,7 +1221,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             //adding the default category order
             for (int i = 0; i < DEFULT_CATEGORIES.length; i++) {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER, i + 1);
+                contentValues.put(BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER_3, i + 1);
                 db.update(BooksInformationDBContract.CategotyEntry.TABLE_NAME,
                         contentValues,
                         BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + "=?",
@@ -1308,6 +1231,70 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    private void upgradeToVersion3(SQLiteDatabase db) throws Exception {
+        //add downloaded completed timestamp
+        db.execSQL(SQL.ALTER_TABLE + BooksInformationDBContract.StoredBooks.TABLE_NAME_V3 + SQL.ADD_Coulmn +
+                BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP_V3 + SQL.TEXT
+        );
+    }
+
+    private void upgradeToVersion4(SQLiteDatabase db) {
+        db.beginTransaction();
+        try {
+            db.execSQL(CREATE_STORED_INFO_v4);
+            db.execSQL("INSERT INTO " + BooksInformationDBContract.StoredBooks.TABLE_NAME + "( " +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP +
+                    ")" +
+
+                    " SELECT " +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_ENQID + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_STATUS_V3 + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_NAME_FILESYSTEM_SYNC_FLAG_V3 + "," +
+                    BooksInformationDBContract.StoredBooks.COLUMN_COMPLETED_TIMESTAMP_V3 +
+                    " FROM " + BooksInformationDBContract.StoredBooks.TABLE_NAME_V3
+            );
+            db.execSQL("Drop Table " + BooksInformationDBContract.StoredBooks.TABLE_NAME_V3);
+
+            db.execSQL("ALTER TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + " RENAME TO " + " tmp_table_name ");
+            db.execSQL("CREATE TABLE " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + "(" +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + " INTEGER NOT NULL PRIMARY KEY," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_PARENT_ID + " INTEGER NOT NULL, " +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + " TEXT," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER + " INTEGER " +
+                    ")");
+            db.execSQL("INSERT INTO " + BooksInformationDBContract.CategotyEntry.TABLE_NAME + "( " +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_PARENT_ID + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER +
+                    ")" +
+
+                    " SELECT " +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_ID + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_PARENT_ID + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_TITLE + "," +
+                    BooksInformationDBContract.CategotyEntry.COLUMN_NAME_CATEGORY_ORDER_3 +
+                    " FROM " + "tmp_table_name"
+            );
+            db.execSQL("Drop Table " + " tmp_table_name ");
+
+            db.execSQL("alter table " + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME_V3 +
+                    " rename to " + BooksInformationDBContract.BookNameTextSearch.TABLE_NAME);
+
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+
     }
 
     public Cursor searchBookNamesFromAuthor(String query, int authorId) {
@@ -1403,12 +1390,20 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     }
 
     public void deleteBook(int bookId, Context context) {
+        BookDatabaseHelper.getInstance(context, bookId).close();
         //TODO Stop the indexing service if it was running
-        File book = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE_EXTENSION);
-        book.delete();
+        File book = new File(getPathFromBookId(bookId, context, false));
+        if (book.exists())
+            if (!book.delete()) {
+                Timber.e("error deleting file");
+            }
+
         //journal file for book database
-        File journal = new File(StorageUtils.getIslamicLibraryShamelaBooksDir(context) + bookId + "." + DATABASE__JOURNAL_EXTENSION);
-        journal.delete();
+        File journal = new File(getPathFromBookId(bookId, context, true));
+        if (book.exists())
+            if (!journal.delete()) {
+                Timber.e("error deleting journal file");
+            }
         deleteBookFromStoredBooks(bookId, context);
         UserDataDBHelper.getInstance(context).deleteAccessLog(bookId);
 

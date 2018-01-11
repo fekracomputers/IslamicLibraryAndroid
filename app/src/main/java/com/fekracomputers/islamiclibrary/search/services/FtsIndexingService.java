@@ -45,17 +45,25 @@ public class FtsIndexingService extends IntentService {
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
             try {
                 if (bookDatabaseHelper.isValidBook()) {
-                    if (bookDatabaseHelper.indexFts()) {
+                    if (!bookDatabaseHelper.isFtsSearchable()) {
+                        if (bookDatabaseHelper.indexFts()) {
+                            Intent ftsIndexingEndedBroadCast =
+                                    new Intent(BROADCAST_ACTION)
+                                            .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
+                                            .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                            sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                        } else {//the indexing failed
+
+                            Intent ftsIndexingEndedBroadCast =
+                                    new Intent(BROADCAST_ACTION)
+                                            .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
+                                            .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                            sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                        }
+                    } else {
                         Intent ftsIndexingEndedBroadCast =
                                 new Intent(BROADCAST_ACTION)
                                         .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
-                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-                        sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
-                    } else {//the indexing failed
-
-                        Intent ftsIndexingEndedBroadCast =
-                                new Intent(BROADCAST_ACTION)
-                                        .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
                                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
                         sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
                     }

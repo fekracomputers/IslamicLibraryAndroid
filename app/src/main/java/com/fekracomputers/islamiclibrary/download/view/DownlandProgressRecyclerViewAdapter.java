@@ -147,7 +147,11 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
                 if (downloadManager != null) {
                     downloadManager.remove(downloadInfo.getId());
                 }
-                LocalDownloadBroadCastReciver.broadCastDownloadCanceled(context, downloadInfo.getId());
+                if (!downloadInfo.getTitle().equals(context.getString(R.string.book_information_database))) {
+                    LocalDownloadBroadCastReciver.broadCastDownloadCanceled(context, downloadInfo.getId());
+                } else {
+                    LocalDownloadBroadCastReciver.broadCastBookInformationDownloadCanceled(context, downloadInfo.getId());
+                }
             });
         }
 

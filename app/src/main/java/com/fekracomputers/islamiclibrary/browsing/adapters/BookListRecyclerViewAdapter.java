@@ -351,22 +351,22 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
                     mListener.StartDownloadingBook(bookInfo);
                     v.setEnabled(false);
                     ((Button) v).setText(R.string.Downloading);
-//                        downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                     downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 });
             } else if (bookDownloadStatus >= STATUS_DOWNLOAD_REQUESTED && bookDownloadStatus < DownloadsConstants.STATUS_DOWNLOAD_COMPLETED) {
                 downloadButton.setText(R.string.Downloading);
-//                downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 downloadButton.setEnabled(false);
-            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_DOWNLOAD_COMPLETED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_UNZIP_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_UNZIP_ENDED) {
+                downloadButton.setText(R.string.unzipping_book);
+                downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
+                downloadButton.setEnabled(false);
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 downloadButton.setText(R.string.preparing_book);
-//                downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 downloadButton.setEnabled(false);
             } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 downloadButton.setText(R.string.open);
-//                downloadButton.setImageResource(R.drawable.book_open_variant);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloaded);
                 downloadButton.setEnabled(true);
                 downloadButton.setOnClickListener(v -> mListener.openBookForReading(bookInfo));

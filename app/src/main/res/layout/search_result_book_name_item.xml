@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="16dp"
-    android:paddingTop="16dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
->
+    android:paddingTop="16dp">
 
     <TextView
         android:id="@+id/book_name_header"
@@ -29,6 +28,7 @@
         android:layout_gravity="end"
         android:layout_toRightOf="@+id/arrow_expand_imageview"
         android:maxLines="1"
+        android:singleLine="true"
         android:textColor="@color/search_card_header_text_light"
         android:textSize="@dimen/books_play_large_size"
         tools:text="100 Result" />
@@ -39,9 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingRight="8dp"
+        android:paddingTop="8dp"
         app:srcCompat="@drawable/ic_toc_expand_holo_dark_30dp"
 
         />

@@ -37,7 +37,8 @@ public class ArabicUtilities {
      * this category) which means this will not match (and hence remove when used with replaceAll("")
      * english letters ,punctation and other things
      */
-    private static final Pattern CLEANING_PATTERN = Pattern.compile("[^\\p{Lo}\\p{Z}\\n]");
+    private static final Pattern REMOVE_PATTERN = Pattern.compile("[^\\p{L}\\p{Z}]");
+    private static final Pattern SPACE_REPLACED_PATTERN = Pattern.compile("[\\p{Z}\\p{S}\\p{C}\\p{Pc}\\p{Pd}\\p{Po}&&[^\"]]");
     private static final String ALEF_str = "\u0627";
     private static final String ALEF_MADDA_str = "\u0622";
     private static final String ALEF_HAMZA_ABOVE_str = "\u0623";
@@ -48,6 +49,7 @@ public class ArabicUtilities {
     private static final String HEH_STR = "\u0647";
     private static final Pattern equvilancePattern = Pattern.compile(
             ALEF_MADDA_str + "|" + ALEF_HAMZA_ABOVE_str + "|" + ALEF_HAMZA_BELOW_STR + "|" + DOTLESS_YEH_STR + "|" + TEH_MARBUTA_STR);
+    private static final Pattern REMOVE_REPEATED_SPACES = Pattern.compile("\\s\\s+");
 
     public static String cleanTashkeel(String s) {
         Matcher matcher = CLEANING_TASHKEEL.matcher(s);
@@ -55,10 +57,17 @@ public class ArabicUtilities {
     }
 
     public static String cleanTextForSearchingWithRegex(String s) {
-        Matcher matcher = CLEANING_PATTERN.matcher(s);
-        String removed_tashkeel = matcher.replaceAll("");
+        Matcher matcher = SPACE_REPLACED_PATTERN.matcher(s);
+        String space_replaced = matcher.replaceAll(" ");
 
-        Matcher equivlanceMatcher = equvilancePattern.matcher(removed_tashkeel);
+        Matcher matcher1 = REMOVE_PATTERN.matcher(space_replaced);
+        String removed = matcher1.replaceAll("");
+
+        Matcher matcher2 = REMOVE_REPEATED_SPACES.matcher(removed);
+        String removed_duplicat_spaces = matcher2.replaceAll(" ");
+
+
+        Matcher equivlanceMatcher = equvilancePattern.matcher(removed_duplicat_spaces);
 
         StringBuffer sb = new StringBuffer();
         while (equivlanceMatcher.find()) {
@@ -87,6 +96,8 @@ public class ArabicUtilities {
             if ((c < HAMZAH || c > YEH) & !Character.isSpace(c)) {
                 sb.deleteCharAt(i);
                 i--;
+            } else if (Character.isSpace(c)) {
+                sb.setCharAt(i, ' ');
             } else {
                 switch (c) {
                     case ALEF_MADDA:

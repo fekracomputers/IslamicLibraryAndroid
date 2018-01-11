@@ -108,6 +108,8 @@
     <string name="downloading_book_information">نحمل قاعدة بيانات الكتب</string>
     <string name="info_refreshing_database_with_storage">نراجع الكتب المخزنة</string>
     <string name="info_preparing_book_information_database">جاري إعداد قاعدة بيانات الكتب</string>
+    <string name="info_unzipping_book_information_database">جاري فك ضغط قاعدة بيانات الكتب</string>
+
     <string name="pref_ui_language_arabic">واجهة  عربية</string>
     <string name="download_book">تحميل</string>
     <string name="download_selected_books">تنزيل الكتب المحددة</string>
@@ -203,6 +205,7 @@
     <string name="hint_search_authors_names">البحث في أسماء المؤلفين</string>
     <string name="hint_search_books_names">البحث في أسماء الكتب</string>
     <string name="preparing_book">جاري الإعداد</string>
+    <string name="unzipping_book">جاري فك الضغط</string>
     <string name="refreshing_on_background">سيتم مراجعة الكتب في الخلفية، يمكنك الاستمرار في القراءة الآن</string>
     <string name="open_source_licences">البرمجيات مفتوحة المصدر المستخدمة</string>
     <string name="searching_in_d_books">نبحث في %d كتب</string>
@@ -285,6 +288,9 @@
     <string name="menu_delete_note">حذف الملاحظة</string>
     <string name="menu_edit_note_color">تعديل لون الملاحظة</string>
     <string name="show_collecttion">إظهار</string>
-    <string name="book_information_error_close">عذرا !!!\nيوجد خلل في قاعدة بيانات الكتب\nسوف نغلق البرنامج فأعد تشغيله مرة أخرى لإعادة محاولة تحميل قاعدة بيانات الكتب</string>
+    <string name="book_information_error_close">عذرا !!!\nيوجد خلل في قاعدة بيانات الكتب\n هل تريد إعادة تحميلها؟</string>
+    <string name="book_information_canceled">لقد ألغيت تحميل قاعدة بيانات الكتب فلن يعمل البرنامج دونها،أعد تشغيل البرنامج لإعادة تحميلها</string>
+    <string name="download_failed">فشل تحميل كتاب رقم (%1$d) بسبب %2$s</string>
+    <string name="not_now">ليس الآن</string>
 
 </resources>

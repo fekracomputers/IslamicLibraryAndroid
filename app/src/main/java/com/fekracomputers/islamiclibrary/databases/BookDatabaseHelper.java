@@ -26,11 +26,8 @@ import com.fekracomputers.islamiclibrary.utility.SystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
 
 import timber.log.Timber;
 
@@ -52,7 +49,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             BookDatabaseContract.titlesTextSearch.COLUMN_NAME_TITLE +
             ")" +
             "VALUES (" + "?" + SQL.COMMA + " ?" + ")";
-
+    public static final int DATABASE_VERSION = 4;
     private static final String BOOK_FTS_QUERY_SQL = SQL.SELECT +
             BookDatabaseContract.searchResultPageTableAlias.TABLE_NAME + SQL.DOT_SEPARATOR + BookDatabaseContract.pageTextSearch.COLUMN_NAME_DOC_id + SQL.AS + BookDatabaseContract.searchResultPageTableAlias.SEARCH_RESULT_PAGE_ID + SQL.COMMA +
             BookDatabaseContract.PageEntry.TABLE_NAME + SQL.DOT_SEPARATOR + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + SQL.AS + BookDatabaseContract.searchResultPageTableAlias.SEARCH_RESULT_PARTNUMBER + SQL.COMMA +
@@ -72,8 +69,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             BookDatabaseContract.PageEntry.TABLE_NAME +
             SQL.ON +
             BookDatabaseContract.PageEntry.TABLE_NAME + SQL.DOT_SEPARATOR + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID + SQL.EQUALS + BookDatabaseContract.searchResultPageTableAlias.TABLE_NAME + SQL.DOT_SEPARATOR + BookDatabaseContract.pageTextSearch.COLUMN_NAME_DOC_id;
-
-
     private static final String TITLES_COLUMNS =
             BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID + SQL.COMMA +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_TITLE + SQL.COMMA +
@@ -89,7 +84,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     BookDatabaseContract.TitlesEntry.TABLE_NAME +
                     ") THEN 1  ELSE 0  END" + SQL.AS
                     + IS_PARENT;
-
     private static final String CREATE_TITLES_FTS_TABLE = "CREATE VIRTUAL TABLE IF NOT EXISTS " +
             BookDatabaseContract.titlesTextSearch.TABLE_NAME +
             " USING fts4(content=\"\"" + SQL.COMMA + " " + BookDatabaseContract.titlesTextSearch.COLUMN_NAME_TITLE + ")";
@@ -106,7 +100,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             SQL.ON +
             BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + SQL.EQUALS +
             BookDatabaseContract.PageEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID;
-
     private static final String TITLES_FTS_QUERY_SQL = SELECT_TITLES +
             SQL.WHERE +
             BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID +
@@ -120,14 +113,10 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             SQL.MATCH +
             "?" + ")" +
             " Order By " + BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID;
-
-
     private static final String GET_TITLES_UNDER_PARENT_QUERY =
             SELECT_TITLES +
                     " where " +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PARENT_ID + "=?";
-
-
     private static final String GET_PARENT_TREE_QUERY =
             "WITH RECURSIVE" +
                     " parent_of(id" + SQL.COMMA + " parentid) AS " +
@@ -149,7 +138,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     SQL.ON +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + SQL.EQUALS +
                     BookDatabaseContract.PageEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID;
-
     /**
      * this query is vey fast although very large :)
      */
@@ -193,7 +181,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     SQL.ON +
                     BookDatabaseContract.TitlesEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + SQL.EQUALS +
                     BookDatabaseContract.PageEntry.TABLE_NAME + SQL.DOT + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID;
-
     private static final String CREATE_BOOK_FTS_TABLE = "CREATE VIRTUAL TABLE IF NOT EXISTS " +
             BookDatabaseContract.pageTextSearch.TABLE_NAME +
             " USING fts4(content=\"\"" + SQL.COMMA + " page)";
@@ -201,8 +188,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             BookDatabaseContract.pageTextSearch.TABLE_NAME + "(" + BookDatabaseContract.pageTextSearch.TABLE_NAME + ")" +
             "VALUES('optimize')";
     //" USING fts4(page TEXT)";
-
-
     private static SparseArray<BookDatabaseHelper> sIsnstances = new SparseArray<>();
     private final int bookId;
     //  private SQLiteDatabase mDatabase = null;
@@ -215,7 +200,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     private BookDatabaseHelper(Context context, int mBookId) {
         //super(new DatabaseContext(context),mBookId+".sqlite", null, 1);
         super(context, StorageUtils.getIslamicLibraryShamelaBooksDir(context) +
-                File.separator + mBookId + SQL.DOT_SEPARATOR + DownloadFileConstants.DATABASE_FILE_EXTENSTION, null, 1);
+                File.separator + mBookId + SQL.DOT_SEPARATOR + DownloadFileConstants.DATABASE_FILE_EXTENSTION, null, DATABASE_VERSION);
         this.bookId = mBookId;
         String booksPath = StorageUtils.getIslamicLibraryShamelaBooksDir(context);
         mBookPath = booksPath + File.separator + Integer.toString(mBookId) + SQL.DOT_SEPARATOR + BooksInformationDbHelper.DATABASE_EXTENSION;
@@ -553,7 +538,36 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (newVersion < 4) {
+            db.execSQL("alter table " + BookDatabaseContract.pageTextSearch.TABLE_NAME_V3 +
+                    " rename to " + BookDatabaseContract.pageTextSearch.TABLE_NAME);
+            db.execSQL("alter table " + BookDatabaseContract.titlesTextSearch.TABLE_NAME_V3 +
+                    " rename to " + BookDatabaseContract.titlesTextSearch.TABLE_NAME);
 
+            //CREATE INDEX `titles_desc` ON `titles` (`pageid` DESC)
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
+                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
+                    "titles_PageId_index" +
+                    SQL.ON +
+                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
+                    "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + " DESC " + ")");
+
+            //CREATE INDEX `titles_parent` ON `titles` (`parentid` )
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
+                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
+                    "titles_parentId_index" +
+                    SQL.ON +
+                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
+                    "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PARENT_ID + ")");
+
+            //CREATE  INDEX `partNumberPageNumberIndex` ON `pages` (`partnumber` ,`pagenumber` );
+            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
+                    BookDatabaseContract.PageEntry.TABLE_NAME +
+                    "partNumberPageNumberIndex" +
+                    SQL.ON +
+                    BookDatabaseContract.PageEntry.TABLE_NAME +
+                    "(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + "," + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ")");
+        }
     }
 
 
@@ -618,17 +632,20 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
 
     public BookPartsInfo getBookPartsInfo() {
-        Cursor c = getReadableDatabase().rawQuery("select real_minimum+part_offset as min_part ,max_part,max_page  from " +
-                        "(select min(pages.partnumber) as real_minimum, " +
-                        "max(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + ") as max_part, " +
-                        "max(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ") as max_page, " +
-                        "case (select count(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ") from " +
+        Cursor c = getReadableDatabase().rawQuery("select real_minimum+part_offset as min_part ,max_part,max_page  \n" +
+                        "from (\n" +
+                        " select min(pages.partnumber) as real_minimum,\n" +
+                        " max(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + ") as max_part,\n" +
+                        " max(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ") as max_page,\n" +
+                        " case (select count(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ") from " +
                         BookDatabaseContract.PageEntry.TABLE_NAME + " where " +
                         BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + "=0 and " +
-                        BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + "=0) " +
-                        " when 1 then  1 " +
-                        " else 0 " +
-                        " end as part_offset " +
+                        BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + "=0)  \n" +
+                        " when 1 \n" +
+                        " then  1  \n" +
+                        " else 0  \n" +
+                        " end \n" +
+                        " as part_offset  \n" +
                         " from " + BookDatabaseContract.PageEntry.TABLE_NAME +
                         " )",
                 null
@@ -791,13 +808,16 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
 
     public boolean indexFts() throws SQLException {
+        if (isFtsSearchable()) return true;
         SQLiteDatabase db = getWritableDatabase();
+
         Cursor allPagesCursor = null;
         Cursor allTitlesCursor = null;
         db.beginTransaction();
         try {
             allPagesCursor = db.query(BookDatabaseContract.PageEntry.TABLE_NAME,
-                    new String[]{BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID, BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE},
+                    new String[]{BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_ID,
+                            BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE},
                     null,
                     null,
                     null,
@@ -835,29 +855,6 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                 populateTitlesFTS_Statement.executeInsert();
             }
             db.rawQuery(OPTIMIZE_TITLES_FTS, null);
-            //CREATE INDEX `titles_desc` ON `titles` (`pageid` DESC)
-            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
-                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
-                    "titles_PageId_index" +
-                    SQL.ON +
-                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
-                    "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID + " DESC " + ")");
-
-            //CREATE INDEX `titles_parent` ON `titles` (`parentid` )
-            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
-                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
-                    "titles_parentId_index" +
-                    SQL.ON +
-                    BookDatabaseContract.TitlesEntry.TABLE_NAME +
-                    "(" + BookDatabaseContract.TitlesEntry.COLUMN_NAME_PARENT_ID + ")");
-
-            //CREATE  INDEX `partNumberPageNumberIndex` ON `pages` (`partnumber` ,`pagenumber` );
-            db.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
-                    BookDatabaseContract.PageEntry.TABLE_NAME +
-                    "partNumberPageNumberIndex" +
-                    SQL.ON +
-                    BookDatabaseContract.PageEntry.TABLE_NAME +
-                    "(" + BookDatabaseContract.PageEntry.COLUMN_NAME_PART_NUMBER + "," + BookDatabaseContract.PageEntry.COLUMN_NAME_PAGE_NUMBER + ")");
             db.setTransactionSuccessful();
             return true;
         } finally {
@@ -875,27 +872,39 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean isFtsSearchable() {
-        Cursor c = getReadableDatabase().query(" sqlite_master ",
-                new String[]{"sql"},
-                "type='table' AND (name=? OR name=?)",
-                new String[]{BookDatabaseContract.pageTextSearch.TABLE_NAME, BookDatabaseContract.titlesTextSearch.TABLE_NAME},
-                null,
-                null,
-                null);
-        boolean pageTextSearchExists = false;
-        if (c.moveToFirst()) {
-            String foundCreateStatement = c.getString(0);
-            pageTextSearchExists = foundCreateStatement.contains(BookDatabaseContract.pageTextSearch.TABLE_NAME);
-        }
-        boolean titlesTextSearchExists = false;
-        if (pageTextSearchExists && c.moveToNext()) {
-            String foundCreateStatement = c.getString(0);
-            titlesTextSearchExists = foundCreateStatement
-                    .contains(BookDatabaseContract.titlesTextSearch.TABLE_NAME);
-        }
+        if (getReadableDatabase().getVersion() >= 4) return true;
+        else {
+            Cursor c = null;
+            boolean b1;
+            try {
+                c = getReadableDatabase().rawQuery(
+                        "select docid from " + BookDatabaseContract.pageTextSearch.TABLE_NAME
+                                + " where " + BookDatabaseContract.pageTextSearch.COLUMN_NAME_PAGE + "match ?"
+                                + "limit 1", new String[]{"الله"});
 
-        c.close();
-        return pageTextSearchExists && titlesTextSearchExists;
+                b1 = c.getCount() > -1;
+            } catch (Exception e) {
+                b1 = false;
+            }
+            c.close();
+            boolean b2;
+            Cursor c2 = null;
+            try {
+                c2 = getReadableDatabase().rawQuery(
+                        "select docid from " + BookDatabaseContract.pageTextSearch.COLUMN_NAME_PAGE
+                                + " where " + BookDatabaseContract.titlesTextSearch.COLUMN_NAME_TITLE + "match ?"
+                                + "limit 1", new String[]{"الله"});
+
+                b2 = c.getCount() > -1;
+            } catch (Exception e) {
+                b2 = false;
+            }
+            if (c2 != null) {
+                c2.close();
+            }
+
+            return b1 && b2;
+        }
     }
 
 
@@ -911,29 +920,9 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 
 
     public boolean isValidBook() {
-        Cursor c = getReadableDatabase().query(" sqlite_master ",
-                new String[]{"sql"},
-                "type='table'",
-                null,
-                null,
-                null,
-                null);
-        Set<String> createStatements = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-        createStatements.add("CREATE TABLE info (name VARCHAR(64) NOT NULL PRIMARY KEY, value TEXT)");
-        createStatements.add("CREATE TABLE pages (id INTEGER NOT NULL PRIMARY KEY, partnumber INTEGER NOT NULL, pagenumber INTEGER NOT NULL, page TEXT)");
-        createStatements.add("CREATE TABLE titles (id INTEGER NOT NULL PRIMARY KEY, parentid INTEGER NOT NULL, pageid INTEGER NOT NULL, title TEXT)");
-        while (c.moveToNext()) {
-            String createStatment = c.getString(0);
-            createStatements.remove(createStatment.toUpperCase());
-        }
-
-        c.close();
-
-
-        boolean validBook = createStatements.size() == 0;
-        if (!validBook)
-            Timber.e("invalid book %d,create statment %s", bookId, Arrays.toString(createStatements.toArray()));
-        return validBook;
+        DBValidator dBValidator = new DBValidator(DBValidator.BOOK_DATABASE_TYPE);
+        dBValidator.validate(this);
+        return dBValidator.isValid();
     }
 
     public BookInfo getBookInfo() {

@@ -342,7 +342,9 @@ public class BookInformationFragment extends Fragment implements
                 });
             } else if (bookDownloadStatus >= STATUS_DOWNLOAD_REQUESTED && bookDownloadStatus < STATUS_DOWNLOAD_COMPLETED) {
                 setDownloadButtonForStartDownloading();
-            } else if (bookDownloadStatus >= STATUS_DOWNLOAD_COMPLETED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_UNZIP_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_UNZIP_ENDED) {
+                setDownloadButtonForStartDownloading(R.string.unzipping_book);
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 setDownloadButtonForStartDownloading(R.string.preparing_book);
             } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 mDownloadButtonText.setText(R.string.open);
