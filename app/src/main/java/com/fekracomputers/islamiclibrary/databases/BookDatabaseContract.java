@@ -82,8 +82,8 @@ public class BookDatabaseContract {
 
     }
 
-    //insert into pageTextSearch(docid,page) select id,page from pages
-    public static class pageTextSearch {
+    //insert into pagestextsearch(docid,page) select id,page from pages
+    public static class pagesTextSearch {
         public static final String TABLE_NAME = "pagestextsearch";
         public static final String TABLE_NAME_V3 = "pageTextSearch";
         public static final String COLUMN_NAME_DOC_id = "docid";
