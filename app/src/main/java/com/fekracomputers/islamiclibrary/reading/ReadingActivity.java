@@ -4,6 +4,7 @@ package com.fekracomputers.islamiclibrary.reading;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -110,6 +111,7 @@ public class ReadingActivity extends AppCompatActivity implements
     private static final int FLOATING_PAGE_NUMBER_DELAY_MILLIS = 5000;
     private static final int FADE_ANIMATION_DURATION = 500;
     private static final String KEY_STATE_NAV_UI_VISIBLE = "KEY_STATE_NAV_UI_VISIBLE";
+    private static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
     private final String TAG = this.getClass().getSimpleName();
     private final Handler mHideHandler = new Handler();
 
@@ -205,6 +207,14 @@ public class ReadingActivity extends AppCompatActivity implements
     private boolean mIsInSearchMode = false;
     private SearchView mSearchView;
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
+
+    public static void openBook(int bookId, int pageId, Context context) {
+        Intent intent = new Intent(context, ReadingActivity.class);
+        intent.putExtra(KEY_BOOK_ID, bookId);
+        intent.putExtra(KEY_PAGE_ID, pageId);
+        context.startActivity(intent);
+
+    }
 
     private void showPageNumberPickerDialog() {
         Bundle PageNumberPickerDialogFragmentBundle = new Bundle();
@@ -309,7 +319,6 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-
     private void restartOnThemeChange() {
         finish();
         Intent intent = getIntent();
@@ -349,7 +358,6 @@ public class ReadingActivity extends AppCompatActivity implements
 
         return true;
     }
-
 
     @Override
     public void onBackPressed() {
@@ -509,7 +517,6 @@ public class ReadingActivity extends AppCompatActivity implements
         mPager.requestFocus();
     }
 
-
     @Override
     public void setBookmarkState(boolean Checked) {
         if (is_nav_view_inflated) {
@@ -572,7 +579,6 @@ public class ReadingActivity extends AppCompatActivity implements
         return b || super.onKeyUp(keyCode, event);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -622,7 +628,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
 
         Intent intent = getIntent();
-        bookId = intent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
+        bookId = intent.getIntExtra(KEY_BOOK_ID, 0);
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);
         mUserDataDBHelper.logBookAccess();
 
@@ -668,7 +674,12 @@ public class ReadingActivity extends AppCompatActivity implements
         PAGE_COUNT = mBookDatabaseHelper.getPageCount();
         PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());
 
-        currentPageInfo = mUserDataDBHelper.getLastPageInfo();
+        if (!intent.hasExtra(KEY_PAGE_ID)) {
+            currentPageInfo = mUserDataDBHelper.getLastPageInfo();
+        } else {
+            currentPageInfo = mBookDatabaseHelper.getPageInfoByPageId(intent.getIntExtra(KEY_PAGE_ID, 0));
+
+        }
         parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
         mFloatingPageNumberTextView.setText(
                 getPartPageSingleText());
@@ -727,7 +738,6 @@ public class ReadingActivity extends AppCompatActivity implements
                 getResources()
         );
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -912,7 +922,6 @@ public class ReadingActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
     public void onActionModeStarted(ActionMode mode) {
         if (mActionMode == null) {
@@ -952,7 +961,6 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-
     private boolean shouldDisplayFloatingSelectionMenu() {
         //return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
         return false;
@@ -985,7 +993,6 @@ public class ReadingActivity extends AppCompatActivity implements
     public void finishActionMode() {
         if (mActionMode != null) mActionMode.finish();
     }
-
 
     private void startLocalSearch(String SearchQuery) {
         Bundle bundle = new Bundle();

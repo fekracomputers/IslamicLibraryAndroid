@@ -15,10 +15,11 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.UserNote;
+import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.ExpandableHeaderItem;
-import com.fekracomputers.islamiclibrary.userNotes.adapters.UpdatableExpandingGroup;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
+import com.xwray.groupie.Section;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,9 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
             public void onUserNoteClicked(UserNote userNote) {
-
+                ReadingActivity.openBook(userNote.bookId,
+                        userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1,
+                        getContext());
             }
 
             @Override
@@ -98,12 +101,12 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
             UserNoteGroupAdapter adapter = new UserNoteGroupAdapter();
             adapter.setUserNoteInterActionListener(mListener);
 
-            UpdatableExpandingGroup bookmarksExpandableGroup = new UpdatableExpandingGroup(new ExpandableHeaderItem(R.string.bookmarks));
-            bookmarksExpandableGroup.update(bookmarkItems);
+            Section bookmarksExpandableGroup = new Section(new ExpandableHeaderItem(R.string.bookmarks));
+            bookmarksExpandableGroup.addAll(bookmarkItems);
             adapter.add(bookmarksExpandableGroup);
 
-            UpdatableExpandingGroup hihligtsexpandableGroup = new UpdatableExpandingGroup(new ExpandableHeaderItem(R.string.notes));
-            hihligtsexpandableGroup.update(highlightItems);
+            Section hihligtsexpandableGroup = new Section(new ExpandableHeaderItem(R.string.notes));
+            hihligtsexpandableGroup.addAll(highlightItems);
             adapter.add(hihligtsexpandableGroup);
 
             recyclerView.setAdapter(adapter);

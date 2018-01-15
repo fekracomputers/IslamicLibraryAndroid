@@ -19,7 +19,7 @@ public class BrowsingUtils {
 
     public static void openBookForReading(BookInfo bookInfo, Context context) {
         final Intent intent = new Intent(context, ReadingActivity.class);
-        intent.putExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, bookInfo.getBookId());
+        intent.putExtra(ReadingActivity.KEY_BOOK_ID, bookInfo.getBookId());
         intent.putExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookInfo.getName());
         intent.putExtra(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME, bookInfo.getAuthorName());
         context.startActivity(intent);

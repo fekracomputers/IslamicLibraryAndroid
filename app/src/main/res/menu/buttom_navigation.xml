@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/bottom_nav_home"
@@ -10,14 +11,13 @@
         android:icon="@drawable/ic_library_books_black_24dp"
         android:title="@string/bottom_library" />
 
-    <!--<item-->
-    <!--android:id="@id/bottom_nav_user_notes"-->
-    <!--android:visible="false"-->
-    <!--android:icon="@drawable/ic_bookmark_nav_24dp"-->
-    <!--android:title="@string/bottom_nav_notes_bookmarks"-->
-    <!--app:showAsAction="always" />-->
-    <!--<item-->
-        <!--android:id="@+id/bottom_nav_search"-->
+    <item
+        android:id="@id/bottom_nav_user_notes"
+        android:visible="false"
+        android:icon="@drawable/ic_bookmark_nav_24dp"
+        android:title="@string/bottom_nav_notes_bookmarks"
+        app:showAsAction="always" />
+    <!--<!-android:id="@+id/bottom_nav_search"&ndash;&gt;-->
         <!--android:icon="@drawable/ic_search_black_24dp"-->
         <!--android:title="@string/bottom_nav_search"-->
         <!--android:visible="false" />-->
