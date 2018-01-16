@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.userNotes;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
     private UserDataDBHelper.GlobalUserDBHelper userDatabase;
     private ArrayList<UserNoteItem> bookmarkItems;
     private ArrayList<UserNoteItem> highlightItems;
+    private UserNoteGroupAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -68,8 +70,22 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         userDatabase = UserDataDBHelper.getInstance(getContext());
+
+        userDatabase.getUserNotesFlowable()
+
         bookmarkItems = userDatabase.getBookmarkItems();
         highlightItems = userDatabase.getHighlightItems();
+        adapter = new UserNoteGroupAdapter();
+        adapter.setUserNoteInterActionListener(mListener);
+
+        Section bookmarksExpandableGroup = new Section(new ExpandableHeaderItem(R.string.bookmarks));
+        bookmarksExpandableGroup.addAll(bookmarkItems);
+        adapter.add(bookmarksExpandableGroup);
+
+        Section hihligtsexpandableGroup = new Section(new ExpandableHeaderItem(R.string.notes));
+        hihligtsexpandableGroup.addAll(highlightItems);
+        adapter.add(hihligtsexpandableGroup);
+
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
             public void onUserNoteClicked(UserNote userNote) {
@@ -87,7 +103,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_global_user_list, container, false);
@@ -98,21 +114,8 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
             recyclerView.setVisibility(View.GONE);
             zeroView.setVisibility(View.VISIBLE);
         } else {
-            UserNoteGroupAdapter adapter = new UserNoteGroupAdapter();
-            adapter.setUserNoteInterActionListener(mListener);
-
-            Section bookmarksExpandableGroup = new Section(new ExpandableHeaderItem(R.string.bookmarks));
-            bookmarksExpandableGroup.addAll(bookmarkItems);
-            adapter.add(bookmarksExpandableGroup);
-
-            Section hihligtsexpandableGroup = new Section(new ExpandableHeaderItem(R.string.notes));
-            hihligtsexpandableGroup.addAll(highlightItems);
-            adapter.add(hihligtsexpandableGroup);
-
             recyclerView.setAdapter(adapter);
         }
-
-
         return view;
     }
 

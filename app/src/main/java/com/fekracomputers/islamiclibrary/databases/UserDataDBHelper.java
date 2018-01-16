@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import timber.log.Timber;
 
 /**
@@ -1009,6 +1012,17 @@ public class UserDataDBHelper {
             userNotes.addAll(getHighlightItems());
             return userNotes;
         }
+
+        public Flowable<UserNoteItem> getUserNoteFlowable() {
+            return Flowable.create(new FlowableOnSubscribe<UserNoteItem>() {
+                @Override
+                public void subscribe(FlowableEmitter<UserNoteItem> emitter) throws Exception {
+                    emitter.onNext();
+                }
+            });
+        }
+
+
 
         public ArrayList<UserNoteItem> getBookmarkItems() throws IllegalArgumentException {
 //            if (!order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID) ||

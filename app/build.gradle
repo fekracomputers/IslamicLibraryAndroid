@@ -77,6 +77,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.2"
     implementation "com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1"
     implementation 'com.github.michael-rapp:chrome-like-tab-switcher:0.2.2'
+
     testImplementation "junit:junit:4.12"
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.1", {
         exclude group: "com.android.support", module: "support-annotations"
@@ -85,6 +86,8 @@ dependencies {
     compile("com.crashlytics.sdk.android:crashlytics:2.7.1@aar") {
         transitive = true
     }
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
 
