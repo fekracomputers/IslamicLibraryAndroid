@@ -51,7 +51,7 @@ public abstract class BookCardEventsCallback {
 
     }
 
-    public void StartDownloadingBook(BookInfo bookInfo) {
+    public void startDownloadingBook(BookInfo bookInfo) {
         BrowsingUtils.startDownloadingBook(bookInfo, context);
 
     }
@@ -177,15 +177,23 @@ public abstract class BookCardEventsCallback {
             int downloadStatus = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS,
                     DownloadsConstants.STATUS_INVALID);
             boolean notifyCangeWithoutBookId = intent.getBooleanExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, false);
+
             if (!notifyCangeWithoutBookId) {
                 int bookId = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, 0);
+
+                if (intent.hasExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON)) {
+                    bookCardEventsCallback.notifyBookDownloadFailed(bookId, intent.getStringExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON));
+                }
                 bookCardEventsCallback.notifyBookDownloadStatusUpdate(bookId, downloadStatus);
 
             } else {
                 bookCardEventsCallback.notifyBookDownloadStatusUpdate();
             }
+
         }
     }
+
+    protected abstract void notifyBookDownloadFailed(int bookId, String failurReason);
 
 
 }

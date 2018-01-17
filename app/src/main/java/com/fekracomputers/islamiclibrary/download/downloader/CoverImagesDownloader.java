@@ -1,9 +1,8 @@
 package com.fekracomputers.islamiclibrary.download.downloader;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 
 
 public class CoverImagesDownloader {
@@ -12,16 +11,11 @@ public class CoverImagesDownloader {
      */
 
 
-    @Nullable
-    public static String getImageUrl(Context context, int bookId)
-
-    {
-
-        return context.getString(R.string.base_url) + "/" + context.getString(R.string.url_covers) + "/" + bookId + ".jpg";
+    @NonNull
+    public static String getImageUrl(int bookId) {
+        return DownloadFileConstants.BASE_URL + "/" + DownloadFileConstants.COVERS + "/" + bookId + ".jpg";
 
     }
-
-
 
 
 }

@@ -386,5 +386,7 @@
     <string name="book_information_canceled">You have caceled downloading book information database\\n the app will not work without it\\nplease re-run the app to download it</string>
     <string name="download_failed">book (%1$d) download failed because %2$s</string>
     <string name="not_now">not now</string>
+    <string name="book_download_failure">%1$s  download fialed</string>
+    <string name="redownload">redownload</string>
     <!--end storage pref-->
 </resources>

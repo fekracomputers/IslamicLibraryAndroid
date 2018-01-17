@@ -826,7 +826,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_BOOK_FTS_TABLE);
             SQLiteStatement populateFTS_Statement = db.compileStatement(POPULATE_BOOKS_FTS_SQL); //pre-compiled sql statement
             while (allPagesCursor.moveToNext()) {
-                String cleanedText = ArabicUtilities.cleanTextForSearchingWithRegex(allPagesCursor.getString(1));
+                String cleanedText = ArabicUtilities.cleanTextForSearchingIndexing(allPagesCursor.getString(1));
                 populateFTS_Statement.clearBindings();
                 populateFTS_Statement.bindLong(1, allPagesCursor.getLong(0));
                 populateFTS_Statement.bindString(2, cleanedText);
@@ -847,7 +847,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TITLES_FTS_TABLE);
             SQLiteStatement populateTitlesFTS_Statement = db.compileStatement(POPULATE_TITLES_FTS_SQL); //pre-compiled sql statement
             while (allTitlesCursor.moveToNext()) {
-                String cleanedText = ArabicUtilities.cleanTextForSearchingWithRegex(allTitlesCursor.getString(1));
+                String cleanedText = ArabicUtilities.cleanTextForSearchingIndexing(allTitlesCursor.getString(1));
                 populateTitlesFTS_Statement.clearBindings();
                 populateTitlesFTS_Statement.bindLong(1, allTitlesCursor.getLong(0));
                 populateTitlesFTS_Statement.bindString(2, cleanedText);

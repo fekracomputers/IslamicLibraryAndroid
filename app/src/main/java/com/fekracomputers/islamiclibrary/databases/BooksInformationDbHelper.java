@@ -476,7 +476,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
 
     }
 
-    public BookInfo getBookInfo(int book_id) {
+    public BookInfo getBookInfo(int bookId) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor bookInformationCursor;
@@ -489,16 +489,16 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
                             BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_CARD
                     },
                     BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_ID + "=?",
-                    new String[]{String.valueOf(book_id)},
+                    new String[]{String.valueOf(bookId)},
                     null,
                     null,
                     null
             );
-            BookCategory category = getBookCategory(book_id);
-            AuthorInfo authorInfo = getAuthorInfoByBookId(book_id);
+            BookCategory category = getBookCategory(bookId);
+            AuthorInfo authorInfo = getAuthorInfoByBookId(bookId);
             if (bookInformationCursor.moveToFirst()) {
                 BookInfo bookInfo = new BookInfo(
-                        book_id,
+                        bookId,
                         bookInformationCursor.getString(bookInformationCursor.getColumnIndex(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE)),
                         bookInformationCursor.getString(bookInformationCursor.getColumnIndex(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_INFORMATION)),
                         bookInformationCursor.getString(bookInformationCursor.getColumnIndex(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_CARD)),
@@ -1324,7 +1324,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_BOOK_TITLES_FTS_TABLE);
             SQLiteStatement populateFTS_Statement = db.compileStatement(POPULATE_BOOKS_TITLES_FTS_SQL); //pre-compiled sql statement
             while (allBookTitleCursor.moveToNext()) {
-                String cleanedText = ArabicUtilities.cleanTextForSearchingWithRegex(allBookTitleCursor.getString(1));
+                String cleanedText = ArabicUtilities.cleanTextForSearchingIndexing(allBookTitleCursor.getString(1));
                 populateFTS_Statement.clearBindings();
                 populateFTS_Statement.bindLong(1, allBookTitleCursor.getLong(0));
                 populateFTS_Statement.bindString(2, cleanedText);
@@ -1345,7 +1345,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_AUTHORS_NAMES_FTS_TABLE);
             SQLiteStatement populateAuthorsNamesFTS_Statement = db.compileStatement(POPULATE_AUTHORS_NAMES_FTS_SQL); //pre-compiled sql statement
             while (allAuthorNameCursor.moveToNext()) {
-                String cleanedText = ArabicUtilities.cleanTextForSearchingWithRegex(allAuthorNameCursor.getString(1));
+                String cleanedText = ArabicUtilities.cleanTextForSearchingIndexing(allAuthorNameCursor.getString(1));
                 populateAuthorsNamesFTS_Statement.clearBindings();
                 populateAuthorsNamesFTS_Statement.bindLong(1, allAuthorNameCursor.getLong(0));
                 populateAuthorsNamesFTS_Statement.bindString(2, cleanedText);

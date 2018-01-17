@@ -300,6 +300,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... voids) {
             SplashActivity activity = activityReference.get();
+            StorageUtils.makeIslamicLibraryShamelaDirectory(activity);
             if (activity != null) {
                 AssetManager assetManager = activity.getAssets();
                 InputStream in;

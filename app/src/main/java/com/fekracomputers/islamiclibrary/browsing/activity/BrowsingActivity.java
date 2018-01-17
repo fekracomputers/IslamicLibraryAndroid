@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -207,6 +209,12 @@ public class BrowsingActivity
             notifySelectionStateChanged();
         }
 
+        @Override
+        protected void notifyBookDownloadFailed(int bookId, String failurReason) {
+            BrowsingActivity.this.notifyBookDownloadFailed(bookId, failurReason);
+
+        }
+
 
         @Override
         public void notifyBookDownloadStatusUpdate(int bookId, int downloadStatus) {
@@ -233,6 +241,20 @@ public class BrowsingActivity
 
 
     };
+
+    private void notifyBookDownloadFailed(int bookId, String failurReason) {
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.browsing_coordinator_layout);
+        Snackbar mySnackbar = Snackbar.make(coordinatorLayout,
+                getResources().getString(R.string.book_download_failure, mBooksInformationDbHelper.getBookName(bookId)),
+                Snackbar.LENGTH_LONG);
+        mySnackbar.setAction(R.string.redownload,
+                v -> {
+                    bookCardEventsCallback.startDownloadingBook(mBooksInformationDbHelper.getBookInfo(bookId));
+                    bookCardEventsCallback.notifyBookDownloadStatusUpdate(bookId, DownloadsConstants.STATUS_DOWNLOAD_REQUESTED);
+                }
+        );
+        mySnackbar.show();
+    }
 
 
     private AppBarLayout appBarLayout;
@@ -747,6 +769,7 @@ public class BrowsingActivity
     }
 
     public synchronized void notifyBookDownloadStatusUpdate(int bookId, int downloadStatus) {
+
         for (BrowsingActivityListingFragment pagerTab : pagerTabs) {
             pagerTab.BookDownloadStatusUpdate(bookId, downloadStatus);
         }

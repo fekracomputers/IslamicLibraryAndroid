@@ -76,7 +76,7 @@ public class BookPageFragment extends Fragment implements
     private final float SCROLL_THRESHOLD = 10;
     public String page_content;
     UserDataDBHelper userDataDBHelper;
-    int pageRowId;
+    int pageId;
     private PageFragmentListener pageFragmentListener;
     private int bookId;
     private WebView mBookPageWebView;
@@ -117,13 +117,13 @@ public class BookPageFragment extends Fragment implements
 
         Bundle args = getArguments();
         bookId = args.getInt(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
-        pageRowId = args.getInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, 0);
+        pageId = args.getInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, 0);
         mPagerPosition = args.getInt(KEY_PAGER_POSITION, 0);
         userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
         BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
-        mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageRowId);
+        page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
+        mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageId);
         mPageCitation.setResources(getResources());
         pageInfo = mPageCitation.pageInfo;
 
@@ -135,7 +135,7 @@ public class BookPageFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mIsPageBookmarked = userDataDBHelper.isPageBookmarked(pageRowId);
+        mIsPageBookmarked = userDataDBHelper.isPageBookmarked(pageId);
         if (mBookmarkFrame != null) {
             mBookmarkFrame.setVisibility(mIsPageBookmarked ? View.VISIBLE : View.GONE);
         }
@@ -417,7 +417,7 @@ public class BookPageFragment extends Fragment implements
 
     void highlightClicked(int highlightId) {
 
-        mSelectedHighlight = userDataDBHelper.getHighlightById(highlightId, pageRowId);
+        mSelectedHighlight = userDataDBHelper.getHighlightById(highlightId, pageId);
 
         if (mSelectedHighlight.hasNote()) {
             //mPopupTextSelection.findViewById(R.id.action_add_comment).setVisibility(View.GONE);
@@ -505,24 +505,25 @@ public class BookPageFragment extends Fragment implements
     @NonNull
     private String footNoteScript() {
         return
-                new StringBuilder().append("<script>").
-                        append("if ($(\".comment\").length)")
-                        .append("{")
-                        .append("$(\"body\").append(\"<hr>\");")
-                        .append("var footnote_id_int =1;")
-                        .append("var bookId=")
-                        .append(bookId).append(";")
-                        .append("var pageRowId=").append(pageRowId).append(";")
-                        .append("$(\".comment\").each(function() { ")
-                        .append("var footnote_id  = 'footnote_' +bookId+\"_\"+pageRowId+\"_\"+ footnote_id_int;")
-                        .append("var text_reference_id = this.id =\"text_reference_\" +bookId+\"_\"+pageRowId+\"_\"+footnote_id_int;")
-                        .append("$(this).text('('+footnote_id_int+')');")
-                        .append("$(this).attr(\"href\", '#'+footnote_id);")
-                        .append("var footnote_text = $(this).attr('title');")
-                        .append("$( \"<a id=\" + footnote_id + \" href=#\" +text_reference_id +\">\" +'('+footnote_id_int+')'+\"</a>\"")
-                        .append("+\"<span> \"+\" \"+ footnote_text  + \"</span>\" + \"<br>\").appendTo( \"body\" );").append(" footnote_id_int++;")
-                        .append("});").append("}")
-                        .append("</script>").toString();
+                "<script>" +
+                        "if ($(\".comment\").length)" +
+                        "{" +
+                        "$(\"body\").append(\"<hr>\");" +
+                        "var footnote_id_int =1;" +
+                        "var bookId=" +
+                        bookId + ";" +
+                        "var pageRowId=" + pageId + ";" +
+                        "$(\".comment\").each(function() { " +
+                        "var footnote_id  = 'footnote_' +bookId+\"_\"+pageRowId+\"_\"+ footnote_id_int;" +
+                        "var text_reference_id = this.id =\"text_reference_\" +bookId+\"_\"+pageRowId+\"_\"+footnote_id_int;" +
+                        "$(this).text('('+footnote_id_int+')');" +
+                        "$(this).attr(\"href\", '#'+footnote_id);" +
+                        "var footnote_text = $(this).attr('title');" +
+                        "$( \"<a id=\" + footnote_id + \" href=#\" +text_reference_id +\">\" +'('+footnote_id_int+')'+\"</a>\"" +
+                        "+\"<span> \"+\" \"+ footnote_text  + \"</span>\" + \"<br>\").appendTo( \"body\" );" +
+                        " footnote_id_int++;" +
+                        "});" + "}" +
+                        "</script>";
     }
 
     @Override
@@ -570,7 +571,7 @@ public class BookPageFragment extends Fragment implements
     }
 
     void toggleBookmark() {
-        boolean bookmarkExists = userDataDBHelper.isPageBookmarked(pageRowId);
+        boolean bookmarkExists = userDataDBHelper.isPageBookmarked(pageId);
         boolean newBookmarkState = !bookmarkExists;
         changeBookMarkState(newBookmarkState);
 
@@ -580,7 +581,7 @@ public class BookPageFragment extends Fragment implements
     }
 
     public void onBookmarkStateChange(boolean newBookmarkState, int pageId) {
-        if (pageId == pageRowId) {
+        if (pageId == this.pageId) {
             changeBookMarkState(newBookmarkState);
         }
     }
@@ -588,7 +589,7 @@ public class BookPageFragment extends Fragment implements
     void changeBookMarkState(boolean newBookmarkState) {
 
         if (newBookmarkState) {
-            userDataDBHelper.addBookmark(pageRowId);
+            userDataDBHelper.addBookmark(pageId);
             mBookmarkFrame.setVisibility(View.VISIBLE);
             View bookmarkImage = getView().findViewById(R.id.bookmark_icon);
             AnimationUtils.addBookmarkWithAnimation(bookmarkImage, new Animator.AnimatorListener() {
@@ -627,7 +628,7 @@ public class BookPageFragment extends Fragment implements
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mBookmarkFrame.setVisibility(View.INVISIBLE);
-                    userDataDBHelper.RemoveBookmark(pageRowId);
+                    userDataDBHelper.RemoveBookmark(pageId);
                 }
 
                 @Override
@@ -752,7 +753,7 @@ public class BookPageFragment extends Fragment implements
                 page_content = ArabicUtilities.cleanTashkeel(page_content);
             } else {
                 BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
-                page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageRowId);
+                page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
             }
             initializeWebView(mBookPageWebView, mBookPageWebView.getSettings());
             this.tashkeelOn = tashkeelOn;
@@ -792,7 +793,7 @@ public class BookPageFragment extends Fragment implements
 
         @JavascriptInterface
         public String getSerializedHighlights() {
-            return userDataDBHelper.getSerializedHighlights(pageRowId);
+            return userDataDBHelper.getSerializedHighlights(pageId);
         }
 
         @JavascriptInterface

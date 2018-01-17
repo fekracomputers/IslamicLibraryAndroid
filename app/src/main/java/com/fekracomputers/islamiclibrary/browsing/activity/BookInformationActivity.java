@@ -37,6 +37,11 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
             }
         }
 
+        @Override
+        protected void notifyBookDownloadFailed(int bookId, String failurReason) {
+
+        }
+
 
     };
 

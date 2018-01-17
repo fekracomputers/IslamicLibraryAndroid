@@ -172,7 +172,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         Glide.with(mContext)
                 .setDefaultRequestOptions(requestOptions)
 
-                .load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId()))
+                .load(CoverImagesDownloader.getImageUrl(holder.bookInfo.getBookId()))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -348,7 +348,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
                 downloadButton.setEnabled(true);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_not_downloaded);
                 downloadButton.setOnClickListener(v -> {
-                    mListener.StartDownloadingBook(bookInfo);
+                    mListener.startDownloadingBook(bookInfo);
                     v.setEnabled(false);
                     ((Button) v).setText(R.string.Downloading);
                     downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);

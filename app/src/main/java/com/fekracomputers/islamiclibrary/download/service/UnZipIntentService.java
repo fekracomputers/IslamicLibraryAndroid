@@ -119,14 +119,14 @@ public class UnZipIntentService extends IntentService {
                     }
 
                 } catch (IOException e) {
-                    Timber.e("unpackZip: ", e);
+                    Timber.e(e);
                     return false;
                 } finally {
                     zipInputStream.close();
                     inputStream.close();
                 }
             } catch (FileNotFoundException e) {
-                Timber.e("unpackZip: ", e);
+                Timber.e(e);
                 return false;
             } catch (IOException e) {
                 Timber.e(e);

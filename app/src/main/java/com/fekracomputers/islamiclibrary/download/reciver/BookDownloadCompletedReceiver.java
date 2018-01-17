@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.widget.Toast;
 
-import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadInfo;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
@@ -46,7 +44,6 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON, reason);
         context.sendOrderedBroadcast(bookDeleteBroadCast, null);
 
-        Toast.makeText(context, context.getString(R.string.download_failed, bookId, reason), Toast.LENGTH_LONG).show();
     }
 
     public static void updateBookDownloadStatus(Context context, long enqueId) {

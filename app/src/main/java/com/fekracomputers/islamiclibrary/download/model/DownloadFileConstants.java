@@ -14,7 +14,7 @@ public class DownloadFileConstants {
 
     public static final String ISLAMIC_LIBRARY_BASE_DIRECTORY = "IslamicLibrary";
     private static final String DOMAIN = "http://booksapi.islam-db.com";
-    private static final String BASE_URL = DOMAIN + "/resources";
+    public static final String BASE_URL = DOMAIN + "/resources";
     public static final String UNCOMPRESSED_BASE_BOOK_URL = BASE_URL + URL_SEPARATOR + "books";
     public static final String BOOK_INFORMATION_URL = BASE_URL + URL_SEPARATOR + ONLINE_DATABASE_NAME;
     public static final String COMPRESSED_BASE_BOOK_URL = BASE_URL + URL_SEPARATOR + "cbooks";
@@ -25,4 +25,5 @@ public class DownloadFileConstants {
     public static final String PREF_SDCARDPERMESSION_DIALOG_DISPLAYED = "PREF_SDCARD_PERMISSION_DIALOG_DISPLAYED";
     public static final String SHAMELA_BOOKS_DIR = "shamela_books";
 
+    public static final String COVERS = "covers";
 }
