@@ -28,9 +28,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import timber.log.Timber;
 
 /**
@@ -72,7 +69,7 @@ public class UserDataDBHelper {
     }
 
     public void RemoveBookmark(int pageId) {
-        sGlobalUserDBHelper.RemoveBookmark(pageId, bookId);
+        sGlobalUserDBHelper.deleteBookmark(pageId, bookId);
     }
 
     public boolean isPageBookmarked(int pageId) {
@@ -238,7 +235,7 @@ public class UserDataDBHelper {
             getWritableDatabase().insert(UserDataDBContract.BookmarkEntry.TABLE_NAME, null, bookmark);
         }
 
-        void RemoveBookmark(int pageId, int bookId) {
+        public void deleteBookmark(int pageId, int bookId) {
             getWritableDatabase().
                     delete(UserDataDBContract.BookmarkEntry.TABLE_NAME,
                             UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID + "=? and " + UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID + "=?",
@@ -1012,16 +1009,6 @@ public class UserDataDBHelper {
             userNotes.addAll(getHighlightItems());
             return userNotes;
         }
-
-        public Flowable<UserNoteItem> getUserNoteFlowable() {
-            return Flowable.create(new FlowableOnSubscribe<UserNoteItem>() {
-                @Override
-                public void subscribe(FlowableEmitter<UserNoteItem> emitter) throws Exception {
-                    emitter.onNext();
-                }
-            });
-        }
-
 
 
         public ArrayList<UserNoteItem> getBookmarkItems() throws IllegalArgumentException {

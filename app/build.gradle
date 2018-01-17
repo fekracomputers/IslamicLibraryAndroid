@@ -76,6 +76,12 @@ dependencies {
     implementation "com.polyak:icon-switch:1.0.0"
     implementation "com.google.code.gson:gson:2.8.2"
     implementation "com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1"
+    implementation 'org.jsoup:jsoup:1.11.2'
+
+
+//firebase
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+    implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
 
     testImplementation "junit:junit:4.12"
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.1", {
@@ -85,11 +91,6 @@ dependencies {
     compile("com.crashlytics.sdk.android:crashlytics:2.7.1@aar") {
         transitive = true
     }
-    implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
-    implementation 'org.jsoup:jsoup:1.11.2'
-    implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
 }
 apply plugin: "com.google.gms.google-services"
 

@@ -14,10 +14,10 @@ import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.browsing.util.BrowsingUtils;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.UserNote;
-import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
-import com.fekracomputers.islamiclibrary.userNotes.adapters.ExpandableHeaderItem;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.HeaderItem;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
 import com.xwray.groupie.Section;
@@ -71,32 +71,33 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         setHasOptionsMenu(true);
         userDatabase = UserDataDBHelper.getInstance(getContext());
 
-        userDatabase.getUserNotesFlowable()
 
         bookmarkItems = userDatabase.getBookmarkItems();
         highlightItems = userDatabase.getHighlightItems();
         adapter = new UserNoteGroupAdapter();
         adapter.setUserNoteInterActionListener(mListener);
 
-        Section bookmarksExpandableGroup = new Section(new ExpandableHeaderItem(R.string.bookmarks));
+        Section bookmarksExpandableGroup = new Section(new HeaderItem(R.string.bookmarks));
         bookmarksExpandableGroup.addAll(bookmarkItems);
         adapter.add(bookmarksExpandableGroup);
 
-        Section hihligtsexpandableGroup = new Section(new ExpandableHeaderItem(R.string.notes));
+        Section hihligtsexpandableGroup = new Section(new HeaderItem(R.string.notes));
         hihligtsexpandableGroup.addAll(highlightItems);
         adapter.add(hihligtsexpandableGroup);
 
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
             public void onUserNoteClicked(UserNote userNote) {
-                ReadingActivity.openBook(userNote.bookId,
-                        userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1,
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                BrowsingUtils.openBookForReading(userNote.bookId,
+                        pageId,
                         getContext());
             }
 
             @Override
             public void onUserNoteRemoved(UserNote userNote) {
-
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                userDatabase.deleteBookmark(pageId, userNote.bookId);
             }
         };
     }

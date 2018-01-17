@@ -111,7 +111,7 @@ public class ReadingActivity extends AppCompatActivity implements
     private static final int FLOATING_PAGE_NUMBER_DELAY_MILLIS = 5000;
     private static final int FADE_ANIMATION_DURATION = 500;
     private static final String KEY_STATE_NAV_UI_VISIBLE = "KEY_STATE_NAV_UI_VISIBLE";
-    private static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
+    public static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
     private final String TAG = this.getClass().getSimpleName();
     private final Handler mHideHandler = new Handler();
 
@@ -662,7 +662,7 @@ public class ReadingActivity extends AppCompatActivity implements
             return true;
         });
         mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
-        bookName = intent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
+        bookName = mBookDatabaseHelper.getBookName();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);

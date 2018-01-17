@@ -10,6 +10,7 @@ import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
 
+
 /**
  * بسم الله الرحمن الرحيم
  * Created by Mohammd Yahia on 24/4/2017.
@@ -20,8 +21,14 @@ public class BrowsingUtils {
     public static void openBookForReading(BookInfo bookInfo, Context context) {
         final Intent intent = new Intent(context, ReadingActivity.class);
         intent.putExtra(ReadingActivity.KEY_BOOK_ID, bookInfo.getBookId());
-        intent.putExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE, bookInfo.getName());
-        intent.putExtra(BooksInformationDBContract.AuthorEntry.COLUMN_NAME_NAME, bookInfo.getAuthorName());
+        context.startActivity(intent);
+    }
+
+
+    public static void openBookForReading(int bookId, int pageId, Context context) {
+        Intent intent = new Intent(context, ReadingActivity.class);
+        intent.putExtra(ReadingActivity.KEY_BOOK_ID, bookId);
+        intent.putExtra(ReadingActivity.KEY_PAGE_ID, pageId);
         context.startActivity(intent);
     }
     public static void startDownloadingBook(BookInfo bookInfo, Context context) {
@@ -45,4 +52,5 @@ public class BrowsingUtils {
 
         }
     }
+
 }
