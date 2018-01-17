@@ -1,6 +1,13 @@
 package com.fekracomputers.islamiclibrary.utility;
 
 
+import android.support.annotation.NonNull;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +46,7 @@ public class ArabicUtilities {
      */
     private static final Pattern REMOVE_PATTERN = Pattern.compile("[^\\p{L}\\p{Z}]");
     private static final Pattern SPACE_REPLACED_PATTERN = Pattern.compile("[\\p{Z}\\p{S}\\p{C}\\p{Pc}\\p{Pd}\\p{Po}&&[^\"]]");
+    private static final Pattern TATWEELA_PATTERN = Pattern.compile("([\\p{L}+&&[^\\p{Lm}]])(\\p{Lm}+)(\\p{L}+)");
     private static final String ALEF_str = "\u0627";
     private static final String ALEF_MADDA_str = "\u0622";
     private static final String ALEF_HAMZA_ABOVE_str = "\u0623";
@@ -50,13 +58,20 @@ public class ArabicUtilities {
     private static final Pattern equvilancePattern = Pattern.compile(
             ALEF_MADDA_str + "|" + ALEF_HAMZA_ABOVE_str + "|" + ALEF_HAMZA_BELOW_STR + "|" + DOTLESS_YEH_STR + "|" + TEH_MARBUTA_STR);
     private static final Pattern REMOVE_REPEATED_SPACES = Pattern.compile("\\s\\s+");
+    private static final Pattern REMOVE_HTML_TAGS = Pattern.compile("<[^>]*>");
 
     public static String cleanTashkeel(String s) {
         Matcher matcher = CLEANING_TASHKEEL.matcher(s);
         return matcher.replaceAll("");
     }
 
-    public static String cleanTextForSearchingWithRegex(String s) {
+    public static String cleanTextForSearchingIndexing(String s) {
+        return cleanTextForSearchingQuery(cleanHtml(s));
+    }
+
+    @NonNull
+    public static String cleanTextForSearchingQuery(String s) {
+
         Matcher matcher = SPACE_REPLACED_PATTERN.matcher(s);
         String space_replaced = matcher.replaceAll(" ");
 
@@ -65,7 +80,6 @@ public class ArabicUtilities {
 
         Matcher matcher2 = REMOVE_REPEATED_SPACES.matcher(removed);
         String removed_duplicat_spaces = matcher2.replaceAll(" ");
-
 
         Matcher equivlanceMatcher = equvilancePattern.matcher(removed_duplicat_spaces);
 
@@ -85,9 +99,21 @@ public class ArabicUtilities {
             }
         }
         equivlanceMatcher.appendTail(sb);
-        return sb.toString();
+
+        return handleTatweela(sb.toString());
     }
 
+    public static String handleTatweela(String s) {
+        Matcher matcher4 = TATWEELA_PATTERN.matcher(s);
+        StringBuffer sb2 = new StringBuffer();
+        while (matcher4.find()) {
+            matcher4.appendReplacement(sb2, "$1$3");
+        }
+        matcher4.appendTail(sb2);
+        return sb2.toString();
+    }
+
+    @NonNull
     public static String cleanTextForSearchingWthStingBuilder(String s) {
         StringBuilder sb = new StringBuilder(s);
         for (int i = 0; i < sb.length(); i++) {
@@ -142,5 +168,19 @@ public class ArabicUtilities {
 
     public static boolean startsWithDefiniteArticle(String string) {
         return string.startsWith("ال");
+    }
+
+    @NonNull
+    public static String cleanHtml(String htmlText) {
+        Document doc = Jsoup.parse(htmlText);
+        Elements footnotes = doc.select("a[title].comment");
+        StringBuilder htmlTextBuilder = new StringBuilder(htmlText);
+        for (Element footnote : footnotes) {
+            htmlTextBuilder.append("\n").append(footnote.attr("title"));
+        }
+        String encodedHtml = REMOVE_HTML_TAGS.matcher(htmlTextBuilder.toString()).replaceAll("");
+
+        return encodedHtml;
+
     }
 }

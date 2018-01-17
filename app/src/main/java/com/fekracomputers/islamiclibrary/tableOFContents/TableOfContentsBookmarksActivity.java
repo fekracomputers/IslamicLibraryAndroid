@@ -72,6 +72,11 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
             }
         }
 
+        @Override
+        protected void notifyBookDownloadFailed(int bookId, String failurReason) {
+
+        }
+
     };
 
     @Override

@@ -141,7 +141,7 @@ public class BookInformationFragment extends Fragment implements
 
         Glide.with(getContext()).
                 setDefaultRequestOptions(requestOptions).
-                load(CoverImagesDownloader.getImageUrl(getContext(), mBookInfo.getBookId()))
+                load(CoverImagesDownloader.getImageUrl(mBookInfo.getBookId()))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

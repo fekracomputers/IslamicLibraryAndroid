@@ -292,5 +292,7 @@
     <string name="book_information_canceled">لقد ألغيت تحميل قاعدة بيانات الكتب فلن يعمل البرنامج دونها،أعد تشغيل البرنامج لإعادة تحميلها</string>
     <string name="download_failed">فشل تحميل كتاب رقم (%1$d) بسبب %2$s</string>
     <string name="not_now">ليس الآن</string>
+    <string name="book_download_failure">فشل تحميل كتاب %1$s</string>
+    <string name="redownload">إعادة التحميل</string>
 
 </resources>
