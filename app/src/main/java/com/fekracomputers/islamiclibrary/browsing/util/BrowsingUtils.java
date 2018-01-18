@@ -7,6 +7,7 @@ import com.fekracomputers.islamiclibrary.browsing.activity.BookInformationActivi
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.downloader.BooksDownloader;
+import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
 
@@ -25,11 +26,19 @@ public class BrowsingUtils {
     }
 
 
-    public static void openBookForReading(int bookId, int pageId, Context context) {
-        Intent intent = new Intent(context, ReadingActivity.class);
-        intent.putExtra(ReadingActivity.KEY_BOOK_ID, bookId);
-        intent.putExtra(ReadingActivity.KEY_PAGE_ID, pageId);
-        context.startActivity(intent);
+    public static boolean openBookForReading(int bookId, int pageId, Context context) {
+        BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
+        if (booksInformationDbHelper != null) {
+            if (booksInformationDbHelper.getBookDownloadStatus(bookId) >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+                Intent intent = new Intent(context, ReadingActivity.class);
+                intent.putExtra(ReadingActivity.KEY_BOOK_ID, bookId);
+                intent.putExtra(ReadingActivity.KEY_PAGE_ID, pageId);
+                context.startActivity(intent);
+            } else
+                return false;
+        }
+
+        return false;
     }
     public static void startDownloadingBook(BookInfo bookInfo, Context context) {
         BooksDownloader booksDownloader = new BooksDownloader(context);

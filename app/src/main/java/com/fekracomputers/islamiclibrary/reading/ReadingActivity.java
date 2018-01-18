@@ -87,6 +87,7 @@ public class ReadingActivity extends AppCompatActivity implements
     public static final String KEY_CURRENT_PAGE_INFO = "KEY_CURRENT_PAGE_INFO";
     public static final String KEY_CURRENT_PARTS_INFO = "KEY_CURRENT_PARTS_INFO";
     public static final String KEY_BOOK_ID = "KEY_BOOK_ID";
+    public static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
     private static final int PICK_TITLE_REQUEST = 1;
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -111,7 +112,6 @@ public class ReadingActivity extends AppCompatActivity implements
     private static final int FLOATING_PAGE_NUMBER_DELAY_MILLIS = 5000;
     private static final int FADE_ANIMATION_DURATION = 500;
     private static final String KEY_STATE_NAV_UI_VISIBLE = "KEY_STATE_NAV_UI_VISIBLE";
-    public static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
     private final String TAG = this.getClass().getSimpleName();
     private final Handler mHideHandler = new Handler();
 
@@ -316,6 +316,26 @@ public class ReadingActivity extends AppCompatActivity implements
                 defaultSharedPreferences, mUserDataDBHelper);
         for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
             listener.setTashkeel(checked);
+        }
+    }
+
+    @Override
+    public boolean isPinchZoom() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_PINCH_ZOOM_ON,
+                defaultSharedPreferences,
+                mUserDataDBHelper);
+    }
+
+    @Override
+    public void setPinchZoom(boolean checked) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                checked,
+                defaultSharedPreferences, mUserDataDBHelper);
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setPinchZoom(checked);
         }
     }
 
@@ -626,11 +646,11 @@ public class ReadingActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         mIsArabic = Util.isArabicUi(this);
 
-
         Intent intent = getIntent();
         bookId = intent.getIntExtra(KEY_BOOK_ID, 0);
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);
         mUserDataDBHelper.logBookAccess();
+        mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
 
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -669,7 +689,6 @@ public class ReadingActivity extends AppCompatActivity implements
             actionBar.setTitle(bookName);
         }
         mPager = findViewById(R.id.pager);
-        mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
         mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
         PAGE_COUNT = mBookDatabaseHelper.getPageCount();
         PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());

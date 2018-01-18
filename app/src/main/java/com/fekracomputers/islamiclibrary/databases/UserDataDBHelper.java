@@ -1036,15 +1036,20 @@ public class UserDataDBHelper {
             final int INDEX_BOOK_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID);
             final int INDEX_PAGE_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);
             final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP);
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
+
             while (c.moveToNext()) {
                 int bookId = c.getInt(INDEX_BOOK_ID);
-                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-                int pageId = c.getInt(INDEX_PAGE_ID);
-                BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
-                BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
-                PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
-                Bookmark bookmark = new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId));
-                bookmarksList.add(new BookmarkItem(bookmark, bookPartsInfo, bookInfo));
+                if (booksInformationDbHelper != null &&
+                        booksInformationDbHelper.getBookDownloadStatus(bookId) >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+                    BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+                    int pageId = c.getInt(INDEX_PAGE_ID);
+                    BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
+                    BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+                    PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
+                    Bookmark bookmark = new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId));
+                    bookmarksList.add(new BookmarkItem(bookmark, bookPartsInfo, bookInfo));
+                }
             }
             c.close();
             return bookmarksList;

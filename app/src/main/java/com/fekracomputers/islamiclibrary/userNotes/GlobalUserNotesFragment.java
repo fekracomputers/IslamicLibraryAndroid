@@ -71,6 +71,23 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         setHasOptionsMenu(true);
         userDatabase = UserDataDBHelper.getInstance(getContext());
 
+        mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
+            @Override
+            public void onUserNoteClicked(UserNote userNote) {
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                if (!BrowsingUtils.openBookForReading(userNote.bookId,
+                        pageId,
+                        getContext())) {
+
+                }
+            }
+
+            @Override
+            public void onUserNoteRemoved(UserNote userNote) {
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                userDatabase.deleteBookmark(pageId, userNote.bookId);
+            }
+        };
 
         bookmarkItems = userDatabase.getBookmarkItems();
         highlightItems = userDatabase.getHighlightItems();
@@ -85,21 +102,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         hihligtsexpandableGroup.addAll(highlightItems);
         adapter.add(hihligtsexpandableGroup);
 
-        mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
-            @Override
-            public void onUserNoteClicked(UserNote userNote) {
-                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
-                BrowsingUtils.openBookForReading(userNote.bookId,
-                        pageId,
-                        getContext());
-            }
 
-            @Override
-            public void onUserNoteRemoved(UserNote userNote) {
-                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
-                userDatabase.deleteBookmark(pageId, userNote.bookId);
-            }
-        };
     }
 
 
@@ -120,5 +123,8 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         return view;
     }
 
+    public interface GlobalUserNotesFragmentListener {
+        void showSnackBarBookNotDownloaded(int bookId);
+    }
 
 }

@@ -61,6 +61,7 @@ import com.fekracomputers.islamiclibrary.search.view.SearchResultFragment;
 import com.fekracomputers.islamiclibrary.settings.AboutActivity;
 import com.fekracomputers.islamiclibrary.settings.AboutUtil;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
+import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
 import com.fekracomputers.islamiclibrary.utility.Util;
 import com.google.gson.Gson;
 import com.polyak.iconswitch.IconSwitch;
@@ -91,7 +92,8 @@ public class BrowsingActivity
         ConfirmBookDeleteDialogFragment.BookDeleteDialogListener,
         BrowsingActivityNavigationController.BrowsingActivityControllerListener,
         BookCollectionsController.BookCollectionsControllerCallback,
-        RenameCollectionDialogFragment.RenameCollectionListener {
+        RenameCollectionDialogFragment.RenameCollectionListener,
+        GlobalUserNotesFragment.GlobalUserNotesFragmentListener {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -935,6 +937,21 @@ public class BrowsingActivity
     @Override
     public void onBookDeleteDialogDialogPositiveClick(int bookId) {
         bookCardEventsCallback.onBookDeleteConfirmation(bookId);
+    }
+
+    @Override
+    public void showSnackBarBookNotDownloaded(int bookId) {
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.browsing_coordinator_layout);
+        Snackbar mySnackbar = Snackbar.make(coordinatorLayout,
+                getResources().getString(R.string.book_not_download, mBooksInformationDbHelper.getBookName(bookId)),
+                Snackbar.LENGTH_LONG);
+        mySnackbar.setAction(R.string.redownload,
+                v -> {
+                    bookCardEventsCallback.startDownloadingBook(mBooksInformationDbHelper.getBookInfo(bookId));
+                    bookCardEventsCallback.notifyBookDownloadStatusUpdate(bookId, DownloadsConstants.STATUS_DOWNLOAD_REQUESTED);
+                }
+        );
+        mySnackbar.show();
     }
 
 

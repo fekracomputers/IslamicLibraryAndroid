@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="android.support.v7.widget.CardView"
-    >
+    tools:parentTag="android.support.v7.widget.CardView">
 
-    <RelativeLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,12 +25,27 @@
             />
 
         <TextView
+            android:id="@+id/book_info_text_view"
+            style="@style/twoLineListSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/bookmark_icon"
+            android:gravity="top|right"
+            android:paddingRight="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="صحيح البخاري، البخاري، متون الحيث" />
+
+        <TextView
             android:id="@+id/toc_card_body"
             style="@style/twoLineListPrimartText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/book_info_text_view"
             android:layout_toRightOf="@id/bookmark_icon"
             android:gravity="top|right"
             android:maxLines="2"

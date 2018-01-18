@@ -11,4 +11,6 @@ public interface DisplayPrefChangeListener {
     void setZoom(int newZoom);
 
     void setTashkeel(boolean tashkeelOn);
+
+    void setPinchZoom(boolean pinchZoomOn);
 }

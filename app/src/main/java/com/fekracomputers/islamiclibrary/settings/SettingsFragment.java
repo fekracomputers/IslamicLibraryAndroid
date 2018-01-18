@@ -63,7 +63,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String PREF_USE_VOLUME_KEY_NAV = "volumeKeyNavigation";
     public static final String PREF_KEEP_SCREEN_ON = "keepScreenOn";
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
-    private static final String TAG = SettingsFragment.class.getSimpleName();
+    public static final String KEY_IS_PINCH_ZOOM_ON = "pinch_zoom_on";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.

@@ -123,15 +123,20 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
 
         final SwitchCompat nightModeSwitch = viewAnimator.findViewById(R.id.pref_night_mode);
         final SwitchCompat tashkeelSwitch = viewAnimator.findViewById(R.id.pref_tashkeel);
+        final SwitchCompat PinchZoomSwitch = viewAnimator.findViewById(R.id.pref_pinch_zoom);
         //nightModeSwitch.setOnCheckedChangeListener(null);
         nightModeSwitch.setChecked(mOnPrefDialogInteractionListener.isThemeNightMode());
         tashkeelSwitch.setChecked(mOnPrefDialogInteractionListener.isTashkeel());
+        PinchZoomSwitch.setChecked(mOnPrefDialogInteractionListener.isPinchZoom());
 
 
         nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 mOnPrefDialogInteractionListener.setThemeNightMode(nightModeSwitch.isChecked()));
         tashkeelSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 mOnPrefDialogInteractionListener.setTashkeel(tashkeelSwitch.isChecked()));
+
+        PinchZoomSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                mOnPrefDialogInteractionListener.setPinchZoom(PinchZoomSwitch.isChecked()));
 
 
         final ViewGroup prefTheme = viewAnimator.findViewById(R.id.pref_theme);
@@ -220,5 +225,9 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         boolean isTashkeel();
 
         void setTashkeel(boolean checked);
+
+        boolean isPinchZoom();
+
+        void setPinchZoom(boolean checked);
     }
 }

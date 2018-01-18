@@ -96,6 +96,7 @@ public class BookPageFragment extends Fragment implements
     private ViewStub mBookmarkFrame;
     private PageInfo pageInfo;
     private boolean tashkeelOn = true;
+    private boolean pinchZoomOn;
 
     public BookPageFragment() {
 
@@ -260,8 +261,9 @@ public class BookPageFragment extends Fragment implements
 //                    default:
 //                        break;
 //                }
-
-            mScaleDetector.onTouchEvent(e);
+            if (pinchZoomOn) {
+                mScaleDetector.onTouchEvent(e);
+            }
             return gestureDetectorCompat.onTouchEvent(e);
 
         });
@@ -745,6 +747,11 @@ public class BookPageFragment extends Fragment implements
         if (this.tashkeelOn != tashkeelOn) {
             reloadeWithTashkeelOn(tashkeelOn);
         }
+    }
+
+    @Override
+    public void setPinchZoom(boolean pinchZoomOn) {
+        this.pinchZoomOn = pinchZoomOn;
     }
 
     private void reloadeWithTashkeelOn(boolean tashkeelOn) {

@@ -238,6 +238,7 @@
         <item name="settingsLineHightLarger">@drawable/ic_settings_lineheight_larger_light_24dp
         </item>
         <item name="settingsTashkeel">@drawable/ic_add_tashkeel_light</item>
+        <item name="settingsPinch">@drawable/ic_pinch_light</item>
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_light_24dp
         </item>
 
@@ -341,6 +342,7 @@
         <item name="settingsLineHightSmaller">@drawable/ic_settings_lineheight_smaller_dark_24dp
         </item>
         <item name="settingsTashkeel">@drawable/ic_add_tashkeel_dark</item>
+        <item name="settingsPinch">@drawable/ic_pinch_dark</item>
         <item name="ReadingContextContentCopy">@drawable/ic_content_copy_dark_24dp</item>
         <item name="ReadingContextShare">@drawable/ic_share_dark_24dp</item>
         <item name="ReadingContextNoteAdd">@drawable/ic_note_add_dark_24dp</item>

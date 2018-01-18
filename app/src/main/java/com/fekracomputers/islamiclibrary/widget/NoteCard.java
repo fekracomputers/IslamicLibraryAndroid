@@ -11,11 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.Highlight;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -35,6 +35,7 @@ public class NoteCard extends CardView {
     private TextView dateTimeTextView;
     private EditText noteTextTextView;
     private TextView highlightTextTextView;
+    private TextView bookInfoTextView;
 
     public NoteCard(Context context) {
         this(context, null);
@@ -61,7 +62,7 @@ public class NoteCard extends CardView {
         return isDhowAuthor;
     }
 
-    public void setDhowAuthor(boolean dhowAuthor) {
+    public void setShowAuthor(boolean dhowAuthor) {
         isDhowAuthor = dhowAuthor;
     }
 
@@ -108,6 +109,9 @@ public class NoteCard extends CardView {
         dateTimeTextView = rootView.findViewById(R.id.date_time);
         noteTextTextView = rootView.findViewById(R.id.toc_card_body);
         highlightTextTextView = rootView.findViewById(R.id.text_view_highlight_text);
+        bookInfoTextView = rootView.findViewById(R.id.book_info_text_view);
+        refreshBookInfo();
+
     }
 
     public void bind(@NonNull final Highlight highlight,
@@ -115,13 +119,21 @@ public class NoteCard extends CardView {
                      @Nullable final BookInfo bookInfo,
                      final UserNoteGroupAdapter.UserNoteInterActionListener userNoteInterActionListener) {
         setOnClickListener(v -> userNoteInterActionListener.onUserNoteClicked(highlight));
-        partPageNumberTextView.setText(String.valueOf(highlight.pageInfo.pageNumber));
+        if (highlight.pageInfo != null) {
+            partPageNumberTextView.setText(String.valueOf(highlight.pageInfo.pageNumber));
+        }
         partPageNumberTextView.setText(
                 TableOfContentsUtils.formatPageAndPartNumber(bookPartsInfo,
                         highlight.pageInfo,
                         R.string.part_and_page_with_text,
                         R.string.page_number_with_label,
                         getResources()));
+        if (bookInfo != null) {
+            bookInfoTextView.setText(getResources().getString(R.string.book_info,
+                    bookInfo.getName(),
+                    bookInfo.getAuthorName(),
+                    bookInfo.getCategory().getName()));
+        }
 
         highlightTextTextView.setText(highlight.text);
         highlightTextTextView.setBackgroundColor(Highlight.getHighlightColor(highlight.className));
@@ -153,6 +165,9 @@ public class NoteCard extends CardView {
         }
     }
 
+    private void refreshBookInfo() {
+        bookInfoTextView.setVisibility(isShowBook || isDhowAuthor || isShowCollection || isShowCategory ? View.VISIBLE : View.GONE);
+    }
 
     public void bind(Highlight highlight, BookPartsInfo bookPartsInfo) {
         bind(highlight, bookPartsInfo, null, null);

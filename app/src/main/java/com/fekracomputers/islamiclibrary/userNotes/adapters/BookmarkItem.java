@@ -40,6 +40,9 @@ public class BookmarkItem extends UserNoteItem<Bookmark, BookmarkItem.ViewHolder
         public ViewHolder(View view) {
             super(view);
             bookmarkCard = (BookmarkCard) view;
+            bookmarkCard.setShowBook(true);
+            bookmarkCard.setShowCategory(true);
+            bookmarkCard.setShowAuthor(true);
         }
 
     }

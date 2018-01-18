@@ -224,6 +224,7 @@
     <attr name="settingsLineHightLarger" format="reference" />
     <attr name="settingsLineHightSmaller" format="reference" />
     <attr name="settingsTashkeel" format="reference" />
+    <attr name="settingsPinch" format="reference" />
 
     <attr name="settingsPagesFitWidth" format="reference" />
     <attr name="settingsPagesTwo" format="reference" />

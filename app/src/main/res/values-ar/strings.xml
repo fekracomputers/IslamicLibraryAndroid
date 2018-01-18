@@ -294,5 +294,8 @@
     <string name="not_now">ليس الآن</string>
     <string name="book_download_failure">فشل تحميل كتاب %1$s</string>
     <string name="redownload">إعادة التحميل</string>
+    <string name="pref_title_pinch_zoom">تكبير الخط بسحب الشاشة</string>
+    <string name="book_not_download">كتاب (%1$s) غير محمل الآن</string>
+    <string name="book_info">%1$s،%2$s،%3$s</string>
 
 </resources>

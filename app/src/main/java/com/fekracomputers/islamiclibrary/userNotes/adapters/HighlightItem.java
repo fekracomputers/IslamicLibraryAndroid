@@ -39,6 +39,9 @@ public class HighlightItem extends UserNoteItem<Highlight, HighlightItem.ViewHol
         public ViewHolder(View view) {
             super(view);
             noteCard = (NoteCard) view;
+            noteCard.setShowBook(true);
+            noteCard.setShowCategory(true);
+            noteCard.setShowAuthor(true);
         }
 
     }

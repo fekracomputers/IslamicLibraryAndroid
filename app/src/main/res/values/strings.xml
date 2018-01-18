@@ -388,5 +388,8 @@
     <string name="not_now">not now</string>
     <string name="book_download_failure">%1$s  download fialed</string>
     <string name="redownload">redownload</string>
+    <string name="pref_title_pinch_zoom">change zoom with pinch</string>
+    <string name="book_not_download">book %1$s not downloaded</string>
+    <string name="book_info">book:%1$s ,author%2$s,category: %3$s</string>
     <!--end storage pref-->
 </resources>
