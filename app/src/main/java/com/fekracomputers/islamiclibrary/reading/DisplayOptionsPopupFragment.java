@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.reading;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
      * 1 : brightness
      */
     private int mCurrentView;
+    @Nullable
     private OnPrefDialogInteractionListener mOnPrefDialogInteractionListener;
     private TextView prefTextSizeTV;
 
@@ -50,6 +52,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
      * @param type 0 : layout options
      *             1 : brightness
      */
+    @NonNull
     public static DisplayOptionsPopupFragment newInstance(int type, int initialZoom) {
         DisplayOptionsPopupFragment fragment = new DisplayOptionsPopupFragment();
         Bundle args = new Bundle();

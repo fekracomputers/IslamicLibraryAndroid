@@ -297,5 +297,7 @@
     <string name="pref_title_pinch_zoom">تكبير الخط بسحب الشاشة</string>
     <string name="book_not_download">كتاب (%1$s) غير محمل الآن</string>
     <string name="book_info">%1$s،%2$s،%3$s</string>
+    <string name="updating_books_please_wait">يجري تحديث الكتب الرجاء الانتظار</string>
+    <string name="updating_books_progress">%1$d/%2$d</string>
 
 </resources>

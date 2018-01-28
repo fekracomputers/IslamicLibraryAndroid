@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
@@ -67,7 +68,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
 
 
         ArrayList<Long> downloads;
-        if (BooksInformationDbHelper.databaseFileExists()) {
+        if (BooksInformationDbHelper.databaseFileExists(this)) {
             BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
             if (booksInformationDbHelper != null) {
                 downloads = booksInformationDbHelper.getPendingDownloads();
@@ -125,7 +126,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -159,7 +160,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     }
 
     private void cancelMultipleDownloads(Cursor c, int columnIndex) {
-        if (BooksInformationDbHelper.databaseFileExists()) {
+        if (BooksInformationDbHelper.databaseFileExists(this)) {
             BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
             if (booksInformationDbHelper != null) {
                 booksInformationDbHelper.cancelMultipleDownloads(c, columnIndex);
@@ -177,6 +178,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
         }
 
 
+        @Nullable
         @Override
         protected DownloadInfoUpdate doInBackground(Void... voids) {
             //Convert Long[] to long[]

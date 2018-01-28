@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.browsing.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 public class BookInformationActivity extends AppCompatActivity implements BookCardEventListener {
 
     private boolean mIsArabic;
+    @NonNull
     private ArrayList<BrowsingActivityListingFragment> mDownloadStatusUpdateListener = new ArrayList<>();
+    @NonNull
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
         public synchronized void notifyBookDownloadStatusUpdate(int bookId, int downloadStatus) {
@@ -96,6 +99,7 @@ public class BookInformationActivity extends AppCompatActivity implements BookCa
 
     }
 
+    @NonNull
     @Override
     public BookCardEventsCallback getBookCardEventCallback() {
         return bookCardEventsCallback;

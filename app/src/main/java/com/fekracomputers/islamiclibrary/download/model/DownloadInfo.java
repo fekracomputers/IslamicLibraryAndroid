@@ -27,7 +27,7 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
     private long totalSizeBytes;
 
 
-    public DownloadInfo(Cursor cursor) {
+    public DownloadInfo(@NonNull Cursor cursor) {
         int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
         status = cursor.getInt(columnIndex);
 
@@ -52,6 +52,7 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
     }
 
 
+    @NonNull
     public static String getReasonDebugString(int status, int reason) {
         String reasonText = "unKnown_status";
         switch (status) {
@@ -216,6 +217,7 @@ public class DownloadInfo implements Comparable<DownloadInfo> {
         return (int) (this.enquId - o.enquId);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DownloadInfo{" +

@@ -13,7 +13,17 @@ package com.dictiography.collections;
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import java.util.*;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.NoSuchElementException;
+import java.util.SortedSet;
 
 
 /**
@@ -148,7 +158,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *                              not {@link Comparable}, or are not mutually comparable
      * @throws NullPointerException if the specified collection is null
      */
-    public IndexedTreeSet(Collection<? extends E> c) {
+    public IndexedTreeSet(@NonNull Collection<? extends E> c) {
         this();
         addAll(c);
     }
@@ -160,7 +170,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @param s sorted set whose elements will comprise the new set
      * @throws NullPointerException if the specified sorted set is null
      */
-    public IndexedTreeSet(SortedSet<E> s) {
+    public IndexedTreeSet(@NonNull SortedSet<E> s) {
         this(s.comparator());
         addAll(s);
     }
@@ -170,6 +180,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *
      * @return an iterator over the elements in this set in ascending order
      */
+    @NonNull
     public Iterator<E> iterator() {
         return m.navigableKeySet().iterator();
     }
@@ -180,6 +191,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @return an iterator over the elements in this set in descending order
      * @since 1.6
      */
+    @NonNull
     public Iterator<E> descendingIterator() {
         return m.descendingKeySet().iterator();
     }
@@ -187,6 +199,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
     /**
      * @since 1.6
      */
+    @NonNull
     public NavigableSet<E> descendingSet() {
         return new IndexedTreeSet(m.descendingMap());
     }
@@ -313,6 +326,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @NonNull
     public NavigableSet<E> subSet(E fromElement, boolean fromInclusive,
                                   E toElement, boolean toInclusive) {
         return new IndexedTreeSet<E>(m.subMap(fromElement, fromInclusive,
@@ -327,6 +341,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @NonNull
     public NavigableSet<E> headSet(E toElement, boolean inclusive) {
         return new IndexedTreeSet<E>(m.headMap(toElement, inclusive));
     }
@@ -339,6 +354,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+    @NonNull
     public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
         return new IndexedTreeSet<E>(m.tailMap(fromElement, inclusive));
     }
@@ -350,6 +366,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *                                  or its comparator does not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @NonNull
     public SortedSet<E> subSet(E fromElement, E toElement) {
         return subSet(fromElement, true, toElement, false);
     }
@@ -361,6 +378,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *                                  not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @NonNull
     public SortedSet<E> headSet(E toElement) {
         return headSet(toElement, false);
     }
@@ -372,6 +390,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *                                  not permit null elements
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @NonNull
     public SortedSet<E> tailSet(E fromElement) {
         return tailSet(fromElement, true);
     }
@@ -443,6 +462,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
     /**
      * @since 1.6
      */
+    @Nullable
     public E pollFirst() {
         Map.Entry<E, ?> e = m.pollFirstEntry();
         return (e == null) ? null : e.getKey();
@@ -451,6 +471,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
     /**
      * @since 1.6
      */
+    @Nullable
     public E pollLast() {
         Map.Entry<E, ?> e = m.pollLastEntry();
         return (e == null) ? null : e.getKey();
@@ -462,6 +483,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *
      * @return a shallow copy of this set
      */
+    @Nullable
     public Object clone() {
         IndexedTreeSet<E> clone = null;
         try {
@@ -486,7 +508,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * set's Comparator, or by the elements' natural ordering if
      * the set has no Comparator).
      */
-    private void writeObject(java.io.ObjectOutputStream s)
+    private void writeObject(@NonNull java.io.ObjectOutputStream s)
             throws java.io.IOException {
         // Write out any hidden stuff
         s.defaultWriteObject();
@@ -506,7 +528,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * Reconstitute the {@code IndexedTreeSet} instance from a stream (that is,
      * deserialize it).
      */
-    private void readObject(java.io.ObjectInputStream s)
+    private void readObject(@NonNull java.io.ObjectInputStream s)
             throws java.io.IOException, ClassNotFoundException {
         // Read in any hidden stuff
         s.defaultReadObject();
@@ -530,6 +552,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
 
     private static final long serialVersionUID = -2479143000061671589L;
 
+    @Nullable
     public E exact(int index) {
         Map.Entry<E, ?> e = ((IndexedNavigableMap) m).exactEntry(index);
         return (e == null) ? null : e.getKey();

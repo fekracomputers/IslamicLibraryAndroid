@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -36,13 +37,16 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
     public static final java.lang.String TAG_FRAGMENT_COLLECTION = "BookCollectionDialogFragmnet";
     private static final String KEY_COLLECTION_IDS = "collectionDialogFragmnet.KEY_COLLECTION_IDS";
     private BookCollectionInfo bookCollectionInfo;
+    @Nullable
     private CollectionDialogFragmnetListener listener;
     private ArrayList<BooksCollection> bookCollections;
+    @Nullable
     private BookCollectionsController bookCollectionsController;
     @Nullable
     private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
     private BookCollectionRecyclerViewAdapter bookCollectionRecyclerViewAdapter;
 
+    @NonNull
     public static BookCollectionDialogFragmnet newInstance(BookCollectionInfo bookCollectionInfo) {
         BookCollectionDialogFragmnet frag = new BookCollectionDialogFragmnet();
         Bundle args = new Bundle();
@@ -120,7 +124,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(@NonNull Editable s) {
                 if (s.length() != 0) {
                     setEnabledAddButton(addCollectionButton, true);
                 } else {
@@ -135,7 +139,7 @@ public class BookCollectionDialogFragmnet extends DialogFragment {
         return rootView;
     }
 
-    private void setEnabledAddButton(ImageButton addCollectionButton, boolean enabled) {
+    private void setEnabledAddButton(@NonNull ImageButton addCollectionButton, boolean enabled) {
         Util.setImageButtonEnabled(getContext(),
                 enabled,
                 addCollectionButton, R.drawable.ic_add_black_24dp);

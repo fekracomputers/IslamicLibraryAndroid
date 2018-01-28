@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -21,9 +23,11 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class DBValidator {
 
+    @NonNull
     private ArrayList<TableInformation> schema = new ArrayList<>();
     private boolean startValue = true;
     private ArrayList<Boolean> result;
+    private Exception cause;
 
     public DBValidator(@DataBaseType int databaseType) {
         if (databaseType == BOOK_INFORATION_DATABASE_TYPE) {
@@ -80,7 +84,7 @@ public class DBValidator {
         }
     }
 
-    void validate(SQLiteOpenHelper sqLiteOpenHelper) {
+    void validate(@Nullable SQLiteOpenHelper sqLiteOpenHelper) {
         try {
             result = new ArrayList<>();
             SQLiteDatabase sqLiteDatabase;
@@ -101,6 +105,7 @@ public class DBValidator {
                         result.add(i, c.getCount() > -1);
                     } catch (Exception e) {
                         Timber.e(e, String.format(Locale.US, "exeption while validating table %s", tableInformation.name));
+                        cause = e;
                         startValue = false;
                     } finally {
                         if (c != null) {
@@ -113,12 +118,13 @@ public class DBValidator {
             }
         } catch (Exception e) {
             Timber.e(e);
+            cause = e;
             startValue = false;
         }
     }
 
     boolean isValid() {
-        if (result == null || result.size() == 0) {
+        if (result == null) {
             throw new IllegalStateException("validate before calling this");
         }
         if (!startValue) {
@@ -130,6 +136,10 @@ public class DBValidator {
             }
             return resultBoolean;
         }
+    }
+
+    public Exception getCause() {
+        return cause;
     }
 
 

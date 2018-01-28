@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.tableOFContents.adapter;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,12 +52,13 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
 
     private final List<Bookmark> bookmarkList;
     private final BookmarkFragment.onBookmarkClickListener onBookmarkClickListener;
+    @NonNull
     private final SharedPreferences sharedPref;
     private Context mContext;
     private UserDataDBHelper userDataDBHelper;
     private int mCurrentSortIndex;
 
-    public BookmarkRecyclerViewAdapter(List<Bookmark> items, BookmarkFragment.onBookmarkClickListener listener, Context context, UserDataDBHelper userDataDBHelper, SharedPreferences sharedPref) {
+    public BookmarkRecyclerViewAdapter(List<Bookmark> items, BookmarkFragment.onBookmarkClickListener listener, Context context, UserDataDBHelper userDataDBHelper, @NonNull SharedPreferences sharedPref) {
         this.sharedPref = sharedPref;
         mCurrentSortIndex = sharedPref.getInt(KEY_BOOKMARKS_SORT_INDEX, 0);
         bookmarkList = items;
@@ -75,15 +77,16 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
         } else return super.getItemId(position);
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_bookmark, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.bookmark = bookmarkList.get(position);
         holder.bookmarkIcon.setVisibility(View.VISIBLE);
         holder.bookmarkIcon.setScaleY(1);
@@ -167,6 +170,7 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @NonNull
         final View mView;
         final TextView parentTitleTextView;
         final TextView pageNumberTextView;
@@ -174,7 +178,7 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
         final ImageView bookmarkIcon;
         Bookmark bookmark;
 
-        ViewHolder(View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
             mView = view;
             parentTitleTextView = view.findViewById(R.id.toc_card_body);
@@ -183,6 +187,7 @@ public class BookmarkRecyclerViewAdapter extends RecyclerView.Adapter<BookmarkRe
             bookmarkIcon = view.findViewById(R.id.bookmark_icon);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return super.toString() + " '" + pageNumberTextView.getText() + "'";

@@ -51,7 +51,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_global_highlight, menu);
 
     }
@@ -73,7 +73,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
 
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
-            public void onUserNoteClicked(UserNote userNote) {
+            public void onUserNoteClicked(@NonNull UserNote userNote) {
                 int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
                 if (!BrowsingUtils.openBookForReading(userNote.bookId,
                         pageId,
@@ -83,7 +83,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
             }
 
             @Override
-            public void onUserNoteRemoved(UserNote userNote) {
+            public void onUserNoteRemoved(@NonNull UserNote userNote) {
                 int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
                 userDatabase.deleteBookmark(pageId, userNote.bookId);
             }

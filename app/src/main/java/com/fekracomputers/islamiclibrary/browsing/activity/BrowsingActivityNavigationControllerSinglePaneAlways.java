@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.browsing.activity;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 
@@ -8,7 +9,7 @@ import android.support.v4.app.FragmentManager;
  */
 
 public class BrowsingActivityNavigationControllerSinglePaneAlways extends BrowsingActivityNavigationControllerSinglePane {
-    public BrowsingActivityNavigationControllerSinglePaneAlways(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+    public BrowsingActivityNavigationControllerSinglePaneAlways(int oldPanNumbers, @NonNull FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, @NonNull BottomNavigationView bottomNavigationView, @NonNull BrowsingActivityControllerListener listener) {
         super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
     }
 

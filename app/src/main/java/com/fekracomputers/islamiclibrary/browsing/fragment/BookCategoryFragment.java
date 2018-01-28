@@ -3,6 +3,8 @@ package com.fekracomputers.islamiclibrary.browsing.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -46,9 +48,13 @@ public class BookCategoryFragment
     private static final String KEY_SHARED_PREF_CATEGORY_LAYOUT_TYPE = "BookCategoryFragmentSharedPrefLayoutKey";
     protected int mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
+    @Nullable
     protected BookCategoryRecyclerViewAdapter mBookCategoryRecyclerViewAdapter;
+    @Nullable
     protected RecyclerView.LayoutManager mLayoutManager;
+    @Nullable
     private OnCategoryItemClickListener mListener;
+    @Nullable
     private BooksInformationDbHelper booksInformationDbHelper;
 
     /**
@@ -63,7 +69,7 @@ public class BookCategoryFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentLayoutManagerType = sharedPref.getInt(KEY_SHARED_PREF_CATEGORY_LAYOUT_TYPE, LINEAR_LAYOUT_MANAGER);
@@ -79,7 +85,7 @@ public class BookCategoryFragment
                 mLayoutManager = new LinearLayoutManager(getContext());
                 break;
             case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getContext(),SPAN_COUNT);
+                mLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT);
         }
 
         booksInformationDbHelper = BooksInformationDbHelper.getInstance(this.getContext());
@@ -106,7 +112,7 @@ public class BookCategoryFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_category, menu);
         MenuItem item = menu.findItem(R.id.action_search);
@@ -128,7 +134,7 @@ public class BookCategoryFragment
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_rearrange) {
 
             if (mCurrentLayoutManagerType == GRID_LAYOUT_MANAGER) {
@@ -284,10 +290,8 @@ public class BookCategoryFragment
                                     null,
                                     false)
                             .get(0));
-        }
-        else
-        {
-            mBookCategoryRecyclerViewAdapter.setCategoryDownloadStatus(catId,downloadStatus);
+        } else {
+            mBookCategoryRecyclerViewAdapter.setCategoryDownloadStatus(catId, downloadStatus);
         }
 //
 //        mBookCategoryRecyclerViewAdapter.notifyItemRangeChanged(0,

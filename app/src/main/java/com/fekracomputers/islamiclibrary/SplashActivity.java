@@ -2,13 +2,16 @@ package com.fekracomputers.islamiclibrary;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -41,9 +44,12 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final long SPLASH_TIME_OUT = 300;
     private static final String ERROR_CHANNEL_ID = "error_channel";
+    private static final String BOOKS_UPDATED_TO_V_4 = "booksUpdatedToV4";
     ProgressBar mProgressBar;
+    @Nullable
     AlertDialog permissionsDialog;
     private TextView mTextView;
+    private TextView mProgressValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mProgressBar = findViewById(R.id.progressBar1);
         mTextView = findViewById(R.id.progressTextView);
+        mProgressValue = findViewById(R.id.progressValueTextView);
         checkStorage();
     }
 
@@ -111,7 +118,7 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private String statusMessage(Cursor c) {
+    private String statusMessage(@NonNull Cursor c) {
         String msg;
 
         switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
@@ -191,21 +198,35 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkBookInformationDatabase() {
-        //a better condition would be to check the directory
         if (BooksInformationDbHelper.databaseFileExists(SplashActivity.this)) {
             BooksInformationDbHelper instance = BooksInformationDbHelper.getInstance(this);
             if (instance != null && instance.isValid()) {
-                finishSplashAndLaunchMainActivity();
+                updateBooksIfNeeded();
             } else {
                 BooksInformationDbHelper.deleteBookInformationFile();
                 new getBooksInformationFromAssets(this).execute();
             }
+
+
         } else if (StorageUtils.isOldDirectoriesExists(this)) {
             handleOldDirectory();
         } else {
-            //new DownloadBookInformationDbThread().start();
             new getBooksInformationFromAssets(this).execute();
+
         }
+    }
+
+    private void updateBooksIfNeeded() {
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        if (!preferences.getBoolean(BOOKS_UPDATED_TO_V_4, false)) {
+            new UpdateBooksAsyncTask(this).execute();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(BOOKS_UPDATED_TO_V_4, true);
+            editor.apply();
+        } else {
+            finishSplashAndLaunchMainActivity();
+        }
+
     }
 
     private void handleOldDirectory() {
@@ -226,6 +247,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
 
+            @Nullable
             @Override
             protected Void doInBackground(Void... params) {
                 StorageUtils.makeIslamicLibraryShamelaDirectory(SplashActivity.this);
@@ -275,6 +297,10 @@ public class SplashActivity extends AppCompatActivity {
         void accept(int i);
     }
 
+    public interface RefreshBooksProgressCallBack {
+        void accept(int i);
+    }
+
     private static class getBooksInformationFromAssets extends AsyncTask<Void, Integer, Boolean> {
         private static final double MAX_MANI_DB_SIZE = 18587648L;
         private double downloadSoFar = 0;
@@ -297,6 +323,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         }
 
+        @NonNull
         @Override
         protected Boolean doInBackground(Void... voids) {
             SplashActivity activity = activityReference.get();
@@ -333,6 +360,70 @@ public class SplashActivity extends AppCompatActivity {
             SplashActivity activity = activityReference.get();
             if (activity != null)
                 if (success) {
+                    activity.updateBooksIfNeeded();
+                    activity.finishSplashAndLaunchMainActivity();
+                } else {
+                    activity.finish();
+                }
+        }
+    }
+
+    private static class UpdateBooksAsyncTask extends AsyncTask<Void, Integer, Boolean> {
+        private WeakReference<SplashActivity> activityReference;
+        private BooksInformationDbHelper booksInformationDbHelper;
+        private int numberOfStoredBooks;
+
+        private UpdateBooksAsyncTask(SplashActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            SplashActivity activity = activityReference.get();
+            booksInformationDbHelper = BooksInformationDbHelper.getInstance(activity);
+            if (booksInformationDbHelper != null) {
+                activity.mProgressBar.setVisibility(View.VISIBLE);
+                activity.mTextView.setVisibility(View.VISIBLE);
+                activity.mProgressValue.setVisibility(View.VISIBLE);
+                activity.mProgressBar.setIndeterminate(false);
+                numberOfStoredBooks = booksInformationDbHelper.getNumberOfStoredBooks(activity);
+                activity.mProgressBar.setMax(numberOfStoredBooks);
+                activity.mProgressBar.setProgress(0);
+                activity.mTextView.setText(R.string.updating_books_please_wait);
+                activity.mProgressValue.setText(activity.getString(R.string.updating_books_progress, 0, numberOfStoredBooks));
+
+            }
+        }
+
+        @NonNull
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (numberOfStoredBooks == 0) return true;
+            SplashActivity activity = activityReference.get();
+            booksInformationDbHelper.refreshBooksDbWithDirectory(activity, this::publishProgress);
+            return true;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            SplashActivity activity = activityReference.get();
+            if (activity != null) {
+                activity.mProgressBar.setProgress(values[0]);
+                activity.mProgressValue
+                        .setText(activity.getString(R.string.updating_books_progress,
+                                values[0],
+                                numberOfStoredBooks));
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            SplashActivity activity = activityReference.get();
+            if (activity != null)
+                if (success) {
+                    activity.mProgressBar.setVisibility(View.GONE);
+                    activity.mTextView.setVisibility(View.GONE);
+                    activity.mProgressValue.setVisibility(View.GONE);
                     activity.finishSplashAndLaunchMainActivity();
                 } else {
                     activity.finish();

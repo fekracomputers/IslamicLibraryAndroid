@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -13,7 +14,7 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 public class BookCategory implements Parcelable {
     public static final Creator<BookCategory> CREATOR = new Creator<BookCategory>() {
         @Override
-        public BookCategory createFromParcel(Parcel source) {
+        public BookCategory createFromParcel(@NonNull Parcel source) {
             return new BookCategory(source);
         }
 
@@ -46,7 +47,7 @@ public class BookCategory implements Parcelable {
         this.id = id;
     }
 
-    public BookCategory(Parcel in) {
+    public BookCategory(@NonNull Parcel in) {
         this.id = in.readInt();
         this.order = in.readInt();
         this.name = in.readString();
@@ -108,7 +109,7 @@ public class BookCategory implements Parcelable {
         return 0;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeInt(this.order);
         dest.writeString(this.name);

@@ -2,6 +2,8 @@ package com.fekracomputers.islamiclibrary.reading.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,6 +15,7 @@ import com.fekracomputers.islamiclibrary.utility.Util;
 
 
 public class SearchScrubBar extends FrameLayout {
+    @Nullable
     private final OnClickListener mDelegateOnClickListener;
     private View mExitSearch;
     private TextView mMatches;
@@ -22,11 +25,11 @@ public class SearchScrubBar extends FrameLayout {
     private final int mSearchScrubBarTextActiveColor;
     private final int mSearchScrubBarTextInactiveColor;
 
-    public SearchScrubBar(Context context, AttributeSet attrs) {
+    public SearchScrubBar(@NonNull Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SearchScrubBar(Context context, AttributeSet attrs, int defStyle) {
+    public SearchScrubBar(@NonNull Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         this.mDelegateOnClickListener = view -> {
@@ -100,7 +103,7 @@ public class SearchScrubBar extends FrameLayout {
         hideSearchBarMatchText();
     }
 
-    public void setNavigationStatus(SearchNavigationStatus status) {
+    public void setNavigationStatus(@NonNull SearchNavigationStatus status) {
         setPreviousButtonEnabled(status.hasPrevious);
         setNextButtonEnabled(status.hasNext);
         setSearchBarMatchText(status.numMatchesBeforeSpread, status.numMatches, status.currentSpreadContainsMatch);

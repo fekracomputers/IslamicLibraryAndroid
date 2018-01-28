@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -16,9 +17,9 @@ import android.widget.TextView;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.adapters.BookListRecyclerViewAdapter;
-import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
+import com.fekracomputers.islamiclibrary.homeScreen.controller.BookCollectionsController;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
 
 /**
@@ -54,9 +55,10 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
     }
 
 
-    public HorizontalBookRecyclerView setupRecyclerView(final BooksCollection booksCollection,
+    @NonNull
+    public HorizontalBookRecyclerView setupRecyclerView(@NonNull final BooksCollection booksCollection,
                                                         final BookCardEventsCallback bookCardEventsCallback,
-                                                        BookCollectionsController bookCollectionsController,
+                                                        @NonNull BookCollectionsController bookCollectionsController,
                                                         boolean forceRefresh
     ) {
         final Cursor cursor = booksCollection.reAcquireCursor(this.getContext(), forceRefresh);
@@ -75,6 +77,7 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
     }
 
 
+    @NonNull
     public HorizontalBookRecyclerView setupRecyclerView(BookCardEventsCallback mListener,
                                                         Cursor bookListCursor,
                                                         String title,
@@ -155,7 +158,7 @@ public class HorizontalBookRecyclerView extends RelativeLayout {
 
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        public void getItemOffsets(@NonNull Rect outRect, View view, @NonNull RecyclerView parent, RecyclerView.State state) {
             super.getItemOffsets(outRect, view, parent, state);
             int position = parent.getChildAdapterPosition(view);
 

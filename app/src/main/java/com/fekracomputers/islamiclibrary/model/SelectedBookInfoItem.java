@@ -1,5 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
+import android.support.annotation.Nullable;
+
 /**
  * بسم الله الرحمن الرحيم
  * Created by Mohammd Yahia on 6/3/2017.
@@ -17,7 +19,7 @@ public class SelectedBookInfoItem {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SelectedBookInfoItem that = (SelectedBookInfoItem) o;

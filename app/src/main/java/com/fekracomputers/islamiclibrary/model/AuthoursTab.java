@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -43,6 +44,7 @@ public class AuthoursTab implements BookCatalogElement {
         return R.string.authors;
     }
 
+    @NonNull
     @Override
     public Fragment getNewFragment() {
         return AuthorListFragment.newInstance();

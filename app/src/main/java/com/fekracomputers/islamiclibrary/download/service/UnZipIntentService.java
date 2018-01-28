@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.SplashActivity;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
@@ -56,7 +57,7 @@ public class UnZipIntentService extends IntentService {
 
     }
 
-    private static void deleteFileWithException(String zipFilePath) {
+    private static void deleteFileWithException(@NonNull String zipFilePath) {
         File file = new File(zipFilePath);
         if (file.exists()) {
             if (!file.delete()) {
@@ -76,7 +77,7 @@ public class UnZipIntentService extends IntentService {
     }
 
     private static boolean unzip(@Nullable String zipFilePath,
-                                 String destinationPath,
+                                 @NonNull String destinationPath,
                                  @Nullable InputStream inputStream,
                                  @Nullable SplashActivity.DownloadProgressCallBack consumer) {
         if (zipFilePath == null && inputStream == null)
@@ -105,6 +106,8 @@ public class UnZipIntentService extends IntentService {
                         String outputFullPath = destinationPath + File.separator + filename;
                         //delete any existing file at the same path
                         deleteFileWithException(outputFullPath);
+                        //Cjeck if output directory didn't exist already
+                        new File(destinationPath).mkdirs();
                         //All files are outputted to the same directory as the zip folder
                         FileOutputStream unZippedOutputStream = new FileOutputStream(outputFullPath, false);
 
@@ -151,13 +154,13 @@ public class UnZipIntentService extends IntentService {
      *                    its parent directory
      * @return true on success false otherwise
      */
-    public static boolean unZipInPlace(String zipFilePath) {
+    public static boolean unZipInPlace(@NonNull String zipFilePath) {
         String destinationPath = new File(zipFilePath).getParent() + File.separator;
         return unzip(zipFilePath, destinationPath);
     }
 
     @Override
-    protected void onHandleIntent(Intent workIntent) {
+    protected void onHandleIntent(@NonNull Intent workIntent) {
 
         String zipFilePath = workIntent.getStringExtra(EXTRA_FILE_PATH);
 
@@ -173,11 +176,13 @@ public class UnZipIntentService extends IntentService {
                     deleteFileWithException(zipFilePath);
                 } else if (repeatedCompressedBookFileRegex.matcher(fileName).matches()) {
                     Matcher matcher = repeatedCompressedBookFileRegex.matcher(fileName);
-                    String correctFilename = matcher.group(1);
-                    int bookId = Integer.parseInt(correctFilename);
-                    unZipBook(zipFilePath, bookId);
-                    int repeatedCount = Integer.parseInt(matcher.group(2));
-                    deleteRepeatedBooks(zipFilePath, bookId, repeatedCount);
+                    if (matcher.matches()) {
+                        String correctFilename = matcher.group(1);
+                        int bookId = Integer.parseInt(correctFilename);
+                        unZipBook(zipFilePath, bookId);
+                        int repeatedCount = Integer.parseInt(matcher.group(2));
+                        deleteRepeatedBooks(zipFilePath, bookId, repeatedCount);
+                    }
                 } else if (fileName.equals(DATABASE_NAME + ".zip")) {
                     if (unZipInPlace(zipFilePath)) {
                         announceBooksInformationUnzipSuccess(zipFilePath);
@@ -189,17 +194,18 @@ public class UnZipIntentService extends IntentService {
 
                 } else if (REPEATED_COMPRESSED_DATABASE_FULL_NAME.matcher(fileName).matches()) {
                     Matcher matcher = REPEATED_COMPRESSED_DATABASE_FULL_NAME.matcher(fileName);
-                    matcher.matches();
-                    boolean b = unZipInPlace(zipFilePath);
-                    int repeatedCount = Integer.parseInt(matcher.group(1));
-                    if (b) {
-                        //Broadcast unzip ended
-                        announceBooksInformationUnzipSuccess(zipFilePath);
-                    } else {
-                        announceBooksInformationUnzipFailed(zipFilePath);
+                    if (matcher.matches()) {
+                        boolean b = unZipInPlace(zipFilePath);
+                        int repeatedCount = Integer.parseInt(matcher.group(1));
+                        if (b) {
+                            //Broadcast unzip ended
+                            announceBooksInformationUnzipSuccess(zipFilePath);
+                        } else {
+                            announceBooksInformationUnzipFailed(zipFilePath);
 
+                        }
+                        deleteRepeatedBooksInformation(zipFilePath, repeatedCount);
                     }
-                    deleteRepeatedBooksInformation(zipFilePath, repeatedCount);
                 }
             }
 
@@ -234,7 +240,7 @@ public class UnZipIntentService extends IntentService {
         BookDownloadCompletedReceiver.informationDatabaseDownloadEnqueId = -1;
     }
 
-    private void deleteRepeatedBooksInformation(String zipFilePath, int repeatedCount) {
+    private void deleteRepeatedBooksInformation(@NonNull String zipFilePath, int repeatedCount) {
         String folder = zipFilePath.substring(0, zipFilePath.lastIndexOf(File.separatorChar));
         for (int i = repeatedCount; i >= 1; i--) {
             String pathname = folder + File.separator + DATABASE_NAME + "-" + i + "." + COMPRESSION_EXTENSION;
@@ -254,7 +260,7 @@ public class UnZipIntentService extends IntentService {
         }
     }
 
-    private void deleteRepeatedBooks(String zipFilePath, int bookId, int repeatedCount) {
+    private void deleteRepeatedBooks(@NonNull String zipFilePath, int bookId, int repeatedCount) {
         String folder = zipFilePath.substring(0, zipFilePath.lastIndexOf(File.separatorChar));
         for (int i = repeatedCount; i >= 1; i--) {
             String pathname = folder + File.separator + bookId + "-" + i + "." + COMPRESSION_EXTENSION;
@@ -274,7 +280,7 @@ public class UnZipIntentService extends IntentService {
         }
     }
 
-    private void unZipBook(String zipFilePath, int bookId) {
+    private void unZipBook(@NonNull String zipFilePath, int bookId) {
         Intent unzipStartedBroadCast =
                 new Intent(BROADCAST_ACTION)
                         .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_UNZIP_STARTED)
@@ -283,27 +289,39 @@ public class UnZipIntentService extends IntentService {
         sendOrderedBroadcast(unzipStartedBroadCast, null);
 
         if (unZipInPlace(zipFilePath)) {
-            if (validateDatabase(bookId)) {
-                //Broadcast unzip ended
-                Intent unzipEndedBroadCast =
-                        new Intent(BROADCAST_ACTION)
-                                // Puts the status into the Intent
-                                .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_UNZIP_ENDED)
-                                .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId)
-                                .putExtra(EXTRA_FILE_PATH, zipFilePath);
-                // Broadcasts the Intent to receivers in this app.
-                sendOrderedBroadcast(unzipEndedBroadCast, null);
+            if (BookDatabaseHelper.isValidBookStatic(bookId, this.getApplicationContext())) {
+                try {
+                    BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this.getApplicationContext(), bookId);
+                    if (bookDatabaseHelper != null && !bookDatabaseHelper.isFtsSearchable()) {
+                        //Broadcast unzip ended
+                        Intent unzipEndedBroadCast =
+                                new Intent(BROADCAST_ACTION)
+                                        // Puts the status into the Intent
+                                        .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_UNZIP_ENDED)
+                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId)
+                                        .putExtra(EXTRA_FILE_PATH, zipFilePath);
+                        // Broadcasts the Intent to receivers in this app.
+                        sendOrderedBroadcast(unzipEndedBroadCast, null);
+                    } else if (bookDatabaseHelper != null && bookDatabaseHelper.isFtsSearchable()) {
+                        //Broadcast FTSINDEXING ended
+                        Intent unzipEndedBroadCast =
+                                new Intent(BROADCAST_ACTION)
+                                        // Puts the status into the Intent
+                                        .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_FTS_INDEXING_ENDED)
+                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId)
+                                        .putExtra(EXTRA_FILE_PATH, zipFilePath);
+                        // Broadcasts the Intent to receivers in this app.
+                        sendOrderedBroadcast(unzipEndedBroadCast, null);
+                    }
+                } catch (BookDatabaseException e) {
+                    Timber.e(e);
+                }
             } else {
                 BookDownloadCompletedReceiver.broadCastBookDownloadFailed(bookId, "invalidDatabase", this);
             }
         } else {
             BookDownloadCompletedReceiver.broadCastBookDownloadFailed(bookId, "invalid Zip file", this);
         }
-    }
-
-    private boolean validateDatabase(int bookId) {
-        BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
-        return bookDatabaseHelper.isValidBook();
     }
 
 

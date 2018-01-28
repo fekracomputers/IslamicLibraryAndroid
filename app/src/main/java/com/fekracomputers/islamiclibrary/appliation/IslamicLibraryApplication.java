@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -77,7 +78,7 @@ public class IslamicLibraryApplication extends Application {
         }
 
         @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
+        protected void log(int priority, String tag, String message, @Nullable Throwable t) {
             Crashlytics.log(priority, message, tag);
             if (t != null) {
                 Crashlytics.logException(t);

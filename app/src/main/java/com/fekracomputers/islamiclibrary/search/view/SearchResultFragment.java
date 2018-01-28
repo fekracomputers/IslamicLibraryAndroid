@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,17 +34,22 @@ public class SearchResultFragment extends Fragment implements
         SearchResultRecyclerViewAdapter.SearchResultOnClickDelegateListener {
     public static final String ARG_SEARCHABLE_BOOKS = "searchable_books";
     SearchRequest mSearchRequest;
+    @NonNull
     List<BookSearchResultsContainer> bookSearchResultsContainerList = new ArrayList<>();
     // TODO: Customize parameter argument names
     public static final String ARG_IS_GLOBAL_SEARCH = "is_global_search";
     // TODO: Customize parameters
+    @Nullable
     private OnSearchResultFragmentInteractionListener mListener;
     private boolean mIsGlobalSearch;
     private ProgressBar mProgressBar;
     private TextView mTotalBooksTextView;
     private TextView mNumberOfAlreadySearchedBooksTextView;
+    @Nullable
     private SearchResultRecyclerViewAdapter searchResultRecyclerViewAdapter;
+    @Nullable
     private ArrayList<Integer> requestedSearchBookIds;
+    @Nullable
     private String mSearchQuery;
 
     /**
@@ -52,6 +59,7 @@ public class SearchResultFragment extends Fragment implements
     public SearchResultFragment() {
     }
 
+    @NonNull
     public static Fragment newInstance(Bundle searchIntentBundle) {
 
         SearchResultFragment fragment = new SearchResultFragment();
@@ -60,6 +68,7 @@ public class SearchResultFragment extends Fragment implements
 
     }
 
+    @NonNull
     public static SearchResultFragment newInstance(boolean isGlobalSearch, ArrayList<Integer> searchableBooksIds) {
         SearchResultFragment fragment = new SearchResultFragment();
         Bundle args = new Bundle();
@@ -150,6 +159,7 @@ public class SearchResultFragment extends Fragment implements
         protected void onPreExecute() {
         }
 
+        @Nullable
         @Override
         protected Void doInBackground(SearchRequest... searchRequests) {
             BookSearcher bookSearcher = new BookSearcher(SearchResultFragment.this.getContext(), searchRequests[0].expandAll, searchRequests[0].searchString, searchRequests[0].searchOptions);

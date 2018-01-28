@@ -60,7 +60,7 @@ public class ArabicUtilities {
     private static final Pattern REMOVE_REPEATED_SPACES = Pattern.compile("\\s\\s+");
     private static final Pattern REMOVE_HTML_TAGS = Pattern.compile("<[^>]*>");
 
-    public static String cleanTashkeel(String s) {
+    public static String cleanTashkeel(@NonNull String s) {
         Matcher matcher = CLEANING_TASHKEEL.matcher(s);
         return matcher.replaceAll("");
     }
@@ -70,7 +70,7 @@ public class ArabicUtilities {
     }
 
     @NonNull
-    public static String cleanTextForSearchingQuery(String s) {
+    public static String cleanTextForSearchingQuery(@NonNull String s) {
 
         Matcher matcher = SPACE_REPLACED_PATTERN.matcher(s);
         String space_replaced = matcher.replaceAll(" ");
@@ -103,7 +103,7 @@ public class ArabicUtilities {
         return handleTatweela(sb.toString());
     }
 
-    public static String handleTatweela(String s) {
+    public static String handleTatweela(@NonNull String s) {
         Matcher matcher4 = TATWEELA_PATTERN.matcher(s);
         StringBuffer sb2 = new StringBuffer();
         while (matcher4.find()) {
@@ -150,7 +150,7 @@ public class ArabicUtilities {
      * prepare the string to pre prefixed with lam
      * قواعد الإملاء لعبد السلام هارون الباب الرابع
      */
-    public static String prepareForPrefixingLam(String string) {
+    public static String prepareForPrefixingLam(@NonNull String string) {
 
         if (startsWithDefiniteArticle(string)) {
             if (string.startsWith("ل", 2)) {
@@ -166,7 +166,7 @@ public class ArabicUtilities {
 
     }
 
-    public static boolean startsWithDefiniteArticle(String string) {
+    public static boolean startsWithDefiniteArticle(@NonNull String string) {
         return string.startsWith("ال");
     }
 

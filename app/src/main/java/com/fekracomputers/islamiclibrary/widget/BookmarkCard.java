@@ -39,15 +39,15 @@ public class BookmarkCard extends CardView {
     private ImageView bookmarkIcon;
     private TextView bookInfoTextView;
 
-    public BookmarkCard(Context context) {
+    public BookmarkCard(@NonNull Context context) {
         this(context, null);
     }
 
-    public BookmarkCard(Context context, AttributeSet attrs) {
+    public BookmarkCard(@NonNull Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BookmarkCard(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BookmarkCard(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context, attrs, defStyleAttr);
     }
@@ -93,7 +93,7 @@ public class BookmarkCard extends CardView {
     }
 
 
-    private void initialize(Context context, AttributeSet attrs, int defStyleAttr) {
+    private void initialize(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         View rootView = inflate(getContext(), R.layout.bookmark_card, this);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.NoteCard,
@@ -123,7 +123,7 @@ public class BookmarkCard extends CardView {
     public void bind(@NonNull final Bookmark bookmark,
                      @NonNull final BookPartsInfo bookPartsInfo,
                      @Nullable final BookInfo bookInfo,
-                     final UserNoteGroupAdapter.UserNoteInterActionListener userNoteInterActionListener) {
+                     @NonNull final UserNoteGroupAdapter.UserNoteInterActionListener userNoteInterActionListener) {
         bookmarkIcon.setVisibility(View.VISIBLE);
         bookmarkIcon.setScaleY(1);
 

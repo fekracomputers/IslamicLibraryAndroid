@@ -89,7 +89,7 @@ public class SearchResult implements Parcelable, Comparable<SearchResult> {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeParcelable(this.pageInfo, flags);
         dest.writeInt(this.bookId);
         dest.writeString(this.unformatedPage);
@@ -97,7 +97,7 @@ public class SearchResult implements Parcelable, Comparable<SearchResult> {
         dest.writeParcelable(this.searchOptions, flags);
     }
 
-    protected SearchResult(Parcel in) {
+    protected SearchResult(@NonNull Parcel in) {
         this.pageInfo = in.readParcelable(PageInfo.class.getClassLoader());
         this.bookId = in.readInt();
         this.unformatedPage = in.readString();
@@ -107,7 +107,7 @@ public class SearchResult implements Parcelable, Comparable<SearchResult> {
 
     public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() {
         @Override
-        public SearchResult createFromParcel(Parcel source) {
+        public SearchResult createFromParcel(@NonNull Parcel source) {
             return new SearchResult(source);
         }
 

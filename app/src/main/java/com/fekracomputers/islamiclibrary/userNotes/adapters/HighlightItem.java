@@ -35,6 +35,7 @@ public class HighlightItem extends UserNoteItem<Highlight, HighlightItem.ViewHol
     }
 
     public static class ViewHolder extends UserNoteViewHolder {
+        @NonNull
         public final NoteCard noteCard;
         public ViewHolder(View view) {
             super(view);

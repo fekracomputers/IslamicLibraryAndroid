@@ -112,22 +112,28 @@ public class BrowsingActivity
     static final String BOOK_LIST_FRAGMENT_ADDED = "BOOK_LIST_FRAGMENT_ADDED";
     static final String BOOK_INFORMATION_FRAGMENT_ADDED = "BOOK_INFORMATION_FRAGMENT_ADDED";
     protected int mPaneNumber;
+    @NonNull
     protected HashSet<Integer> selectedBooksIds = new HashSet<>();
+    @Nullable
     protected BookSelectionActionModeCallback mActionMode;
     protected boolean mIsArabic;
     protected IconSwitch toolbarDownloadOnlySwitch;
     protected boolean mShouldDisplayDownloadOnly;
     protected SwitchCompat navDownloadedOnlySwitch;
+    @NonNull
     protected List<BrowsingActivityListingFragment> pagerTabs = new ArrayList<>();
     protected SearchView mSearchView;
     /**
      * this variable is here to be overrided in subclasses to allow calling activity super constructors
      */
     View bookListContainer;
+    @Nullable
     BooksInformationDbHelper mBooksInformationDbHelper;
     @Nullable
     private BrowsingActivityNavigationController browsingActivityNavigationController;
+    @NonNull
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
+    @Nullable
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
         public boolean OnBookItemLongClicked(int bookId) {
@@ -169,17 +175,17 @@ public class BrowsingActivity
         }
 
         @Override
-        public void showAllAuthorBooks(AuthorInfo authorInfo) {
+        public void showAllAuthorBooks(@NonNull AuthorInfo authorInfo) {
             BrowsingActivity.this.OnAuthorItemItemClick(authorInfo);
         }
 
         @Override
-        public void showAllCategoryBooks(BookCategory category) {
+        public void showAllCategoryBooks(@NonNull BookCategory category) {
             BrowsingActivity.this.OnCategoryItemClick(category);
         }
 
         @Override
-        public void showAllCollectionBooks(BooksCollection booksCollection) {
+        public void showAllCollectionBooks(@NonNull BooksCollection booksCollection) {
             BookListFragment fragment = BookListFragment.newInstance(
                     BookListFragment.FILTER_BY_COLLECTION,
                     booksCollection.getCollectionsId(),
@@ -239,10 +245,18 @@ public class BrowsingActivity
             if (browsingActivityNavigationController != null) {
                 browsingActivityNavigationController.showBookInformationFragment(BookInformationFragment.newInstance(bookId));
             }
+            browsingAnalyticsController.logBookSelectionEvent(bookId);
         }
 
 
     };
+
+
+    private BrowsingAnalyticsController browsingAnalyticsController;
+    private AppBarLayout appBarLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    @NonNull
+    private ArrayList<BookCollectionsCallBack> bookCollectionsCallBack = new ArrayList<>();
 
     private void notifyBookDownloadFailed(int bookId, String failurReason) {
         CoordinatorLayout coordinatorLayout = findViewById(R.id.browsing_coordinator_layout);
@@ -257,13 +271,6 @@ public class BrowsingActivity
         );
         mySnackbar.show();
     }
-
-
-    private AppBarLayout appBarLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    @NonNull
-    private ArrayList<BookCollectionsCallBack> bookCollectionsCallBack = new ArrayList<>();
-
 
     @Override
     public synchronized void registerListener(BrowsingActivityListingFragment pagerTab) {
@@ -290,12 +297,14 @@ public class BrowsingActivity
         mIsArabic = Util.isArabicUi(this);
         super.onCreate(savedInstanceState);
         bookCardEventsCallback.intializeListener();
+
+        browsingAnalyticsController = new BrowsingAnalyticsController(this);
         inflateUi(savedInstanceState);
 
     }
 
 
-    protected void inflateUi(Bundle savedInstanceState) {
+    protected void inflateUi(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_browsing);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -392,7 +401,7 @@ public class BrowsingActivity
 
     }
 
-    private int getmumberOfpans(View filterPagerContainer, View bookInfoContainer) {
+    private int getmumberOfpans(@Nullable View filterPagerContainer, @Nullable View bookInfoContainer) {
         int paneNumber = 0;
         if (filterPagerContainer != null && filterPagerContainer.getVisibility() == View.VISIBLE) {
             paneNumber = 1;
@@ -407,7 +416,7 @@ public class BrowsingActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(NUMBER_OF_PANS_KEY, mPaneNumber);
     }
@@ -468,7 +477,7 @@ public class BrowsingActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -494,7 +503,7 @@ public class BrowsingActivity
     }
 
     @Override
-    public void OnCategoryItemClick(BookCategory bookCategory) {
+    public void OnCategoryItemClick(@NonNull BookCategory bookCategory) {
         BookListFragment fragment = BookListFragment.newInstance(
                 BookListFragment.FILTERBYCATEGORY,
                 bookCategory.getId(),
@@ -502,6 +511,7 @@ public class BrowsingActivity
         if (browsingActivityNavigationController != null) {
             browsingActivityNavigationController.showCategoryDetails(fragment);
         }
+        browsingAnalyticsController.logCategoryEvent(bookCategory);
     }
 
     @Override
@@ -603,7 +613,7 @@ public class BrowsingActivity
     }
 
     @Override
-    public void mayBeSetTitle(String title) {
+    public void mayBeSetTitle(@Nullable String title) {
         if (mPaneNumber == 1) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -619,16 +629,17 @@ public class BrowsingActivity
 
 
     @Override
-    public void OnAuthorItemItemClick(AuthorInfo authorInfo) {
+    public void OnAuthorItemItemClick(@NonNull AuthorInfo authorInfo) {
         BookListFragment fragment = BookListFragment.newInstance(BookListFragment.FILTERBYAuthour,
                 authorInfo.getId(),
                 authorInfo.getName());
         if (browsingActivityNavigationController != null) {
             browsingActivityNavigationController.showAuthorFragment(fragment);
         }
-
-
+        browsingAnalyticsController.logAuthorBooksList(authorInfo);
     }
+
+
 
     @Override
     public void OnFilterAllSelected(boolean b) {
@@ -730,7 +741,7 @@ public class BrowsingActivity
     }
 
     @Override
-    public void showRenameDialog(BooksCollection booksCollection) {
+    public void showRenameDialog(@NonNull BooksCollection booksCollection) {
         Bundle confirmBatchDownloadDialogFragmentBundle = new Bundle();
         confirmBatchDownloadDialogFragmentBundle.putString(KEY_OLD_NAME, booksCollection.getName());
         Gson gson = new Gson();
@@ -919,6 +930,7 @@ public class BrowsingActivity
 //        notifyActivityRestarted();
 //    }
 
+    @Nullable
     @Override
     public BookCardEventsCallback getBookCardEventCallback() {
         return bookCardEventsCallback;
@@ -926,7 +938,7 @@ public class BrowsingActivity
 
     public void startBatchDownload() {
         BooksDownloader booksDownloader = new BooksDownloader(BrowsingActivity.this);
-        booksDownloader.downloadBookCollection(mBooksToDownload);
+        booksDownloader.downloadBookCollection(mBooksToDownload.toArray(new Integer[mBooksToDownload.size()]));
     }
 
     @Override
@@ -960,7 +972,7 @@ public class BrowsingActivity
         private Menu menu;
         private Toolbar selectionToolBar;
 
-        boolean onActionItemClicked(MenuItem item) {
+        boolean onActionItemClicked(@NonNull MenuItem item) {
             if (item.getItemId() == R.id.batch_download) {
                 mBooksToDownload.clear();
                 mBooksToDownload.addAll(selectedBooksIds);
@@ -1008,7 +1020,7 @@ public class BrowsingActivity
         }
 
         @Nullable
-        void startBookSelectionActionMode(final BrowsingActivity browsingActivity) {
+        void startBookSelectionActionMode(@NonNull final BrowsingActivity browsingActivity) {
             selectionToolBar = browsingActivity.findViewById(R.id.selection_tool_bar);
             menu = selectionToolBar.getMenu();
             if (menu == null || !menu.hasVisibleItems()) {

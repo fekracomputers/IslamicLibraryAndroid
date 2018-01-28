@@ -5,6 +5,7 @@ package com.fekracomputers.islamiclibrary.widget;
  */
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 public class SpinnerWithCloseEvent extends android.support.v7.widget.AppCompatSpinner {
@@ -12,23 +13,23 @@ public class SpinnerWithCloseEvent extends android.support.v7.widget.AppCompatSp
     private OnSpinnerEventsListener mListener;
     private boolean mOpenInitiated = false;
 
-    public SpinnerWithCloseEvent(Context context, AttributeSet attrs, int defStyleAttr, int mode) {
+    public SpinnerWithCloseEvent(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int mode) {
         super(context, attrs, defStyleAttr, mode);
     }
 
-    public SpinnerWithCloseEvent(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SpinnerWithCloseEvent(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public SpinnerWithCloseEvent(Context context, AttributeSet attrs) {
+    public SpinnerWithCloseEvent(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SpinnerWithCloseEvent(Context context, int mode) {
+    public SpinnerWithCloseEvent(@NonNull Context context, int mode) {
         super(context, mode);
     }
 
-    public SpinnerWithCloseEvent(Context context) {
+    public SpinnerWithCloseEvent(@NonNull Context context) {
         super(context);
     }
 

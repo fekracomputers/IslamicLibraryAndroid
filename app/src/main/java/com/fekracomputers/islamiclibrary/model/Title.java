@@ -12,7 +12,7 @@ public class Title implements Parcelable {
 
     public static final Parcelable.Creator<Title> CREATOR = new Parcelable.Creator<Title>() {
         @Override
-        public Title createFromParcel(Parcel source) {
+        public Title createFromParcel(@NonNull Parcel source) {
             return new Title(source);
         }
 
@@ -36,7 +36,7 @@ public class Title implements Parcelable {
         this.isParent = isParent;
     }
 
-    protected Title(Parcel in) {
+    protected Title(@NonNull Parcel in) {
         this.pageInfo = in.readParcelable(PageInfo.class.getClassLoader());
         this.id = in.readInt();
         this.parentId = in.readInt();
@@ -64,7 +64,7 @@ public class Title implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeParcelable(this.pageInfo, flags);
         dest.writeInt(this.id);
         dest.writeInt(this.parentId);

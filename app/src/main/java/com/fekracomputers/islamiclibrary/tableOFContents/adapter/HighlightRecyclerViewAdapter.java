@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.tableOFContents.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,7 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
 
     private final List<Highlight> highlightList;
     private final HighlightFragment.onHighlightClickListener mListener;
+    @NonNull
     private final SharedPreferences sharedPref;
     private int mCurrentSortIndex;
     private Context mContext;
@@ -56,7 +58,7 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
     public HighlightRecyclerViewAdapter(List<Highlight> items,
                                         HighlightFragment.onHighlightClickListener listener,
                                         Context context,
-                                        SharedPreferences sharedPref) {
+                                        @NonNull SharedPreferences sharedPref) {
         this.sharedPref = sharedPref;
         mCurrentSortIndex = sharedPref.getInt(KEY_HIGHLIGHTS_SORT_INDEX, 0);
         highlightList = items;
@@ -65,15 +67,16 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
         mContext = context;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_highlight, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Highlight highlight = highlightList.get(position);
         holder.noteCard.bind(highlight, mListener.getBookPartsInfo());
         holder.noteCard.setOnClickListener(v -> mListener.onHighlightClicked(highlight));
@@ -116,9 +119,10 @@ public class HighlightRecyclerViewAdapter extends RecyclerView.Adapter<Highlight
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @NonNull
         public final NoteCard noteCard;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
             noteCard = (NoteCard) view;
         }

@@ -22,19 +22,19 @@ import net.xpece.android.support.widget.CheckedTypedItemAdapter;
  */
 
 public class ThemeListPreference extends ListPreference {
-    public ThemeListPreference(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+    public ThemeListPreference(@NonNull final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public ThemeListPreference(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+    public ThemeListPreference(@NonNull final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ThemeListPreference(final Context context, final AttributeSet attrs) {
+    public ThemeListPreference(@NonNull final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ThemeListPreference(final Context context) {
+    public ThemeListPreference(@NonNull final Context context) {
         super(context);
     }
 
@@ -76,7 +76,7 @@ public class ThemeListPreference extends ListPreference {
             return view;
         }
 
-        private void setup(final int position, final View view) {
+        private void setup(final int position, @NonNull final View view) {
             TextView text = view.findViewById(android.R.id.text1);
             final int baseSp = 16;
             final float q = 1 / 2f + (float) position / getCount(); // <0.5;1.5>

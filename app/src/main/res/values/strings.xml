@@ -391,5 +391,7 @@
     <string name="pref_title_pinch_zoom">change zoom with pinch</string>
     <string name="book_not_download">book %1$s not downloaded</string>
     <string name="book_info">book:%1$s ,author%2$s,category: %3$s</string>
+    <string name="updating_books_please_wait">updating books files please wait</string>
+    <string name="updating_books_progress">%1$d/%2$d</string>
     <!--end storage pref-->
 </resources>

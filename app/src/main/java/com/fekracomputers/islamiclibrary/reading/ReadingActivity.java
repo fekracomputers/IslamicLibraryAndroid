@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -46,6 +47,7 @@ import android.widget.TextView;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseContract;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
@@ -66,11 +68,14 @@ import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
 import com.fekracomputers.islamiclibrary.utility.AppConstants;
 import com.fekracomputers.islamiclibrary.utility.Util;
 import com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static com.fekracomputers.islamiclibrary.R.id.chapter_title;
 import static com.fekracomputers.islamiclibrary.search.view.SearchResultFragment.ARG_IS_GLOBAL_SEARCH;
@@ -148,6 +153,7 @@ public class ReadingActivity extends AppCompatActivity implements
     };
     private SeekBar seekBar;
     private View mControlsView;
+    @Nullable
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -162,6 +168,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     };
     private int bookId;
+    @Nullable
     private ActionMode mActionMode;
     private PageInfo currentPageInfo;
     private BookDatabaseHelper mBookDatabaseHelper;
@@ -206,9 +213,10 @@ public class ReadingActivity extends AppCompatActivity implements
     private boolean isThemeNightMode;
     private boolean mIsInSearchMode = false;
     private SearchView mSearchView;
+    @NonNull
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
 
-    public static void openBook(int bookId, int pageId, Context context) {
+    public static void openBook(int bookId, int pageId, @NonNull Context context) {
         Intent intent = new Intent(context, ReadingActivity.class);
         intent.putExtra(KEY_BOOK_ID, bookId);
         intent.putExtra(KEY_PAGE_ID, pageId);
@@ -357,7 +365,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.reading_activity_action, menu);
 
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -388,7 +396,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         Intent intent;
@@ -435,7 +443,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         if (requestCode == PICK_TITLE_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
@@ -445,7 +453,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSearchResultClicked(BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
+    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
         //hide the search result fragment without removing it
         getSupportFragmentManager()
                 .popBackStack();
@@ -520,7 +528,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void setNumberEditorValid(boolean valid, EditText editText, CharSequence errorString) {
+    private void setNumberEditorValid(boolean valid, @NonNull EditText editText, CharSequence errorString) {
         if (valid) {
             editText.setError(null);
             editText.setTextColor(Util.getThemeColor(this, R.attr.blueThemedText));
@@ -531,7 +539,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void switchEditTextToTextView(EditText editText, TextView textView) {
+    private void switchEditTextToTextView(@NonNull EditText editText, @NonNull TextView textView) {
         editText.setVisibility(View.INVISIBLE);
         textView.setVisibility(View.VISIBLE);
         mPager.requestFocus();
@@ -635,13 +643,13 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(KEY_STATE_NAV_UI_VISIBLE, mVisible);
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         mIsArabic = Util.isArabicUi(this);
@@ -649,102 +657,122 @@ public class ReadingActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         bookId = intent.getIntExtra(KEY_BOOK_ID, 0);
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);
+
         mUserDataDBHelper.logBookAccess();
-        mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        try {
+            mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
+            bookName = mBookDatabaseHelper.getBookName();
+            logOpenBookAnalytics(bookId, bookName);
 
-        isThemeNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
-        setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        setContentView(R.layout.activity_reading);
-        if (savedInstanceState != null) {
-            mVisible = savedInstanceState.getBoolean(KEY_STATE_NAV_UI_VISIBLE, true);
-        } else {
-            mVisible = true;//This will bw shortly changed
-        }
+            isThemeNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
+            setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
 
-        mNavViewStub = findViewById(R.id.book_nav_view_stub);
-        mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
-
-        mSearchViewStub = findViewById(R.id.search_scrub_stub);
-        mSearchViewStub.setOnInflateListener(new SearchScrubOnInflateListener());
-
-        mFloatingPageNumberFrameLayout = findViewById(R.id.floating_page_number_frame);
-        mFloatingPageNumberTextView = mFloatingPageNumberFrameLayout.
-                findViewById(R.id.floating_page_number_text_view);
-        mFloatingPageNumberTextView.setOnLongClickListener(v -> {
-            showNavView();
-            mHideHandler.post(mHideFloatingPageNumberRunnable);
-            final KeyboardAwareEditText pageNumberEditor = mControlsView.findViewById(R.id.page_number_editor);
-            final TextView pageNumberTextView = mControlsView.findViewById(R.id.part_page_number_tv);
-            showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
-            return true;
-        });
-        mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
-        bookName = mBookDatabaseHelper.getBookName();
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(bookName);
-        }
-        mPager = findViewById(R.id.pager);
-        mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
-        PAGE_COUNT = mBookDatabaseHelper.getPageCount();
-        PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());
-
-        if (!intent.hasExtra(KEY_PAGE_ID)) {
-            currentPageInfo = mUserDataDBHelper.getLastPageInfo();
-        } else {
-            currentPageInfo = mBookDatabaseHelper.getPageInfoByPageId(intent.getIntExtra(KEY_PAGE_ID, 0));
-
-        }
-        parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
-        mFloatingPageNumberTextView.setText(
-                getPartPageSingleText());
-
-
-        mPager.setAdapter(pagerAdapter);
-        mPager.setCurrentItem(mBookDatabaseHelper.pageId2position(currentPageInfo.pageId));
-
-        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                currentPageInfo = mBookDatabaseHelper.getPageInfoByPagePosition(position);
-                parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
-                mFloatingPageNumberTextView.setText(
-                        getPartPageSingleText());
-                mUserDataDBHelper.logPageAccess(currentPageInfo);
-
+            setContentView(R.layout.activity_reading);
+            if (savedInstanceState != null) {
+                mVisible = savedInstanceState.getBoolean(KEY_STATE_NAV_UI_VISIBLE, true);
+            } else {
+                mVisible = true;//This will bw shortly changed
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    showFloatingPageNumber();
+            mNavViewStub = findViewById(R.id.book_nav_view_stub);
+            mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
+
+            mSearchViewStub = findViewById(R.id.search_scrub_stub);
+            mSearchViewStub.setOnInflateListener(new SearchScrubOnInflateListener());
+
+            mFloatingPageNumberFrameLayout = findViewById(R.id.floating_page_number_frame);
+            mFloatingPageNumberTextView = mFloatingPageNumberFrameLayout.
+                    findViewById(R.id.floating_page_number_text_view);
+            mFloatingPageNumberTextView.setOnLongClickListener(v -> {
+                showNavView();
+                mHideHandler.post(mHideFloatingPageNumberRunnable);
+                final KeyboardAwareEditText pageNumberEditor = mControlsView.findViewById(R.id.page_number_editor);
+                final TextView pageNumberTextView = mControlsView.findViewById(R.id.part_page_number_tv);
+                showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
+                return true;
+            });
+            mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setTitle(bookName);
+            }
+            mPager = findViewById(R.id.pager);
+            mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
+            PAGE_COUNT = mBookDatabaseHelper.getPageCount();
+            PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());
+
+            if (!intent.hasExtra(KEY_PAGE_ID)) {
+                currentPageInfo = mUserDataDBHelper.getLastPageInfo();
+            } else {
+                currentPageInfo = mBookDatabaseHelper.getPageInfoByPageId(intent.getIntExtra(KEY_PAGE_ID, 0));
+
+            }
+            parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
+            mFloatingPageNumberTextView.setText(
+                    getPartPageSingleText());
+
+
+            mPager.setAdapter(pagerAdapter);
+            mPager.setCurrentItem(mBookDatabaseHelper.pageId2position(currentPageInfo.pageId));
+
+            mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    currentPageInfo = mBookDatabaseHelper.getPageInfoByPagePosition(position);
+                    parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
+                    mFloatingPageNumberTextView.setText(
+                            getPartPageSingleText());
+                    mUserDataDBHelper.logPageAccess(currentPageInfo);
+
                 }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                        showFloatingPageNumber();
+                    }
+                }
+            });
+
+
+            if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
+                int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
+                mBookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
+                mCurrentSearchResultPosition = searchResultListPosition;
+                if (!isSearchViewInflated) {
+                    mSearchViewStub.inflate();
+                    isSearchViewInflated = true;
+                }
+                moveToCurrentMatch();
+
             }
-        });
+            getDelegate().setHandleNativeActionModesEnabled(false);
 
 
-        if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
-            int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
-            mBookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
-            mCurrentSearchResultPosition = searchResultListPosition;
-            if (!isSearchViewInflated) {
-                mSearchViewStub.inflate();
-                isSearchViewInflated = true;
-            }
-            moveToCurrentMatch();
-
-        }
-        getDelegate().setHandleNativeActionModesEnabled(false);
-
-
-        //mPager.setOffscreenPageLimit(3);
+            //mPager.setOffscreenPageLimit(3);
 
 //mPager.setPageTransformer(true, new DepthPageTransformer());
+        } catch (BookDatabaseException bookDatabaseException) {
+            finish();
+        }
+    }
 
+    private void logOpenBookAnalytics(int bookId, String bookName) {
+        try {
+            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            if (mFirebaseAnalytics != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(bookId));
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, bookName);
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @NonNull
@@ -759,7 +787,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         //only if it is the first creation
         if (savedInstanceState == null) {
@@ -788,7 +816,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void animateFadeIn(final View view, int duration) {
+    private void animateFadeIn(@NonNull final View view, int duration) {
         view.animate().
                 alpha(1.0f)
                 .setDuration(duration)
@@ -812,7 +840,7 @@ public class ReadingActivity extends AppCompatActivity implements
         mFloatingPageNumberHandler.postDelayed(mHideFloatingPageNumberRunnable, FLOATING_PAGE_NUMBER_DELAY_MILLIS);
     }
 
-    private void animateFadeOutHide(final View view, int duration) {
+    private void animateFadeOutHide(@NonNull final View view, int duration) {
         view.animate()
                 .alpha(0.0f)
                 .setDuration(duration)
@@ -942,7 +970,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onActionModeStarted(ActionMode mode) {
+    public void onActionModeStarted(@NonNull ActionMode mode) {
         if (mActionMode == null) {
             mActionMode = mode;
             Menu menu = mode.getMenu();
@@ -996,7 +1024,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     }
 
-    public void onContextualMenuItemClicked(MenuItem item) {
+    public void onContextualMenuItemClicked(@NonNull MenuItem item) {
 
         for (ActionModeChangeListener actionModeChangeListener : mActionModeChangeListener) {
             actionModeChangeListener.onContextualMenuItemClicked(item.getItemId(), mPager.getCurrentItem());
@@ -1083,7 +1111,7 @@ public class ReadingActivity extends AppCompatActivity implements
                                 pageNumber))));
     }
 
-    private void showEditingPartNumberInPlace(TextView partNumberTextView, KeyboardAwareEditText partNumberEditor) {
+    private void showEditingPartNumberInPlace(@NonNull TextView partNumberTextView, @NonNull KeyboardAwareEditText partNumberEditor) {
         partNumberTextView.setVisibility(View.INVISIBLE);
         partNumberEditor.setHint(partNumberTextView.getText());
         partNumberEditor.setText("");
@@ -1092,7 +1120,7 @@ public class ReadingActivity extends AppCompatActivity implements
         partNumberEditor.requestFocus();
     }
 
-    private void showEditingPageNumberInPlace(TextView pageNumberTextView, KeyboardAwareEditText pageNumberEditor) {
+    private void showEditingPageNumberInPlace(@NonNull TextView pageNumberTextView, @NonNull KeyboardAwareEditText pageNumberEditor) {
         pageNumberTextView.setVisibility(View.INVISIBLE);
         pageNumberEditor.setText("");
         pageNumberEditor.setHint(pageNumberTextView.getText());
@@ -1156,7 +1184,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
 
         @Override
-        public void onInflate(ViewStub stub, View inflated) {
+        public void onInflate(ViewStub stub, @NonNull View inflated) {
 
             final TextView pageNumberTextView = inflated.findViewById(R.id.part_page_number_tv);
             final TextView partNumberTextView = inflated.findViewById(R.id.part_number);
@@ -1231,7 +1259,7 @@ public class ReadingActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void afterTextChanged(Editable s) {
+                    public void afterTextChanged(@NonNull Editable s) {
                         String requiredpartString = s.toString();
                         if (!TextUtils.isEmpty(requiredpartString)) {
                             int requiredPart = Integer.valueOf(requiredpartString);
@@ -1320,7 +1348,7 @@ public class ReadingActivity extends AppCompatActivity implements
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
+                public void afterTextChanged(@NonNull Editable s) {
                     String requiredPageString = s.toString();
                     if (!TextUtils.isEmpty(requiredPageString)) {
                         int requiredPage = Integer.parseInt(requiredPageString);
@@ -1476,6 +1504,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return BookPageFragment.newInstance(bookId, mBookDatabaseHelper.position2PageId(position), position);

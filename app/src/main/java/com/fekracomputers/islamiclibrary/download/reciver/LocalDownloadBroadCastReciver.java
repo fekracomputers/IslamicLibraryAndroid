@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.download.reciver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
@@ -30,7 +31,7 @@ public class LocalDownloadBroadCastReciver extends BroadcastReceiver {
     public LocalDownloadBroadCastReciver() {
     }
 
-    public static void broadCastDownloadCanceled(Context context, long bookId) {
+    public static void broadCastDownloadCanceled(@NonNull Context context, long bookId) {
         BooksInformationDbHelper instance = BooksInformationDbHelper.getInstance(context);
         if (instance != null) {
             Intent bookDeleteBroadCast =
@@ -44,7 +45,7 @@ public class LocalDownloadBroadCastReciver extends BroadcastReceiver {
         }
     }
 
-    public static void broadCastBookInformationDownloadCanceled(Context context, long id) {
+    public static void broadCastBookInformationDownloadCanceled(@NonNull Context context, long id) {
         Intent ftsIndexingEndedBroadCast =
                 new Intent(BROADCAST_ACTION)
                         .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_BOOKINFORMATION_FAILED)
@@ -53,7 +54,7 @@ public class LocalDownloadBroadCastReciver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         boolean notifyCangeWithotBokId = intent.getBooleanExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, false);
         int status = intent.getIntExtra(EXTRA_DOWNLOAD_STATUS, STATUS_INVALID);
         String filePath = intent.getStringExtra(EXTRA_FILE_PATH);

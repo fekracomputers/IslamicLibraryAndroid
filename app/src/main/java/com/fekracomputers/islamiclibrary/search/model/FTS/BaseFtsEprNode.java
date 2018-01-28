@@ -1,6 +1,8 @@
 package com.fekracomputers.islamiclibrary.search.model.FTS;
 
 
+import android.support.annotation.Nullable;
+
 /**
  * Base interface for FTS Query expression Tree
  */
@@ -9,8 +11,10 @@ public interface BaseFtsEprNode {
 
     String value();
 
+    @Nullable
     BaseFtsEprNode leftChild();
 
+    @Nullable
     BaseFtsEprNode rightChild();
 
 }

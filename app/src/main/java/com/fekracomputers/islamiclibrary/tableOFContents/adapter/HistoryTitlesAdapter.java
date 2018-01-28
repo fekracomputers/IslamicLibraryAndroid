@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.tableOFContents.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,9 @@ public class HistoryTitlesAdapter extends RecyclerView.Adapter<HistoryTitlesAdap
         mOnTitleHistoryClickListener = onTitleHistoryClickListener;
     }
 
+    @NonNull
     @Override
-    public HistoryTitlesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HistoryTitlesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_table_of_content_hstory, parent, false);
         return new HistoryTitlesAdapter.ViewHolder(view);
@@ -33,7 +35,7 @@ public class HistoryTitlesAdapter extends RecyclerView.Adapter<HistoryTitlesAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title_history_element.setText(mTitlesList.get(position).title);
 
     }
@@ -56,7 +58,7 @@ public class HistoryTitlesAdapter extends RecyclerView.Adapter<HistoryTitlesAdap
 
         final TextView title_history_element;
 
-        ViewHolder(View v) {
+        ViewHolder(@NonNull View v) {
             super(v);
             title_history_element = v.findViewById(R.id.title_history_element);
             v.setOnClickListener(view -> mOnTitleHistoryClickListener.OnTitleHistoryClicked(getAdapterPosition()));

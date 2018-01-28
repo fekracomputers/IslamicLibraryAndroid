@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -12,7 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
-import android.support.v7.widget.TintTypedArray;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -29,19 +29,19 @@ public final class Util {
     private Util() {
     }
 
-    public static float dpToPx(Context context, int dp) {
+    public static float dpToPx(@NonNull Context context, int dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    public static int dpToPxOffset(Context context, int dp) {
+    public static int dpToPxOffset(@NonNull Context context, int dp) {
         return (int) (dpToPx(context, dp));
     }
 
-    public static int dpToPxSize(Context context, int dp) {
+    public static int dpToPxSize(@NonNull Context context, int dp) {
         return (int) (0.5f + dpToPx(context, dp));
     }
 
-    public static int resolveResourceId(Context context, @AttrRes int attr, int fallback) {
+    public static int resolveResourceId(@NonNull Context context, @AttrRes int attr, int fallback) {
         TEMP_ARRAY[0] = attr;
         TypedArray ta = context.obtainStyledAttributes(TEMP_ARRAY);
         try {
@@ -51,17 +51,7 @@ public final class Util {
         }
     }
 
-    public static ColorStateList resolveColorStateList(Context context, @AttrRes int attr) {
-        TEMP_ARRAY[0] = attr;
-        TintTypedArray ta = TintTypedArray.obtainStyledAttributes(context, null, TEMP_ARRAY);
-        try {
-            return ta.getColorStateList(0);
-        } finally {
-            ta.recycle();
-        }
-    }
-
-    public static void restartIfLocaleChanged(Activity activity, boolean oldIsArabic)
+    public static void restartIfLocaleChanged(@NonNull Activity activity, boolean oldIsArabic)
     {
         final boolean isUpdatedLocaleArabic=isArabicUi(activity);
         if (isUpdatedLocaleArabic != oldIsArabic) {
@@ -76,7 +66,7 @@ public final class Util {
         return  settings.getBoolean("ui_lang_arabic", false);
     }
 
-    public static int getThemeColor(Context context, int attrId) {
+    public static int getThemeColor(@NonNull Context context, int attrId) {
        final TypedValue sTypedValue = new TypedValue();
         if (context.getTheme().resolveAttribute(attrId, sTypedValue, true)) {
             return sTypedValue.data;
@@ -84,7 +74,7 @@ public final class Util {
         return 0;
     }
 
-    public static void enableSoftInput(View view, boolean toEnable) {
+    public static void enableSoftInput(@NonNull View view, boolean toEnable) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
         if (toEnable) {
@@ -94,14 +84,14 @@ public final class Util {
 
 
     @ColorInt
-    public static int getColorFromAttr(Context context, int attr, @ColorInt int defaultColor) {
+    public static int getColorFromAttr(@NonNull Context context, int attr, @ColorInt int defaultColor) {
         TypedArray a = context.obtainStyledAttributes(new TypedValue().data, new int[]{attr});
         int intColor = a.getColor(0, defaultColor);
         a.recycle();
         return intColor;
     }
 
-    public static void setImageButtonEnabled(Context ctxt, boolean enabled, ImageButton item,
+    public static void setImageButtonEnabled(@NonNull Context ctxt, boolean enabled, @NonNull ImageButton item,
                                              int iconResId) {
         item.setEnabled(enabled);
         Drawable originalIcon = ctxt.getResources().getDrawable(iconResId);
@@ -117,7 +107,8 @@ public final class Util {
      * @return a mutated version of the given drawable with a color filter
      * applied.
      */
-    public static Drawable convertDrawableToGrayScale(Drawable drawable) {
+    @Nullable
+    public static Drawable convertDrawableToGrayScale(@Nullable Drawable drawable) {
         if (drawable == null) {
             return null;
         }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseContract;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
@@ -30,6 +33,8 @@ import com.fekracomputers.islamiclibrary.tableOFContents.adapter.TableOfContentR
 
 import java.util.LinkedList;
 
+import timber.log.Timber;
+
 
 /**
  * Fragment to display the table of content for a book
@@ -38,30 +43,42 @@ public class TableOfContentFragment extends Fragment implements
         HistoryTitlesAdapter.OnTitleHistoryClickListener,
         TableOfContentRecyclerViewAdapter.OnTableOfContentExpandListener {
 
-    private static final java.lang.String KEY_BUILD_HISTORY = "build_history_list";
     /**
      * number of titles to display befor current tilte
      */
-    public static final int TITLE_WITHIN_PARENT_SCROLL_DIPLAY_OFFSET = 24*2;
-    public TableOfContentRecyclerViewAdapter mTableOfContentRecyclerViewAdapter;
+    public static final int TITLE_WITHIN_PARENT_SCROLL_DIPLAY_OFFSET = 24 * 2;
+    private static final java.lang.String KEY_BUILD_HISTORY = "build_history_list";
+    @Nullable
+    public TableOfContentRecyclerViewAdapter tableOfContentRecyclerViewAdapter;
+    BookDatabaseHelper bookDatabaseHelper;
+    int bookId;
+    @Nullable
+    String bookName;
+    @NonNull
     private LinkedList<Title> mHistoryLinkedList = new LinkedList<>();
+    @NonNull
     private LinkedList<Title> mBacstackTitlesLinkedList = new LinkedList<>();
     private HistoryTitlesAdapter mHistoryTitlesAdapter;
+    @Nullable
     private OnTableOfContentTitleClickListener mListener;
     private RecyclerView mHistoryRecyclerView;
     private boolean mInSearchMode;
+    @NonNull
     private LinkedList<Title> mBeforeEnteringSearchHistory = new LinkedList<>();
+    @NonNull
     private LinkedList<Title> mBeforeBacstackTitlesLinkedList = new LinkedList<>();
+
 
     public TableOfContentFragment() {
         // Required empty public constructor
     }
 
+    @NonNull
     public static Fragment newInstance(int bookId, String bookName) {
         return newInstance(bookId, bookName, false, 0, 0);
     }
 
-
+    @NonNull
     public static Fragment newInstance(int bookId, String bookName, boolean buildHistory, int pageId, int titleId) {
         TableOfContentFragment fragment = new TableOfContentFragment();
         Bundle args = new Bundle();
@@ -74,12 +91,25 @@ public class TableOfContentFragment extends Fragment implements
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Bundle bundle = getArguments();
+        bookName = bundle.getString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
+        bookId = bundle.getInt(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID);
+        try {
+            bookDatabaseHelper = BookDatabaseHelper.getInstance(getContext(), bookId);
 
+            tableOfContentRecyclerViewAdapter =
+                    new TableOfContentRecyclerViewAdapter(bookDatabaseHelper,
+                            getResources(),
+                            bookId,
+                            this,
+                            mListener);
+        } catch (BookDatabaseException e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -89,16 +119,10 @@ public class TableOfContentFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_table_of_content, container, false);
 
 
-        Bundle bundle = getArguments();
-        int bookId = bundle.getInt(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID);
-        String bookName = bundle.getString(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
-
-
         RecyclerView titleRecyclerView = rootView.findViewById(R.id.toc_recycler_view);
         LinearLayoutManager tableOfContentLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         titleRecyclerView.setLayoutManager(tableOfContentLayoutManager);
-        mTableOfContentRecyclerViewAdapter = new TableOfContentRecyclerViewAdapter(getContext(), bookId, this, mListener);
-        titleRecyclerView.setAdapter(mTableOfContentRecyclerViewAdapter);
+        titleRecyclerView.setAdapter(tableOfContentRecyclerViewAdapter);
         titleRecyclerView.setHasFixedSize(true);
         DividerItemDecoration tableOfContentsDividerItemDecoration =
                 new DividerItemDecoration(getContext(), tableOfContentLayoutManager.getOrientation());
@@ -114,15 +138,14 @@ public class TableOfContentFragment extends Fragment implements
         LinearLayoutManager historyLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mHistoryRecyclerView.setLayoutManager(historyLinearLayoutManager);
 
-
+        Bundle bundle = getArguments();
         if (bundle.getBoolean(KEY_BUILD_HISTORY)) {
             int pageId = bundle.getInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID);
             int titleId = bundle.getInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID);
-            BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(getContext(), bookId);
             mHistoryLinkedList = bookDatabaseHelper.buildTableOfContentHistoryToTitle(titleId);
-            mTableOfContentRecyclerViewAdapter.displayChildrenOfWithHighlightCurrent(mHistoryLinkedList.peekLast(), titleId);
+            tableOfContentRecyclerViewAdapter.displayChildrenOfWithHighlightCurrent(mHistoryLinkedList.peekLast(), titleId);
             tableOfContentLayoutManager.scrollToPositionWithOffset(
-                    bookDatabaseHelper.getTitlePositionUnderParent(titleId, mHistoryLinkedList.peekLast().id)-1, TITLE_WITHIN_PARENT_SCROLL_DIPLAY_OFFSET);
+                    bookDatabaseHelper.getTitlePositionUnderParent(titleId, mHistoryLinkedList.peekLast().id) - 1, TITLE_WITHIN_PARENT_SCROLL_DIPLAY_OFFSET);
         } else {
             mHistoryLinkedList.addLast(Title.createRootTitle(bookName));
         }
@@ -168,7 +191,7 @@ public class TableOfContentFragment extends Fragment implements
         }
 
         mHistoryTitlesAdapter.notifyItemRangeRemoved(pastTitlePosition + 1, removed);
-        mTableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
+        tableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
     }
 
 
@@ -177,7 +200,7 @@ public class TableOfContentFragment extends Fragment implements
         mHistoryLinkedList.addLast(title);
         mBacstackTitlesLinkedList.addLast(title);
         mHistoryTitlesAdapter.notifyItemInserted(mHistoryLinkedList.size() - 1);
-        mTableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
+        tableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
         mHistoryRecyclerView.scrollToPosition(mHistoryLinkedList.size() - 1);
         getView().requestFocus();
 
@@ -212,14 +235,14 @@ public class TableOfContentFragment extends Fragment implements
         mBeforeBacstackTitlesLinkedList.clear();//reset the before search list
 
 
-        mTableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
+        tableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
         mInSearchMode = false;
         getView().requestFocus();
 
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_table_of_content, menu);
         MenuItem item = menu.findItem(R.id.action_search);
@@ -233,7 +256,7 @@ public class TableOfContentFragment extends Fragment implements
             }
 
             @Override
-            public boolean onQueryTextChange(String query) {
+            public boolean onQueryTextChange(@Nullable String query) {
                 if (query == null || query.isEmpty()) {
                     if (mInSearchMode) {
                         //we already started the search mode so now we will restore the normal view
@@ -252,7 +275,7 @@ public class TableOfContentFragment extends Fragment implements
                         mHistoryLinkedList.addLast(searchResultRootTitle);
                         mHistoryTitlesAdapter.notifyDataSetChanged();
                     }
-                    mTableOfContentRecyclerViewAdapter.getFilter().filter(query);
+                    tableOfContentRecyclerViewAdapter.getFilter().filter(query);
 
                 }
                 return false;

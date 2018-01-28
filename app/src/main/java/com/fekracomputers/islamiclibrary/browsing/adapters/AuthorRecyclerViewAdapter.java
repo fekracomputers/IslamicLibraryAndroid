@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,25 +49,29 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
     };
     private final int COULMN_HAS_DOWNLOADED_BOOKS;
     private final int COULMN_NUMBER_OF_BOOKS;
+    @NonNull
     private final Context context;
     private final int COULMN_AUTHOUR_ID;
     private final int COLUMN_AUTHOUR_NAME_ID;
     private final int COLUMN_AUTHOUR_DEATH_DATE_ID;
+    @NonNull
     private final CursorListFragment cursorListFragment;
     private int itemCount;
+    @Nullable
     private Cursor mCursor;
     private int mRowIdColumn = -1;
     private DataSetObserver mDataSetObserver;
     private AuthorListFragment.OnAuthorItemClickListener mListener;
     private int layoutManagerType;
+    @Nullable
     private BooksInformationDbHelper booksInformationDbHelper;
 
     public AuthorRecyclerViewAdapter(
             String IdColumnName,
             AuthorListFragment.OnAuthorItemClickListener listener,
-            Context context,
+            @NonNull Context context,
 
-            CursorListFragment cursorListFragment) {
+            @NonNull CursorListFragment cursorListFragment) {
         this.booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
         Cursor cursor = getCursor(
                 cursorListFragment.shouldDisplayDownloadOnly(),
@@ -93,8 +98,9 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         this.layoutManagerType = layoutManagerType;
     }
 
+    @NonNull
     @Override
-    public AuthorRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AuthorRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v;
         switch (layoutManagerType) {
@@ -121,7 +127,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
         int size = payloads.size();
 
         if (size == 0) {
@@ -143,7 +149,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
     }
 
     @Override
-    public void onBindViewHolder(AuthorRecyclerViewAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull AuthorRecyclerViewAdapter.ViewHolder viewHolder, int position) {
         position = viewHolder.getAdapterPosition();
         Log.d("adapter", position + "");
         if (!isCursorValid()) {
@@ -165,7 +171,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
                 cursorListFragment.getCurrentSortIndex());
     }
 
-    private void onBindViewHolder(final AuthorRecyclerViewAdapter.ViewHolder holder, final Cursor movedCursor) {
+    private void onBindViewHolder(@NonNull final AuthorRecyclerViewAdapter.ViewHolder holder, @NonNull final Cursor movedCursor) {
 
         String authorName = movedCursor.getString(COLUMN_AUTHOUR_NAME_ID);
         int authourId = movedCursor.getInt(COULMN_AUTHOUR_ID);
@@ -257,7 +263,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
      * Change the underlying cursor to a new cursor. If there is an existing cursor it will be
      * closed.
      */
-    public void changeCursor(Cursor cursor) {
+    public void changeCursor(@NonNull Cursor cursor) {
         Cursor old = swapCursor(cursor);
         if (old != null) {
             old.close();
@@ -269,7 +275,8 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
      * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
      * closed.
      */
-    public Cursor swapCursor(Cursor newCursor) {
+    @Nullable
+    public Cursor swapCursor(@NonNull Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
         }
@@ -327,7 +334,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         }
     }
 
-    public void performFilter(String query) {
+    public void performFilter(@Nullable String query) {
         String mSearchQuery = cursorListFragment.getQueryString();
         if ((mSearchQuery == null || mSearchQuery.isEmpty()) && !(query == null || query.isEmpty())) {
             //first click on search icon
@@ -375,7 +382,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
         View downloadIndicator;
 
 
-        public ViewHolder(final View authourView) {
+        public ViewHolder(@NonNull final View authourView) {
             super(authourView);
             authorNameTv = authourView.findViewById(R.id.author_name);
             authorDeathYear = authourView.findViewById(R.id.death_year);
@@ -403,7 +410,7 @@ public class AuthorRecyclerViewAdapter extends RecyclerView.Adapter<AuthorRecycl
             mCheckBox.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
 
-        public void bindCheckBoxCheckedValue(Boolean isChecked) {
+        public void bindCheckBoxCheckedValue(@Nullable Boolean isChecked) {
             if (isChecked != null)
                 mCheckBox.setChecked(isChecked);
             else

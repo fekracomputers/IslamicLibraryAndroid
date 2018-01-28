@@ -27,9 +27,9 @@ public class SearchResultRecyclerViewAdapter extends ExpandableRecyclerAdapter<B
     private Resources mResources;
 
 
-    public SearchResultRecyclerViewAdapter(List<BookSearchResultsContainer> parentList,
+    public SearchResultRecyclerViewAdapter(@NonNull List<BookSearchResultsContainer> parentList,
                                            SearchResultFragment mListener,
-                                           Context context
+                                           @NonNull Context context
                                           ) {
         super(parentList);
         this.mListener = mListener;

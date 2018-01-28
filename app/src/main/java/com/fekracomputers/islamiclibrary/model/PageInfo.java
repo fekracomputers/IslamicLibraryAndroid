@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Model class representing the data about a oage not its content
@@ -34,13 +35,13 @@ public class PageInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.pageId);
         dest.writeInt(this.partNumber);
         dest.writeInt(this.pageNumber);
     }
 
-    protected PageInfo(Parcel in) {
+    protected PageInfo(@NonNull Parcel in) {
         this.pageId = in.readInt();
         this.partNumber = in.readInt();
         this.pageNumber = in.readInt();
@@ -48,7 +49,7 @@ public class PageInfo implements Parcelable {
 
     public static final Parcelable.Creator<PageInfo> CREATOR = new Parcelable.Creator<PageInfo>() {
         @Override
-        public PageInfo createFromParcel(Parcel source) {
+        public PageInfo createFromParcel(@NonNull Parcel source) {
             return new PageInfo(source);
         }
 

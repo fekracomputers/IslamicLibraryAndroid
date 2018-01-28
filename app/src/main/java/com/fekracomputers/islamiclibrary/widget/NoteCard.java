@@ -37,15 +37,15 @@ public class NoteCard extends CardView {
     private TextView highlightTextTextView;
     private TextView bookInfoTextView;
 
-    public NoteCard(Context context) {
+    public NoteCard(@NonNull Context context) {
         this(context, null);
     }
 
-    public NoteCard(Context context, AttributeSet attrs) {
+    public NoteCard(@NonNull Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NoteCard(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NoteCard(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context, attrs, defStyleAttr);
     }
@@ -90,7 +90,7 @@ public class NoteCard extends CardView {
         isEditable = editable;
     }
 
-    private void initialize(Context context, AttributeSet attrs, int defStyleAttr) {
+    private void initialize(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         View rootView = inflate(getContext(), R.layout.note_card, this);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.NoteCard,
@@ -117,7 +117,7 @@ public class NoteCard extends CardView {
     public void bind(@NonNull final Highlight highlight,
                      @NonNull final BookPartsInfo bookPartsInfo,
                      @Nullable final BookInfo bookInfo,
-                     final UserNoteGroupAdapter.UserNoteInterActionListener userNoteInterActionListener) {
+                     @NonNull final UserNoteGroupAdapter.UserNoteInterActionListener userNoteInterActionListener) {
         setOnClickListener(v -> userNoteInterActionListener.onUserNoteClicked(highlight));
         if (highlight.pageInfo != null) {
             partPageNumberTextView.setText(String.valueOf(highlight.pageInfo.pageNumber));
@@ -169,7 +169,7 @@ public class NoteCard extends CardView {
         bookInfoTextView.setVisibility(isShowBook || isDhowAuthor || isShowCollection || isShowCategory ? View.VISIBLE : View.GONE);
     }
 
-    public void bind(Highlight highlight, BookPartsInfo bookPartsInfo) {
+    public void bind(@NonNull Highlight highlight, @NonNull BookPartsInfo bookPartsInfo) {
         bind(highlight, bookPartsInfo, null, null);
     }
 }

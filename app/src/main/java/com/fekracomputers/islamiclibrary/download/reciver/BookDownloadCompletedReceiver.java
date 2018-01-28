@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadInfo;
@@ -30,7 +31,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
     public BookDownloadCompletedReceiver() {
     }
 
-    public static void broadCastBookDownloadFailed(int bookId, String reason, Context context) {
+    public static void broadCastBookDownloadFailed(int bookId, String reason, @NonNull Context context) {
         Timber.e("Download Failed :" + reason);
         BooksInformationDbHelper storedBooksDatabase = BooksInformationDbHelper.getInstance(context);
         if (storedBooksDatabase != null) {
@@ -46,7 +47,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
 
     }
 
-    public static void updateBookDownloadStatus(Context context, long enqueId) {
+    public static void updateBookDownloadStatus(@NonNull Context context, long enqueId) {
         Cursor c = downloadManagerCursor(context, enqueId);
         try {
             BooksInformationDbHelper storedBooksDatabase = BooksInformationDbHelper.getInstance(context);
@@ -201,20 +202,20 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
 
     }
 
-    private static Cursor downloadManagerCursor(Context context, long referenceId) {
+    private static Cursor downloadManagerCursor(@NonNull Context context, long referenceId) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query q = new DownloadManager.Query();
         q.setFilterById(referenceId);
         return downloadManager.query(q);
     }
 
-    private static void broadCastUncompressedBookInformationDatabaseDownloaded(Context context) {
+    private static void broadCastUncompressedBookInformationDatabaseDownloaded(@NonNull Context context) {
 
         sendBookDownloadStatusChangeBroadCast(context, DownloadsConstants.BOOK_INFORMATION_DUMMY_ID, STATUS_BOOKINFORMATION_UNZIP_ENDED);
 
     }
 
-    private static void broadcastCompressedBookInformationDatabaseDownloaded(Context context, String filePath, long referenceId) {
+    private static void broadcastCompressedBookInformationDatabaseDownloaded(@NonNull Context context, String filePath, long referenceId) {
         //Launch unzipping IntentService
         Intent serviceIntent = new Intent(context, UnZipIntentService.class);
         serviceIntent.putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath)
@@ -232,7 +233,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
      * @param localBroadcastStatus one of {@link DownloadsConstants#STATUS_DOWNLOAD_COMPLETED} ,
      *                             {@link DownloadsConstants#STATUS_DOWNLOAD_COMPLETED}
      */
-    public static void sendBookDownloadStatusChangeBroadCast(Context context, int bookId, int localBroadcastStatus) {
+    public static void sendBookDownloadStatusChangeBroadCast(@NonNull Context context, int bookId, int localBroadcastStatus) {
         Intent localIntent =
                 new Intent(BROADCAST_ACTION)
                         // Puts the status into the Intent
@@ -244,7 +245,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         long enqueId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
         updateBookDownloadStatus(context, enqueId);
     }

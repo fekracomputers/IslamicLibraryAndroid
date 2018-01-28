@@ -35,7 +35,8 @@ public class NotePopupFragment extends DialogFragment {
     public NotePopupFragment() {
     }
 
-    public static NotePopupFragment newInstance(Highlight highlight) {
+    @NonNull
+    public static NotePopupFragment newInstance(@NonNull Highlight highlight) {
 
         NotePopupFragment frag = new NotePopupFragment();
 
@@ -125,7 +126,7 @@ public class NotePopupFragment extends DialogFragment {
 
         @Override
 
-        public boolean onTouch(View v, MotionEvent event) {
+        public boolean onTouch(View v, @NonNull MotionEvent event) {
             event.offsetLocation(event.getRawX() - event.getX(), event.getRawY() - event.getY());
             final int action = event.getActionMasked();
 

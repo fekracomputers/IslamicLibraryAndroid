@@ -19,6 +19,7 @@ package com.duolingo.open.rtlviewpager;
 import android.database.DataSetObserver;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class DelegatingPagerAdapter extends PagerAdapter {
         mDelegate.startUpdate(container);
     }
 
+    @NonNull
     public Object instantiateItem(ViewGroup container, int position) {
         return mDelegate.instantiateItem(container, position);
     }
@@ -66,6 +68,7 @@ public class DelegatingPagerAdapter extends PagerAdapter {
         mDelegate.startUpdate(container);
     }
 
+    @NonNull
     @Deprecated
     public Object instantiateItem(View container, int position) {
         return mDelegate.instantiateItem(container, position);
@@ -118,6 +121,7 @@ public class DelegatingPagerAdapter extends PagerAdapter {
         mDelegate.unregisterDataSetObserver(observer);
     }
 
+    @Nullable
     public CharSequence getPageTitle(int position) {
         return mDelegate.getPageTitle(position);
     }

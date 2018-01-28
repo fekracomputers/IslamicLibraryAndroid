@@ -40,6 +40,7 @@ import android.widget.FrameLayout;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseContract;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
@@ -53,6 +54,8 @@ import com.fekracomputers.islamiclibrary.reading.dialogs.NotePopupFragment;
 import com.fekracomputers.islamiclibrary.utility.AppConstants;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.widget.AnimationUtils;
+
+import timber.log.Timber;
 
 import static com.fekracomputers.islamiclibrary.R.id.highlight_remove;
 
@@ -77,11 +80,13 @@ public class BookPageFragment extends Fragment implements
     public String page_content;
     UserDataDBHelper userDataDBHelper;
     int pageId;
+    @Nullable
     private PageFragmentListener pageFragmentListener;
     private int bookId;
     private WebView mBookPageWebView;
     private int mIsInActionMode = ACTION_MODE_NOT_STARTED;
     private PageCitation mPageCitation;
+    @Nullable
     private Highlight mSelectedHighlight = null;
 
 
@@ -102,6 +107,7 @@ public class BookPageFragment extends Fragment implements
 
     }
 
+    @NonNull
     public static BookPageFragment newInstance(int bookId, int pageId, int pagerPosition) {
         Bundle bundle = new Bundle();
         bundle.putInt(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, bookId);
@@ -121,14 +127,17 @@ public class BookPageFragment extends Fragment implements
         pageId = args.getInt(BookDatabaseContract.TitlesEntry.COLUMN_NAME_PAGE_ID, 0);
         mPagerPosition = args.getInt(KEY_PAGER_POSITION, 0);
         userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
-        BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
-        mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageId);
-        mPageCitation.setResources(getResources());
-        pageInfo = mPageCitation.pageInfo;
-
-        setHasOptionsMenu(false);
+        try {
+            BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
+            mSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
+            mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageId);
+            mPageCitation.setResources(getResources());
+            pageInfo = mPageCitation.pageInfo;
+            setHasOptionsMenu(false);
+        } catch (BookDatabaseException bookDatabaseException) {
+            Timber.e(bookDatabaseException);
+        }
 
     }
 
@@ -168,7 +177,7 @@ public class BookPageFragment extends Fragment implements
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
                     @Override
-                    public boolean onScale(ScaleGestureDetector detector) {
+                    public boolean onScale(@NonNull ScaleGestureDetector detector) {
                         final float scaleFactor = detector.getScaleFactor();
                         if (scaleFactor <= 0.05)
                             /*
@@ -202,7 +211,7 @@ public class BookPageFragment extends Fragment implements
         //region Touch Event Handling
         final GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
+            public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
                 WebView.HitTestResult hitResult = mBookPageWebView.getHitTestResult();
                 if (hitResult != null && hitResult.getExtra() != null) {
                     // The click was on a link! Return false so to bypass processing.
@@ -276,11 +285,11 @@ public class BookPageFragment extends Fragment implements
         return rootView;
     }
 
-    private boolean isTouchEventInBookmarkZone(MotionEvent e) {
+    private boolean isTouchEventInBookmarkZone(@NonNull MotionEvent e) {
         return (e.getX() < 250 && e.getY() < 300);
     }
 
-    private void initializeSelectionPopup(final View v) {
+    private void initializeSelectionPopup(@NonNull final View v) {
         mPopupTextSelection = v.findViewById(R.id.selection_popup_frame);
         mAactionDeleteHighlight = v.findViewById(R.id.highlight_remove);
         mActionAddComment = v.findViewById(R.id.action_add_comment);
@@ -306,12 +315,12 @@ public class BookPageFragment extends Fragment implements
         mIsInActionMode = ACTION_MODE_NOT_STARTED;
     }
 
-    private void animateShowView(View view) {
+    private void animateShowView(@NonNull View view) {
         view.setVisibility(View.VISIBLE);
         view.animate().alpha(1.0f);
     }
 
-    private void animateHidewView(final View view) {
+    private void animateHidewView(@NonNull final View view) {
         view.animate().alpha(0.0f).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -349,17 +358,17 @@ public class BookPageFragment extends Fragment implements
 
     }
 
-    private View newSelectionRect(Rect selectionRect) {
+    private View newSelectionRect(@NonNull Rect selectionRect) {
         View popup = getView().findViewById(R.id.selection_menu_card);
         preparePopuPosition(popup, selectionRect);
         return popup;
     }
 
-    private void preparePopuPosition(View popup, Rect selectionRect) {
+    private void preparePopuPosition(@NonNull View popup, @NonNull Rect selectionRect) {
         preparePopuPosition(popup, selectionRect.left, selectionRect.bottom, selectionRect.top, selectionRect.right, 0);
     }
 
-    void preparePopuPosition(View view, int selectionLeft, int selectionBottom, int selectionTop, int selectionRight, int handleLongerAxis) {
+    void preparePopuPosition(@NonNull View view, int selectionLeft, int selectionBottom, int selectionTop, int selectionRight, int handleLongerAxis) {
         int drawLocationY;
         int drawLocationX;
         int size;
@@ -419,19 +428,24 @@ public class BookPageFragment extends Fragment implements
 
     void highlightClicked(int highlightId) {
 
-        mSelectedHighlight = userDataDBHelper.getHighlightById(highlightId, pageId);
+        try {
+            mSelectedHighlight = userDataDBHelper.getHighlightById(highlightId, pageId);
 
-        if (mSelectedHighlight.hasNote()) {
-            //mPopupTextSelection.findViewById(R.id.action_add_comment).setVisibility(View.GONE);
-            showNoteDialog();
-        } else {
-            showTextSelectionMenu();
-            if (shouldDisplayFloatingSelectionMenu()) {
-                mAactionDeleteHighlight.setVisibility(View.VISIBLE);
-                mActionAddComment.setVisibility(View.VISIBLE);
+
+            if (mSelectedHighlight.hasNote()) {
+                //mPopupTextSelection.findViewById(R.id.action_add_comment).setVisibility(View.GONE);
+                showNoteDialog();
             } else {
-                pageFragmentListener.startSelectionActionMode();
+                showTextSelectionMenu();
+                if (shouldDisplayFloatingSelectionMenu()) {
+                    mAactionDeleteHighlight.setVisibility(View.VISIBLE);
+                    mActionAddComment.setVisibility(View.VISIBLE);
+                } else {
+                    pageFragmentListener.startSelectionActionMode();
+                }
             }
+        } catch (BookDatabaseException e) {
+            Timber.e(e);
         }
 
     }
@@ -452,7 +466,7 @@ public class BookPageFragment extends Fragment implements
         notePopupFragment.show(fm, "fragment_note");
     }
 
-    private void initializeWebView(WebView webView, WebSettings webSettings) {
+    private void initializeWebView(@NonNull WebView webView, @NonNull WebSettings webSettings) {
         tashkeelOn = pageFragmentListener.getTashkeelState();
         if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
 
@@ -495,7 +509,7 @@ public class BookPageFragment extends Fragment implements
         return stringBuilder.toString();
     }
 
-    private void loadWebView(String data, WebView webView) {
+    private void loadWebView(String data, @NonNull WebView webView) {
         webView.loadDataWithBaseURL(
                 ANDROID_ASSET,
                 data,
@@ -550,7 +564,7 @@ public class BookPageFragment extends Fragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.book_page_fragment, menu);
         MenuItem bookmarkItem = menu.findItem(R.id.action_bookmark_this_page);
         bookmarkItem.setChecked(mIsPageBookmarked);
@@ -558,7 +572,7 @@ public class BookPageFragment extends Fragment implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_bookmark_this_page: {
                 changeBookMarkState(!item.isChecked());
@@ -648,7 +662,7 @@ public class BookPageFragment extends Fragment implements
 
     }
 
-    private void setBookMarkIcon(MenuItem item) {
+    private void setBookMarkIcon(@NonNull MenuItem item) {
         TypedValue typedvalueattr = new TypedValue();
         getActivity().getTheme().resolveAttribute(R.attr.menuBookmarkIcon, typedvalueattr, true);
         StateListDrawable stateListDrawable = (StateListDrawable) getResources().getDrawable(typedvalueattr.resourceId);
@@ -759,8 +773,14 @@ public class BookPageFragment extends Fragment implements
             if (this.tashkeelOn) {
                 page_content = ArabicUtilities.cleanTashkeel(page_content);
             } else {
-                BookDatabaseHelper bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
-                page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
+                BookDatabaseHelper bookDatabaseHelperInstance = null;
+                try {
+                    bookDatabaseHelperInstance = BookDatabaseHelper.getInstance(getContext(), bookId);
+
+                    page_content = bookDatabaseHelperInstance.getPageContentByPageId(pageId);
+                } catch (BookDatabaseException e) {
+                    Timber.e(e);
+                }
             }
             initializeWebView(mBookPageWebView, mBookPageWebView.getSettings());
             this.tashkeelOn = tashkeelOn;

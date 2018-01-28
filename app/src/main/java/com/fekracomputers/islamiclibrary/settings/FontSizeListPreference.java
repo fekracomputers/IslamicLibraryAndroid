@@ -22,19 +22,19 @@ import net.xpece.android.support.widget.CheckedTypedItemAdapter;
  */
 
 public class FontSizeListPreference extends ListPreference {
-    public FontSizeListPreference(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+    public FontSizeListPreference(@NonNull final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public FontSizeListPreference(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+    public FontSizeListPreference(@NonNull final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public FontSizeListPreference(final Context context, final AttributeSet attrs) {
+    public FontSizeListPreference(@NonNull final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FontSizeListPreference(final Context context) {
+    public FontSizeListPreference(@NonNull final Context context) {
         super(context);
     }
 
@@ -76,7 +76,7 @@ public class FontSizeListPreference extends ListPreference {
             return view;
         }
 
-        private void setup(final int position, final View view) {
+        private void setup(final int position, @NonNull final View view) {
             TextView text = view.findViewById(android.R.id.text1);
             final int baseSp = 16;
             final float q = 1 / 2f + (float) position / getCount(); // <0.5;1.5>

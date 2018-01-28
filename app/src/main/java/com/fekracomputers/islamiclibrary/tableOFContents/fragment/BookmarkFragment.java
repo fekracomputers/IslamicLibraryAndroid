@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.tableOFContents.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +19,7 @@ import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
@@ -25,6 +27,8 @@ import com.fekracomputers.islamiclibrary.model.Bookmark;
 import com.fekracomputers.islamiclibrary.tableOFContents.adapter.BookmarkRecyclerViewAdapter;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 
 /**
@@ -35,7 +39,9 @@ import java.util.ArrayList;
  */
 public class BookmarkFragment extends Fragment implements SortListDialogFragment.OnSortDialogListener {
 
+    ArrayList<Bookmark> bookmarks;
     private int bookId;
+    @Nullable
     private onBookmarkClickListener mListener;
     @Nullable
     private BookmarkRecyclerViewAdapter bookmarkRecyclerViewAdapter;
@@ -47,6 +53,7 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
     public BookmarkFragment() {
     }
 
+    @NonNull
     public static BookmarkFragment newInstance(int bookId) {
         BookmarkFragment fragment = new BookmarkFragment();
         Bundle args = new Bundle();
@@ -56,13 +63,13 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_bookmark, menu);
 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
                 SortListDialogFragment sortListDialogFragment = SortListDialogFragment.newInstance(
@@ -93,6 +100,15 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
             bookId = bundl.getInt("bookId");
         }
 
+        UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
+        try {
+            bookmarks = userDataDBHelper.getAllBookmarks(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);
+        } catch (BookDatabaseException e) {
+            Timber.e(e);
+            bookmarks = new ArrayList<>();
+        }
+        bookmarkRecyclerViewAdapter = new BookmarkRecyclerViewAdapter(bookmarks, mListener, getContext(), userDataDBHelper, getActivity().getPreferences(Context.MODE_PRIVATE));
+        bookmarkRecyclerViewAdapter.setHasStableIds(true);
     }
 
     @Override
@@ -104,15 +120,12 @@ public class BookmarkFragment extends Fragment implements SortListDialogFragment
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         ViewStub zeroView = view.findViewById(R.id.zero_bookmarks);
 
-        UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
-        ArrayList<Bookmark> bookmarks = userDataDBHelper.getAllBookmarks(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);
 
         if (bookmarks.size() != 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-            bookmarkRecyclerViewAdapter = new BookmarkRecyclerViewAdapter(bookmarks, mListener, getContext(), userDataDBHelper, getActivity().getPreferences(Context.MODE_PRIVATE));
-            bookmarkRecyclerViewAdapter.setHasStableIds(true);
             recyclerView.setAdapter(bookmarkRecyclerViewAdapter);
+
         } else {
             recyclerView.setVisibility(View.GONE);
             zeroView.setVisibility(View.VISIBLE);

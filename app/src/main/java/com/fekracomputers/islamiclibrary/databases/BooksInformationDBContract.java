@@ -1,5 +1,7 @@
 package com.fekracomputers.islamiclibrary.databases;
 
+import android.support.annotation.NonNull;
+
 /**
  * IMPORTANT NOTE DONT USE THE CONSTANT ID FROM SINGLE TABLES USE THE SPECIFIC COULMN FROM THE JOIN TABLES INSTEAD
  */
@@ -132,6 +134,7 @@ public final class BooksInformationDBContract {
     public static class AuthorsNamesTextSearch {
         public static final String TABLE_NAME = "AuthorsNamesTextSearch";
         public static final String COLUMN_NAME_NAME = "name";
+        @NonNull
         public static String COLUMN_NAME_DOC_id="docid";
     }
 

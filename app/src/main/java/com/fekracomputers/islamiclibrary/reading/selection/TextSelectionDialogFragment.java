@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.reading.selection;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
@@ -28,7 +29,8 @@ public class TextSelectionDialogFragment extends DialogFragment {
     }
 
 
-    public static TextSelectionDialogFragment newInstance(float x,float y) {
+    @NonNull
+    public static TextSelectionDialogFragment newInstance(float x, float y) {
 
         TextSelectionDialogFragment frag = new TextSelectionDialogFragment();
 

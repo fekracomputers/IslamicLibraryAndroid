@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.databases.UserDataDBContract;
 
@@ -14,7 +15,9 @@ import static junit.framework.TestCase.assertEquals;
  * Created by Mohammad Yahia on 21/12/2016.
  */
 public class HighlightTest {
+    @NonNull
     String serialized1 = "type:textContent|750$757$2$highlight3$$dcdcdc |757$763$4$highlight1$$cdcdc ";
+    @NonNull
     PageInfo pagId=new PageInfo(10,0,0);
     @Test
     public void deserializeGeneric() throws Exception {

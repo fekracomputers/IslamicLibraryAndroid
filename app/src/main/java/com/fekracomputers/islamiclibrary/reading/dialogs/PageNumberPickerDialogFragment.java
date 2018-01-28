@@ -19,11 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.model.PartInfo;
 import com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText;
+
+import timber.log.Timber;
 
 import static com.fekracomputers.islamiclibrary.reading.ReadingActivity.KEY_BOOK_ID;
 import static com.fekracomputers.islamiclibrary.reading.ReadingActivity.KEY_CURRENT_PAGE_INFO;
@@ -37,7 +40,9 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
 
     // Use this instance of the interface to deliver action events
     PageNumberPickerDialogFragmentListener mListener;
+    @Nullable
     private BookPartsInfo mPartsInfo;
+    @Nullable
     private PageInfo currentPageInfo;
     private BookDatabaseHelper mBookDatabaseHelper;
     private PartInfo mCurrentPart;
@@ -56,7 +61,12 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
         currentPageInfo = bundle.getParcelable(KEY_CURRENT_PAGE_INFO);
         mPartsInfo = bundle.getParcelable(KEY_CURRENT_PARTS_INFO);
         int bookId = bundle.getInt(KEY_BOOK_ID);
-        mBookDatabaseHelper = BookDatabaseHelper.getInstance(getContext(), bookId);
+        try {
+            mBookDatabaseHelper = BookDatabaseHelper.getInstance(getContext(), bookId);
+        } catch (BookDatabaseException bookDatabaseException) {
+            Timber.e(bookDatabaseException);
+            dismiss();
+        }
         if (currentPageInfo.partNumber <= mPartsInfo.firstPart.partNumber) {
             mCurrentPart = mPartsInfo.firstPart;
             currentPageInfo = mBookDatabaseHelper.getPageInfoByPagePageNumberAndPartNumber(mPartsInfo.firstPart.partNumber,mPartsInfo.firstPart.firstPage);
@@ -103,7 +113,7 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
+                public void afterTextChanged(@NonNull Editable s) {
                     String requiredpartString = s.toString();
                     if (!TextUtils.isEmpty(requiredpartString)) {
                         int requiredPart = Integer.valueOf(requiredpartString);
@@ -152,7 +162,7 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(@NonNull Editable s) {
                 String requiredPageString = s.toString();
                 if (!TextUtils.isEmpty(requiredPageString)) {
                     int requiredPage = Integer.parseInt(requiredPageString);
@@ -215,7 +225,7 @@ public class PageNumberPickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             mListener = (PageNumberPickerDialogFragmentListener) context;

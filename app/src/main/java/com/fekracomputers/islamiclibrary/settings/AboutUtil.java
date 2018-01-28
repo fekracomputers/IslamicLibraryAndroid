@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class AboutUtil {
 
-    public static void sendFeedBack(Context c) {
+    public static void sendFeedBack(@NonNull Context c) {
         new EasyFeedback.Builder(c)
                 .withEmail(c.getString(R.string.feedback_email))
                 .withSystemInfo()
@@ -32,7 +33,7 @@ public class AboutUtil {
                 .start();
     }
 
-    public static void ShareAppLink(Context c) {
+    public static void ShareAppLink(@NonNull Context c) {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             String appId = c.getPackageName();
@@ -48,7 +49,7 @@ public class AboutUtil {
     }
 
 
-    private static void openMarket(Context context, String appURI, String webURI) {
+    private static void openMarket(@NonNull Context context, String appURI, String webURI) {
         // you can also use BuildConfig.APPLICATION_ID
         //String appId = "com.google.android.apps.books";
         Intent rateIntent = new Intent(Intent.ACTION_VIEW,
@@ -93,19 +94,19 @@ public class AboutUtil {
         }
     }
 
-    public static void rateApp(Context context) {
+    public static void rateApp(@NonNull Context context) {
         String appId = context.getPackageName();
 
         openMarket(context, "market://details?id=" + appId, "https://play.google.com/store/apps/details?id=" + appId);
     }
 
 
-    public static void openDevelopersPage(Context context) {
+    public static void openDevelopersPage(@NonNull Context context) {
         openMarket(context, "market://developer?id=Fekra+Computers", "https://play.google.com/store/apps/developer?id=Fekra+Computers");
     }
 
 
-    public static void getOpenFacebookIntent(Context context, String name) {
+    public static void getOpenFacebookIntent(@NonNull Context context, String name) {
         try {
             context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + name));
@@ -120,7 +121,7 @@ public class AboutUtil {
         }
     }
 
-    public static void startTwitter(Context context, String name) {
+    public static void startTwitter(@NonNull Context context, String name) {
         try {
             context.getPackageManager().getPackageInfo("com.twitter.android", 0);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + name));
@@ -137,16 +138,16 @@ public class AboutUtil {
 
     }
 
-    public static MaterialAboutItemOnClickAction webViewDialog(final Context context,
-                                                                 final String targetUrl,
-                                                                 final int title) {
+    public static MaterialAboutItemOnClickAction webViewDialog(@NonNull final Context context,
+                                                               final String targetUrl,
+                                                               final int title) {
 
         return webViewDialog(context, targetUrl, context.getString(title));
     }
 
-    public static MaterialAboutItemOnClickAction webViewDialog(final Context context,
-                                                                        final String targetUrl,
-                                                                        final String title) {
+    public static MaterialAboutItemOnClickAction webViewDialog(@NonNull final Context context,
+                                                               final String targetUrl,
+                                                               final String title) {
         return () -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle(title);
@@ -154,7 +155,7 @@ public class AboutUtil {
             wv.setWebViewClient(
                     new WebViewClient() {
                         @Override
-                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        public boolean shouldOverrideUrlLoading(@NonNull WebView view, @NonNull String url) {
                             if (!url.equals("targetUrl")) {
                                 context.startActivity(new Intent(Intent.ACTION_VIEW,
                                         Uri.parse(url)));

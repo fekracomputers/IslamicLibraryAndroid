@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.homeScreen.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,7 +34,9 @@ public class HomeFragment extends Fragment
         implements BrowsingActivityListingFragment,
         BookCollectionsCallBack {
 
+    @Nullable
     private BookCardEventsCallback bookCardEventsCallback;
+    @Nullable
     private HomeScreenRecyclerViewAdapter homeScreenRecyclerViewAdapter;
     private BookCollectionsController.BookCollectionsControllerCallback bookCollectionsControllerCallback;
 
@@ -42,13 +45,13 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
 
         inflater.inflate(R.menu.fragment_home_screen, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit_home_screen: {
                 FragmentManager fragmentManager = getFragmentManager();
@@ -170,24 +173,24 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public void onBookCollectionCahnged(BooksCollection booksCollection) {
+    public void onBookCollectionCahnged(@NonNull BooksCollection booksCollection) {
         homeScreenRecyclerViewAdapter.notifyBookCollectionChanged(booksCollection);
 
     }
 
     @Override
-    public void onBookCollectionAdded(BooksCollection booksCollection) {
+    public void onBookCollectionAdded(@NonNull BooksCollection booksCollection) {
         homeScreenRecyclerViewAdapter.notifyBookCollectionAdded(booksCollection);
     }
 
     @Override
-    public void onBookCollectionRemoved(BooksCollection booksCollection) {
+    public void onBookCollectionRemoved(@NonNull BooksCollection booksCollection) {
         homeScreenRecyclerViewAdapter.notifyBookCollectionRemoved(booksCollection);
 
     }
 
     @Override
-    public void onBookCollectionRenamed(BooksCollection booksCollection, String newName) {
+    public void onBookCollectionRenamed(@NonNull BooksCollection booksCollection, String newName) {
         homeScreenRecyclerViewAdapter.notifyBookCollectionRenamed(booksCollection, newName);
 
     }
@@ -199,7 +202,7 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+    public void onBookCollectionVisibilityChanged(@NonNull BooksCollection booksCollection, boolean isVisible) {
         homeScreenRecyclerViewAdapter.onBookCollectionVisibilityChanged(booksCollection, isVisible);
 
     }

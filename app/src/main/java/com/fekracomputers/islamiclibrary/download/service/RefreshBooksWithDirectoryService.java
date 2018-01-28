@@ -1,8 +1,10 @@
 package com.fekracomputers.islamiclibrary.download.service;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 
@@ -27,7 +29,7 @@ public class RefreshBooksWithDirectoryService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRefreshEveryThing(Context context) {
+    public static void startActionRefreshEveryThing(@NonNull Context context) {
         Intent intent = new Intent(context, RefreshBooksWithDirectoryService.class);
         intent.setAction(ACTION_REFRESH_EVERY_THING);
         context.startService(intent);
@@ -35,7 +37,7 @@ public class RefreshBooksWithDirectoryService extends IntentService {
 
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_REFRESH_EVERY_THING.equals(action)) {

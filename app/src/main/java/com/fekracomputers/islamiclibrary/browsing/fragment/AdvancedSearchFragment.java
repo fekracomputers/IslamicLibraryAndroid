@@ -3,6 +3,8 @@ package com.fekracomputers.islamiclibrary.browsing.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +27,12 @@ public class AdvancedSearchFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
+    @Nullable
     private String mParam1;
+    @Nullable
     private String mParam2;
 
+    @Nullable
     private OnFragmentInteractionListener mListener;
 
     public AdvancedSearchFragment() {
@@ -43,6 +48,7 @@ public class AdvancedSearchFragment extends Fragment {
      * @return A new instance of fragment AdvancedSearchFragment.
      */
     // TODO: Rename and change types and number of parameters
+    @NonNull
     public static AdvancedSearchFragment newInstance(String param1, String param2) {
         AdvancedSearchFragment fragment = new AdvancedSearchFragment();
         Bundle args = new Bundle();

@@ -63,7 +63,7 @@ public class ExpandableHeaderItem extends HeaderItem implements ExpandableItem {
         imageViewObjectAnimator.start();
     }
 
-    private void bindIcon(HeaderViewHolder viewHeaderViewHolder) {
+    private void bindIcon(@NonNull HeaderViewHolder viewHeaderViewHolder) {
         viewHeaderViewHolder.icon.setVisibility(View.VISIBLE);
         viewHeaderViewHolder.icon.setImageResource(R.drawable.ic_toc_expand_holo_dark_30dp);
         if (expandableGroup != null) {

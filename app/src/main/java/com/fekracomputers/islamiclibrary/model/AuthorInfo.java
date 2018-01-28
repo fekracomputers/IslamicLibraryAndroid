@@ -3,6 +3,8 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -11,7 +13,7 @@ import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
 public class AuthorInfo implements Parcelable {
     public static final Creator<AuthorInfo> CREATOR = new Creator<AuthorInfo>() {
         @Override
-        public AuthorInfo createFromParcel(Parcel source) {
+        public AuthorInfo createFromParcel(@NonNull Parcel source) {
             return new AuthorInfo(source);
         }
 
@@ -45,7 +47,7 @@ public class AuthorInfo implements Parcelable {
         this.higri_death_year = higri_death_year;
     }
 
-    protected AuthorInfo(Parcel in) {
+    protected AuthorInfo(@NonNull Parcel in) {
         this.id = in.readInt();
         this.higri_death_year = in.readInt();
         this.name = in.readString();
@@ -68,7 +70,7 @@ public class AuthorInfo implements Parcelable {
         return R.drawable.ic_author_feather;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -78,6 +80,7 @@ public class AuthorInfo implements Parcelable {
 
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "AuthorInfo{" +
@@ -97,7 +100,7 @@ public class AuthorInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeInt(this.higri_death_year);
         dest.writeString(this.name);

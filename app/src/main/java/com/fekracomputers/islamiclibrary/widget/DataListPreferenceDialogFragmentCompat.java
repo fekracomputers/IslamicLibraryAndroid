@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreferenceDialogFragmentCompat;
 import android.support.v7.preference.Preference;
@@ -37,7 +38,8 @@ public class DataListPreferenceDialogFragmentCompat extends ListPreferenceDialog
     }
 
 
-    public static DataListPreferenceDialogFragmentCompat newInstance(Preference preference) {
+    @NonNull
+    public static DataListPreferenceDialogFragmentCompat newInstance(@NonNull Preference preference) {
         DataListPreferenceDialogFragmentCompat fragment = new DataListPreferenceDialogFragmentCompat();
         Bundle bundle = new Bundle(1);
         bundle.putString("key", preference.getKey());
@@ -45,6 +47,7 @@ public class DataListPreferenceDialogFragmentCompat extends ListPreferenceDialog
         return fragment;
     }
 
+    @NonNull
     private DataListPreference getListPreference() {
         return (DataListPreference) this.getPreference();
     }
@@ -60,7 +63,7 @@ public class DataListPreferenceDialogFragmentCompat extends ListPreferenceDialog
         private int mSelectedIndex = 0;
         private List<StorageUtils.Storage> mFreeSpaces;
 
-        public StorageArrayAdapter(Context context, int textViewResourceId, CharSequence[] objects,
+        public StorageArrayAdapter(@NonNull Context context, int textViewResourceId, @NonNull CharSequence[] objects,
                                    int selectedIndex, List<StorageUtils.Storage> freeSpaces) {
             super(context, textViewResourceId, objects);
             mSelectedIndex = selectedIndex;
@@ -69,7 +72,7 @@ public class DataListPreferenceDialogFragmentCompat extends ListPreferenceDialog
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();

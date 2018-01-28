@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -64,13 +65,18 @@ public class BookInformationFragment extends Fragment implements
     private boolean diplayedInTableOfContent;
     private boolean isGrey;
     private LinearLayout mLinearLayoutContainer;
+    @Nullable
     private HorizontalBookRecyclerView authorMoreBooksHorizontalBookRecyclerView;
+    @Nullable
     private HorizontalBookRecyclerView categoryMoreBooksHorizontalBookRecyclerView;
+    @Nullable
     private BooksInformationDbHelper booksInformationDbHelper;
+    @Nullable
     private BookCardEventsCallback bookCardEventsCallback;
     private BookCollectionInfo bookCollectionInfo;
     private ImageView favouriteButtonImageView;
     private ImageView collectionButtonImageView;
+    @Nullable
     private BookCollectionsController bookCollectionsController;
     private TextView collectionCount;
 
@@ -81,6 +87,7 @@ public class BookInformationFragment extends Fragment implements
     }
 
 
+    @NonNull
     public static BookInformationFragment newInstance(int bookId) {
         Bundle bundle = new Bundle();
         bundle.putInt("book_id", bookId);
@@ -96,7 +103,7 @@ public class BookInformationFragment extends Fragment implements
      * @param booKLongDescription the text of the book long descreption
      * @return whether to show the textview or not
      */
-    private static boolean shouldDisplayCard(String booKLongDescription) {
+    private static boolean shouldDisplayCard(@Nullable String booKLongDescription) {
         //If the dicreption is only one line don't display the textView
         return booKLongDescription != null &&
                 !(
@@ -115,6 +122,7 @@ public class BookInformationFragment extends Fragment implements
         mBookInfo = dbHelper.getBookInfo(bookId);
         bookCollectionInfo = UserDataDBHelper.getInstance(getContext(), bookId).getBookCollectionInfo();
         bookCollectionsController = new BookCollectionsController(getContext(), bookCollectionsControllerCallback);
+
     }
 
     @Override
@@ -268,7 +276,7 @@ public class BookInformationFragment extends Fragment implements
         bindCollections(bookCollectionInfo);
     }
 
-    private void bindCollections(BookCollectionInfo bookCollectionInfo) {
+    private void bindCollections(@NonNull BookCollectionInfo bookCollectionInfo) {
         favouriteButtonImageView.setImageResource(bookCollectionInfo.isFavourite() ?
                 R.drawable.ic_favorite_pink_with_check_24dp
                 : R.drawable.ic_add_favorite_24dp);
@@ -489,7 +497,7 @@ public class BookInformationFragment extends Fragment implements
     }
 
     @Override
-    public void collectionChanged(BookCollectionInfo bookCollectionInfo) {
+    public void collectionChanged(@NonNull BookCollectionInfo bookCollectionInfo) {
         this.bookCollectionInfo = bookCollectionInfo;
         bindCollections(bookCollectionInfo);
     }

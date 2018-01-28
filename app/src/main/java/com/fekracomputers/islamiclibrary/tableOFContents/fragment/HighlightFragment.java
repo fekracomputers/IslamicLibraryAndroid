@@ -2,6 +2,8 @@ package com.fekracomputers.islamiclibrary.tableOFContents.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,12 +18,15 @@ import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.Highlight;
 import com.fekracomputers.islamiclibrary.tableOFContents.adapter.HighlightRecyclerViewAdapter;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 
 /**
@@ -32,8 +37,11 @@ import java.util.ArrayList;
  */
 public class HighlightFragment extends Fragment implements SortListDialogFragment.OnSortDialogListener {
 
+    ArrayList<Highlight> highlights;
     private int bookId;
+    @Nullable
     private onHighlightClickListener mListener;
+    @Nullable
     private HighlightRecyclerViewAdapter highlightRecyclerViewAdapter;
     private boolean sortedByPage = true;
 
@@ -44,6 +52,7 @@ public class HighlightFragment extends Fragment implements SortListDialogFragmen
     public HighlightFragment() {
     }
 
+    @NonNull
     public static HighlightFragment newInstance(int bookId) {
         HighlightFragment fragment = new HighlightFragment();
         Bundle args = new Bundle();
@@ -53,16 +62,18 @@ public class HighlightFragment extends Fragment implements SortListDialogFragmen
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_highlight, menu);
 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
-                SortListDialogFragment sortListDialogFragment = SortListDialogFragment.newInstance(R.array.highlight_list_sorting, highlightRecyclerViewAdapter.getCurrentSortIndex());
+                SortListDialogFragment sortListDialogFragment =
+                        SortListDialogFragment.newInstance(R.array.highlight_list_sorting,
+                                highlightRecyclerViewAdapter.getCurrentSortIndex());
                 //see this answer http://stackoverflow.com/a/37794319/3061221
                 FragmentManager fm = getChildFragmentManager();
                 sortListDialogFragment.show(fm, "fragment_sort");
@@ -85,11 +96,25 @@ public class HighlightFragment extends Fragment implements SortListDialogFragmen
         if (bundl != null) {
             bookId = bundl.getInt("bookId");
         }
+        UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
+        try {
+            highlights = userDataDBHelper.getAllHighlights();
+        } catch (BookDatabaseException e) {
+            Timber.e(e);
+            highlights = new ArrayList<>();
+
+        }
+        highlightRecyclerViewAdapter = new HighlightRecyclerViewAdapter(
+                highlights,
+                mListener,
+                getContext().getApplicationContext(),
+                getActivity().getPreferences(Context.MODE_PRIVATE));
+        highlightRecyclerViewAdapter.setHasStableIds(true);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_highlight_list, container, false);
@@ -97,17 +122,9 @@ public class HighlightFragment extends Fragment implements SortListDialogFragmen
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         ViewStub zeroView = view.findViewById(R.id.zero_highlights);
 
-        UserDataDBHelper userDataDBHelper = UserDataDBHelper.getInstance(getContext(), bookId);
-        ArrayList<Highlight> userDataDBHelperAllHighlights = userDataDBHelper.getAllHighlights();
 
-        if (userDataDBHelperAllHighlights.size() != 0) {
+        if (highlights.size() != 0) {
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-            highlightRecyclerViewAdapter = new HighlightRecyclerViewAdapter(
-                    userDataDBHelperAllHighlights,
-                    mListener,
-                    getContext().getApplicationContext(),
-                    getActivity().getPreferences(Context.MODE_PRIVATE));
-            highlightRecyclerViewAdapter.setHasStableIds(true);
             recyclerView.setAdapter(highlightRecyclerViewAdapter);
         } else {
             recyclerView.setVisibility(View.GONE);

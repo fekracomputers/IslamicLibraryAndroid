@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
@@ -18,12 +19,12 @@ public class FixScrollingFooterBehavior extends AppBarLayout.ScrollingViewBehavi
         super();
     }
 
-    public FixScrollingFooterBehavior(Context context, AttributeSet attrs) {
+    public FixScrollingFooterBehavior(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
+    public boolean onDependentViewChanged(CoordinatorLayout parent, @NonNull View child, View dependency) {
 
         if (appBarLayout == null) {
             appBarLayout = (AppBarLayout) dependency;
@@ -45,7 +46,7 @@ public class FixScrollingFooterBehavior extends AppBarLayout.ScrollingViewBehavi
 
 
     // Calculate the padding needed to keep the bottom of the view pager's content at the same location on the screen.
-    private int calculateBottomPadding(AppBarLayout dependency) {
+    private int calculateBottomPadding(@NonNull AppBarLayout dependency) {
         final int totalScrollRange = dependency.getTotalScrollRange();
         return totalScrollRange + dependency.getTop();
     }

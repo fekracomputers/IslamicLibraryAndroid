@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.browsing.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,15 +32,16 @@ public class BookCollectionRecyclerViewAdapter extends RecyclerView.Adapter<Book
         this.bookCollections = bookCollections;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_collection_with_check_box, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BooksCollection booksCollection = bookCollections.get(position);
         holder.booksCollection = booksCollection;
         holder.collectionNameTextView.setText(booksCollection.getName());
@@ -62,7 +64,7 @@ public class BookCollectionRecyclerViewAdapter extends RecyclerView.Adapter<Book
         final CheckBox checkBox;
         BooksCollection booksCollection;
 
-        ViewHolder(View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
             collectionNameTextView = view.findViewById(R.id.title);
             checkBox = view.findViewById(R.id.checkbox);
