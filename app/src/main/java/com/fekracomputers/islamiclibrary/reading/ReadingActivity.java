@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -1217,7 +1218,7 @@ public class ReadingActivity extends AppCompatActivity implements
     public synchronized void onColorSelected(int dialogId, @ColorInt int color) {
         setBackgroundColor(color);
         for (DisplayOptionsPopupFragment displayOptionsPopup : displayOptionsPopups) {
-            displayOptionsPopup.refreshBackgroundSelectionButtons();
+            displayOptionsPopup.onColorDialogSelected(dialogId, color);
         }
         displayOptionsPopups.clear();
     }
@@ -1226,7 +1227,7 @@ public class ReadingActivity extends AppCompatActivity implements
     @Override
     public synchronized void onDialogDismissed(int dialogId) {
         for (DisplayOptionsPopupFragment displayOptionsPopup : displayOptionsPopups) {
-            displayOptionsPopup.refreshBackgroundSelectionButtons();
+            displayOptionsPopup.onColorDialogDismissed(dialogId);
         }
         displayOptionsPopups.clear();
     }
@@ -1591,6 +1592,14 @@ public class ReadingActivity extends AppCompatActivity implements
 
         }
 
+        @Override
+        public Parcelable saveState() {
+            Bundle bundle = (Bundle) super.saveState();
+            if (bundle != null) {
+                bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+            }
+            return bundle;
+        }
         @NonNull
         @Override
         public Fragment getItem(int position) {
