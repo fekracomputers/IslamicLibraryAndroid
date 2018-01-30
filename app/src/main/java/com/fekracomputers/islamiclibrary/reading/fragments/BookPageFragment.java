@@ -8,17 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -44,16 +47,19 @@ import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
+import com.fekracomputers.islamiclibrary.model.BookInfo;
 import com.fekracomputers.islamiclibrary.model.Highlight;
 import com.fekracomputers.islamiclibrary.model.PageCitation;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.reading.ActionModeChangeListener;
-import com.fekracomputers.islamiclibrary.reading.DisplayPrefChangeListener;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
+import com.fekracomputers.islamiclibrary.reading.dialogs.DisplayPrefChangeListener;
 import com.fekracomputers.islamiclibrary.reading.dialogs.NotePopupFragment;
 import com.fekracomputers.islamiclibrary.utility.AppConstants;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.widget.AnimationUtils;
+
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -102,6 +108,7 @@ public class BookPageFragment extends Fragment implements
     private PageInfo pageInfo;
     private boolean tashkeelOn = true;
     private boolean pinchZoomOn;
+    private BookInfo bookInfo;
 
     public BookPageFragment() {
 
@@ -134,6 +141,7 @@ public class BookPageFragment extends Fragment implements
             mPageCitation = bookDatabaseHelperInstance.getCitationInformation(pageId);
             mPageCitation.setResources(getResources());
             pageInfo = mPageCitation.pageInfo;
+            bookInfo = bookDatabaseHelperInstance.getBookInfo();
             setHasOptionsMenu(false);
         } catch (BookDatabaseException bookDatabaseException) {
             Timber.e(bookDatabaseException);
@@ -282,7 +290,23 @@ public class BookPageFragment extends Fragment implements
         }
 
         mBookmarkFrame = rootView.findViewById(R.id.bookmark_view_stub);
+
+        maybeUpdateViews();
+
         return rootView;
+    }
+
+    private void maybeUpdateViews() {
+        if (this.bookInfo != null) {
+            CharSequence title = bookInfo.getName();
+            if (TextUtils.isEmpty(title)) {
+                title = " ";
+            }
+            if (pageFragmentListener != null) {
+                pageFragmentListener.populateReaderActionBar(title, bookInfo.getAuthorName());
+            }
+
+        }
     }
 
     private boolean isTouchEventInBookmarkZone(@NonNull MotionEvent e) {
@@ -471,7 +495,6 @@ public class BookPageFragment extends Fragment implements
         if (!tashkeelOn) page_content = ArabicUtilities.cleanTashkeel(page_content);
 
         boolean isNightMode = pageFragmentListener.isNightMode();
-        if (isNightMode) webView.setBackgroundColor(0x333333);
 
         int intialZoom = pageFragmentListener.getDisplayZoom();
         webSettings.setTextZoom(intialZoom);
@@ -479,12 +502,22 @@ public class BookPageFragment extends Fragment implements
 
         String data = prepareHtml(isNightMode);
         loadWebView(data, webView);
+        if (isNightMode) webView.setBackgroundColor(Color.TRANSPARENT);
+
     }
 
     @NonNull
     private String prepareHtml(boolean isNightMode) {
         StringBuilder stringBuilder = new StringBuilder().append("<html align='justify' dir=\"rtl\">")
                 .append("<head>")
+                .append("<style>" +
+                        "      body {\n" +
+                        "        background-color:" + String.format(Locale.US,
+                        "#%06X",
+                        0x00FFFFFF & pageFragmentListener.getBackGroundColor()) + ";\n" +
+                        "      }" +
+                        "</style>\n")
+
                 .append("</head>")
                 .append("<body>")
                 .append("<link href=\"styles/styles.css\" rel=\"stylesheet\" type=\"text/css\">")
@@ -768,6 +801,13 @@ public class BookPageFragment extends Fragment implements
         this.pinchZoomOn = pinchZoomOn;
     }
 
+    @Override
+    public void setBackgroundColor(int color) {
+        mBookPageWebView.loadUrl(String.
+                format(Locale.US,
+                        "javascript:setBackgroundColor('#%06X');", 0xFFFFFF & color));
+    }
+
     private void reloadeWithTashkeelOn(boolean tashkeelOn) {
         if (this.tashkeelOn != tashkeelOn) {
             if (this.tashkeelOn) {
@@ -805,6 +845,11 @@ public class BookPageFragment extends Fragment implements
         int getDisplayZoom();
 
         boolean getTashkeelState();
+
+        @ColorInt
+        int getBackGroundColor();
+
+        void populateReaderActionBar(CharSequence title, CharSequence author);
     }
 
 

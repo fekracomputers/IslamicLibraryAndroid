@@ -299,5 +299,6 @@
     <string name="book_info">%1$s،%2$s،%3$s</string>
     <string name="updating_books_please_wait">يجري تحديث الكتب الرجاء الانتظار</string>
     <string name="updating_books_progress">%1$d/%2$d</string>
+    <string name="exit_book">الخروج من الكتاب</string>
 
 </resources>

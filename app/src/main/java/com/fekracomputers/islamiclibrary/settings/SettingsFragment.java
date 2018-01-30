@@ -65,6 +65,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String PREF_KEEP_SCREEN_ON = "keepScreenOn";
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
     public static final String KEY_IS_PINCH_ZOOM_ON = "pinch_zoom_on";
+    public static final String KEY_BACKGROUND_COLOR = "background_color";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.

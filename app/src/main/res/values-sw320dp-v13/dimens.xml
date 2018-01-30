@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_land_sample_side_margin">16.0dip</dimen>
+    <dimen name="eob_land_sample_top_margin">20.0dip</dimen>
+    <dimen name="eob_nis_card_side_margin">8.0dip</dimen>
+    <dimen name="nis_card_button_horiz_margin">8.0dip</dimen>
+    <dimen name="nis_card_button_vert_margin">6.0dip</dimen>
+    <dimen name="nis_card_cover_width">118.0dip</dimen>
+    <dimen name="nis_card_height">180.0dip</dimen>
+    <dimen name="nis_card_info_width">186.0dip</dimen>
+    <dimen name="nis_card_width">304.0dip</dimen>
+</resources>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="tutorial_dialog_landscape_width_percent">70</integer>
+</resources>

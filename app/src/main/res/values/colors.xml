@@ -18,6 +18,7 @@
     <color name="books_pressed_holo_dark">@color/books_corpora_primary_40pc</color>
     <color name="books_pressed_holo_light">@color/books_corpora_primary_40pc</color>
     <color name="books_sepia">#ffece1ca</color>
+    <color name="books_yellow">#fffffde7</color>
 
     <color name="card_background_dark">#ff1a1a1a</color>
     <color name="card_background_dark_track">#ff5f5f5f</color>
@@ -60,6 +61,7 @@
     <color name="pref_day_theme_button_stroke">@color/pref_button_enabled_light</color>
     <color name="pref_night_theme_button_stroke">@color/pref_button_enabled_dark</color>
     <color name="pref_sepia_theme_button_stroke">@color/pref_button_enabled_light</color>
+    <color name="pref_yellow_theme_button_stroke">@color/pref_button_enabled_light</color>
 
     <color name="reader_ab_solid_dark">@color/action_icon_color</color>
     <color name="reader_ab_solid_light">@color/material_grey_200</color>
@@ -150,4 +152,11 @@
     </array>
 
 
+    <array name="preset_colors">
+        <item>@android:color/white</item>
+        <item>@color/books_yellow</item>
+        <item>@color/books_sepia</item>
+        <item>@color/night_mode_web_view_bg</item>
+
+    </array>
 </resources>

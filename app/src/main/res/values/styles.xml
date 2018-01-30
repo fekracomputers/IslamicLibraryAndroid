@@ -27,6 +27,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -157,12 +158,17 @@
 
     <style name="FullScreenDark" parent="@style/BooksDark">
         <item name="android:windowFullscreen">@bool/fullscreen</item>
-        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="homeAsUpIndicator">@drawable/ic_close_white_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_close_white_24dp</item>
+
     </style>
 
     <style name="FullScreenLightDark" parent="@style/BooksLightDark">
         <item name="android:windowFullscreen">@bool/fullscreen</item>
+
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_close_white_24dp</item>
+
     </style>
 
 
@@ -415,7 +421,9 @@
     </style>
 
     <style name="Preference.Button.Theme" parent="@style/Preference.Button">
-        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_marginLeft">2.0dip</item>
+        <item name="android:layout_marginRight">2.0dip</item>
+        <item name="android:layout_width">36.0dip</item>
     </style>
 
     <style name="BooksSpinner.Dark" parent="@android:style/Widget.Holo.Spinner" />
@@ -648,7 +656,7 @@
     </style>
 
     <style name="OverflowButtonLight" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">
-        <item name="srcCompat">@drawable/ic_more_vert_black_24dp</item>
+        <item name="srcCompat">@drawable/ic_more_vert_wt_24dp</item>
     </style>
 
     <style name="OverflowButtonGreen" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">

@@ -16,6 +16,80 @@
         <attr name="editable" format="boolean" />
 
     </declare-styleable>
+    <declare-styleable name="BooksTheme">
+        <attr name="actionBarDrawable" format="reference" />
+        <attr name="navigationColor" format="reference" />
+        <attr name="grayD400L600" format="color" />
+        <attr name="grayD400L700" format="color" />
+        <attr name="grayD500L600" format="color" />
+        <attr name="grayD000L700" format="color" />
+        <attr name="grayD900L200" format="color" />
+        <attr name="cardBackgroundDrawable" format="reference" />
+        <attr name="cardBackgroundFullDrawable" format="reference" />
+        <attr name="cardPrimaryColor" format="reference" />
+        <attr name="cardSecondaryColor" format="reference" />
+        <attr name="cardTabBackgroundDrawable" format="reference" />
+        <attr name="cardTabHighlightColor" format="reference" />
+        <attr name="booksPrimaryTextColor" format="reference" />
+        <attr name="menuSettingsDrawable" format="reference" />
+        <attr name="menuTocDrawable" format="reference" />
+        <attr name="menuMoPlayDrawable" format="reference" />
+        <attr name="menuMoPauseDrawable" format="reference" />
+        <attr name="switchOnThumb" format="reference|color" />
+        <attr name="switchOffThumb" format="reference|color" />
+        <attr name="switchOffTrack" format="reference|color" />
+        <attr name="scrubberBrightnessThumb" format="reference" />
+        <attr name="scrubberBackgroundDrawable" format="reference" />
+        <attr name="scrubberDrawable" format="reference" />
+        <attr name="scrubberBkmrkLocDrawable" format="reference" />
+        <attr name="scrubberTrackDrawable" format="reference" />
+        <attr name="scrubberTrackAltDrawable" format="reference" />
+        <attr name="scrubberUndoDrawable" format="reference" />
+        <attr name="searchBackground" format="reference" />
+        <attr name="searchLeftArrow" format="reference" />
+        <attr name="searchScrubBarExit" format="reference" />
+        <attr name="searchScrubBarTextActiveColor" format="reference" />
+        <attr name="searchScrubBarTextInactiveColor" format="reference" />
+        <attr name="audioFrameDrawable" format="reference" />
+        <attr name="illo_rotate" format="reference" />
+        <attr name="illo_scroll" format="reference" />
+        <attr name="nightMode" format="boolean" />
+        <attr name="noteEditorTheme" format="reference" />
+        <attr name="noteEditShadow" format="reference" />
+        <attr name="noteEditCursor" format="reference" />
+        <attr name="noteEditOverflow" format="reference" />
+        <attr name="displayOptionsButton" format="reference" />
+        <attr name="displayOptionsRoundButton" format="reference" />
+        <attr name="marginNoteIconOutlineColor" format="reference" />
+        <attr name="searchCardBackgroundTop" format="reference" />
+        <attr name="searchCardBackgroundMiddle" format="reference" />
+        <attr name="searchCardBackgroundBottom" format="reference" />
+        <attr name="searchCardBackgroundRegular" format="reference" />
+        <attr name="searchCardHighlightColor" format="reference" />
+        <attr name="searchCardHeaderTextColor" format="reference" />
+        <attr name="searchCardResultTextColor" format="reference" />
+        <attr name="searchCardQueryEmphasisColor" format="reference" />
+        <attr name="searchCardPageColor" format="reference" />
+        <attr name="searchCardBackgroundColor" format="reference" />
+        <attr name="searchCardHeaderBoxColor" format="reference" />
+        <attr name="searchCardHeaderBoxTopLineColor" format="reference" />
+        <attr name="searchCardResultDivider" format="reference" />
+        <attr name="translateLanguageArrow" format="reference" />
+        <attr name="translateSpinnerStyle" format="reference" />
+        <attr name="settingsAutoBrightness" format="reference" />
+        <attr name="preferenceSpinnerStyle" format="reference" />
+        <attr name="emptyText" format="reference" />
+        <attr name="blueThemedText" format="reference" />
+        <attr name="tocExpand" format="reference" />
+        <attr name="tocCollapse" format="reference" />
+        <attr name="skim_background" format="reference" />
+        <attr name="skim_page_error" format="reference" />
+        <attr name="skimBackground" format="reference" />
+        <attr name="skimPageError" format="reference" />
+        <attr name="skimBuyButton" format="reference" />
+        <attr name="dialogAuthorColor" format="reference" />
+        <attr name="streamCoverViewStyle" format="reference" />
+    </declare-styleable>
 
 
     <attr name="settingsTextLarger" format="reference" />
@@ -163,21 +237,11 @@
     <attr name="ub_panelBackground" format="reference" />
     <attr name="ub_alertDialogIcon" format="reference" />
     <attr name="showDetails" format="boolean" />
-    <attr name="actionBarDrawable" format="reference" />
-    <attr name="navigationColor" format="reference" />
-    <attr name="grayD400L600" format="color" />
-    <attr name="grayD400L700" format="color" />
-    <attr name="grayD500L600" format="color" />
-    <attr name="grayD000L700" format="color" />
-    <attr name="grayD900L200" format="color" />
-    <attr name="cardBackgroundDrawable" format="reference" />
+
     <attr name="settingsLightingTab" format="reference" />
     <attr name="settingsLayoutTab" format="reference" />
 
-    <attr name="cardBackgroundFullDrawable" format="reference" />
-    <attr name="cardPrimaryColor" format="reference" />
-    <attr name="cardSecondaryColor" format="reference" />
-    <attr name="cardTabBackgroundDrawable" format="reference" />
+
     <attr name="menuSearch" format="reference" />
 
     <attr name="ReadingContextContentCopy" format="reference" />
@@ -187,38 +251,7 @@
     <attr name="ReadingContextHighlightOff" format="reference" />
     <attr name="ReadingContextSelectAll" format="reference" />
 
-    <attr name="cardTabHighlightColor" format="reference" />
-    <attr name="booksPrimaryTextColor" format="reference" />
-    <attr name="menuSettingsDrawable" format="reference" />
-    <attr name="menuTocDrawable" format="reference" />
-    <attr name="menuMoPlayDrawable" format="reference" />
-    <attr name="menuMoPauseDrawable" format="reference" />
-    <attr name="switchOnThumb" format="reference|color" />
-    <attr name="switchOffThumb" format="reference|color" />
-    <attr name="switchOffTrack" format="reference|color" />
-    <attr name="scrubberBrightnessThumb" format="reference" />
-    <attr name="scrubberBackgroundDrawable" format="reference" />
-    <attr name="scrubberDrawable" format="reference" />
-    <attr name="scrubberBkmrkLocDrawable" format="reference" />
-    <attr name="scrubberTrackDrawable" format="reference" />
-    <attr name="scrubberTrackAltDrawable" format="reference" />
-    <attr name="scrubberUndoDrawable" format="reference" />
-    <attr name="searchBackground" format="reference" />
-    <attr name="searchLeftArrow" format="reference" />
-    <attr name="searchScrubBarExit" format="reference" />
-    <attr name="searchScrubBarTextActiveColor" format="reference" />
-    <attr name="searchScrubBarTextInactiveColor" format="reference" />
-    <attr name="audioFrameDrawable" format="reference" />
-    <attr name="illo_rotate" format="reference" />
-    <attr name="illo_scroll" format="reference" />
-    <attr name="nightMode" format="boolean" />
-    <attr name="noteEditorTheme" format="reference" />
-    <attr name="noteEditShadow" format="reference" />
-    <attr name="noteEditCursor" format="reference" />
-    <attr name="noteEditOverflow" format="reference" />
-    <attr name="displayOptionsButton" format="reference" />
-    <attr name="displayOptionsRoundButton" format="reference" />
-    <attr name="settingsAutoBrightness" format="reference" />
+
     <attr name="settingsAlignmentJustify" format="reference" />
 
     <attr name="settingsLineHightLarger" format="reference" />
@@ -231,31 +264,7 @@
 
     <attr name="menuBookmarkIcon" format="reference" />
 
-    <attr name="marginNoteIconOutlineColor" format="reference" />
-    <attr name="searchCardBackgroundTop" format="reference" />
-    <attr name="searchCardBackgroundMiddle" format="reference" />
-    <attr name="searchCardBackgroundBottom" format="reference" />
-    <attr name="searchCardBackgroundRegular" format="reference" />
-    <attr name="searchCardHighlightColor" format="reference" />
-    <attr name="searchCardHeaderTextColor" format="reference" />
-    <attr name="searchCardResultTextColor" format="reference" />
-    <attr name="searchCardQueryEmphasisColor" format="reference" />
-    <attr name="searchCardPageColor" format="reference" />
-    <attr name="searchCardBackgroundColor" format="reference" />
-    <attr name="searchCardHeaderBoxColor" format="reference" />
-    <attr name="searchCardHeaderBoxTopLineColor" format="reference" />
-    <attr name="searchCardResultDivider" format="reference" />
-    <attr name="translateLanguageArrow" format="reference" />
-    <attr name="translateSpinnerStyle" format="reference" />
-    <attr name="preferenceSpinnerStyle" format="reference" />
-    <attr name="emptyText" format="reference" />
-    <attr name="blueThemedText" format="reference" />
-    <attr name="tocExpand" format="reference" />
-    <attr name="tocCollapse" format="reference" />
-    <attr name="skim_background" format="reference" />
-    <attr name="skim_page_error" format="reference" />
-    <attr name="dialogAuthorColor" format="reference" />
-    <attr name="streamCoverViewStyle" format="reference" />
+
     <attr name="bindImageUri" format="reference" />
     <attr name="bindDrawable" format="reference" />
     <attr name="bind__editModeText" format="string" />
@@ -653,5 +662,4 @@
     <attr name="svgDrawableStroke" format="color" />
     <attr name="svgDrawableScale" format="float" />
     <attr name="svgRtlAutoMirror" format="boolean" />
-    <attr name="skimPageError" format="reference" />
 </resources>

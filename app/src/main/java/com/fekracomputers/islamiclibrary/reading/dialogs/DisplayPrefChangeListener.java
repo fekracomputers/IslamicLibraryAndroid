@@ -1,4 +1,6 @@
-package com.fekracomputers.islamiclibrary.reading;
+package com.fekracomputers.islamiclibrary.reading.dialogs;
+
+import android.support.annotation.ColorInt;
 
 import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 
@@ -9,8 +11,8 @@ import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 
 public interface DisplayPrefChangeListener {
     void setZoom(int newZoom);
-
     void setTashkeel(boolean tashkeelOn);
-
     void setPinchZoom(boolean pinchZoomOn);
+
+    void setBackgroundColor(@ColorInt int color);
 }

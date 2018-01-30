@@ -13,5 +13,6 @@ public class AppConstants {
         public static final boolean IS_THEME_NIGHT_MODE = false;
         public static final boolean KEY_IS_TASHKEEL_ON = true;
         public static final boolean KEY_IS_PINCH_ZOOM_ON = true;
+        public static final int KEY_BACKGROUND_COLOR = 0xFFFFFF;
     }
 }

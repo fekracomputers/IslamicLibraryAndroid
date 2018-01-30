@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="empty_card_image_h">210.0dip</dimen>
+    <dimen name="empty_card_image_w">330.0dip</dimen>
+    <dimen name="series_volume_cover_height">90.0sp</dimen>
+    <dimen name="series_volume_cover_width">60.0sp</dimen>
+</resources>

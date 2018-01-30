@@ -96,3 +96,7 @@ function removeHighlightFromSelectedText() {
 function serializeHighlights() {
     selectioniterface.setSerializedHighlights(highlighter.serialize({serializeHighlightText: true}));
 }
+
+function setBackgroundColor(color) {
+        document.body.style.backgroundColor = color;
+}

@@ -80,7 +80,6 @@
                 android:visibility="gone" />
 
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,8 +100,7 @@
                 android:layout_marginBottom="@dimen/pref_item_vertical_margin"
                 android:layout_marginTop="@dimen/pref_item_vertical_margin"
                 android:minHeight="@dimen/pref_item_height"
-                android:visibility="gone"
-
+                android:visibility="visible"
                 />
 
             <include
@@ -113,9 +111,18 @@
                 android:layout_marginTop="@dimen/pref_item_vertical_margin"
                 android:minHeight="@dimen/pref_item_height"
                 android:visibility="gone"
-
                 />
+
+            <include
+                layout="@layout/pref_font_color"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pref_item_vertical_margin"
+                android:layout_marginTop="@dimen/pref_item_vertical_margin"
+                android:minHeight="@dimen/pref_item_height"
+                android:visibility="visible" />
         </LinearLayout>
+
 
     </ViewAnimator>
 

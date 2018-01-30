@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="books_play_ML_inner_gutter_pad">2.0dip</dimen>
+    <dimen name="books_play_ML_outer_gutter_pad">74.0dip</dimen>
+    <dimen name="books_play_RN_inner_gutter_pad">6.0dip</dimen>
+    <dimen name="books_play_card_cluster_gutter">76.0dip</dimen>
+    <dimen name="books_play_cluster_inset">96.0dip</dimen>
+    <dimen name="books_play_outer_gutter">80.0dip</dimen>
+    <dimen name="play_header_list_tab_floating_padding">36.0dip</dimen>
+    <dimen name="play_header_list_tab_padding_side">24.0dip</dimen>
+    <dimen name="play_collection_edge_padding">80.0dip</dimen>
+    <dimen name="play_collection_edge_padding_minus_card_half_spacing">74.0dip</dimen>
+    <dimen name="play_onboard__onboard_v2_tutorial_page_side_margin">24.0dip</dimen>
+</resources>

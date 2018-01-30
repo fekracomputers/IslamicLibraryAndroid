@@ -393,5 +393,7 @@
     <string name="book_info">book:%1$s ,author%2$s,category: %3$s</string>
     <string name="updating_books_please_wait">updating books files please wait</string>
     <string name="updating_books_progress">%1$d/%2$d</string>
+    <string name="exit_book">Exit book</string>
+
     <!--end storage pref-->
 </resources>

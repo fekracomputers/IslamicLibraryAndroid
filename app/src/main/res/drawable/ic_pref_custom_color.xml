@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:drawable="@drawable/ic_color_lens_black_with_check_24dp" />
+
+    <item android:drawable="@drawable/ic_color_lens_black_24dp" />
+</selector>
