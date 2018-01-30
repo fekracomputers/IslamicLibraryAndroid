@@ -501,6 +501,7 @@
 
     <style name="twoLineListPrimartText" parent="primaryText">
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:textSize">18sp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">@color/widget_text_color</item>
@@ -528,6 +529,7 @@
         <item name="android:drawablePadding">4dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:minLines">1</item>
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:ellipsize">end</item>
@@ -569,6 +571,7 @@
     <style name="twoLineListSecondaryText">
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:minLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -578,6 +581,7 @@
     <style name="twoLineGridSecondaryText">
         <item name="android:textSize">@dimen/twoLineGridSecondaryTextSize</item>
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:ellipsize">middle</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:gravity">center</item>
@@ -778,6 +782,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:minLines">1</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:paddingLeft">8dp</item>
@@ -810,6 +815,11 @@
     <style name="AppCollectionDialogFragmnetStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="Preference.Button.color">
+        <item name="android:layout_width">24.0dip</item>
+        <item name="android:layout_height">24.0dip</item>
     </style>
 
 
