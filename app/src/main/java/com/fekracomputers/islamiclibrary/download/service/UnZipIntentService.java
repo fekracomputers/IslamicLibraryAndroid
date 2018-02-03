@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.fekracomputers.islamiclibrary.SplashActivity;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
@@ -82,7 +81,7 @@ public class UnZipIntentService extends IntentService {
                                  @Nullable SplashActivity.DownloadProgressCallBack consumer) {
         if (zipFilePath == null && inputStream == null)
             throw new IllegalArgumentException("either supply input path or stream");
-        if ((zipFilePath != null && new File(zipFilePath).exists()) || inputStream != null) {
+        if (((zipFilePath != null) && new File(zipFilePath).exists()) || (inputStream != null)) {
             ZipInputStream zipInputStream;
             boolean somethingFound = false;
             try {
@@ -122,26 +121,26 @@ public class UnZipIntentService extends IntentService {
                     }
 
                 } catch (IOException e) {
-                    Timber.e(e);
+                    Timber.e(e, e.getMessage());
                     return false;
                 } finally {
                     zipInputStream.close();
                     inputStream.close();
                 }
             } catch (FileNotFoundException e) {
-                Timber.e(e);
+                Timber.e(e, e.getMessage());
                 return false;
             } catch (IOException e) {
-                Timber.e(e);
+                Timber.e(e, e.getMessage());
                 return false;
             } catch (Exception e) {
-                Timber.e(e);
+                Timber.e(e, e.getMessage());
                 return false;
             }
             return somethingFound;
 
         } else {
-            Log.e(TAG, "File deleteded before unzip:" + zipFilePath);
+            Timber.e("File deleteded before unzip:" + zipFilePath);
             return false;
         }
 
