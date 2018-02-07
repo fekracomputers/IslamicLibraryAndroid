@@ -194,7 +194,7 @@
         <item name="navigationColor">@color/material_grey_700</item>
         <item name="grayD400L600">@color/material_grey_600</item>
         <item name="webViewBackGround">@android:color/white</item>
-        <item name="grayD400L700">@color/material_grey_700</item>
+        <item name="grayD400L700">@color/material_grey_400</item>
         <item name="grayD500L600">@color/material_grey_600</item>
         <item name="grayD000L700">@color/material_grey_700</item>
         <item name="grayD900L200">@color/material_grey_200</item>

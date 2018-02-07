@@ -44,5 +44,73 @@
             app:asp_min="50"
             app:asp_tintEnabled="true" />
 
+        <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
+            android:defaultValue="@android:color/white"
+            android:key="background_color"
+            android:title="@string/pref_themes"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_colorPresets="@array/background_preset_colors"
+            app:cpv_colorShape="square"
+            app:cpv_customButtonText="@string/button_custom_color"
+            app:cpv_dialogTitle="@string/pref_themes"
+            app:cpv_presetsButtonText="@string/button_preset_color"
+            app:cpv_selectedButtonText="@string/button_select_color"
+            app:cpv_showDialog="true" />
+        <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
+            android:defaultValue="@color/text_preset_1"
+            android:key="text_color_day"
+            android:title="@string/pref_text_color_day"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_colorPresets="@array/text_preset_colors"
+            app:cpv_colorShape="square"
+            app:cpv_customButtonText="@string/button_custom_color"
+            app:cpv_dialogTitle="@string/pref_text_color_day"
+            app:cpv_presetsButtonText="@string/button_preset_color"
+            app:cpv_selectedButtonText="@string/button_select_color"
+            app:cpv_showDialog="true" />
+        <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
+            android:defaultValue="@color/text_preset_2"
+            android:key="text_color_night"
+            android:title="@string/pref_text_color_night"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_colorPresets="@array/text_preset_colors"
+            app:cpv_colorShape="square"
+            app:cpv_customButtonText="@string/button_custom_color"
+            app:cpv_dialogTitle="@string/pref_text_color_night"
+            app:cpv_presetsButtonText="@string/button_preset_color"
+            app:cpv_selectedButtonText="@string/button_select_color"
+            app:cpv_showDialog="true" />
+        <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
+            android:defaultValue="@color/heading_preset_1"
+            android:key="heading_color_day"
+            android:title="@string/pref_heading_color_day"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_colorPresets="@array/heading_preset_colors"
+            app:cpv_colorShape="square"
+            app:cpv_customButtonText="@string/button_custom_color"
+            app:cpv_dialogTitle="@string/pref_heading_color_day"
+            app:cpv_presetsButtonText="@string/button_preset_color"
+            app:cpv_selectedButtonText="@string/button_select_color"
+            app:cpv_showDialog="true" />
+        <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
+            android:defaultValue="@color/heading_preset_2"
+            android:key="heading_color_night"
+            android:title="@string/pref_heading_color_night"
+            app:cpv_allowCustom="true"
+            app:cpv_allowPresets="true"
+            app:cpv_colorPresets="@array/heading_preset_colors"
+            app:cpv_colorShape="square"
+            app:cpv_customButtonText="@string/button_custom_color"
+            app:cpv_dialogTitle="@string/pref_heading_color_night"
+            app:cpv_presetsButtonText="@string/button_preset_color"
+            app:cpv_selectedButtonText="@string/button_select_color"
+            app:cpv_showDialog="true" />
+
     </PreferenceScreen>
+
+
 </PreferenceScreen>

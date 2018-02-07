@@ -50,6 +50,8 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
     private ImageButton buttonSepia;
     private ImageButton buttonNight;
     private ImageButton buttonCustom;
+    private View buttoHeadingColor;
+    private View buttonTextColor;
 
     public DisplayOptionsPopupFragment() {
         // Required empty public constructor
@@ -73,7 +75,7 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         int mInitialZoom = 100;
         if (getArguments() != null) {
             mCurrentView = getArguments().getInt(ARG_TYPE);
@@ -149,7 +151,6 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         PinchZoomSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 mOnPrefDialogInteractionListener.setPinchZoom(PinchZoomSwitch.isChecked()));
 
-        @ColorInt int[] preSetColors = getResources().getIntArray(R.array.preset_colors);
 
         final ViewGroup prefTheme = viewAnimator.findViewById(R.id.pref_theme);
         buttonDay = prefTheme.findViewById(R.id.button_day);
@@ -158,10 +159,52 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         buttonNight = prefTheme.findViewById(R.id.button_night);
         buttonCustom = prefTheme.findViewById(R.id.button_custom);
 
+        buttonTextColor = viewAnimator.findViewById(R.id.button_text_color);
+        buttonTextColor.setBackgroundColor(mOnPrefDialogInteractionListener.getTextColor());
+
+        @ColorInt int[] textPresets = getResources().getIntArray(R.array.text_preset_colors);
+
+        buttonTextColor.setOnClickListener(v -> {
+            ColorPickerDialog.newBuilder()
+                    .setAllowCustom(true)
+                    .setAllowPresets(true)
+                    .setDialogTitle(R.string.pref_text_color)
+                    .setCustomButtonText(R.string.button_custom_color)
+                    .setPresetsButtonText(R.string.button_preset_color)
+                    .setSelectedButtonText(R.string.button_select_color)
+                    .setColor(mOnPrefDialogInteractionListener.getTextColor())
+                    .setDialogId(R.id.button_text_color)
+                    .setColorShape(ColorShape.SQUARE)
+                    .setPresets(textPresets)
+                    .show(getActivity());
+            mOnPrefDialogInteractionListener.registerDisplayOptionsPopup(this);
+        });
+
+        @ColorInt int[] headingPresets = getResources().getIntArray(R.array.heading_preset_colors);
+
+        buttoHeadingColor = viewAnimator.findViewById(R.id.button_heading_color);
+        buttoHeadingColor.setBackgroundColor(mOnPrefDialogInteractionListener.getHeadingColor());
+        buttoHeadingColor.setOnClickListener(v -> {
+            ColorPickerDialog.newBuilder()
+                    .setAllowCustom(true)
+                    .setDialogTitle(R.string.pref_heading_color)
+                    .setDialogId(R.id.button_heading_color)
+                    .setCustomButtonText(R.string.button_custom_color)
+                    .setPresetsButtonText(R.string.button_preset_color)
+                    .setSelectedButtonText(R.string.button_select_color)
+                    .setColor(mOnPrefDialogInteractionListener.getHeadingColor())
+                    .setAllowPresets(true)
+                    .setColorShape(ColorShape.SQUARE)
+                    .setPresets(headingPresets)
+                    .show(getActivity());
+            mOnPrefDialogInteractionListener.registerDisplayOptionsPopup(this);
+        });
+
+        @ColorInt int[] backGroundPresets = getResources().getIntArray(R.array.background_preset_colors);
 
         refreshBackgroundSelectionButtons();
         View.OnClickListener backgroundSelectionClickHandler = v -> {
-            mOnPrefDialogInteractionListener.setBackgroundColor(preSetColors[getButtonColorIndex(v)]);
+            mOnPrefDialogInteractionListener.setBackgroundColor(backGroundPresets[getButtonColorIndex(v)]);
             refreshBackgroundSelectionButtons();
 
         };
@@ -174,8 +217,13 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
             ColorPickerDialog.newBuilder()
                     .setAllowCustom(true)
                     .setAllowPresets(true)
+                    .setCustomButtonText(R.string.button_custom_color)
+                    .setPresetsButtonText(R.string.button_preset_color)
+                    .setSelectedButtonText(R.string.button_select_color)
+                    .setDialogTitle(R.string.pref_themes)
+                    .setDialogId(R.id.pref_theme)
                     .setColorShape(ColorShape.SQUARE)
-                    .setPresets(preSetColors)
+                    .setPresets(backGroundPresets)
                     .show(getActivity());
             mOnPrefDialogInteractionListener.registerDisplayOptionsPopup(this);
         });
@@ -187,9 +235,9 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         return Integer.valueOf((String) v.getTag());
     }
 
-    public void refreshBackgroundSelectionButtons() {
-        int backgroundColor = mOnPrefDialogInteractionListener.getBackGroundColor();
-        @ColorInt int[] preSetColors = getResources().getIntArray(R.array.preset_colors);
+
+    private void refreshBackgroundSelectionButtons(int backgroundColor) {
+        @ColorInt int[] preSetColors = getResources().getIntArray(R.array.background_preset_colors);
         int selectedColorIndex = -1;
         for (int i = 0; i < preSetColors.length; i++) {
             if (backgroundColor == preSetColors[i]) {
@@ -206,6 +254,11 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         if (selectedColorIndex == -1) {
             buttonCustom.setColorFilter(backgroundColor);
         }
+    }
+
+    public void refreshBackgroundSelectionButtons() {
+        int backgroundColor = mOnPrefDialogInteractionListener.getBackGroundColor();
+        refreshBackgroundSelectionButtons(backgroundColor);
 
     }
 
@@ -215,11 +268,6 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         prefTextSizeTV.setText(getString(R.string.pref_zoom_precent, new_zoom));
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.ThemeOverlay_AppCompat_Dialog_Alert);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -262,6 +310,35 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         refreshBackgroundSelectionButtons();
     }
 
+    public void onColorDialogDismissed(int dialogId) {
+        switch (dialogId) {
+            case R.id.button_text_color:
+                break;
+
+            case R.id.button_heading_color:
+                break;
+
+            case R.id.pref_theme:
+                refreshBackgroundSelectionButtons();
+                break;
+
+        }
+    }
+
+    public void onColorDialogSelected(int dialogId, int color) {
+        switch (dialogId) {
+            case R.id.button_text_color:
+                buttonTextColor.setBackgroundColor(color);
+                break;
+            case R.id.button_heading_color:
+                buttoHeadingColor.setBackgroundColor(color);
+                break;
+            case R.id.pref_theme:
+                refreshBackgroundSelectionButtons(color);
+        }
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -297,5 +374,21 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
         int getBackGroundColor();
 
         void registerDisplayOptionsPopup(DisplayOptionsPopupFragment displayOptionsPopupFragment);
+
+        @ColorInt
+        int getHeadingColor(boolean isNight);
+
+        void setHeadingColor(@ColorInt int color, boolean isNight);
+
+        @ColorInt
+        int getTextColor(boolean isNight);
+
+        void setTextColor(@ColorInt int color, boolean isNight);
+
+        @ColorInt
+        int getHeadingColor();
+
+        @ColorInt
+        int getTextColor();
     }
 }

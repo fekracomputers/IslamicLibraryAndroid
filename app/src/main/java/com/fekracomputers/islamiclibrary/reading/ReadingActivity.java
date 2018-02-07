@@ -225,6 +225,81 @@ public class ReadingActivity extends AppCompatActivity implements
     @NonNull
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
     private ArrayList<DisplayOptionsPopupFragment> displayOptionsPopups = new ArrayList<>();
+    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceListener = (sharedPreferences1, key) -> {
+        switch (key) {
+            case SettingsFragment.KEY_DISPLAY_TEXT_SIZE:
+                int newZoom = sharedPreferences1.getInt(SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_DISPLAY_TEXT_SIZE);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setZoom(newZoom);
+                }
+                break;
+            case SettingsFragment.KEY_IS_TASHKEEL_ON:
+                boolean checked = sharedPreferences1.getBoolean(SettingsFragment.KEY_IS_TASHKEEL_ON,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_TASHKEEL_ON);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setTashkeel(checked);
+                }
+
+                break;
+            case SettingsFragment.KEY_IS_PINCH_ZOOM_ON:
+                boolean ZoomPinchEnabled = sharedPreferences1.getBoolean(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_PINCH_ZOOM_ON);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setPinchZoom(ZoomPinchEnabled);
+                }
+
+                break;
+
+
+            case SettingsFragment.KEY_BACKGROUND_COLOR:
+                int backGroundColor = sharedPreferences1.getInt(SettingsFragment.KEY_BACKGROUND_COLOR,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setBackgroundColor(backGroundColor);
+                }
+                break;
+            case SettingsFragment.KEY_TEXT_COLOR_DAY:
+                if (!isNightMode()) {
+                    int textColorDay = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_DAY);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setTextColor(textColorDay);
+                    }
+                }
+                break;
+
+            case SettingsFragment.KEY_TEXT_COLOR_NIGHT:
+                if (isNightMode()) {
+                    int textColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setTextColor(textColorNight);
+                    }
+                }
+                break;
+            case SettingsFragment.KEY_HEADING_COLOR_DAY:
+                if (!isNightMode()) {
+                    int headingColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_DAY);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setHeadingColor(headingColorNight);
+                    }
+                }
+                break;
+            case SettingsFragment.KEY_HEADING_COLOR_NIGHT:
+                if (isNightMode()) {
+                    int headingColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setHeadingColor(headingColorNight);
+                    }
+                }
+                break;
+            default:
+        }
+
+    };
 
     public static void openBook(int bookId, int pageId, @NonNull Context context) {
         Intent intent = new Intent(context, ReadingActivity.class);
@@ -271,7 +346,7 @@ public class ReadingActivity extends AppCompatActivity implements
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(
                 SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
-                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.DEFAULT_TEXT_ZOOM,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_DISPLAY_TEXT_SIZE,
                 defaultSharedPreferences, mUserDataDBHelper);
     }
 
@@ -302,6 +377,7 @@ public class ReadingActivity extends AppCompatActivity implements
         zoomUpdatedByValue(value);
     }
 
+
     @Override
     public boolean isThemeNightMode() {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -325,6 +401,85 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
+    public int getHeadingColor(boolean isNight) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!isNight) {
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_DAY,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        } else {
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_NIGHT,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_NIGHT,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        }
+    }
+
+    @Override
+    public void setHeadingColor(int color, boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_NIGHT,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        }
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setHeadingColor(color);
+        }
+    }
+
+    @Override
+    public int getTextColor(boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_DAY,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        }
+    }
+
+    @Override
+    public void setTextColor(int color, boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        }
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setTextColor(color);
+        }
+    }
+
+    @Override
+    public int getHeadingColor() {
+        return getHeadingColor(isNightMode());
+    }
+
+    @Override
+    public int getTextColor() {
+        return getTextColor(isNightMode());
+    }
+
+    @Override
     public int getBackGroundColor() {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR,
@@ -332,7 +487,6 @@ public class ReadingActivity extends AppCompatActivity implements
                 defaultSharedPreferences,
                 mUserDataDBHelper);
     }
-
 
     @Override
     public boolean isTashkeel() {
@@ -364,7 +518,6 @@ public class ReadingActivity extends AppCompatActivity implements
             listener.setBackgroundColor(color);
         }
     }
-
 
     @Override
     public boolean isPinchZoom() {
@@ -806,9 +959,21 @@ public class ReadingActivity extends AppCompatActivity implements
                 }
 
             }
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceListener);
+
         } catch (BookDatabaseException bookDatabaseException) {
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceListener);
     }
 
     public void populateReaderActionBar(CharSequence title, CharSequence author) {
@@ -1216,7 +1381,18 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public synchronized void onColorSelected(int dialogId, @ColorInt int color) {
-        setBackgroundColor(color);
+        switch (dialogId) {
+            case R.id.button_text_color:
+                setTextColor(color, isNightMode());
+                break;
+            case R.id.button_heading_color:
+                setHeadingColor(color, isNightMode());
+                break;
+            case R.id.pref_theme:
+                setBackgroundColor(color);
+                break;
+
+        }
         for (DisplayOptionsPopupFragment displayOptionsPopup : displayOptionsPopups) {
             displayOptionsPopup.onColorDialogSelected(dialogId, color);
         }
@@ -1600,6 +1776,7 @@ public class ReadingActivity extends AppCompatActivity implements
             }
             return bundle;
         }
+
         @NonNull
         @Override
         public Fragment getItem(int position) {

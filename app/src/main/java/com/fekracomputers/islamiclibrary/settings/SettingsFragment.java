@@ -33,6 +33,9 @@ import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 import com.fekracomputers.islamiclibrary.widget.DataListPreference;
 import com.fekracomputers.islamiclibrary.widget.DataListPreferenceDialogFragmentCompat;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogPreference;
+import com.jaredrummler.android.colorpicker.ColorPreferenceSupport;
 
 import net.xpece.android.support.preference.ColorPreference;
 import net.xpece.android.support.preference.ListPreference;
@@ -55,7 +58,9 @@ import timber.log.Timber;
 /**
  * @author Eugen on 7. 12. 2015.
  */
-public class SettingsFragment extends XpPreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends XpPreferenceFragment implements
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        ColorPickerDialogListener {
     public static final String KEY_DISPLAY_TEXT_SIZE = "global_display_text_size";
     public static final String KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL = "global_overrides_local";
     public static final String KEY_GLOBAL_THEME_COLOR = "global_theme_color";
@@ -66,6 +71,10 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
     public static final String KEY_IS_PINCH_ZOOM_ON = "pinch_zoom_on";
     public static final String KEY_BACKGROUND_COLOR = "background_color";
+    public static final String KEY_TEXT_COLOR_DAY = "text_color_day";
+    public static final String KEY_TEXT_COLOR_NIGHT = "text_color_night";
+    public static final String KEY_HEADING_COLOR_DAY = "heading_color_day";
+    public static final String KEY_HEADING_COLOR_NIGHT = "heading_color_night";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -380,6 +389,11 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             fragment.setTargetFragment(this, 0);
             fragment.show(getFragmentManager(),
                     "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else if (preference instanceof ColorPreferenceSupport) {
+            fragment = ColorPickerDialogPreference.newInstance(preference.getKey());
+            fragment.setTargetFragment(this, 0);
+            fragment.show(getFragmentManager(),
+                    "android.support.v7.preference.PreferenceFragment.DIALOG");
         } else super.onDisplayPreferenceDialog(preference);
     }
 
@@ -521,6 +535,16 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
 
     private void hideStorageListPref() {
         removeAdvancePreference(listStoragePref);
+    }
+
+    @Override
+    public void onColorSelected(int dialogId, int color) {
+
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
     }
 
     private class MoveFilesAsyncTask extends AsyncTask<Void, Void, Boolean> {

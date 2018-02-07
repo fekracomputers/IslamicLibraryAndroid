@@ -152,11 +152,33 @@
     </array>
 
 
-    <array name="preset_colors">
+    <array name="background_preset_colors">
         <item>@android:color/white</item>
         <item>@color/books_yellow</item>
         <item>@color/books_sepia</item>
         <item>@color/night_mode_web_view_bg</item>
 
+    </array>
+
+    <color name="text_preset_1">#FF000000</color>
+    <color name="text_preset_2">#FFFFFFFF</color>
+    <color name="text_preset_3">#FF0000ff</color>
+    <color name="text_preset_4">#81c784</color>
+
+    <array name="text_preset_colors">
+        <item>@color/text_preset_1</item>
+        <item>@color/text_preset_2</item>
+        <item>@color/text_preset_3</item>
+        <item>@color/text_preset_4</item>
+    </array>
+
+    <color name="heading_preset_1">#FF800000</color>
+    <color name="heading_preset_2">#FFD69090</color>
+    <color name="heading_preset_3">#FFCCC699</color>
+
+    <array name="heading_preset_colors">
+        <item>@color/heading_preset_1</item>
+        <item>@color/heading_preset_2</item>
+        <item>@color/heading_preset_3</item>
     </array>
 </resources>

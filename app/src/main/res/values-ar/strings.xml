@@ -82,7 +82,7 @@
     <string name="pref_ringtone_silent">صامت</string>
 
     <string name="pref_title_global_override_local">تطبيق على كل الكتب </string>
-    <string name="global_page_display_preference">تعديل </string>
+    <string name="global_page_display_preference">تعديل خصائص العرض العامة </string>
     <string name="pref_header_global_display">اختيارات عرض صفحة الكتب العامة</string>
     <string name="pref_global_display_text_size">حجم خط متن الكتاب</string>
     <string name="pref_summary_global_override_local">تطبيق خيارات عامة موحدة على كل الكتب</string>
@@ -300,5 +300,14 @@
     <string name="updating_books_please_wait">يجري تحديث الكتب الرجاء الانتظار</string>
     <string name="updating_books_progress">%1$d/%2$d</string>
     <string name="exit_book">الخروج من الكتاب</string>
+    <string name="pref_text_color">لون النص</string>
+    <string name="pref_text_color_day">لون النص في القراءة النهارية</string>
+    <string name="pref_text_color_night">لون النص في القراءة الليلية</string>
+    <string name="pref_heading_color">لون العناوين</string>
+    <string name="pref_heading_color_day">لون العناوين قي القراءة النهارية</string>
+    <string name="pref_heading_color_night">لون العناوين في القراءة الليلية</string>
+    <string name="button_custom_color">لون معدل</string>
+    <string name="button_preset_color">ألوان معدة</string>
+    <string name="button_select_color">استخدام</string>
 
 </resources>

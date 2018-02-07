@@ -100,3 +100,15 @@ function serializeHighlights() {
 function setBackgroundColor(color) {
         document.body.style.backgroundColor = color;
 }
+
+function setHeadingColor(color) {
+        document
+        .querySelectorAll("h1,h2,h3,h4,h5,h6")
+        .forEach(function(header){
+            header.style.color=color;
+        });
+}
+
+function setTextColor(color) {
+        document.body.style.color = color;
+}

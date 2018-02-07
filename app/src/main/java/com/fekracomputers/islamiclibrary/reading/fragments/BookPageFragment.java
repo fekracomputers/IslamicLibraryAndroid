@@ -59,6 +59,7 @@ import com.fekracomputers.islamiclibrary.utility.AppConstants;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.widget.AnimationUtils;
 
+import java.util.Formatter;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -125,6 +126,10 @@ public class BookPageFragment extends Fragment implements
         return bookPageFragment;
     }
 
+    private static int getCssColorInt(@ColorInt int color) {
+        return 0x00FFFFFF & color;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +153,6 @@ public class BookPageFragment extends Fragment implements
         }
 
     }
-
 
     @Override
     public void onResume() {
@@ -506,18 +510,38 @@ public class BookPageFragment extends Fragment implements
 
     }
 
+    private String getHeadStyleCss(boolean isNightMode) {
+        StringBuilder sb = new StringBuilder();
+        Formatter formatter = new Formatter(sb, Locale.US);
+        if (pageFragmentListener != null) {
+            formatter.format("<style>\n" +
+                            "    body {\n" +
+                            "      background-color: #%06X;\n" +
+                            "      color: #%06X;\n" +
+                            "    }\n" +
+                            "    h1,h2,h3,h4,h5,h6 {\n" +
+                            "      color: #%06X\n" +
+                            "    }\n" +
+                            "  </style>",
+                    getCssColorInt(pageFragmentListener.getBackGroundColor()),
+                    getCssColorInt(pageFragmentListener.getTextColor(isNightMode)),
+                    getCssColorInt(pageFragmentListener.getHeadingColor(isNightMode))
+            );
+        }
+
+        return sb.toString();
+
+
+    }
+
     @NonNull
     private String prepareHtml(boolean isNightMode) {
-        StringBuilder stringBuilder = new StringBuilder().append("<html align='justify' dir=\"rtl\">")
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("<!doctype html>")
+                .append("<html align='justify' dir=\"rtl\">")
                 .append("<head>")
-                .append("<style>" +
-                        "      body {\n" +
-                        "        background-color:" + String.format(Locale.US,
-                        "#%06X",
-                        0x00FFFFFF & pageFragmentListener.getBackGroundColor()) + ";\n" +
-                        "      }" +
-                        "</style>\n")
-
+                .append("<title>").append(bookInfo.getName()).append("</title>")
+                .append(getHeadStyleCss(isNightMode))
                 .append("</head>")
                 .append("<body>")
                 .append("<link href=\"styles/styles.css\" rel=\"stylesheet\" type=\"text/css\">")
@@ -808,6 +832,20 @@ public class BookPageFragment extends Fragment implements
                         "javascript:setBackgroundColor('#%06X');", 0xFFFFFF & color));
     }
 
+    @Override
+    public void setHeadingColor(int color) {
+        mBookPageWebView.loadUrl(String.
+                format(Locale.US,
+                        "javascript:setHeadingColor('#%06X');", 0xFFFFFF & color));
+    }
+
+    @Override
+    public void setTextColor(int color) {
+        mBookPageWebView.loadUrl(String.
+                format(Locale.US,
+                        "javascript:setTextColor('#%06X');", 0xFFFFFF & color));
+    }
+
     private void reloadeWithTashkeelOn(boolean tashkeelOn) {
         if (this.tashkeelOn != tashkeelOn) {
             if (this.tashkeelOn) {
@@ -848,6 +886,18 @@ public class BookPageFragment extends Fragment implements
 
         @ColorInt
         int getBackGroundColor();
+
+        @ColorInt
+        int getHeadingColor();
+
+        @ColorInt
+        int getHeadingColor(boolean isNightMode);
+
+        @ColorInt
+        int getTextColor();
+
+        @ColorInt
+        int getTextColor(boolean isNightMode);
 
         void populateReaderActionBar(CharSequence title, CharSequence author);
     }

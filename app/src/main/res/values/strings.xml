@@ -171,7 +171,7 @@
     <string name="pref_title_volume" translatable="false">Ring volume</string>
 
     <string name="pref_title_volume2" translatable="false">Media volume</string>
-    <string name="global_page_display_preference">Customize</string>
+    <string name="global_page_display_preference">Customize Global display settings</string>
     <string name="pref_title_global_override_local">apply to all books</string>
     <string name="pref_header_global_display">Global page display preferences</string>
     <string name="pref_global_display_text_size">Text Size</string>
@@ -394,6 +394,15 @@
     <string name="updating_books_please_wait">updating books files please wait</string>
     <string name="updating_books_progress">%1$d/%2$d</string>
     <string name="exit_book">Exit book</string>
+    <string name="pref_text_color">Text color</string>
+    <string name="pref_text_color_day">Day Text color</string>
+    <string name="pref_text_color_night">Night Text color</string>
+    <string name="pref_heading_color">Headings color</string>
+    <string name="pref_heading_color_day">Day Headings color</string>
+    <string name="pref_heading_color_night">Night Headings color</string>
+    <string name="button_custom_color">CUSTOM</string>
+    <string name="button_preset_color">PRESET</string>
+    <string name="button_select_color">SELECT</string>
 
     <!--end storage pref-->
 </resources>
