@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.reading;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.settings.SettingsFragment;
@@ -12,7 +13,10 @@ import com.fekracomputers.islamiclibrary.utility.AppConstants;
  */
 
 public class DisplayPreferenceUtilities {
-    public static boolean getDisplayPreference(String preferenceKey, boolean defaultValue, SharedPreferences sharedPref, UserDataDBHelper mUserDataDBHelper) {
+    public static boolean getDisplayPreference(String preferenceKey,
+                                               boolean defaultValue,
+                                               @NonNull SharedPreferences sharedPref,
+                                               @NonNull UserDataDBHelper mUserDataDBHelper) {
         boolean globalTheme = sharedPref.getBoolean(preferenceKey, defaultValue);
         if (sharedPref.getBoolean(SettingsFragment.KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.GLOBAL_OVERRIDES_LOCAL)) {
             return globalTheme;
@@ -21,7 +25,10 @@ public class DisplayPreferenceUtilities {
         }
     }
 
-    public static int getDisplayPreference(String preferenceKey, int defaultValue, SharedPreferences sharedPref, UserDataDBHelper mUserDataDBHelper) {
+    public static int getDisplayPreference(String preferenceKey,
+                                           int defaultValue,
+                                           @NonNull SharedPreferences sharedPref,
+                                           @NonNull UserDataDBHelper mUserDataDBHelper) {
         int globalTheme = sharedPref.getInt(preferenceKey, defaultValue);
         if (sharedPref.getBoolean(SettingsFragment.KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.GLOBAL_OVERRIDES_LOCAL)) {
             return globalTheme;
@@ -30,7 +37,9 @@ public class DisplayPreferenceUtilities {
         }
     }
 
-    public static void setDisplayPreference(String preferenceKey, int value, SharedPreferences sharedPref, UserDataDBHelper userDataDBHelper) {
+    public static void setDisplayPreference(String preferenceKey,
+                                            int value, @NonNull SharedPreferences sharedPref,
+                                            @NonNull UserDataDBHelper userDataDBHelper) {
 
         if (sharedPref.getBoolean(SettingsFragment.KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.GLOBAL_OVERRIDES_LOCAL)) {
             sharedPref.edit().putInt(preferenceKey, value).apply();
@@ -39,9 +48,13 @@ public class DisplayPreferenceUtilities {
         }
     }
 
-    public static void setDisplayPreference(String preferenceKey, boolean value, SharedPreferences sharedPref, UserDataDBHelper userDataDBHelper) {
+    public static void setDisplayPreference(String preferenceKey,
+                                            boolean value,
+                                            @NonNull SharedPreferences sharedPref,
+                                            @NonNull UserDataDBHelper userDataDBHelper) {
 
-        if (sharedPref.getBoolean(SettingsFragment.KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.GLOBAL_OVERRIDES_LOCAL)) {
+        if (sharedPref.getBoolean(SettingsFragment.KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.GLOBAL_OVERRIDES_LOCAL)) {
             sharedPref.edit().putBoolean(preferenceKey, value).apply();
         } else {
             userDataDBHelper.setDisplayPreferenceValue(preferenceKey, String.valueOf(value));

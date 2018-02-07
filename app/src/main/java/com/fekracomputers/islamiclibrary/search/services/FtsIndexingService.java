@@ -3,11 +3,12 @@ package com.fekracomputers.islamiclibrary.search.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.SQLException;
+import android.support.annotation.Nullable;
 
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
-import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedReceiver;
 import com.fekracomputers.islamiclibrary.download.service.UnZipIntentService;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class FtsIndexingService extends IntentService {
 
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         int bookId = intent.getIntExtra(EXTRA_DOWNLOAD_BOOK_ID, 0);
         if (bookId != DownloadsConstants.BOOK_INFORMATION_DUMMY_ID) {
             Intent ftsIndexingStartedBroadCast =
@@ -42,35 +43,42 @@ public class FtsIndexingService extends IntentService {
                             .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_STARTED)
                             .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
             sendOrderedBroadcast(ftsIndexingStartedBroadCast, null);
-            BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
             try {
+                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
                 if (bookDatabaseHelper.isValidBook()) {
-                    if (bookDatabaseHelper.indexFts()) {
+                    if (!bookDatabaseHelper.isFtsSearchable()) {
+                        if (bookDatabaseHelper.indexFts()) {
+                            Intent ftsIndexingEndedBroadCast =
+                                    new Intent(BROADCAST_ACTION)
+                                            .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
+                                            .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                            sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                        } else {//the indexing failed
+
+                            Intent ftsIndexingEndedBroadCast =
+                                    new Intent(BROADCAST_ACTION)
+                                            .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
+                                            .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
+                            sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
+                        }
+                    } else {
                         Intent ftsIndexingEndedBroadCast =
                                 new Intent(BROADCAST_ACTION)
                                         .putExtra(EXTRA_DOWNLOAD_STATUS, STATUS_FTS_INDEXING_ENDED)
-                                        .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
-                        sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
-                    } else {//the indexing failed
-
-                        Intent ftsIndexingEndedBroadCast =
-                                new Intent(BROADCAST_ACTION)
-                                        .putExtra(EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_UNZIP_ENDED)
                                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId);
                         sendOrderedBroadcast(ftsIndexingEndedBroadCast, null);
                     }
                 } else {
                     if (intent.hasExtra(UnZipIntentService.EXTRA_FILE_PATH)) {
                         String filePath = intent.getStringExtra(UnZipIntentService.EXTRA_FILE_PATH);
-                        //delete the file from file system
-                        if (!new File(filePath).delete()) {
-                            Timber.e("Deleting file: ", new IOException("error deleting file at" + filePath));
-                        }
-                        BookDownloadCompletedReceiver.broadCastBookDownloadFailed(bookId, "invalidDatabase", this);
+                        BookDatabaseHelper.deleteInvalidBook(bookId, this);
+
                     }
                 }
             } catch (SQLException e) {
                 Timber.e(e);
+            } catch (BookDatabaseException bookDatabaseException) {
+                Timber.e(bookDatabaseException);
             }
 
         } else { //Index book Information Database
@@ -113,4 +121,5 @@ public class FtsIndexingService extends IntentService {
 
 
     }
+
 }

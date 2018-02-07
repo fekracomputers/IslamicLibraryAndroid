@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Created by moda_ on 8/2/2017.
@@ -42,13 +43,13 @@ public class BookPartsInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.largestPage);
         dest.writeParcelable(this.firstPart, flags);
         dest.writeInt(this.lastPart);
     }
 
-    protected BookPartsInfo(Parcel in) {
+    protected BookPartsInfo(@NonNull Parcel in) {
         this.largestPage = in.readInt();
         this.firstPart = in.readParcelable(PartInfo.class.getClassLoader());
         this.lastPart = in.readInt();
@@ -56,7 +57,7 @@ public class BookPartsInfo implements Parcelable {
 
     public static final Parcelable.Creator<BookPartsInfo> CREATOR = new Parcelable.Creator<BookPartsInfo>() {
         @Override
-        public BookPartsInfo createFromParcel(Parcel source) {
+        public BookPartsInfo createFromParcel(@NonNull Parcel source) {
             return new BookPartsInfo(source);
         }
 

@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.browsing.activity;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,9 +10,9 @@ import android.view.View;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookInformationFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.BookListFragment;
-import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
-import com.fekracomputers.islamiclibrary.homeScreen.fragment.HomeFragment;
 import com.fekracomputers.islamiclibrary.browsing.fragment.LibraryFragment;
+import com.fekracomputers.islamiclibrary.homeScreen.fragment.HomeFragment;
+import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
 
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_ADDED;
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.BOOK_INFORMATION_FRAGMENT_TAG;
@@ -24,7 +25,7 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNavigationController {
 
 
-    public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, BottomNavigationView bottomNavigationView, BrowsingActivityControllerListener listener) {
+    public BrowsingActivityNavigationControllerSinglePane(int oldPanNumbers, @NonNull FragmentManager fragmentManager, boolean fromRotation, BrowsingActivity browsingActivity, @NonNull BottomNavigationView bottomNavigationView, @NonNull BrowsingActivityControllerListener listener) {
         super(oldPanNumbers, fragmentManager, fromRotation, browsingActivity, bottomNavigationView, listener);
         paneNumber = 1;
         backStackChangedListener = () -> {
@@ -40,7 +41,7 @@ class BrowsingActivityNavigationControllerSinglePane extends BrowsingActivityNav
     }
 
     @Override
-    protected void intializePansAfterRotation(int oldPanNumbers, FragmentManager fragmentManager) {
+    protected void intializePansAfterRotation(int oldPanNumbers, @NonNull FragmentManager fragmentManager) {
         if (oldPanNumbers != paneNumber) {
             if (oldPanNumbers == 3) {
                 Fragment oldBookList = fragmentManager.findFragmentByTag(BOOK_LIST_FRAGMENT_TAG);

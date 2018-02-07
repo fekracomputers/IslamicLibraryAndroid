@@ -70,7 +70,7 @@ public class Highlight extends UserNote implements Comparable<Highlight> {
 
 
     @ColorInt
-    public static int getHighlightColor(String className) {
+    public static int getHighlightColor(@NonNull String className) {
         Matcher matcher = HIGHLIGHT_CLASS_PATTERN.matcher(className);
         int classNumber = 0;
         if (matcher.matches()) {
@@ -80,7 +80,7 @@ public class Highlight extends UserNote implements Comparable<Highlight> {
     }
 
     @ColorInt
-    public static int getDarkHighlightColor(String className) {
+    public static int getDarkHighlightColor(@NonNull String className) {
 
         Matcher matcher = HIGHLIGHT_CLASS_PATTERN.matcher(className);
         int classNumber = 0;
@@ -91,7 +91,8 @@ public class Highlight extends UserNote implements Comparable<Highlight> {
         return highlightDarkColorMap.get(classNumber);
     }
 
-    public static ArrayList<ContentValues> deserializeToContentValues(String serialized,
+    @NonNull
+    public static ArrayList<ContentValues> deserializeToContentValues(@NonNull String serialized,
                                                                       PageInfo pageInfo,
                                                                       int bookId) {
 
@@ -143,7 +144,8 @@ public class Highlight extends UserNote implements Comparable<Highlight> {
     }
 
 
-    public static ArrayList<Highlight> deserialize(String serialized, PageInfo pageInfo, int bookId) {
+    @NonNull
+    public static ArrayList<Highlight> deserialize(@NonNull String serialized, PageInfo pageInfo, int bookId) {
         final Pattern pattern = Pattern.compile("^type:(\\w+)(?:\\|(\\d+)\\$(\\d+)\\$(\\d+)\\$(\\w+)\\$(\\d*)\\$([^|]+))+$");
         Matcher matcher = pattern.matcher(serialized);
         if (matcher.matches()) {

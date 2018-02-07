@@ -70,7 +70,7 @@
     <string name="base_url" translatable="false">http://booksapi.islam-db.com/data</string>
     <string name="url_covers" translatable="false">covers</string>
     <string name="dialog_information_database_not_available">Book Information Database not available,\n download it?</string>
-    <string name="book_information_error_close">Sorry!!\nthere is a problem with Book Information Database\nwe will close the app try reopening it</string>
+    <string name="book_information_error_close">Sorry!!\nthere is a problem with Book Information Database\n]</string>
     <string name="cancel">Cancel</string>
     <string name="Ok">OK</string>
     <string name="wait_for_download">Retry after the Book Information Databse downloaded</string>
@@ -171,7 +171,7 @@
     <string name="pref_title_volume" translatable="false">Ring volume</string>
 
     <string name="pref_title_volume2" translatable="false">Media volume</string>
-    <string name="global_page_display_preference">Customize</string>
+    <string name="global_page_display_preference">Customize Global display settings</string>
     <string name="pref_title_global_override_local">apply to all books</string>
     <string name="pref_header_global_display">Global page display preferences</string>
     <string name="pref_global_display_text_size">Text Size</string>
@@ -211,6 +211,7 @@
     <string name="downloading_book_information">Downloading Book information</string>
     <string name="info_refreshing_database_with_storage">Refreshing with storage</string>
     <string name="info_preparing_book_information_database">Preparing Book Information Database</string>
+    <string name="info_unzipping_book_information_database">Unzipping Book Information Database</string>
     <string name="pref_ui_language_arabic">Arabic User Interface</string>
     <string name="download_book">Download</string>
     <string name="download_selected_books">download selected</string>
@@ -304,6 +305,8 @@
     <string name="hint_search_authors_names">Search authors names</string>
     <string name="hint_search_books_names">search books names</string>
     <string name="preparing_book">preparing book</string>
+    <string name="unzipping_book">unzipping book</string>
+
     <string name="refreshing_on_background">stored books will be revised in the background you can continu work</string>
     <string name="storage_permission_rationale">Islamic Library wants your permission to store its data on        \n external storage app will work without this permission, but if you clear data or     \n     uninstall the app, all downloaded books will be removed. Grant Quran permission?</string>
     <string name="storage_permission_please_restart">Please restart the app for this to take effect</string>
@@ -380,6 +383,27 @@
     <string name="menu_delete_note">delete note</string>
     <string name="menu_edit_note_color">Edit Note Color</string>
     <string name="show_collecttion">Show</string>
+    <string name="book_information_canceled">You have caceled downloading book information database\\n the app will not work without it\\nplease re-run the app to download it</string>
+    <string name="download_failed">book (%1$d) download failed because %2$s</string>
+    <string name="not_now">not now</string>
+    <string name="book_download_failure">%1$s  download fialed</string>
+    <string name="redownload">redownload</string>
+    <string name="pref_title_pinch_zoom">change zoom with pinch</string>
+    <string name="book_not_download">book %1$s not downloaded</string>
+    <string name="book_info">book:%1$s ,author%2$s,category: %3$s</string>
+    <string name="updating_books_please_wait">updating books files please wait</string>
+    <string name="updating_books_progress">%1$d/%2$d</string>
+    <string name="exit_book">Exit book</string>
+    <string name="pref_text_color">Text color</string>
+    <string name="pref_text_color_day">Day Text color</string>
+    <string name="pref_text_color_night">Night Text color</string>
+    <string name="pref_heading_color">Headings color</string>
+    <string name="pref_heading_color_day">Day Headings color</string>
+    <string name="pref_heading_color_night">Night Headings color</string>
+    <string name="button_custom_color">CUSTOM</string>
+    <string name="button_preset_color">PRESET</string>
+    <string name="button_select_color">SELECT</string>
+
     <string name="donations_description">disc</string>
     <!--end storage pref-->
     <string name="title_activity_main">Trivial Drive v2</string>

@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.browsing.activity;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,7 +29,7 @@ class BrowsingActivityNavigationControllerTriplePan extends BrowsingActivityNavi
     }
 
     @Override
-    protected void intializePansAfterRotation(int oldPanNumbers, FragmentManager fragmentManager) {
+    protected void intializePansAfterRotation(int oldPanNumbers, @NonNull FragmentManager fragmentManager) {
         if (oldPanNumbers != paneNumber) {
             if (oldPanNumbers == 1) {
                 Fragment oldBookInfo = fragmentManager.findFragmentByTag(BOOK_INFORMATION_FRAGMENT_TAG);
@@ -54,7 +55,7 @@ class BrowsingActivityNavigationControllerTriplePan extends BrowsingActivityNavi
     }
 
     @Override
-    protected void intitalizePansFresh(FragmentManager fragmentManager) {
+    protected void intitalizePansFresh(@NonNull FragmentManager fragmentManager) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.filter_pager_container, new LibraryFragment());
         fragmentTransaction.commit();

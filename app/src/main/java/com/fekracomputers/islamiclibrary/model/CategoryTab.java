@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -42,6 +43,7 @@ public class CategoryTab implements BookCatalogElement {
         return R.string.categoreies;
     }
 
+    @NonNull
     @Override
     public Fragment getNewFragment() {
         return BookCategoryFragment.newInstance();

@@ -24,11 +24,13 @@ public class SortListDialogFragment extends DialogFragment {
     public static final String TAG_FRAGMENT_SORT = "fragment_sort";
     private static final java.lang.String KEY_SORT_ARRAY_RES_ID = "KEY_SORT_ARRAY_RES_ID";
     private static final java.lang.String KEY_CURRENT_SORT_INDEX = "KEY_CURRENT_SORT_INDEX";
+    @Nullable
     private OnSortDialogListener mListener;
 
     public SortListDialogFragment() {
     }
 
+    @NonNull
     public static SortListDialogFragment newInstance(@ArrayRes int sortingChoices, int currentSortIndex) {
         SortListDialogFragment frag = new SortListDialogFragment();
         Bundle args = new Bundle();

@@ -1,5 +1,7 @@
 package com.dictiography.collections;
 
+import android.support.annotation.Nullable;
+
 import java.util.NavigableSet;
 
 /**
@@ -18,6 +20,7 @@ public interface IndexedNavigableSet<E> extends NavigableSet<E> {
      *         from the beginning of the sorted set
      * @throws ArrayIndexOutOfBoundsException if the specified index is less than 0 or greater than size-1
      */
+    @Nullable
     E exact(int index);
     /**
      * Searches the specified tree map for the specified entry using the

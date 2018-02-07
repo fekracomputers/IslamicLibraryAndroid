@@ -1,5 +1,8 @@
 package com.fekracomputers.islamiclibrary.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * Created by Mohammad Yahia on 05/9/2016.
  */
@@ -67,6 +70,7 @@ public class BookInfo {
         this.bookId = bookId;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "BookInfo{" +
@@ -78,7 +82,7 @@ public class BookInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

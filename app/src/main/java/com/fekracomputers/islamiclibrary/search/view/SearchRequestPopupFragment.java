@@ -32,9 +32,12 @@ public class SearchRequestPopupFragment  extends DialogFragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
+    @Nullable
     private String mParam1;
+    @Nullable
     private String mParam2;
 
+    @Nullable
     private OnSearchPopupFragmentInteractionListener mListener;
 
     public SearchRequestPopupFragment() {
@@ -48,6 +51,7 @@ public class SearchRequestPopupFragment  extends DialogFragment {
      * @return A new instance of fragment SearchRequestPopupFragment.
      */
     // TODO: Rename and change types and number of parameters
+    @NonNull
     public static SearchRequestPopupFragment newInstance() {
         String param1=""; String param2="";
         SearchRequestPopupFragment fragment = new SearchRequestPopupFragment();

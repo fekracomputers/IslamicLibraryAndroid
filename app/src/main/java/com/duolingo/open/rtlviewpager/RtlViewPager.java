@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.os.ParcelableCompat;
 import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.view.PagerAdapter;
@@ -43,13 +44,14 @@ import java.util.HashMap;
  */
 public class RtlViewPager extends ViewPager {
     private int mLayoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR;
+    @NonNull
     private HashMap<OnPageChangeListener, ReversingOnPageChangeListener> mPageChangeListeners = new HashMap<>();
 
-    public RtlViewPager(Context context) {
+    public RtlViewPager(@NonNull Context context) {
         super(context);
     }
 
-    public RtlViewPager(Context context, AttributeSet attrs) {
+    public RtlViewPager(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -74,7 +76,7 @@ public class RtlViewPager extends ViewPager {
     }
 
     @Override
-    public void setAdapter(PagerAdapter adapter) {
+    public void setAdapter(@Nullable PagerAdapter adapter) {
         if (adapter != null) {
             adapter = new ReversingAdapter(adapter);
         }
@@ -129,7 +131,7 @@ public class RtlViewPager extends ViewPager {
             mLayoutDirection = layoutDirection;
         }
 
-        private SavedState(Parcel in, ClassLoader loader) {
+        private SavedState(@NonNull Parcel in, @Nullable ClassLoader loader) {
             if (loader == null) {
                 loader = getClass().getClassLoader();
             }
@@ -143,18 +145,20 @@ public class RtlViewPager extends ViewPager {
         }
 
         @Override
-        public void writeToParcel(Parcel out, int flags) {
+        public void writeToParcel(@NonNull Parcel out, int flags) {
             out.writeParcelable(mViewPagerSavedState, flags);
             out.writeInt(mLayoutDirection);
         }
 
         // The `CREATOR` field is used to create the parcelable from a parcel, even though it is never referenced directly.
         public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>() {
+            @NonNull
             @Override
-            public SavedState createFromParcel(Parcel in, ClassLoader loader) {
+            public SavedState createFromParcel(@NonNull Parcel in, ClassLoader loader) {
                 return new SavedState(in, loader);
             }
 
+            @NonNull
             @Override
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -309,6 +313,7 @@ public class RtlViewPager extends ViewPager {
             return super.getPageWidth(position);
         }
 
+        @NonNull
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             if (isRtl()) {
@@ -317,6 +322,7 @@ public class RtlViewPager extends ViewPager {
             return super.instantiateItem(container, position);
         }
 
+        @NonNull
         @Override
         public Object instantiateItem(View container, int position) {
             if (isRtl()) {

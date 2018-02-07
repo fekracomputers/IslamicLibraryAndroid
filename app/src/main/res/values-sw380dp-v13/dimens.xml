@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_rating_star_top_margin">16.0dip</dimen>
+    <dimen name="eob_topblue_margin">6.0dip</dimen>
+    <dimen name="recommendations_message_font_size">20.0sp</dimen>
+</resources>

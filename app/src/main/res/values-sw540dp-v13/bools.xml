@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="books_play_dynamic_column_count">true</bool>
+    <bool name="is_larger_tablet">true</bool>
+    <bool name="play_dynamic_column_count">true</bool>
+    <bool name="reader_show_action_bar_title">true</bool>
+</resources>

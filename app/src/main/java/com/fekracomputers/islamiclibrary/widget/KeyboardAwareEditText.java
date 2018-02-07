@@ -1,6 +1,8 @@
 package com.fekracomputers.islamiclibrary.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
@@ -13,6 +15,7 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.utility.Util;
 
 public class KeyboardAwareEditText extends AppCompatEditText {
+    @Nullable
     final InputMethodManager mInputMethodManager = ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE));
     private KeyboardListener mKeyboardListener;
 
@@ -30,7 +33,7 @@ public class KeyboardAwareEditText extends AppCompatEditText {
         void onKeyboardDismissed(KeyboardAwareEditText keyboardAwareEditText);
     }
 
-    public KeyboardAwareEditText(Context context, AttributeSet attrs) {
+    public KeyboardAwareEditText(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
         correctDiretion();
     }

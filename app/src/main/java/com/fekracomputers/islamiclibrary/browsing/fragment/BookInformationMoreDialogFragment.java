@@ -32,6 +32,7 @@ public class BookInformationMoreDialogFragment extends DialogFragment {
     public BookInformationMoreDialogFragment() {
     }
 
+    @NonNull
     public static BookInformationMoreDialogFragment newInstance(String title, String body) {
         BookInformationMoreDialogFragment frag = new BookInformationMoreDialogFragment();
         Bundle args = new Bundle();
@@ -82,7 +83,7 @@ public class BookInformationMoreDialogFragment extends DialogFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             // handle close button click here

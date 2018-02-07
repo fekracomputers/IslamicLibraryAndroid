@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.homeScreen.controller;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fekracomputers.islamiclibrary.R;
@@ -28,7 +29,7 @@ public class BookCollectionsController {
         this.bookCollectionsControllerCallback = bookCollectionsControllerCallback;
     }
 
-    public void toggleFavourite(BookCollectionInfo bookCollectionInfo) {
+    public void toggleFavourite(@NonNull BookCollectionInfo bookCollectionInfo) {
         BooksCollection booksCollection = UserDataDBHelper.getInstance(context).getBooksCollection(UserDataDBHelper.GlobalUserDBHelper.FAVOURITE_COLLECTION_ID);
         if (!bookCollectionInfo.isFavourite()) {
             addToFavourite(bookCollectionInfo, booksCollection);
@@ -37,7 +38,7 @@ public class BookCollectionsController {
         }
     }
 
-    public void removeFromFavourite(BookCollectionInfo bookCollectionInfo, BooksCollection booksCollection) {
+    public void removeFromFavourite(@NonNull BookCollectionInfo bookCollectionInfo, @NonNull BooksCollection booksCollection) {
         removeFromCollection(bookCollectionInfo, booksCollection);
         if (bookCollectionsControllerCallback != null) {
             bookCollectionsControllerCallback.notifyBookCollectionCahnged(booksCollection);
@@ -45,7 +46,7 @@ public class BookCollectionsController {
 
     }
 
-    public void addToFavourite(BookCollectionInfo bookCollectionInfo, BooksCollection booksCollection) {
+    public void addToFavourite(@NonNull BookCollectionInfo bookCollectionInfo, @NonNull BooksCollection booksCollection) {
         addToCollection(bookCollectionInfo, booksCollection);
         if (bookCollectionsControllerCallback != null) {
             bookCollectionsControllerCallback.notifyBookCollectionCahnged(booksCollection);
@@ -54,7 +55,7 @@ public class BookCollectionsController {
 
     }
 
-    private void addToCollection(BookCollectionInfo bookCollectionInfo, BooksCollection booksCollection) {
+    private void addToCollection(@NonNull BookCollectionInfo bookCollectionInfo, @NonNull BooksCollection booksCollection) {
         if (!bookCollectionInfo.doBelongTo(booksCollection)) {
             UserDataDBHelper.getInstance(context, bookCollectionInfo.getBookId()).addToCollection(booksCollection.getCollectionsId());
             bookCollectionInfo.addToCollection(booksCollection);
@@ -64,7 +65,7 @@ public class BookCollectionsController {
         }
     }
 
-    private void removeFromCollection(BookCollectionInfo bookCollectionInfo, BooksCollection booksCollection) {
+    private void removeFromCollection(@NonNull BookCollectionInfo bookCollectionInfo, @NonNull BooksCollection booksCollection) {
         if (bookCollectionInfo.doBelongTo(booksCollection)) {
             UserDataDBHelper.getInstance(context, bookCollectionInfo.getBookId())
                     .removeFromCollection(booksCollection.getCollectionsId());
@@ -76,14 +77,17 @@ public class BookCollectionsController {
         }
     }
 
-    public ArrayList<BooksCollection> getBookCollections(BookCollectionInfo bookCollectionInfo, Context context, boolean viewdOnly) {
+    @NonNull
+    public ArrayList<BooksCollection> getBookCollections(@NonNull BookCollectionInfo bookCollectionInfo, Context context, boolean viewdOnly) {
         return UserDataDBHelper.getInstance(context, bookCollectionInfo.getBookId()).getBookCollections(viewdOnly);
     }
 
+    @NonNull
     public ArrayList<BooksCollection> getAllBookCollections(Context context, boolean viewdOnly, boolean nonAutomaticOnly) {
         return UserDataDBHelper.getInstance(context).getBooksCollections(viewdOnly, nonAutomaticOnly);
     }
 
+    @Nullable
     public BooksCollection createNewCollection(String string) {
         BooksCollection booksCollection = UserDataDBHelper.getInstance(context).addBookCollection(string);
         if (bookCollectionsControllerCallback != null) {
@@ -92,7 +96,7 @@ public class BookCollectionsController {
         return booksCollection;
     }
 
-    public void updateCollectionStatus(BookCollectionInfo bookCollectionInfo,
+    public void updateCollectionStatus(@NonNull BookCollectionInfo bookCollectionInfo,
                                        @Nullable ArrayList<BooksCollection> oldBookIdCollectionSet) {
         UserDataDBHelper.getInstance(context).
                 updateCollectionStatus(bookCollectionInfo.getBookId(), bookCollectionInfo.getBooksCollectionsIds());
@@ -112,9 +116,9 @@ public class BookCollectionsController {
 
 
     public boolean collectionActionHandler(int actionId,
-                                           BooksCollection booksCollection,
+                                           @NonNull BooksCollection booksCollection,
                                            Context context,
-                                           BookCardEventsCallback bookCardEventsCallback) {
+                                           @Nullable BookCardEventsCallback bookCardEventsCallback) {
         switch (actionId) {
             case R.id.menu_item_show_all:
                 if (bookCardEventsCallback != null)
@@ -188,7 +192,7 @@ public class BookCollectionsController {
         }
     }
 
-    public void updateCollectionVisibility(BooksCollection booksCollection, boolean isVisible) {
+    public void updateCollectionVisibility(@NonNull BooksCollection booksCollection, boolean isVisible) {
         UserDataDBHelper.getInstance(context).
                 changeCollectionVisibility(booksCollection.getCollectionsId(), isVisible);
         if (bookCollectionsControllerCallback != null) {

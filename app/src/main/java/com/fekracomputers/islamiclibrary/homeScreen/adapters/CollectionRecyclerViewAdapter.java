@@ -1,5 +1,7 @@
 package com.fekracomputers.islamiclibrary.homeScreen.adapters;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,23 +24,25 @@ public class CollectionRecyclerViewAdapter
         extends RecyclerView.Adapter<CollectionRecyclerViewAdapter.ViewHolder>
 
 {
+    @NonNull
     private IndexedTreeSet<BooksCollection> bookCollections = new IndexedTreeSet<>();
     private BookCollectionsController bookCollectionsController;
 
-    public CollectionRecyclerViewAdapter(ArrayList<BooksCollection> bookCollections, BookCollectionsController bookCollectionsController) {
+    public CollectionRecyclerViewAdapter(@NonNull ArrayList<BooksCollection> bookCollections, BookCollectionsController bookCollectionsController) {
         this.bookCollections.addAll(bookCollections);
         this.bookCollectionsController = bookCollectionsController;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_collection_full_control, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BooksCollection booksCollection = bookCollections.exact(position);
         holder.booksCollection = booksCollection;
         holder.setEnabledButtons();
@@ -55,12 +59,12 @@ public class CollectionRecyclerViewAdapter
     }
 
 
-    public void onBookCollectionAdded(BooksCollection booksCollection) {
+    public void onBookCollectionAdded(@NonNull BooksCollection booksCollection) {
         if (bookCollections.add(booksCollection))
             notifyItemInserted(booksCollection.getOrder());
     }
 
-    public void onBookCollectionRemoved(BooksCollection booksCollection) {
+    public void onBookCollectionRemoved(@NonNull BooksCollection booksCollection) {
         if (bookCollections.remove(booksCollection)) {
             notifyItemRemoved(booksCollection.getOrder());
         }
@@ -84,7 +88,7 @@ public class CollectionRecyclerViewAdapter
         }
     }
 
-    public void onBookCollectionRenamed(BooksCollection booksCollection, String newName) {
+    public void onBookCollectionRenamed(@NonNull BooksCollection booksCollection, String newName) {
         BooksCollection exact = bookCollections.exact(booksCollection.getOrder());
         if (!exact.getName().equals(newName)) {
             exact.setName(newName);
@@ -92,7 +96,7 @@ public class CollectionRecyclerViewAdapter
         }
     }
 
-    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+    public void onBookCollectionVisibilityChanged(@NonNull BooksCollection booksCollection, boolean isVisible) {
         notifyItemChanged(booksCollection.getOrder());
     }
 
@@ -100,11 +104,12 @@ public class CollectionRecyclerViewAdapter
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView collectionNameTextView;
         private final Switch hideSwitch;
+        @Nullable
         BooksCollection booksCollection;
         LinearLayout buttonBar;
         private View view;
 
-        ViewHolder(View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
             collectionNameTextView = view.findViewById(R.id.title);
             buttonBar = view.findViewById(R.id.button_bar);
@@ -123,7 +128,7 @@ public class CollectionRecyclerViewAdapter
             this.view = view;
         }
 
-        public void onClick(View v) {
+        public void onClick(@NonNull View v) {
             bookCollectionsController.collectionActionHandler(v.getId(), booksCollection, view.getContext(), null);
         }
 

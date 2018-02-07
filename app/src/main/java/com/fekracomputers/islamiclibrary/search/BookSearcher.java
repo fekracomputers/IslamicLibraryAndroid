@@ -1,7 +1,9 @@
 package com.fekracomputers.islamiclibrary.search;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.search.model.BookSearchResultsContainer;
@@ -31,22 +33,26 @@ public class BookSearcher {
     }
 
 
+    @Nullable
     public BookSearchResultsContainer getBookSearchResultsContainer(int bookId) {
-        BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-        ArrayList<SearchResult> results = bookDatabaseHelper.search(searchString,searchOptions);
-
-        BookPartsInfo bookPartsInfo=bookDatabaseHelper.getBookPartsInfo();
-
-        ListIterator<SearchResult> searchResultIterator = results.listIterator();
-        while (searchResultIterator.hasNext()) {
-            SearchResult searchResult = searchResultIterator.next();
-            if (!searchResult.isRequired()) {
-                searchResultIterator.remove();
+        try {
+            BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+            ArrayList<SearchResult> results = bookDatabaseHelper.search(searchString, searchOptions);
+            BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+            ListIterator<SearchResult> searchResultIterator = results.listIterator();
+            while (searchResultIterator.hasNext()) {
+                SearchResult searchResult = searchResultIterator.next();
+                if (!searchResult.isRequired()) {
+                    searchResultIterator.remove();
+                }
             }
+            return new BookSearchResultsContainer(isExpanded, bookId, bookDatabaseHelper.getBookName(), bookPartsInfo, results);
+        } catch (BookDatabaseException bookDatabaseException) {
+            return new BookSearchResultsContainer(isExpanded, bookId, "", null, new ArrayList<>());
         }
-        return new BookSearchResultsContainer(isExpanded, bookId, bookDatabaseHelper.getBookName(),bookPartsInfo, results);
     }
 }
+
 
 
 

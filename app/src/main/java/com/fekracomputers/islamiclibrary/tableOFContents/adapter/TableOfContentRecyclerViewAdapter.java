@@ -1,8 +1,10 @@
 package com.fekracomputers.islamiclibrary.tableOFContents.adapter;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,24 +38,31 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
     private final int coulmn_parentid_index;
     private final int column_partnumber_indexd;
     private BookDatabaseHelper bookDatabaseHelper;
+    @Nullable
     private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIdColumn = -1;
     private DataSetObserver mDataSetObserver;
     private TableOfContentFragment.OnTableOfContentTitleClickListener mOnTableOfContentTitleClickListener;
     private OnTableOfContentExpandListener mOnTableOfContentExpandListener;
-    private Context context;
+    @Nullable
     private Filter mFilter;
+    @Nullable
     private Cursor mBeforeSearchCursor;
     private boolean mShouldHighlightCurrent;
     private int mCurrentTitleId;
+    private Resources resources;
 
-    public TableOfContentRecyclerViewAdapter(Context context, int bookId, OnTableOfContentExpandListener mOnTitleHistoryClickListener, TableOfContentFragment.OnTableOfContentTitleClickListener onTableOfContentTitleClickListener) {
-        this.context = context;
-        bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+    public TableOfContentRecyclerViewAdapter(@NonNull BookDatabaseHelper bookDatabaseHelper,
+                                             Resources resources,
+                                             int bookId,
+                                             OnTableOfContentExpandListener mOnTitleHistoryClickListener,
+                                             TableOfContentFragment.OnTableOfContentTitleClickListener onTableOfContentTitleClickListener) {
+        this.bookDatabaseHelper = bookDatabaseHelper;
+        this.resources = resources;
         Cursor cursor = bookDatabaseHelper.getTitlesUnder(0);
         this.mOnTableOfContentTitleClickListener = onTableOfContentTitleClickListener;
-        init(context, cursor, cursor.getColumnIndex(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID));
+        init(cursor, cursor.getColumnIndex(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID));
         mOnTableOfContentExpandListener = mOnTitleHistoryClickListener;
         mbook_id = bookId;
         coulmn_id_index = cursor.getColumnIndex(BookDatabaseContract.TitlesEntry.COLUMN_NAME_ID);
@@ -65,8 +74,9 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         coulmn_is_parent_index = cursor.getColumnIndex(BookDatabaseHelper.IS_PARENT);
     }
 
+    @NonNull
     @Override
-    public TableOfContentRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TableOfContentRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_table_of_content, parent, false);
@@ -77,7 +87,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         if (!mDataValid) {
             throw new IllegalStateException("this should only be called when the cursor is valid");
         }
@@ -88,7 +98,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         onBindViewHolder(viewHolder, mCursor, position);
     }
 
-    private void onBindViewHolder(final ViewHolder holder, final Cursor cursor, int position
+    private void onBindViewHolder(@NonNull final ViewHolder holder, @NonNull final Cursor cursor, int position
     ) {
         holder.book_id = mbook_id;
         int titleId = cursor.getInt(coulmn_id_index);
@@ -108,7 +118,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
                         holder.title.pageInfo,
                         R.string.part_and_page_with_text,
                         R.string.page_number,
-                        context.getResources()));
+                        resources));
 
 
         holder.tileText.setText(cursor.getString(column_title_text_indexd));
@@ -128,11 +138,10 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
     }
 
     /**
-     * @param context
      * @param cursor      the {@link Cursor} to display its rows
      * @param RowIdColumn zero based index of primary key coulmn of the cursor supplyed
      */
-    private void init(Context context, Cursor cursor, int RowIdColumn) {
+    private void init(@Nullable Cursor cursor, int RowIdColumn) {
         mRowIdColumn = RowIdColumn;
         mCursor = cursor;
         mDataValid = cursor != null;
@@ -144,6 +153,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         super.setHasStableIds(true);
     }
 
+    @Nullable
     public Cursor getCursor() {
         return mCursor;
     }
@@ -181,6 +191,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
      * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
      * closed.
      */
+    @Nullable
     public Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
@@ -205,7 +216,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         return oldCursor;
     }
 
-    public void displayChildrenOfWithHighlightCurrent(Title title, int currentTitleId) {
+    public void displayChildrenOfWithHighlightCurrent(@NonNull Title title, int currentTitleId) {
         mShouldHighlightCurrent = true;
         mCurrentTitleId = currentTitleId;
         changeCursor(bookDatabaseHelper.getTitlesUnder(title.id));
@@ -213,11 +224,12 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
     }
 
 
-    public void displayChildrenOf(Title title) {
+    public void displayChildrenOf(@NonNull Title title) {
         mShouldHighlightCurrent = false;
         changeCursor(bookDatabaseHelper.getTitlesUnder(title.id));
     }
 
+    @Nullable
     @Override
     public Filter getFilter() {
         if (mFilter == null) {
@@ -244,7 +256,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         View titleViewElement;
         ImageButton expandTitleButton;
 
-        public ViewHolder(View titleView) {
+        public ViewHolder(@NonNull View titleView) {
             super(titleView);
 
             this.titleViewElement = titleView;
@@ -277,6 +289,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
 
     private class TitlesFilter extends Filter {
 
+        @NonNull
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             final FilterResults results = new FilterResults();
@@ -289,7 +302,7 @@ public class TableOfContentRecyclerViewAdapter extends RecyclerView.Adapter<Tabl
         }
 
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+        protected void publishResults(CharSequence constraint, @NonNull FilterResults results) {
             if (getCursor() == mBeforeSearchCursor) {
                 //since the original cursor needs to be kept for restoring if the search field is cleared
                 swapCursor((Cursor) results.values);

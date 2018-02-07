@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.homeScreen.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +30,14 @@ import java.util.ArrayList;
  */
 
 public class CollectionEditDialogFragmnet extends DialogFragment implements BookCollectionsCallBack {
+    @Nullable
     private BookCollectionsController bookCollectionsController;
+    @Nullable
     private BookCollectionsController.BookCollectionsControllerCallback collectionsControllerCallback;
+    @Nullable
     private CollectionRecyclerViewAdapter collectionRecyclerViewAdapter;
 
+    @NonNull
     public static CollectionEditDialogFragmnet newInstance() {
         CollectionEditDialogFragmnet frag = new CollectionEditDialogFragmnet();
         Bundle args = new Bundle();
@@ -92,7 +97,7 @@ public class CollectionEditDialogFragmnet extends DialogFragment implements Book
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(@NonNull Editable s) {
                 if (s.length() != 0) {
                     setEnabledAddButton(addCollectionButton, true);
                 } else {
@@ -105,7 +110,7 @@ public class CollectionEditDialogFragmnet extends DialogFragment implements Book
     }
 
 
-    private void setEnabledAddButton(ImageButton addCollectionButton, boolean enabled) {
+    private void setEnabledAddButton(@NonNull ImageButton addCollectionButton, boolean enabled) {
         Util.setImageButtonEnabled(getContext(),
                 enabled,
                 addCollectionButton,

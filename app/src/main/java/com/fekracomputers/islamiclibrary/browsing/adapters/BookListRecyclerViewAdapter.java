@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,6 +54,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
     private int coulmn_authour_id;
     private int column_bookId_id;
     private Context mContext;
+    @Nullable
     private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIdColumn = -1;
@@ -61,7 +63,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
     private int layoutManagerType = BookListFragment.LINEAR_LAYOUT_MANAGER;
     private int coulmn_downloadStatus_id;
 
-    public BookListRecyclerViewAdapter(Context context, Cursor cursor, String IdColumnName, BookCardEventsCallback listener) {
+    public BookListRecyclerViewAdapter(Context context, @NonNull Cursor cursor, String IdColumnName, BookCardEventsCallback listener) {
         init(context, cursor, cursor.getColumnIndex(IdColumnName));
         itemCount = cursor.getCount();
         coulmn_title_id = cursor.getColumnIndexOrThrow(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
@@ -85,8 +87,9 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         return layoutManagerType;
     }
 
+    @NonNull
     @Override
-    public BookListRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BookListRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
         switch (layoutManagerType) {
             case BookListFragment.GRID_LAYOUT_MANAGER:
@@ -111,7 +114,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
         int size = payloads.size();
 
         if (size == 0) {
@@ -138,7 +141,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
 
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         position = viewHolder.getAdapterPosition();
 
         if (!mDataValid) {
@@ -151,7 +154,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         onBindViewHolder(viewHolder, mCursor);
     }
 
-    private void onBindViewHolder(final ViewHolder holder, final Cursor movedCursor) {
+    private void onBindViewHolder(@NonNull final ViewHolder holder, @NonNull final Cursor movedCursor) {
         String bookTitle = movedCursor.getString(coulmn_title_id);
         holder.bookCoverName.setText(bookTitle);
         String authourName = movedCursor.getString(coulmn_authour_id);
@@ -172,7 +175,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         Glide.with(mContext)
                 .setDefaultRequestOptions(requestOptions)
 
-                .load(CoverImagesDownloader.getImageUrl(mContext, holder.bookInfo.getBookId()))
+                .load(CoverImagesDownloader.getImageUrl(holder.bookInfo.getBookId()))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -200,7 +203,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
      * @param RowIdColumn zero based index of primary key coulmn of the cursor supplyed
      */
 
-    private void init(Context context, Cursor cursor, int RowIdColumn) {
+    private void init(Context context, @Nullable Cursor cursor, int RowIdColumn) {
         mRowIdColumn = RowIdColumn;
         mContext = context;
         mCursor = cursor;
@@ -240,7 +243,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
      * Change the underlying cursor to a new cursor. If there is an existing cursor it will be
      * closed.
      */
-    public void changeCursor(Cursor cursor) {
+    public void changeCursor(@NonNull Cursor cursor) {
         Cursor old = swapCursor(cursor);
         if (old != null) {
             old.close();
@@ -252,7 +255,8 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
      * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
      * closed.
      */
-    public Cursor swapCursor(Cursor newCursor) {
+    @Nullable
+    public Cursor swapCursor(@NonNull Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
         }
@@ -291,7 +295,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
         View downloadIndicator;
         ImageView moreButton;
 
-        public ViewHolder(final View bookCover) {
+        public ViewHolder(@NonNull final View bookCover) {
             super(bookCover);
             bookCoverImageView = bookCover.findViewById(R.id.book_cover);
             bookCoverName = bookCover.findViewById(R.id.book_label);
@@ -327,7 +331,7 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
             bookCheckBox.setVisibility(isVisibale ? View.VISIBLE : View.GONE);
         }
 
-        public void bindCheckBoxCheckedValue(Boolean value) {
+        public void bindCheckBoxCheckedValue(@Nullable Boolean value) {
             if (value != null)
                 bookCheckBox.setChecked(value);
             else
@@ -348,25 +352,25 @@ public class BookListRecyclerViewAdapter extends RecyclerView.Adapter<BookListRe
                 downloadButton.setEnabled(true);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_not_downloaded);
                 downloadButton.setOnClickListener(v -> {
-                    mListener.StartDownloadingBook(bookInfo);
+                    mListener.startDownloadingBook(bookInfo);
                     v.setEnabled(false);
                     ((Button) v).setText(R.string.Downloading);
-//                        downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                     downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 });
             } else if (bookDownloadStatus >= STATUS_DOWNLOAD_REQUESTED && bookDownloadStatus < DownloadsConstants.STATUS_DOWNLOAD_COMPLETED) {
                 downloadButton.setText(R.string.Downloading);
-//                downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 downloadButton.setEnabled(false);
-            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_DOWNLOAD_COMPLETED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_UNZIP_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_UNZIP_ENDED) {
+                downloadButton.setText(R.string.unzipping_book);
+                downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
+                downloadButton.setEnabled(false);
+            } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_STARTED && bookDownloadStatus < DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 downloadButton.setText(R.string.preparing_book);
-//                downloadButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloading);
                 downloadButton.setEnabled(false);
             } else if (bookDownloadStatus >= DownloadsConstants.STATUS_FTS_INDEXING_ENDED) {
                 downloadButton.setText(R.string.open);
-//                downloadButton.setImageResource(R.drawable.book_open_variant);
                 downloadIndicator.setBackgroundResource(R.color.indicator_book_downloaded);
                 downloadButton.setEnabled(true);
                 downloadButton.setOnClickListener(v -> mListener.openBookForReading(bookInfo));

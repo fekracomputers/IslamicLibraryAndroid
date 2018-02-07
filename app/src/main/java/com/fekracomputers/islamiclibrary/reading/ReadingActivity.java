@@ -3,14 +3,19 @@ package com.fekracomputers.islamiclibrary.reading;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ActivityManager;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -45,6 +50,7 @@ import android.widget.TextView;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseContract;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
@@ -52,6 +58,8 @@ import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.model.PartInfo;
 import com.fekracomputers.islamiclibrary.model.Title;
+import com.fekracomputers.islamiclibrary.reading.dialogs.DisplayOptionsPopupFragment;
+import com.fekracomputers.islamiclibrary.reading.dialogs.DisplayPrefChangeListener;
 import com.fekracomputers.islamiclibrary.reading.dialogs.PageNumberPickerDialogFragment;
 import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 import com.fekracomputers.islamiclibrary.reading.widget.SearchScrubBar;
@@ -63,13 +71,19 @@ import com.fekracomputers.islamiclibrary.settings.SettingsFragment;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsBookmarksActivity;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
 import com.fekracomputers.islamiclibrary.utility.AppConstants;
+import com.fekracomputers.islamiclibrary.utility.StyleUtils;
+import com.fekracomputers.islamiclibrary.utility.SystemUtils;
 import com.fekracomputers.islamiclibrary.utility.Util;
 import com.fekracomputers.islamiclibrary.widget.KeyboardAwareEditText;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static com.fekracomputers.islamiclibrary.R.id.chapter_title;
 import static com.fekracomputers.islamiclibrary.search.view.SearchResultFragment.ARG_IS_GLOBAL_SEARCH;
@@ -78,7 +92,8 @@ public class ReadingActivity extends AppCompatActivity implements
         BookPageFragment.PageFragmentListener,
         DisplayOptionsPopupFragment.OnPrefDialogInteractionListener,
         SearchResultFragment.OnSearchResultFragmentInteractionListener,
-        PageNumberPickerDialogFragment.PageNumberPickerDialogFragmentListener {
+        PageNumberPickerDialogFragment.PageNumberPickerDialogFragmentListener,
+        ColorPickerDialogListener {
 
     public static final String KEY_TAB_NAME = "Tab_Name";
     public static final String KEY_SEARCH_RESULT_ARRAY_LIST = "KEY_SEARCH_RESULT_ARRAY_LIST";
@@ -86,6 +101,7 @@ public class ReadingActivity extends AppCompatActivity implements
     public static final String KEY_CURRENT_PAGE_INFO = "KEY_CURRENT_PAGE_INFO";
     public static final String KEY_CURRENT_PARTS_INFO = "KEY_CURRENT_PARTS_INFO";
     public static final String KEY_BOOK_ID = "KEY_BOOK_ID";
+    public static final String KEY_PAGE_ID = "ReadingActivity.KEY_PAGE_ID";
     private static final int PICK_TITLE_REQUEST = 1;
     /**
      * Whether or not the system UI should be auto-hidden after
@@ -146,6 +162,7 @@ public class ReadingActivity extends AppCompatActivity implements
     };
     private SeekBar seekBar;
     private View mControlsView;
+    @Nullable
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -160,6 +177,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     };
     private int bookId;
+    @Nullable
     private ActionMode mActionMode;
     private PageInfo currentPageInfo;
     private BookDatabaseHelper mBookDatabaseHelper;
@@ -204,7 +222,92 @@ public class ReadingActivity extends AppCompatActivity implements
     private boolean isThemeNightMode;
     private boolean mIsInSearchMode = false;
     private SearchView mSearchView;
+    @NonNull
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
+    private ArrayList<DisplayOptionsPopupFragment> displayOptionsPopups = new ArrayList<>();
+    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceListener = (sharedPreferences1, key) -> {
+        switch (key) {
+            case SettingsFragment.KEY_DISPLAY_TEXT_SIZE:
+                int newZoom = sharedPreferences1.getInt(SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_DISPLAY_TEXT_SIZE);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setZoom(newZoom);
+                }
+                break;
+            case SettingsFragment.KEY_IS_TASHKEEL_ON:
+                boolean checked = sharedPreferences1.getBoolean(SettingsFragment.KEY_IS_TASHKEEL_ON,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_TASHKEEL_ON);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setTashkeel(checked);
+                }
+
+                break;
+            case SettingsFragment.KEY_IS_PINCH_ZOOM_ON:
+                boolean ZoomPinchEnabled = sharedPreferences1.getBoolean(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_PINCH_ZOOM_ON);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setPinchZoom(ZoomPinchEnabled);
+                }
+
+                break;
+
+
+            case SettingsFragment.KEY_BACKGROUND_COLOR:
+                int backGroundColor = sharedPreferences1.getInt(SettingsFragment.KEY_BACKGROUND_COLOR,
+                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR);
+                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                    listener.setBackgroundColor(backGroundColor);
+                }
+                break;
+            case SettingsFragment.KEY_TEXT_COLOR_DAY:
+                if (!isNightMode()) {
+                    int textColorDay = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_DAY);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setTextColor(textColorDay);
+                    }
+                }
+                break;
+
+            case SettingsFragment.KEY_TEXT_COLOR_NIGHT:
+                if (isNightMode()) {
+                    int textColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setTextColor(textColorNight);
+                    }
+                }
+                break;
+            case SettingsFragment.KEY_HEADING_COLOR_DAY:
+                if (!isNightMode()) {
+                    int headingColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_DAY);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setHeadingColor(headingColorNight);
+                    }
+                }
+                break;
+            case SettingsFragment.KEY_HEADING_COLOR_NIGHT:
+                if (isNightMode()) {
+                    int headingColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setHeadingColor(headingColorNight);
+                    }
+                }
+                break;
+            default:
+        }
+
+    };
+
+    public static void openBook(int bookId, int pageId, @NonNull Context context) {
+        Intent intent = new Intent(context, ReadingActivity.class);
+        intent.putExtra(KEY_BOOK_ID, bookId);
+        intent.putExtra(KEY_PAGE_ID, pageId);
+        context.startActivity(intent);
+
+    }
 
     private void showPageNumberPickerDialog() {
         Bundle PageNumberPickerDialogFragmentBundle = new Bundle();
@@ -243,7 +346,7 @@ public class ReadingActivity extends AppCompatActivity implements
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(
                 SettingsFragment.KEY_DISPLAY_TEXT_SIZE,
-                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.DEFAULT_TEXT_ZOOM,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_DISPLAY_TEXT_SIZE,
                 defaultSharedPreferences, mUserDataDBHelper);
     }
 
@@ -252,11 +355,18 @@ public class ReadingActivity extends AppCompatActivity implements
         return isTashkeel();
     }
 
+
     private synchronized void zoomUpdatedByValue(int newZoom) {
         for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
             listener.setZoom(newZoom);
         }
     }
+
+    @Override
+    public synchronized void registerDisplayOptionsPopup(DisplayOptionsPopupFragment displayOptionsPopupFragment) {
+        displayOptionsPopups.add(displayOptionsPopupFragment);
+    }
+
 
     @Override
     public void onZoomChangedByPinch(int value) {
@@ -266,6 +376,7 @@ public class ReadingActivity extends AppCompatActivity implements
                 , mUserDataDBHelper);
         zoomUpdatedByValue(value);
     }
+
 
     @Override
     public boolean isThemeNightMode() {
@@ -290,6 +401,94 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
+    public int getHeadingColor(boolean isNight) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!isNight) {
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_DAY,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        } else {
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_NIGHT,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_HEADING_COLOR_NIGHT,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        }
+    }
+
+    @Override
+    public void setHeadingColor(int color, boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_DAY,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_HEADING_COLOR_NIGHT,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        }
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setHeadingColor(color);
+        }
+    }
+
+    @Override
+    public int getTextColor(boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_DAY,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_TEXT_COLOR_NIGHT,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        }
+    }
+
+    @Override
+    public void setTextColor(int color, boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_DAY,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_TEXT_COLOR_NIGHT,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        }
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setTextColor(color);
+        }
+    }
+
+    @Override
+    public int getHeadingColor() {
+        return getHeadingColor(isNightMode());
+    }
+
+    @Override
+    public int getTextColor() {
+        return getTextColor(isNightMode());
+    }
+
+    @Override
+    public int getBackGroundColor() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR,
+                defaultSharedPreferences,
+                mUserDataDBHelper);
+    }
+
+    @Override
     public boolean isTashkeel() {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_TASHKEEL_ON,
@@ -306,6 +505,37 @@ public class ReadingActivity extends AppCompatActivity implements
                 defaultSharedPreferences, mUserDataDBHelper);
         for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
             listener.setTashkeel(checked);
+        }
+    }
+
+    @Override
+    public void setBackgroundColor(@ColorInt int color) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR,
+                color,
+                defaultSharedPreferences, mUserDataDBHelper);
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setBackgroundColor(color);
+        }
+    }
+
+    @Override
+    public boolean isPinchZoom() {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_IS_PINCH_ZOOM_ON,
+                defaultSharedPreferences,
+                mUserDataDBHelper);
+    }
+
+    @Override
+    public void setPinchZoom(boolean checked) {
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_IS_PINCH_ZOOM_ON,
+                checked,
+                defaultSharedPreferences, mUserDataDBHelper);
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setPinchZoom(checked);
         }
     }
 
@@ -328,7 +558,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.reading_activity_action, menu);
 
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -350,7 +580,6 @@ public class ReadingActivity extends AppCompatActivity implements
         return true;
     }
 
-
     @Override
     public void onBackPressed() {
         if (mIsInSearchMode) {
@@ -360,7 +589,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         Intent intent;
@@ -407,7 +636,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         if (requestCode == PICK_TITLE_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
@@ -417,7 +646,7 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSearchResultClicked(BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
+    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
         //hide the search result fragment without removing it
         getSupportFragmentManager()
                 .popBackStack();
@@ -492,7 +721,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void setNumberEditorValid(boolean valid, EditText editText, CharSequence errorString) {
+    private void setNumberEditorValid(boolean valid, @NonNull EditText editText, CharSequence errorString) {
         if (valid) {
             editText.setError(null);
             editText.setTextColor(Util.getThemeColor(this, R.attr.blueThemedText));
@@ -503,12 +732,11 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void switchEditTextToTextView(EditText editText, TextView textView) {
+    private void switchEditTextToTextView(@NonNull EditText editText, @NonNull TextView textView) {
         editText.setVisibility(View.INVISIBLE);
         textView.setVisibility(View.VISIBLE);
         mPager.requestFocus();
     }
-
 
     @Override
     public void setBookmarkState(boolean Checked) {
@@ -572,7 +800,6 @@ public class ReadingActivity extends AppCompatActivity implements
         return b || super.onKeyUp(keyCode, event);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -609,112 +836,178 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(KEY_STATE_NAV_UI_VISIBLE, mVisible);
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
         mIsArabic = Util.isArabicUi(this);
 
-
         Intent intent = getIntent();
-        bookId = intent.getIntExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_BOOK_ID, 0);
+        bookId = intent.getIntExtra(KEY_BOOK_ID, 0);
         mUserDataDBHelper = UserDataDBHelper.getInstance(this, bookId);
         mUserDataDBHelper.logBookAccess();
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        try {
+            mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
+            bookName = mBookDatabaseHelper.getBookName();
+            logOpenBookAnalytics(bookId, bookName);
 
-        isThemeNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
-        setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        setContentView(R.layout.activity_reading);
-        if (savedInstanceState != null) {
-            mVisible = savedInstanceState.getBoolean(KEY_STATE_NAV_UI_VISIBLE, true);
-        } else {
-            mVisible = true;//This will bw shortly changed
-        }
+            isThemeNightMode = DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_IS_THEME_NIGHT_MODE, AppConstants.DISPLAY_PREFERENCES_DEFAULTS.IS_THEME_NIGHT_MODE, defaultSharedPreferences, mUserDataDBHelper);
+            setTheme(isThemeNightMode ? R.style.ReadingActivityNight : R.style.ReadingActivityDay);
 
-        mNavViewStub = findViewById(R.id.book_nav_view_stub);
-        mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
-
-        mSearchViewStub = findViewById(R.id.search_scrub_stub);
-        mSearchViewStub.setOnInflateListener(new SearchScrubOnInflateListener());
-
-        mFloatingPageNumberFrameLayout = findViewById(R.id.floating_page_number_frame);
-        mFloatingPageNumberTextView = mFloatingPageNumberFrameLayout.
-                findViewById(R.id.floating_page_number_text_view);
-        mFloatingPageNumberTextView.setOnLongClickListener(v -> {
-            showNavView();
-            mHideHandler.post(mHideFloatingPageNumberRunnable);
-            final KeyboardAwareEditText pageNumberEditor = mControlsView.findViewById(R.id.page_number_editor);
-            final TextView pageNumberTextView = mControlsView.findViewById(R.id.part_page_number_tv);
-            showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
-            return true;
-        });
-        mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
-        bookName = intent.getStringExtra(BooksInformationDBContract.BookInformationEntery.COLUMN_NAME_TITLE);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(bookName);
-        }
-        mPager = findViewById(R.id.pager);
-        mBookDatabaseHelper = BookDatabaseHelper.getInstance(this, bookId);
-        mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
-        PAGE_COUNT = mBookDatabaseHelper.getPageCount();
-        PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());
-
-        currentPageInfo = mUserDataDBHelper.getLastPageInfo();
-        parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
-        mFloatingPageNumberTextView.setText(
-                getPartPageSingleText());
-
-
-        mPager.setAdapter(pagerAdapter);
-        mPager.setCurrentItem(mBookDatabaseHelper.pageId2position(currentPageInfo.pageId));
-
-        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                currentPageInfo = mBookDatabaseHelper.getPageInfoByPagePosition(position);
-                parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
-                mFloatingPageNumberTextView.setText(
-                        getPartPageSingleText());
-                mUserDataDBHelper.logPageAccess(currentPageInfo);
-
+            setContentView(R.layout.activity_reading);
+            if (savedInstanceState != null) {
+                mVisible = savedInstanceState.getBoolean(KEY_STATE_NAV_UI_VISIBLE, true);
+            } else {
+                mVisible = true;//This will bw shortly changed
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    showFloatingPageNumber();
+            mNavViewStub = findViewById(R.id.book_nav_view_stub);
+            mNavViewStub.setOnInflateListener(new navViewOnInflateListener());
+
+            mSearchViewStub = findViewById(R.id.search_scrub_stub);
+            mSearchViewStub.setOnInflateListener(new SearchScrubOnInflateListener());
+
+            mFloatingPageNumberFrameLayout = findViewById(R.id.floating_page_number_frame);
+            mFloatingPageNumberTextView = mFloatingPageNumberFrameLayout.
+                    findViewById(R.id.floating_page_number_text_view);
+            mFloatingPageNumberTextView.setOnLongClickListener(v -> {
+                showNavView();
+                mHideHandler.post(mHideFloatingPageNumberRunnable);
+                final KeyboardAwareEditText pageNumberEditor = mControlsView.findViewById(R.id.page_number_editor);
+                final TextView pageNumberTextView = mControlsView.findViewById(R.id.part_page_number_tv);
+                showEditingPageNumberInPlace(pageNumberTextView, pageNumberEditor);
+                return true;
+            });
+            mFloatingPageNumberTextView.setOnClickListener(mShowPageNumberPickerDialogClickListener);
+
+            mPager = findViewById(R.id.pager);
+            mPartsInfo = mBookDatabaseHelper.getBookPartsInfo();
+            PAGE_COUNT = mBookDatabaseHelper.getPageCount();
+            PagerAdapter pagerAdapter = new BookPageFragmentStatePagerAdapter(getSupportFragmentManager());
+
+            if (!intent.hasExtra(KEY_PAGE_ID)) {
+                currentPageInfo = mUserDataDBHelper.getLastPageInfo();
+            } else {
+                currentPageInfo = mBookDatabaseHelper.getPageInfoByPageId(intent.getIntExtra(KEY_PAGE_ID, 0));
+
+            }
+            parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
+            mFloatingPageNumberTextView.setText(
+                    getPartPageSingleText());
+
+
+            mPager.setAdapter(pagerAdapter);
+            mPager.setCurrentItem(mBookDatabaseHelper.pageId2position(currentPageInfo.pageId));
+
+            mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    currentPageInfo = mBookDatabaseHelper.getPageInfoByPagePosition(position);
+                    parentTitle = mBookDatabaseHelper.getParentTitle(currentPageInfo.pageId);
+                    mFloatingPageNumberTextView.setText(
+                            getPartPageSingleText());
+                    mUserDataDBHelper.logPageAccess(currentPageInfo);
+
                 }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                        showFloatingPageNumber();
+                    }
+                }
+            });
+
+
+            if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
+                int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
+                mBookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
+                mCurrentSearchResultPosition = searchResultListPosition;
+                if (!isSearchViewInflated) {
+                    mSearchViewStub.inflate();
+                    isSearchViewInflated = true;
+                }
+                moveToCurrentMatch();
+
             }
-        });
+            getDelegate().setHandleNativeActionModesEnabled(false);
 
 
-        if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
-            int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
-            mBookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
-            mCurrentSearchResultPosition = searchResultListPosition;
-            if (!isSearchViewInflated) {
-                mSearchViewStub.inflate();
-                isSearchViewInflated = true;
-            }
-            moveToCurrentMatch();
-
-        }
-        getDelegate().setHandleNativeActionModesEnabled(false);
-
-
-        //mPager.setOffscreenPageLimit(3);
+            //mPager.setOffscreenPageLimit(3);
 
 //mPager.setPageTransformer(true, new DepthPageTransformer());
 
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                StyleUtils.setThemedActionBarDrawable(this, actionBar);
+                if (SystemUtils.runningOnKitKatOrLater()) {
+                    actionBar.setDisplayOptions(
+                            ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP,
+                            ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+                } else {
+                    actionBar.setDisplayOptions(
+                            ActionBar.DISPLAY_HOME_AS_UP
+                            , ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+                }
+
+            }
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceListener);
+
+        } catch (BookDatabaseException bookDatabaseException) {
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceListener);
+    }
+
+    public void populateReaderActionBar(CharSequence title, CharSequence author) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeActionContentDescription(R.string.exit_book);
+            setTitle(title);
+            actionBar.setSubtitle(author);
+            if (ReadingActivity.this.getResources().getBoolean(R.bool.reader_show_action_bar_title)) {
+                ReadingActivity.this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE,
+                        ActionBar.DISPLAY_SHOW_TITLE);
+            }
+        }
+        if (SystemUtils.runningOnLollipopOrLater()) {
+            ReadingActivity.this.setTaskDescription(new ActivityManager.TaskDescription(title.toString()));
+        }
+    }
+
+    public void setActionBarElevation(float elevation) {
+        StyleUtils.setActionBarElevation(getSupportActionBar(), elevation);
+    }
+
+    private void logOpenBookAnalytics(int bookId, String bookName) {
+        try {
+            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            if (mFirebaseAnalytics != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(bookId));
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, bookName);
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @NonNull
@@ -728,9 +1021,8 @@ public class ReadingActivity extends AppCompatActivity implements
         );
     }
 
-
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         //only if it is the first creation
         if (savedInstanceState == null) {
@@ -759,7 +1051,7 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    private void animateFadeIn(final View view, int duration) {
+    private void animateFadeIn(@NonNull final View view, int duration) {
         view.animate().
                 alpha(1.0f)
                 .setDuration(duration)
@@ -783,7 +1075,7 @@ public class ReadingActivity extends AppCompatActivity implements
         mFloatingPageNumberHandler.postDelayed(mHideFloatingPageNumberRunnable, FLOATING_PAGE_NUMBER_DELAY_MILLIS);
     }
 
-    private void animateFadeOutHide(final View view, int duration) {
+    private void animateFadeOutHide(@NonNull final View view, int duration) {
         view.animate()
                 .alpha(0.0f)
                 .setDuration(duration)
@@ -912,9 +1204,8 @@ public class ReadingActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
-    public void onActionModeStarted(ActionMode mode) {
+    public void onActionModeStarted(@NonNull ActionMode mode) {
         if (mActionMode == null) {
             mActionMode = mode;
             Menu menu = mode.getMenu();
@@ -952,7 +1243,6 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-
     private boolean shouldDisplayFloatingSelectionMenu() {
         //return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
         return false;
@@ -969,7 +1259,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     }
 
-    public void onContextualMenuItemClicked(MenuItem item) {
+    public void onContextualMenuItemClicked(@NonNull MenuItem item) {
 
         for (ActionModeChangeListener actionModeChangeListener : mActionModeChangeListener) {
             actionModeChangeListener.onContextualMenuItemClicked(item.getItemId(), mPager.getCurrentItem());
@@ -985,7 +1275,6 @@ public class ReadingActivity extends AppCompatActivity implements
     public void finishActionMode() {
         if (mActionMode != null) mActionMode.finish();
     }
-
 
     private void startLocalSearch(String SearchQuery) {
         Bundle bundle = new Bundle();
@@ -1057,7 +1346,7 @@ public class ReadingActivity extends AppCompatActivity implements
                                 pageNumber))));
     }
 
-    private void showEditingPartNumberInPlace(TextView partNumberTextView, KeyboardAwareEditText partNumberEditor) {
+    private void showEditingPartNumberInPlace(@NonNull TextView partNumberTextView, @NonNull KeyboardAwareEditText partNumberEditor) {
         partNumberTextView.setVisibility(View.INVISIBLE);
         partNumberEditor.setHint(partNumberTextView.getText());
         partNumberEditor.setText("");
@@ -1066,7 +1355,7 @@ public class ReadingActivity extends AppCompatActivity implements
         partNumberEditor.requestFocus();
     }
 
-    private void showEditingPageNumberInPlace(TextView pageNumberTextView, KeyboardAwareEditText pageNumberEditor) {
+    private void showEditingPageNumberInPlace(@NonNull TextView pageNumberTextView, @NonNull KeyboardAwareEditText pageNumberEditor) {
         pageNumberTextView.setVisibility(View.INVISIBLE);
         pageNumberEditor.setText("");
         pageNumberEditor.setHint(pageNumberTextView.getText());
@@ -1088,6 +1377,35 @@ public class ReadingActivity extends AppCompatActivity implements
                 getString(R.string.zero_zero_page_placeholder_single_part) :
                 getString(R.string.page_number, currentPageInfo.partNumber);
 
+    }
+
+    @Override
+    public synchronized void onColorSelected(int dialogId, @ColorInt int color) {
+        switch (dialogId) {
+            case R.id.button_text_color:
+                setTextColor(color, isNightMode());
+                break;
+            case R.id.button_heading_color:
+                setHeadingColor(color, isNightMode());
+                break;
+            case R.id.pref_theme:
+                setBackgroundColor(color);
+                break;
+
+        }
+        for (DisplayOptionsPopupFragment displayOptionsPopup : displayOptionsPopups) {
+            displayOptionsPopup.onColorDialogSelected(dialogId, color);
+        }
+        displayOptionsPopups.clear();
+    }
+
+
+    @Override
+    public synchronized void onDialogDismissed(int dialogId) {
+        for (DisplayOptionsPopupFragment displayOptionsPopup : displayOptionsPopups) {
+            displayOptionsPopup.onColorDialogDismissed(dialogId);
+        }
+        displayOptionsPopups.clear();
     }
 
     private class SearchScrubOnInflateListener implements ViewStub.OnInflateListener {
@@ -1130,7 +1448,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
 
         @Override
-        public void onInflate(ViewStub stub, View inflated) {
+        public void onInflate(ViewStub stub, @NonNull View inflated) {
 
             final TextView pageNumberTextView = inflated.findViewById(R.id.part_page_number_tv);
             final TextView partNumberTextView = inflated.findViewById(R.id.part_number);
@@ -1205,7 +1523,7 @@ public class ReadingActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void afterTextChanged(Editable s) {
+                    public void afterTextChanged(@NonNull Editable s) {
                         String requiredpartString = s.toString();
                         if (!TextUtils.isEmpty(requiredpartString)) {
                             int requiredPart = Integer.valueOf(requiredpartString);
@@ -1294,7 +1612,7 @@ public class ReadingActivity extends AppCompatActivity implements
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
+                public void afterTextChanged(@NonNull Editable s) {
                     String requiredPageString = s.toString();
                     if (!TextUtils.isEmpty(requiredPageString)) {
                         int requiredPage = Integer.parseInt(requiredPageString);
@@ -1450,6 +1768,16 @@ public class ReadingActivity extends AppCompatActivity implements
 
         }
 
+        @Override
+        public Parcelable saveState() {
+            Bundle bundle = (Bundle) super.saveState();
+            if (bundle != null) {
+                bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+            }
+            return bundle;
+        }
+
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return BookPageFragment.newInstance(bookId, mBookDatabaseHelper.position2PageId(position), position);

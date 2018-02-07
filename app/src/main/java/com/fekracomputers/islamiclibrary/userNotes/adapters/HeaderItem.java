@@ -80,12 +80,14 @@ public class HeaderItem extends Item<HeaderItem.HeaderViewHolder> {
         TextView title;
         TextView subtitle;
         ImageView icon;
+        View rootView;
 
         public HeaderViewHolder(@NonNull View rootView) {
             super(rootView);
-            title = rootView.findViewById(R.id.title);
-            subtitle = rootView.findViewById(R.id.subtitle);
-            icon = rootView.findViewById(R.id.icon);
+            this.title = rootView.findViewById(R.id.title);
+            this.subtitle = rootView.findViewById(R.id.subtitle);
+            this.icon = rootView.findViewById(R.id.icon);
+            this.rootView = rootView;
         }
     }
 }

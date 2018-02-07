@@ -3,12 +3,16 @@ package com.fekracomputers.islamiclibrary.reading;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
 public class FadeAnimationController {
+    @Nullable
     private Animator mAnimation;
     private final int mInvisibleValue;
+    @NonNull
     private final View mView;
     private int mVisibility;
     private final float mVisibleAlpha;
@@ -19,7 +23,7 @@ public class FadeAnimationController {
         void onVisibilityChangeEnd();
     }
 
-    public static Animator createAnimator(View view, float toAlpha, int durationMillis, int startDelayMillis, AnimatorListener listener) {
+    public static Animator createAnimator(@NonNull View view, float toAlpha, int durationMillis, int startDelayMillis, AnimatorListener listener) {
         Animator animator = ObjectAnimator.ofFloat(view, "alpha", view.getAlpha(), toAlpha);
         animator.setDuration((long) durationMillis);
         animator.setStartDelay((long) startDelayMillis);
@@ -27,18 +31,18 @@ public class FadeAnimationController {
         return animator;
     }
 
-    public FadeAnimationController(View view, int invisibleValue, float visibleAlpha) {
+    public FadeAnimationController(@NonNull View view, int invisibleValue, float visibleAlpha) {
         this.mView = view;
         this.mVisibility = view.getVisibility();
         this.mInvisibleValue = invisibleValue;
         this.mVisibleAlpha = visibleAlpha;
     }
 
-    public FadeAnimationController(View view, int invisibleValue) {
+    public FadeAnimationController(@NonNull View view, int invisibleValue) {
         this(view, invisibleValue, 1.0f);
     }
 
-    public FadeAnimationController(View view) {
+    public FadeAnimationController(@NonNull View view) {
         this(view, View.GONE);
     }
 
@@ -66,7 +70,7 @@ public class FadeAnimationController {
         setVisibility(visibility, durationMillis, 0, listener);
     }
 
-    public void setVisibility(final int visibility, int durationMillis, int startDelayMillis, final OnVisibilityChangedListener listener) {
+    public void setVisibility(final int visibility, int durationMillis, int startDelayMillis, @Nullable final OnVisibilityChangedListener listener) {
         if (visibility != this.mVisibility) {
             this.mVisibility = visibility;
             final boolean toVisible = visibility == View.VISIBLE;
@@ -91,7 +95,7 @@ public class FadeAnimationController {
                 public void onAnimationRepeat(Animator animation) {
                 }
 
-                public void onAnimationStart(Animator animator) {
+                public void onAnimationStart(@NonNull Animator animator) {
                     if (animator.isRunning()) {
                         if (toVisible) {
                             FadeAnimationController.this.setViewVisibility(View.VISIBLE);

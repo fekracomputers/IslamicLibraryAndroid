@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -15,7 +16,6 @@ import com.fekracomputers.islamiclibrary.download.reciver.BookDownloadCompletedR
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
 import java.io.File;
-import java.util.Collection;
 
 import static android.app.DownloadManager.Request.VISIBILITY_VISIBLE;
 import static android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED;
@@ -40,15 +40,11 @@ public class BooksDownloader {
     }
 
 
-    public void downloadBookCollection(final Collection<Integer> book_ids) {
-
+    public void downloadBookCollection(@NonNull final Integer[] book_ids) {
         AsyncTask.execute(() -> {
             BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(mContext);
-            for (Integer book_id : book_ids) {
-                //   if (booksInformationDbHelper.getBookDownloadStatus(book_id) < DownloadsConstants.STATUS_DOWNLOAD_REQUESTED)
+            for (Integer book_id : book_ids)
                 downloadBook(book_id, booksInformationDbHelper.getBookName(book_id), true, VISIBILITY_VISIBLE);
-                //
-            }
         });
 
 

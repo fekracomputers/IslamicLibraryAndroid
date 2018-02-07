@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.browsing.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -26,9 +27,11 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 abstract class BrowsingActivityNavigationController {
     private static final String PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID = "PREF_BOTTOM_NAVIGATION_CURRENT_ITEM_ID";
     FragmentManager fragmentManager;
+    @Nullable
     private LibraryFragment pagerFragment;
     int paneNumber;
     int lastButtomSheetCheckedItemId;
+    @NonNull
     protected SparseArray<Fragment> fragments = new SparseArray<>(3);
     protected BrowsingActivityControllerListener listener;
     FragmentManager.OnBackStackChangedListener backStackChangedListener;
@@ -107,7 +110,7 @@ abstract class BrowsingActivityNavigationController {
 
     }
 
-    boolean handleButtomNavigationItem(MenuItem item) {
+    boolean handleButtomNavigationItem(@NonNull MenuItem item) {
         if (!item.isChecked()) {
             saveBottomBarPosition(item);
             return switchBottomNavigationTo(item.getItemId());
@@ -118,7 +121,7 @@ abstract class BrowsingActivityNavigationController {
 
     protected abstract boolean switchBottomNavigationTo(int itemId);
 
-    private void saveBottomBarPosition(MenuItem item) {
+    private void saveBottomBarPosition(@NonNull MenuItem item) {
         lastButtomSheetCheckedItemId = item.getItemId();
         SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

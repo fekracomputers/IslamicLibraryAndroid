@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.homeScreen.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -25,13 +26,14 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
     private static final int CLOSE_CURSOR_UPDATE = 3;
 
 
+    @NonNull
     private IndexedTreeSet<BookCollectionRecyclable> booksCollections = new IndexedTreeSet<>();
     private BookCardEventsCallback bookCardEventsCallback;
     private Context context;
     private BookCollectionsController collectionController;
 
 
-    public HomeScreenRecyclerViewAdapter(ArrayList<BooksCollection> booksCollections,
+    public HomeScreenRecyclerViewAdapter(@NonNull ArrayList<BooksCollection> booksCollections,
                                          BookCardEventsCallback bookCardEventsCallback,
                                          Context context, BookCollectionsController collectionController) {
         this.collectionController = collectionController;
@@ -45,20 +47,21 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
     }
 
 
+    @NonNull
     @Override
-    public CollectionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CollectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         HorizontalBookRecyclerView recyclerView = new HorizontalBookRecyclerView(parent.getContext());
         return new CollectionViewHolder(recyclerView);
     }
 
     @Override
-    public void onBindViewHolder(CollectionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         BooksCollection booksCollection = booksCollections.exact(position).getBooksCollection();
         holder.setupRecyclerView(booksCollection, bookCardEventsCallback, false);
     }
 
     @Override
-    public void onBindViewHolder(CollectionViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position, @Nullable List<Object> payloads) {
         if (payloads == null || payloads.size() == 0) {
             BookCollectionRecyclable exact = booksCollections.exact(position);
             if (!exact.isDirty())
@@ -78,7 +81,7 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         }
     }
 
-    private void handlePayloadUpdate(CollectionViewHolder holder, int position, @NonNull UpdatePayload payload1) {
+    private void handlePayloadUpdate(@NonNull CollectionViewHolder holder, int position, @NonNull UpdatePayload payload1) {
         if (payload1.requestCode == NAME_CHANGE_UPDATE) {
             holder.horizontalBookRecyclerView.rename(payload1.getString());
         } else if (payload1.requestCode == FORCE_REFRESH_UPDATE) {
@@ -125,7 +128,7 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         notifyItemRangeChanged(0, booksCollections.size(), payload);
     }
 
-    public void notifyBookCollectionChanged(BooksCollection booksCollection) {
+    public void notifyBookCollectionChanged(@NonNull BooksCollection booksCollection) {
         UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
         int order = booksCollection.getOrder();
 
@@ -133,18 +136,18 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         notifyItemChanged(order, payload);
     }
 
-    public void notifyBookCollectionRemoved(BooksCollection booksCollection) {
+    public void notifyBookCollectionRemoved(@NonNull BooksCollection booksCollection) {
         booksCollections.remove(new BookCollectionRecyclable(booksCollection));
         notifyItemRemoved(booksCollection.getOrder());
     }
 
-    public void notifyBookCollectionAdded(BooksCollection booksCollection) {
+    public void notifyBookCollectionAdded(@NonNull BooksCollection booksCollection) {
         UpdatePayload payload = new UpdatePayload(FORCE_REFRESH_UPDATE);
         if (booksCollections.add(new BookCollectionRecyclable(booksCollection, payload)))
             notifyItemInserted(booksCollection.getOrder());
     }
 
-    public void notifyBookCollectionRenamed(BooksCollection booksCollection, String newName) {
+    public void notifyBookCollectionRenamed(@NonNull BooksCollection booksCollection, String newName) {
 
         notifyItemChanged(booksCollection.getOrder(),
                 new UpdatePayload(NAME_CHANGE_UPDATE, newName));
@@ -170,7 +173,7 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
         }
     }
 
-    public void onBookCollectionVisibilityChanged(BooksCollection booksCollection, boolean isVisible) {
+    public void onBookCollectionVisibilityChanged(@NonNull BooksCollection booksCollection, boolean isVisible) {
         if (isVisible) notifyBookCollectionAdded(booksCollection);
         else notifyBookCollectionRemoved(booksCollection);
 
@@ -199,12 +202,12 @@ public class HomeScreenRecyclerViewAdapter extends RecyclerView.Adapter<HomeScre
     class CollectionViewHolder extends RecyclerView.ViewHolder {
         private HorizontalBookRecyclerView horizontalBookRecyclerView;
 
-        CollectionViewHolder(HorizontalBookRecyclerView horizontalBookRecyclerView) {
+        CollectionViewHolder(@NonNull HorizontalBookRecyclerView horizontalBookRecyclerView) {
             super(horizontalBookRecyclerView);
             this.horizontalBookRecyclerView = horizontalBookRecyclerView;
         }
 
-        void setupRecyclerView(BooksCollection booksCollection,
+        void setupRecyclerView(@NonNull BooksCollection booksCollection,
                                BookCardEventsCallback bookCardEventsCallback,
                                boolean forceRefresh) {
             horizontalBookRecyclerView.setupRecyclerView(booksCollection,

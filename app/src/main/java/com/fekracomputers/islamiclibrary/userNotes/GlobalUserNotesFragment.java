@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.userNotes;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +14,13 @@ import android.view.ViewStub;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.browsing.dialog.SortListDialogFragment;
+import com.fekracomputers.islamiclibrary.browsing.util.BrowsingUtils;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.model.UserNote;
-import com.fekracomputers.islamiclibrary.userNotes.adapters.ExpandableHeaderItem;
-import com.fekracomputers.islamiclibrary.userNotes.adapters.UpdatableExpandingGroup;
+import com.fekracomputers.islamiclibrary.userNotes.adapters.HeaderItem;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteGroupAdapter;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
+import com.xwray.groupie.Section;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
     private UserDataDBHelper.GlobalUserDBHelper userDatabase;
     private ArrayList<UserNoteItem> bookmarkItems;
     private ArrayList<UserNoteItem> highlightItems;
+    private UserNoteGroupAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,7 +51,7 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_global_highlight, menu);
 
     }
@@ -67,24 +70,44 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         userDatabase = UserDataDBHelper.getInstance(getContext());
-        bookmarkItems = userDatabase.getBookmarkItems();
-        highlightItems = userDatabase.getHighlightItems();
+
         mListener = new UserNoteGroupAdapter.UserNoteInterActionListener() {
             @Override
-            public void onUserNoteClicked(UserNote userNote) {
+            public void onUserNoteClicked(@NonNull UserNote userNote) {
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                if (!BrowsingUtils.openBookForReading(userNote.bookId,
+                        pageId,
+                        getContext())) {
 
+                }
             }
 
             @Override
-            public void onUserNoteRemoved(UserNote userNote) {
-
+            public void onUserNoteRemoved(@NonNull UserNote userNote) {
+                int pageId = userNote.getPageInfo() != null ? userNote.getPageInfo().pageId : 1;
+                userDatabase.deleteBookmark(pageId, userNote.bookId);
             }
         };
+
+        bookmarkItems = userDatabase.getBookmarkItems();
+        highlightItems = userDatabase.getHighlightItems();
+        adapter = new UserNoteGroupAdapter();
+        adapter.setUserNoteInterActionListener(mListener);
+
+        Section bookmarksExpandableGroup = new Section(new HeaderItem(R.string.bookmarks));
+        bookmarksExpandableGroup.addAll(bookmarkItems);
+        adapter.add(bookmarksExpandableGroup);
+
+        Section hihligtsexpandableGroup = new Section(new HeaderItem(R.string.notes));
+        hihligtsexpandableGroup.addAll(highlightItems);
+        adapter.add(hihligtsexpandableGroup);
+
+
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_global_user_list, container, false);
@@ -95,23 +118,13 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
             recyclerView.setVisibility(View.GONE);
             zeroView.setVisibility(View.VISIBLE);
         } else {
-            UserNoteGroupAdapter adapter = new UserNoteGroupAdapter();
-            adapter.setUserNoteInterActionListener(mListener);
-
-            UpdatableExpandingGroup bookmarksExpandableGroup = new UpdatableExpandingGroup(new ExpandableHeaderItem(R.string.bookmarks));
-            bookmarksExpandableGroup.update(bookmarkItems);
-            adapter.add(bookmarksExpandableGroup);
-
-            UpdatableExpandingGroup hihligtsexpandableGroup = new UpdatableExpandingGroup(new ExpandableHeaderItem(R.string.notes));
-            hihligtsexpandableGroup.update(highlightItems);
-            adapter.add(hihligtsexpandableGroup);
-
             recyclerView.setAdapter(adapter);
         }
-
-
         return view;
     }
 
+    public interface GlobalUserNotesFragmentListener {
+        void showSnackBarBookNotDownloaded(int bookId);
+    }
 
 }

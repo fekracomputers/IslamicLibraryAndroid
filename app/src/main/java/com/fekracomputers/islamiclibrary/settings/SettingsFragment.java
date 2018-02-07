@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +33,9 @@ import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 import com.fekracomputers.islamiclibrary.widget.DataListPreference;
 import com.fekracomputers.islamiclibrary.widget.DataListPreferenceDialogFragmentCompat;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogPreference;
+import com.jaredrummler.android.colorpicker.ColorPreferenceSupport;
 
 import net.xpece.android.support.preference.ColorPreference;
 import net.xpece.android.support.preference.ListPreference;
@@ -54,7 +58,9 @@ import timber.log.Timber;
 /**
  * @author Eugen on 7. 12. 2015.
  */
-public class SettingsFragment extends XpPreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends XpPreferenceFragment implements
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        ColorPickerDialogListener {
     public static final String KEY_DISPLAY_TEXT_SIZE = "global_display_text_size";
     public static final String KEY_GLOBAL_DISPLAY_OVERRIDES_LOCAL = "global_overrides_local";
     public static final String KEY_GLOBAL_THEME_COLOR = "global_theme_color";
@@ -63,11 +69,17 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     public static final String PREF_USE_VOLUME_KEY_NAV = "volumeKeyNavigation";
     public static final String PREF_KEEP_SCREEN_ON = "keepScreenOn";
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
-    private static final String TAG = SettingsFragment.class.getSimpleName();
+    public static final String KEY_IS_PINCH_ZOOM_ON = "pinch_zoom_on";
+    public static final String KEY_BACKGROUND_COLOR = "background_color";
+    public static final String KEY_TEXT_COLOR_DAY = "text_color_day";
+    public static final String KEY_TEXT_COLOR_NIGHT = "text_color_night";
+    public static final String KEY_HEADING_COLOR_DAY = "heading_color_day";
+    public static final String KEY_HEADING_COLOR_NIGHT = "heading_color_night";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+    @NonNull
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, value) -> {
         String stringValue = value.toString();
 
@@ -131,14 +143,18 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         return true;
     };
     private DataListPreference listStoragePref;
+    @Nullable
     private MoveFilesAsyncTask moveFilesTask;
     private List<StorageUtils.Storage> storageList;
+    @Nullable
     private LoadStorageOptionsTask loadStorageOptionsTask;
     private int appSize;
     private String internalSdcardLocation;
+    @Nullable
     private AlertDialog dialog;
     private boolean isPaused;
 
+    @NonNull
     public static SettingsFragment newInstance(String rootKey) {
         Bundle args = new Bundle();
         args.putString(SettingsFragment.ARG_PREFERENCE_ROOT, rootKey);
@@ -156,7 +172,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
      *
      * @see #sBindPreferenceSummaryToValueListener
      */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private static void bindPreferenceSummaryToValue(@NonNull Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -181,6 +197,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         }
     }
 
+    @NonNull
     @Override
     public String[] getCustomDefaultPackages() {
         return new String[]{BuildConfig.APPLICATION_ID};
@@ -355,7 +372,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @NonNull String key) {
         if (key.equals(KEY_UI_LANG_ARABIC)) {
             final Context context = getActivity();
             if (context instanceof SettingsActivity) {
@@ -369,6 +386,11 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         DialogFragment fragment;
         if (preference instanceof DataListPreference) {
             fragment = DataListPreferenceDialogFragmentCompat.newInstance(preference);
+            fragment.setTargetFragment(this, 0);
+            fragment.show(getFragmentManager(),
+                    "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else if (preference instanceof ColorPreferenceSupport) {
+            fragment = ColorPickerDialogPreference.newInstance(preference.getKey());
             fragment.setTargetFragment(this, 0);
             fragment.show(getFragmentManager(),
                     "android.support.v7.preference.PreferenceFragment.DIALOG");
@@ -394,7 +416,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         super.onPause();
     }
 
-    private void loadStorageOptions(final Context context) {
+    private void loadStorageOptions(@NonNull final Context context) {
         try {
             if (appSize == -1) {
                 // sdcard is not mounted...
@@ -460,7 +482,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         }
     }
 
-    public void handleMove(final String newLocation, String current) {
+    public void handleMove(@NonNull final String newLocation, String current) {
 
         final Context context = getActivity();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context)
@@ -500,7 +522,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         dialog.show();
     }
 
-    private void removeAdvancePreference(Preference preference) {
+    private void removeAdvancePreference(@Nullable Preference preference) {
         // these null checks are to fix a crash due to an NPE on 4.4.4
         if (preference != null) {
             PreferenceGroup group =
@@ -515,14 +537,25 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
         removeAdvancePreference(listStoragePref);
     }
 
+    @Override
+    public void onColorSelected(int dialogId, int color) {
+
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
+    }
+
     private class MoveFilesAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
         private String newLocation;
+        @Nullable
         private ProgressDialog dialog;
         private Context appContext;
         private boolean automatic;
 
-        private MoveFilesAsyncTask(Context context, String newLocation, boolean automatic) {
+        private MoveFilesAsyncTask(@NonNull Context context, String newLocation, boolean automatic) {
             this.newLocation = newLocation;
             this.appContext = context.getApplicationContext();
             this.automatic = automatic;
@@ -577,7 +610,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
 
         private Context appContext;
 
-        LoadStorageOptionsTask(Context context) {
+        LoadStorageOptionsTask(@NonNull Context context) {
             this.appContext = context.getApplicationContext();
         }
 
@@ -586,6 +619,7 @@ public class SettingsFragment extends XpPreferenceFragment implements SharedPref
             listStoragePref.setSummary(R.string.prefs_calculating_app_size);
         }
 
+        @Nullable
         @Override
         protected Void doInBackground(Void... voids) {
             appSize = StorageUtils.getAppUsedSpace(appContext);

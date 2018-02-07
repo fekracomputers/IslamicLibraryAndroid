@@ -43,7 +43,6 @@ public class UserDataDBHelper {
     private int bookId;
 
     public UserDataDBHelper(Context context, int bookId) {
-
         this.context = context;
         this.bookId = bookId;
     }
@@ -69,22 +68,23 @@ public class UserDataDBHelper {
     }
 
     public void RemoveBookmark(int pageId) {
-        sGlobalUserDBHelper.RemoveBookmark(pageId, bookId);
+        sGlobalUserDBHelper.deleteBookmark(pageId, bookId);
     }
 
     public boolean isPageBookmarked(int pageId) {
         return sGlobalUserDBHelper.isPageBookmarked(pageId, bookId);
     }
 
-    public Highlight getHighlightById(int highlightId, int pageRowId) {
+    @Nullable
+    public Highlight getHighlightById(int highlightId, int pageRowId) throws BookDatabaseException {
         return sGlobalUserDBHelper.getHighlightById(highlightId, pageRowId, context, bookId);
     }
 
-    public void addNoteToHighlight(Highlight mSelectedHighlight) {
+    public void addNoteToHighlight(@NonNull Highlight mSelectedHighlight) {
         sGlobalUserDBHelper.addNoteToHighlight(mSelectedHighlight, bookId);
     }
 
-    public void setSerializedHighlights(PageInfo pageInfo, String serializedHighlights) {
+    public void setSerializedHighlights(@NonNull PageInfo pageInfo, @NonNull String serializedHighlights) {
         sGlobalUserDBHelper.setSerializedHighlights(pageInfo, serializedHighlights, bookId);
     }
 
@@ -100,11 +100,13 @@ public class UserDataDBHelper {
         sGlobalUserDBHelper.setDisplayPreferenceValue(preferenceKey, s, bookId);
     }
 
-    public ArrayList<Bookmark> getAllBookmarks(String order) {
+    @NonNull
+    public ArrayList<Bookmark> getAllBookmarks(@NonNull String order) throws BookDatabaseException {
         return sGlobalUserDBHelper.getAllBookmarks(order, context, bookId);
     }
 
-    public ArrayList<Highlight> getAllHighlights() {
+    @NonNull
+    public ArrayList<Highlight> getAllHighlights() throws BookDatabaseException {
         return sGlobalUserDBHelper.getAllHighlights(context, bookId);
     }
 
@@ -112,19 +114,21 @@ public class UserDataDBHelper {
         sGlobalUserDBHelper.logBookAccess(bookId);
     }
 
-    public void logPageAccess(PageInfo pageId) {
+    public void logPageAccess(@NonNull PageInfo pageId) {
         sGlobalUserDBHelper.logPageAccess(pageId, bookId);
     }
 
 
-    public PageInfo getLastPageInfo() {
+    public PageInfo getLastPageInfo() throws BookDatabaseException {
         return sGlobalUserDBHelper.getLastPageInfo(bookId, context);
     }
 
+    @NonNull
     public ArrayList<BooksCollection> getBookCollections(boolean viewdOnly) {
         return sGlobalUserDBHelper.getBookCollections(bookId, viewdOnly);
     }
 
+    @NonNull
     public BookCollectionInfo getBookCollectionInfo() {
         return sGlobalUserDBHelper.getBookCollectionInfo(bookId);
     }
@@ -157,7 +161,7 @@ public class UserDataDBHelper {
 
 
         @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        public void onCreate(@NonNull SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(UserDataDBContract.BookmarkEntry.CREATE_STATEMENT);
             sqLiteDatabase.execSQL(UserDataDBContract.SerializedHighlightEntry.CREATE_STATEMENT);
             sqLiteDatabase.execSQL(UserDataDBContract.HighlightEntry.TABLE_HIGHLIGHTS_CREATE);
@@ -166,7 +170,7 @@ public class UserDataDBHelper {
             version2(sqLiteDatabase);
         }
 
-        private void version2(SQLiteDatabase sqLiteDatabase) {
+        private void version2(@NonNull SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(UserDataDBContract.BooksCollectionEntry.CREATE_STATEMENT);
             sqLiteDatabase.execSQL(UserDataDBContract.BooksCollectionJoinEntry.CREATE_STATEMENT);
             sqLiteDatabase.execSQL(SQL.CREATE_INDEX_IF_NOT_EXISTS +
@@ -187,7 +191,7 @@ public class UserDataDBHelper {
             insertBasicCollections(sqLiteDatabase);
         }
 
-        private void insertBasicCollections(SQLiteDatabase sqLiteDatabase) {
+        private void insertBasicCollections(@NonNull SQLiteDatabase sqLiteDatabase) {
 
             String[] standardBooksCollection = context.getResources().getStringArray(R.array.standard_books_collection);
             int[] standardBooksCollectionAUtmaticIds = context.getResources().getIntArray(R.array.standard_books_collection_automatic_id);
@@ -215,7 +219,7 @@ public class UserDataDBHelper {
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        public void onUpgrade(@NonNull SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
             switch (oldVersion) {
                 case 1:
                     version2(sqLiteDatabase);
@@ -235,7 +239,7 @@ public class UserDataDBHelper {
             getWritableDatabase().insert(UserDataDBContract.BookmarkEntry.TABLE_NAME, null, bookmark);
         }
 
-        void RemoveBookmark(int pageId, int bookId) {
+        public void deleteBookmark(int pageId, int bookId) {
             getWritableDatabase().
                     delete(UserDataDBContract.BookmarkEntry.TABLE_NAME,
                             UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID + "=? and " + UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID + "=?",
@@ -259,16 +263,15 @@ public class UserDataDBHelper {
          * @param bookId
          * @return list of all book marks in the book ordered by page containing the book mark
          */
-        public ArrayList<Bookmark> getAllBookmarks(String order, Context mContext, int bookId) throws IllegalArgumentException {
+        @NonNull
+        public ArrayList<Bookmark> getAllBookmarks(@NonNull String order, Context mContext, int bookId) throws IllegalArgumentException, BookDatabaseException {
             if (!order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID) ||
                     !order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID)) {
                 throw new IllegalArgumentException("order must be {@link UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID} or" +
                         " UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP}");
 
             }
-
             ArrayList<Bookmark> bookmarksList = new ArrayList<>();
-
             Cursor c = getReadableDatabase().query(UserDataDBContract.BookmarkEntry.TABLE_NAME,
                     new String[]{UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID,
                             UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP},
@@ -291,7 +294,7 @@ public class UserDataDBHelper {
             return bookmarksList;
         }
 
-        void setSerializedHighlights(PageInfo pageInfo, String serializedHighlights, int bookId) {
+        void setSerializedHighlights(@NonNull PageInfo pageInfo, @NonNull String serializedHighlights, int bookId) {
 
             ContentValues highlights = new ContentValues();
             highlights.put(UserDataDBContract.SerializedHighlightEntry.COLUMN_NAME_BOOK_ID, bookId);
@@ -303,7 +306,8 @@ public class UserDataDBHelper {
 
         }
 
-        public ArrayList<Highlight> getAllHighlights(Context mContext, int bookId) {
+        @NonNull
+        public ArrayList<Highlight> getAllHighlights(Context mContext, int bookId) throws BookDatabaseException {
             ArrayList<Highlight> highlightArrayList = new ArrayList<>();
 
             Cursor c = getReadableDatabase().query(UserDataDBContract.HighlightEntry.TABLE_NAME,
@@ -357,7 +361,7 @@ public class UserDataDBHelper {
             return highlightArrayList;
         }
 
-        private void deserializeHighlightsAndSave(String serializedHighlights, PageInfo pageInfo, int bookId) {
+        private void deserializeHighlightsAndSave(@NonNull String serializedHighlights, @NonNull PageInfo pageInfo, int bookId) {
             ArrayList<ContentValues> highlights = Highlight.deserializeToContentValues(serializedHighlights,
                     pageInfo,
                     bookId);
@@ -423,7 +427,8 @@ public class UserDataDBHelper {
             return serializedHighlights;
         }
 
-        public Highlight getHighlightById(int highlightId, int pageId, Context mContext, int bookId) {
+        @Nullable
+        public Highlight getHighlightById(int highlightId, int pageId, Context mContext, int bookId) throws BookDatabaseException {
             Cursor c = getReadableDatabase().query(UserDataDBContract.HighlightEntry.TABLE_NAME,
                     new String[]{
                             UserDataDBContract.HighlightEntry.COLUMN_CLASS_NAME,
@@ -524,7 +529,7 @@ public class UserDataDBHelper {
                     new String[]{String.valueOf(bookId)});
         }
 
-        void logPageAccess(PageInfo pageInfo, int bookId) {
+        void logPageAccess(@NonNull PageInfo pageInfo, int bookId) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValue = new ContentValues();
             contentValue.put(UserDataDBContract.AccessInformationEntry.COLUMN_NAME_BOOK_ID, bookId);
@@ -546,7 +551,7 @@ public class UserDataDBHelper {
                             String.valueOf(bookId)});
         }
 
-        public PageInfo getLastPageInfo(int bookId, Context context) {
+        public PageInfo getLastPageInfo(int bookId, Context context) throws BookDatabaseException {
             SQLiteDatabase db = getReadableDatabase();
             Cursor c = db.query(UserDataDBContract.AccessInformationEntry.Table_NAME,
                     new String[]{UserDataDBContract.AccessInformationEntry.LAST_OPENED_PAGE_ID,
@@ -668,7 +673,8 @@ public class UserDataDBHelper {
             return booksCollectionArrayList;
         }
 
-        public HashSet<Integer> getBooksSetCollectionId(BooksCollection booksCollection, boolean downloadOnly) {
+        @NonNull
+        public HashSet<Integer> getBooksSetCollectionId(@NonNull BooksCollection booksCollection, boolean downloadOnly) {
             HashSet<Integer> IdsSet = new HashSet<>();
 
             if (!booksCollection.isAutomatic()) {
@@ -689,11 +695,13 @@ public class UserDataDBHelper {
 
         }
 
+        @Nullable
         public Cursor getBooksCollectionCursor(int collectionId) {
             return getBooksCollectionCursor(getBooksCollection(collectionId));
         }
 
-        public Cursor getBooksCollectionCursor(BooksCollection booksCollection) {
+        @Nullable
+        public Cursor getBooksCollectionCursor(@NonNull BooksCollection booksCollection) {
             if (booksCollection.isAutomatic()) {
                 return getAutomaticBooksCollectionCursor(booksCollection.getAutomaticId());
             } else {
@@ -800,6 +808,7 @@ public class UserDataDBHelper {
         }
 
 
+        @NonNull
         public ArrayList<BooksCollection> getBookCollections(int bookId, boolean viewdOnly) {
             ArrayList<BooksCollection> booksCollectionArrayList = new ArrayList<>();
 
@@ -976,7 +985,7 @@ public class UserDataDBHelper {
             return newPosition;
         }
 
-        public void updateCollectionStatus(int bookId, final Set<Integer> NewBooksCollectionIds) {
+        public void updateCollectionStatus(int bookId, @NonNull final Set<Integer> NewBooksCollectionIds) {
             BookCollectionInfo oldBookCollectionInfo = getBookCollectionInfo(bookId);
             Set<Integer> idsToAdd = new HashSet<>(NewBooksCollectionIds);
             Set<Integer> oldBooksCollectionIds = oldBookCollectionInfo.getBooksCollectionsIds();
@@ -1003,6 +1012,7 @@ public class UserDataDBHelper {
 
         }
 
+        @NonNull
         public Collection<UserNoteItem> getUserNotes() {
             ArrayList<UserNoteItem> userNotes = new ArrayList<>();
             userNotes.addAll(getBookmarkItems());
@@ -1010,6 +1020,8 @@ public class UserDataDBHelper {
             return userNotes;
         }
 
+
+        @NonNull
         public ArrayList<UserNoteItem> getBookmarkItems() throws IllegalArgumentException {
 //            if (!order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID) ||
 //                    !order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID)) {
@@ -1035,20 +1047,30 @@ public class UserDataDBHelper {
             final int INDEX_BOOK_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_BOOK_ID);
             final int INDEX_PAGE_ID = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID);
             final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.BookmarkEntry.COLUMN_NAME_TIME_STAMP);
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
+
             while (c.moveToNext()) {
                 int bookId = c.getInt(INDEX_BOOK_ID);
-                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-                int pageId = c.getInt(INDEX_PAGE_ID);
-                BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
-                BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
-                PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
-                Bookmark bookmark = new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId));
-                bookmarksList.add(new BookmarkItem(bookmark, bookPartsInfo, bookInfo));
+                if (booksInformationDbHelper != null &&
+                        booksInformationDbHelper.isBookDownloaded(bookId)) {
+                    try {
+                        BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+                        int pageId = c.getInt(INDEX_PAGE_ID);
+                        BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
+                        BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+                        PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
+                        Bookmark bookmark = new Bookmark(bookId, pageInfo, c.getString(INDEX_TIME_STAMP), bookDatabaseHelper.getParentTitle(pageId));
+                        bookmarksList.add(new BookmarkItem(bookmark, bookPartsInfo, bookInfo));
+                    } catch (BookDatabaseException bookDatabaseException) {
+                        Timber.e(bookDatabaseException);
+                    }
+                }
             }
             c.close();
             return bookmarksList;
         }
 
+        @NonNull
         public ArrayList<UserNoteItem> getHighlightItems() {
             ArrayList<UserNoteItem> highlightArrayList = new ArrayList<>();
 
@@ -1077,30 +1099,40 @@ public class UserDataDBHelper {
             final int INDEX_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_TEXT);
             final int INDEX_NOTE_TEXT = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NOTE_TEXT);
             final int INDEX_TIME_STAMP = c.getColumnIndex(UserDataDBContract.HighlightEntry.COLUMN_NAME_TIME_STAMP);
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(context);
+
             while (c.moveToNext()) {
                 int bookId = c.getInt(INDEX_BOOK_ID);
-                BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-                int pageId = c.getInt(INDEX_PAGE_ID);
-                BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
-                BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
-                PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
-                int highlightId = c.getInt(INDEX_HIGHLIGHT_ID);
-                String className = c.getString(INDEX_CLASS_NAME);
-                int elementId = c.getInt(INDEX_ELEMENT_ID);
-                String timeStamp = c.getString(INDEX_TIME_STAMP);
-                String text = c.getString(INDEX_TEXT);
-                String noteText = c.getString(INDEX_NOTE_TEXT);
+                if (booksInformationDbHelper != null &&
+                        booksInformationDbHelper.isBookDownloaded(bookId)) {
+                    try {
+                        BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
+                        int pageId = c.getInt(INDEX_PAGE_ID);
+                        BookInfo bookInfo = bookDatabaseHelper.getBookInfo();
+                        BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
+                        PageInfo pageInfo = bookDatabaseHelper.getPageInfoByPageId(pageId);
+                        int highlightId = c.getInt(INDEX_HIGHLIGHT_ID);
+                        String className = c.getString(INDEX_CLASS_NAME);
+                        int elementId = c.getInt(INDEX_ELEMENT_ID);
+                        String timeStamp = c.getString(INDEX_TIME_STAMP);
+                        String text = c.getString(INDEX_TEXT);
+                        String noteText = c.getString(INDEX_NOTE_TEXT);
 
-                highlightArrayList.add(new HighlightItem(new Highlight(text,
-                        highlightId,
-                        className,
-                        elementId,
-                        timeStamp,
-                        pageInfo,
-                        bookId,
-                        bookDatabaseHelper.getParentTitle(pageId),
-                        noteText), bookPartsInfo, bookInfo)
-                );
+                        highlightArrayList.add(new HighlightItem(new Highlight(text,
+                                highlightId,
+                                className,
+                                elementId,
+                                timeStamp,
+                                pageInfo,
+                                bookId,
+                                bookDatabaseHelper.getParentTitle(pageId),
+                                noteText), bookPartsInfo, bookInfo)
+                        );
+
+                    } catch (BookDatabaseException exeption) {
+                        Timber.e(exeption);
+                    }
+                }
             }
             c.close();
             return highlightArrayList;

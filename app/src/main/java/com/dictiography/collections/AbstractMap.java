@@ -14,7 +14,14 @@ package com.dictiography.collections;
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import java.util.*;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.AbstractCollection;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class provides a skeletal implementation of the <tt>Map</tt>
@@ -95,7 +102,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public boolean containsValue(Object value) {
+    public boolean containsValue(@Nullable Object value) {
         Iterator<Entry<K, V>> i = entrySet().iterator();
         if (value == null) {
             while (i.hasNext()) {
@@ -126,7 +133,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public boolean containsKey(Object key) {
+    public boolean containsKey(@Nullable Object key) {
         Iterator<Map.Entry<K, V>> i = entrySet().iterator();
         if (key == null) {
             while (i.hasNext()) {
@@ -157,7 +164,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * @throws ClassCastException   {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public V get(Object key) {
+    @Nullable
+    public V get(@Nullable Object key) {
         Iterator<Entry<K, V>> i = entrySet().iterator();
         if (key == null) {
             while (i.hasNext()) {
@@ -214,7 +222,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      */
-    public V remove(Object key) {
+    @Nullable
+    public V remove(@Nullable Object key) {
         Iterator<Entry<K, V>> i = entrySet().iterator();
         Entry<K, V> correctEntry = null;
         if (key == null) {
@@ -286,7 +295,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * appropriate view the first time this view is requested.  The views are
      * stateless, so there's no reason to create more than one of each.
      */
+    @Nullable
     transient volatile Set<K> keySet = null;
+    @Nullable
     transient volatile Collection<V> values = null;
 
     /**
@@ -304,11 +315,14 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * is performed, so there is a slight chance that multiple calls to this
      * method will not all return the same set.
      */
+    @NonNull
     public Set<K> keySet() {
         if (keySet == null) {
             keySet = new AbstractSet<K>() {
+                @NonNull
                 public Iterator<K> iterator() {
                     return new Iterator<K>() {
+                        @NonNull
                         private Iterator<Entry<K, V>> i = entrySet().iterator();
 
                         public boolean hasNext() {
@@ -352,11 +366,14 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * performed, so there is a slight chance that multiple calls to this
      * method will not all return the same collection.
      */
+    @NonNull
     public Collection<V> values() {
         if (values == null) {
             values = new AbstractCollection<V>() {
+                @NonNull
                 public Iterator<V> iterator() {
                     return new Iterator<V>() {
+                        @NonNull
                         private Iterator<Entry<K, V>> i = entrySet().iterator();
 
                         public boolean hasNext() {
@@ -385,6 +402,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return values;
     }
 
+    @NonNull
     public abstract Set<Entry<K, V>> entrySet();
 
 
@@ -481,6 +499,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      *
      * @return a string representation of this map
      */
+    @NonNull
     public String toString() {
         Iterator<Entry<K, V>> i = entrySet().iterator();
         if (!i.hasNext())
@@ -518,7 +537,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * Utility method for SimpleEntry and SimpleImmutableEntry.
      * Test for equality, checking for nulls.
      */
-    private static boolean eq(Object o1, Object o2) {
+    private static boolean eq(@Nullable Object o1, @Nullable Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }
 
@@ -565,7 +584,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          *
          * @param entry the entry to copy
          */
-        public SimpleEntry(Entry<? extends K, ? extends V> entry) {
+        public SimpleEntry(@NonNull Entry<? extends K, ? extends V> entry) {
             this.key = entry.getKey();
             this.value = entry.getValue();
         }
@@ -655,6 +674,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          *
          * @return a String representation of this map entry
          */
+        @NonNull
         public String toString() {
             return key + "=" + value;
         }
@@ -694,7 +714,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          *
          * @param entry the entry to copy
          */
-        public SimpleImmutableEntry(Entry<? extends K, ? extends V> entry) {
+        public SimpleImmutableEntry(@NonNull Entry<? extends K, ? extends V> entry) {
             this.key = entry.getKey();
             this.value = entry.getValue();
         }
@@ -727,6 +747,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          * @return (Does not return)
          * @throws UnsupportedOperationException always
          */
+        @NonNull
         public V setValue(V value) {
             throw new UnsupportedOperationException();
         }
@@ -785,6 +806,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
          *
          * @return a String representation of this map entry
          */
+        @NonNull
         public String toString() {
             return key + "=" + value;
         }

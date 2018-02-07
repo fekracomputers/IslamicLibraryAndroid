@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_small_padding">4.0dip</dimen>
+    <dimen name="play_header_list_tab_floating_padding">36.0dip</dimen>
+    <dimen name="play_header_list_tab_padding_side">24.0dip</dimen>
+    <dimen name="play_collection_edge_padding">80.0dip</dimen>
+    <dimen name="play_collection_edge_padding_minus_card_half_spacing">74.0dip</dimen>
+</resources>

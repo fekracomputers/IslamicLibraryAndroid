@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -29,20 +30,20 @@ public class DataListPreference extends ListPreference implements DialogInterfac
     private List<StorageUtils.Storage> storageList;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DataListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DataListPreference(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DataListPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DataListPreference(@NonNull Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public DataListPreference(Context context, AttributeSet attrs) {
+    public DataListPreference(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DataListPreference(Context context) {
+    public DataListPreference(@NonNull Context context) {
         super(context);
     }
 
@@ -52,8 +53,8 @@ public class DataListPreference extends ListPreference implements DialogInterfac
     }
 
 
-    public void setLabelsAndSummaries(Context context, int appSize,
-                                      List<StorageUtils.Storage> storageList) {
+    public void setLabelsAndSummaries(@NonNull Context context, int appSize,
+                                      @NonNull List<StorageUtils.Storage> storageList) {
         String summary = context.getString(R.string.prefs_app_location_summary) + "\n"
                 + context.getString(R.string.prefs_app_size) + " " +
                 context.getString(R.string.prefs_megabytes_int, appSize);

@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.widget;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -15,7 +16,7 @@ import android.view.animation.OvershootInterpolator;
 public class AnimationUtils {
     private static final int BOOKMARK_ANIMATING_OVERSHOOT_TENSION = 5;
 
-    public static void addBookmarkWithAnimation(final View bookmarkImage, Animator.AnimatorListener animatorListener) {
+    public static void addBookmarkWithAnimation(@NonNull final View bookmarkImage, Animator.AnimatorListener animatorListener) {
         bookmarkImage.setPivotY(0);
         ValueAnimator moveAnim = ObjectAnimator.ofFloat(bookmarkImage, View.SCALE_Y, 0, 1);
         moveAnim.setDuration(1000);
@@ -24,7 +25,7 @@ public class AnimationUtils {
         moveAnim.start();
     }
 
-    public static void removeBookmarkWithAnimation(final View bookmarkImage, Animator.AnimatorListener animatorListener) {
+    public static void removeBookmarkWithAnimation(@NonNull final View bookmarkImage, Animator.AnimatorListener animatorListener) {
         bookmarkImage.setPivotY(0);
         ValueAnimator moveAnim = ObjectAnimator.ofFloat(bookmarkImage, View.SCALE_Y, 1, 2, 0);
         moveAnim.setDuration(1000);

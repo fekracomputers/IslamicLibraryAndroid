@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.duolingo.open.rtlviewpager.RtlViewPager;
@@ -11,11 +12,11 @@ import com.duolingo.open.rtlviewpager.RtlViewPager;
  */
 
 public class RTLOnlyViewPager extends RtlViewPager  {
-    public RTLOnlyViewPager(Context context) {
+    public RTLOnlyViewPager(@NonNull Context context) {
         super(context);
     }
 
-    public RTLOnlyViewPager(Context context, AttributeSet attrs) {
+    public RTLOnlyViewPager(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.tableOFContents;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventListen
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BookCardEventsCallback;
 import com.fekracomputers.islamiclibrary.browsing.interfaces.BrowsingActivityListingFragment;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseContract;
+import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDBContract;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
@@ -35,6 +37,8 @@ import com.fekracomputers.islamiclibrary.tableOFContents.fragment.TableOfContent
 import com.fekracomputers.islamiclibrary.utility.Util;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 /**
  * Activity to display pager for {@link TableOfContentFragment}, {@link HighlightFragment},
@@ -54,7 +58,9 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
     private boolean buildHistory;
     private int titleId;
     private BookPartsInfo mBooksPartInfo;
+    @NonNull
     private ArrayList<BrowsingActivityListingFragment> mDownloadStatusUpdateListener = new ArrayList<>();
+    @NonNull
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
 
 
@@ -70,6 +76,11 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
             for (BrowsingActivityListingFragment browsingActivityListingFragment : mDownloadStatusUpdateListener) {
                 browsingActivityListingFragment.reAcquireCursors();
             }
+        }
+
+        @Override
+        protected void notifyBookDownloadFailed(int bookId, String failurReason) {
+
         }
 
     };
@@ -119,7 +130,12 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         }
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        mBooksPartInfo = BookDatabaseHelper.getInstance(this, bookId).getBookPartsInfo();
+        try {
+            mBooksPartInfo = BookDatabaseHelper.getInstance(this, bookId).getBookPartsInfo();
+        } catch (BookDatabaseException e) {
+            Timber.e(e);
+            finish();
+        }
         mIsArabic = Util.isArabicUi(this);
 
 
@@ -139,7 +155,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -161,12 +177,12 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBookmarkClicked(Bookmark bookmark) {
+    public void onBookmarkClicked(@NonNull Bookmark bookmark) {
         finishAndGoTo(bookmark.pageInfo.pageId);
     }
 
     @Override
-    public void OnOnTableOfContentTitleClicked(Title title) {
+    public void OnOnTableOfContentTitleClicked(@NonNull Title title) {
         finishAndGoTo(title.pageInfo.pageId);
     }
 
@@ -176,7 +192,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
     }
 
     @Override
-    public void onHighlightClicked(Highlight highlight) {
+    public void onHighlightClicked(@NonNull Highlight highlight) {
         finishAndGoTo(highlight.pageInfo.pageId);
     }
 
@@ -194,6 +210,7 @@ public class TableOfContentsBookmarksActivity extends AppCompatActivity
         bookCardEventsCallback.removeBookDownloadBroadcastListener();
     }
 
+    @NonNull
     @Override
     public BookCardEventsCallback getBookCardEventCallback() {
         return bookCardEventsCallback;

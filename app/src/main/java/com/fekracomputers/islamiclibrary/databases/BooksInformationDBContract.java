@@ -1,11 +1,12 @@
 package com.fekracomputers.islamiclibrary.databases;
 
+import android.support.annotation.NonNull;
+
 /**
  * IMPORTANT NOTE DONT USE THE CONSTANT ID FROM SINGLE TABLES USE THE SPECIFIC COULMN FROM THE JOIN TABLES INSTEAD
  */
 
 public final class BooksInformationDBContract {
-
 
     private BooksInformationDBContract() {
     }
@@ -69,7 +70,8 @@ public final class BooksInformationDBContract {
         public static final String COLUMN_NAME_ID = "id";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_CATEGORY_TITLE = "category_title";
-        public static final String COLUMN_NAME_CATEGORY_ORDER = "catOrder";
+        public static final String COLUMN_NAME_CATEGORY_ORDER = "catorder";
+        public static final String COLUMN_NAME_CATEGORY_ORDER_3 = "catOrder";
         public static final String COLUMN_NAME_PARENT_ID = "parentid";
         public static final String COUNT_OF_BOOKS = "count_of_author_books";
         public static final String HAS_DOWNLOADED_BOOKS = "has_downloaded_books";
@@ -108,18 +110,23 @@ public final class BooksInformationDBContract {
     }
 
     public static class StoredBooks {
-        public static final String TABLE_NAME = "stored_books_table";
+        public static final String TABLE_NAME = "mybooks";
         public static final String COLUMN_NAME_BookID = "bookid";
         public static final String COLUMN_NAME_ENQID = "enqueue";
-        public static final String COLUMN_NAME_STATUS = "STATUS";
+        public static final String COLUMN_NAME_STATUS = "status";
+        public static final String COLUMN_NAME_STATUS_V3 = "STATUS";
         public static final int VALUE_FILESYSTEM_SYNC_FLAG_PRESENT = 1;
         public static final int VALUE_FILESYSTEM_SYNC_FLAG_NOT_PRESENT = 0;
-        public static final String COLUMN_NAME_FILESYSTEM_SYNC_FLAG = "filesystem_sync_flag";
-        public static final String COLUMN_COMPLETED_TIMESTAMP = "DownloadcompletedTimestamp";
+        public static final String COLUMN_NAME_FILESYSTEM_SYNC_FLAG_V3 = "filesystem_sync_flag";
+        public static final String COLUMN_NAME_FILESYSTEM_SYNC_FLAG = "syncFlag";
+        public static final String COLUMN_COMPLETED_TIMESTAMP_V3 = "DownloadcompletedTimestamp";
+        public static final String COLUMN_COMPLETED_TIMESTAMP = "Downloadtimestamp";
+        public static final String TABLE_NAME_V3 = "stored_books_table";
     }
 
     public static class BookNameTextSearch {
-        public static final String TABLE_NAME = "BookNameTextSearch";
+        public static final String TABLE_NAME_V3 = "BookNameTextSearch";
+        public static final String TABLE_NAME = "bookstitlestextsearch";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_DOC_id = "docid";
     }
@@ -127,6 +134,9 @@ public final class BooksInformationDBContract {
     public static class AuthorsNamesTextSearch {
         public static final String TABLE_NAME = "AuthorsNamesTextSearch";
         public static final String COLUMN_NAME_NAME = "name";
+        @NonNull
         public static String COLUMN_NAME_DOC_id="docid";
     }
+
+
 }

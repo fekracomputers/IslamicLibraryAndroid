@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/pref_theme"
     android:layout_width="fill_parent"
@@ -10,10 +9,18 @@
     android:contentDescription="@string/pref_themes"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/pref_item_vertical_margin"
+    android:paddingEnd="@dimen/pref_outer_pad_horiz"
     android:paddingLeft="@dimen/pref_outer_pad_horiz"
     android:paddingRight="@dimen/pref_outer_pad_horiz"
-    android:paddingStart="@dimen/pref_outer_pad_horiz"
-    android:paddingEnd="@dimen/pref_outer_pad_horiz">
+    android:paddingStart="@dimen/pref_outer_pad_horiz">
+
+    <ImageButton
+        android:id="@+id/button_custom"
+        style="@style/Preference.Button.Theme"
+        android:contentDescription="@string/pref_themes_day"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_color_lens_black_24dp" />
+
     <ImageButton
         android:id="@+id/button_day"
         style="@style/Preference.Button.Theme"
@@ -21,25 +28,37 @@
         android:contentDescription="@string/pref_themes_day"
         android:scaleType="center"
         android:tag="0"
-        app:srcCompat="@drawable/ic_setting_theme_day" />
+        app:srcCompat="@drawable/ic_setting_theme_day"
+
+        />
+
     <ImageButton
-        android:id="@+id/button_sepia"
+        android:id="@+id/button_yellow"
         style="@style/Preference.Button.Theme"
-        android:layout_marginLeft="8.0dip"
-        android:layout_marginRight="8.0dip"
-        android:background="@drawable/pref_theme_sepia_bg"
+        android:background="@drawable/pref_theme_yellow_bg"
         android:contentDescription="@string/pref_themes_sepia"
         android:scaleType="center"
         android:tag="1"
-        app:srcCompat="@drawable/ic_setting_theme_sepia"
-        android:layout_marginEnd="8.0dip"
-        android:layout_marginStart="8.0dip" />
+
+        app:srcCompat="@drawable/ic_setting_theme_yellow" />
+
+    <ImageButton
+        android:id="@+id/button_sepia"
+        style="@style/Preference.Button.Theme"
+        android:background="@drawable/pref_theme_sepia_bg"
+        android:contentDescription="@string/pref_themes_sepia"
+        android:scaleType="center"
+        android:tag="2"
+
+        app:srcCompat="@drawable/ic_setting_theme_sepia" />
+
     <ImageButton
         android:id="@+id/button_night"
         style="@style/Preference.Button.Theme"
         android:background="@drawable/pref_theme_night_bg"
         android:contentDescription="@string/pref_themes_night"
         android:scaleType="center"
-        android:tag="2"
+        android:tag="3"
         app:srcCompat="@drawable/ic_setting_theme_night" />
+
 </LinearLayout>

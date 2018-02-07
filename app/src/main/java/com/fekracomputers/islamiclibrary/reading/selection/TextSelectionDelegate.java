@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.reading.selection;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -9,10 +10,12 @@ import android.view.View;
  */
 
 public interface TextSelectionDelegate {
+    @NonNull
     Context getContext();
     void attachSelectionPopup(View mView);
 
     void onContextualMenuItemClicked(int id);
 
+    @NonNull
     SelectionPopupImpl.SelectionBoundsInfo getHighlightScreenRect();
 }

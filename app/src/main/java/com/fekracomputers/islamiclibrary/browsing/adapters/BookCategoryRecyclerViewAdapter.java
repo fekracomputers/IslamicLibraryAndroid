@@ -2,6 +2,8 @@ package com.fekracomputers.islamiclibrary.browsing.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,25 +35,34 @@ public class BookCategoryRecyclerViewAdapter
         implements Filterable {
 
     private static final String KEY_BOOKK_LIST_SORT_INDEX_ONLY = "BookCategoryFragmentSortIndex";
-    private List<BookCategory> mBookCategoryList;
+    private static final ArrayList<Comparator<BookCategory>> comparators = new ArrayList<>();
+
+    static {
+        comparators.add((o1, o2) -> o1.getOrder() - o2.getOrder());
+        comparators.add((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        comparators.add((o1, o2) -> o2.getNumberOfBooks() - o1.getNumberOfBooks());
+
+    }
+
     private final BookCategoryFragment.OnCategoryItemClickListener mListener;
+    private final Object mLock = new Object();
+    @NonNull
+    private final SharedPreferences sharedPref;
+    private List<BookCategory> mBookCategoryList;
     private Context context;
     private BookGridFilter mFilter;
     private ArrayList<BookCategory> mOriginalValues;
-    private final Object mLock = new Object();
     private int mCurrentSortIndex;
-    private final SharedPreferences sharedPref;
     private int mLayoutManagerType;
-
 
     public BookCategoryRecyclerViewAdapter(List<BookCategory> items,
                                            BookCategoryFragment.OnCategoryItemClickListener listener,
-                                           SharedPreferences sharedPref,
+                                           @NonNull SharedPreferences sharedPref,
                                            Context context) {
         this.sharedPref = sharedPref;
         mCurrentSortIndex = sharedPref.getInt(KEY_BOOKK_LIST_SORT_INDEX_ONLY, 0);
         mBookCategoryList = items;
-        Collections.sort(mBookCategoryList,comparators.get(mCurrentSortIndex));
+        Collections.sort(mBookCategoryList, comparators.get(mCurrentSortIndex));
         mListener = listener;
         this.context = context;
         setHasStableIds(true);
@@ -62,8 +73,9 @@ public class BookCategoryRecyclerViewAdapter
         return mBookCategoryList.get(position).getId();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v;
         switch (mLayoutManagerType) {
@@ -93,7 +105,7 @@ public class BookCategoryRecyclerViewAdapter
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
         int size = payloads.size();
 
         if (size == 0) {
@@ -114,9 +126,8 @@ public class BookCategoryRecyclerViewAdapter
         }
     }
 
-
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         BookCategory category = mBookCategoryList.get(position);
         holder.category = category;
         holder.mCategoryTitleView.setText(category.getName());
@@ -142,10 +153,15 @@ public class BookCategoryRecyclerViewAdapter
     public int getItemCount() {
         return mBookCategoryList.size();
     }
+    /*
+     *      <item>@string/library_sort_by_default</item>
+     *  <item>@string/library_sort_by_name</item>
+     *   <item>@string/library_sort_by_number_of_books</item>
+     *   */
 
     public void changeDataset(List<BookCategory> bookCategories) {
         mBookCategoryList = bookCategories;
-        Collections.sort(mBookCategoryList,comparators.get(mCurrentSortIndex));
+        Collections.sort(mBookCategoryList, comparators.get(mCurrentSortIndex));
 
     }
 
@@ -156,11 +172,6 @@ public class BookCategoryRecyclerViewAdapter
         }
         return mFilter;
     }
-    /*
-     *      <item>@string/library_sort_by_default</item>
-     *  <item>@string/library_sort_by_name</item>
-     *   <item>@string/library_sort_by_number_of_books</item>
-     *   */
 
     public int getCurrentSortIndex() {
         return mCurrentSortIndex;
@@ -176,15 +187,6 @@ public class BookCategoryRecyclerViewAdapter
         notifyDataSetChanged();
     }
 
-    private static final ArrayList<Comparator<BookCategory>> comparators = new ArrayList<>();
-
-    static {
-        comparators.add((o1, o2) -> o1.getOrder() - o2.getOrder());
-        comparators.add((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        comparators.add((o1, o2) -> o2.getNumberOfBooks()-o1.getNumberOfBooks());
-
-    }
-
     public void add(BookCategory categoriesFiltered) {
         if (!mBookCategoryList.contains(categoriesFiltered)) {
             mBookCategoryList.add(categoriesFiltered);
@@ -192,8 +194,8 @@ public class BookCategoryRecyclerViewAdapter
         }
     }
 
-    public void setCategoryDownloadStatus(int catId,int downloadStatus) {
-        if(downloadStatus> DownloadsConstants.STATUS_DOWNLOAD_REQUESTED) {
+    public void setCategoryDownloadStatus(int catId, int downloadStatus) {
+        if (downloadStatus > DownloadsConstants.STATUS_DOWNLOAD_REQUESTED && mBookCategoryList.contains(new BookCategory(catId))) {
             int index = getPositonById(catId);
             mBookCategoryList.get(index).setHasDownloadedBooks(true);
             notifyItemChanged(index);
@@ -210,10 +212,10 @@ public class BookCategoryRecyclerViewAdapter
         final TextView mCategoryTitleView;
         final CheckBox mCheckBox;
         final TextView mNumberOfBooksTextView;
-        BookCategory category;
         final View downloadIndicator;
+        BookCategory category;
 
-        ViewHolder(View view) {
+        ViewHolder(@NonNull View view) {
             super(view);
 
             mCategoryTitleView = view.findViewById(R.id.category_title_tv);
@@ -252,6 +254,7 @@ public class BookCategoryRecyclerViewAdapter
 
         }
 
+        @NonNull
         @Override
         public String toString() {
             return super.toString() + " '" + mCategoryTitleView.getText() + "'";
@@ -262,7 +265,7 @@ public class BookCategoryRecyclerViewAdapter
             mCheckBox.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
 
-        public void bindCheckBoxCheckedValue(Boolean isChecked) {
+        public void bindCheckBoxCheckedValue(@Nullable Boolean isChecked) {
             if (isChecked != null)
                 mCheckBox.setChecked(isChecked);
             else
@@ -274,8 +277,9 @@ public class BookCategoryRecyclerViewAdapter
 
     protected class BookGridFilter extends Filter {
 
+        @NonNull
         @Override
-        protected FilterResults performFiltering(CharSequence prefix) {
+        protected FilterResults performFiltering(@Nullable CharSequence prefix) {
 
 
             final FilterResults results = new FilterResults();
@@ -328,7 +332,7 @@ public class BookCategoryRecyclerViewAdapter
         }
 
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+        protected void publishResults(CharSequence constraint, @NonNull FilterResults results) {
             mBookCategoryList = (ArrayList<BookCategory>) results.values;
             notifyDataSetChanged();
         }

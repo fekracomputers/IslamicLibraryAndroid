@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.PopupMenu;
@@ -36,6 +38,7 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstant
  */
 public abstract class BookCardEventsCallback {
     protected FragmentActivity context;
+    @Nullable
     private BookDownloadReceiver mReceiver;
 
     public BookCardEventsCallback(FragmentActivity context) {
@@ -46,12 +49,12 @@ public abstract class BookCardEventsCallback {
 
     abstract public void notifyBookDownloadStatusUpdate();
 
-    public void openBookForReading(BookInfo bookInfo) {
+    public void openBookForReading(@NonNull BookInfo bookInfo) {
         BrowsingUtils.openBookForReading(bookInfo, context);
 
     }
 
-    public void StartDownloadingBook(BookInfo bookInfo) {
+    public void startDownloadingBook(@NonNull BookInfo bookInfo) {
         BrowsingUtils.startDownloadingBook(bookInfo, context);
 
     }
@@ -94,7 +97,7 @@ public abstract class BookCardEventsCallback {
         }
     }
 
-    public void showAllAuthorBooks(AuthorInfo authorInfo) {
+    public void showAllAuthorBooks(@NonNull AuthorInfo authorInfo) {
         final Intent intent = new Intent(context, BookListActivity.class);
         intent.putExtra(BooksInformationDBContract.BooksAuthors.COLUMN_NAME_AUTHOR_ID, authorInfo.getId());
         intent.putExtra(BookListFragment.FILTERTYPE, BookListFragment.FILTERBYAuthour);
@@ -102,7 +105,7 @@ public abstract class BookCardEventsCallback {
         context.startActivity(intent);
     }
 
-    public void showAllCategoryBooks(BookCategory category) {
+    public void showAllCategoryBooks(@NonNull BookCategory category) {
         final Intent intent = new Intent(context, BookListActivity.class);
         intent.putExtra(BooksInformationDBContract.BooksCategories.COLUMN_NAME_CATEGORY_ID, category.getId());
         intent.putExtra(BookListFragment.FILTERTYPE, BookListFragment.FILTERBYCATEGORY);
@@ -114,7 +117,7 @@ public abstract class BookCardEventsCallback {
         //TODO
     }
 
-    public void onMoreButtonClicked(final BookInfo bookInfo, View v) {
+    public void onMoreButtonClicked(@NonNull final BookInfo bookInfo, @NonNull View v) {
         PopupMenu popup = new PopupMenu(context, v);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -173,19 +176,27 @@ public abstract class BookCardEventsCallback {
          * @param intent  The incoming broadcast Intent
          */
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, @NonNull Intent intent) {
             int downloadStatus = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS,
                     DownloadsConstants.STATUS_INVALID);
             boolean notifyCangeWithoutBookId = intent.getBooleanExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, false);
+
             if (!notifyCangeWithoutBookId) {
                 int bookId = intent.getIntExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, 0);
+
+                if (intent.hasExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON)) {
+                    bookCardEventsCallback.notifyBookDownloadFailed(bookId, intent.getStringExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON));
+                }
                 bookCardEventsCallback.notifyBookDownloadStatusUpdate(bookId, downloadStatus);
 
             } else {
                 bookCardEventsCallback.notifyBookDownloadStatusUpdate();
             }
+
         }
     }
+
+    protected abstract void notifyBookDownloadFailed(int bookId, String failurReason);
 
 
 }

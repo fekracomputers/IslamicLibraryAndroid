@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -67,18 +69,25 @@ public class BookListFragment
     };
     protected int mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
+    @Nullable
     protected BookListRecyclerViewAdapter bookListRecyclerViewAdapter;
+    @Nullable
     protected RecyclerView.LayoutManager mLayoutManager;
+    @Nullable
     private BookCardEventsCallback mListener;
+    @Nullable
     private BooksInformationDbHelper booksInformationDbHelper;
     private int filterType;
     private int id;
     private int mCurrentSortIndex;
+    @Nullable
     private String mSearchQuery;
+    @Nullable
     private String title;
     private int mSavedScrollPositionBeforSearch;
 
 
+    @NonNull
     public static BookListFragment newInstance(int filterType, int id) {
         return newInstance(filterType, id, null);
 
@@ -92,6 +101,7 @@ public class BookListFragment
      *                   neglected otherwise
      * @return a new fragment displaying books as requested
      */
+    @NonNull
     public static BookListFragment newInstance(int filterType, int id, String name) {
 
         Bundle args = new Bundle();
@@ -124,7 +134,7 @@ public class BookListFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
@@ -195,7 +205,7 @@ public class BookListFragment
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_book_list, menu);
         MenuItem item = menu.findItem(R.id.action_search);
@@ -209,20 +219,20 @@ public class BookListFragment
             }
 
             @Override
-            public boolean onQueryTextChange(String query) {
+            public boolean onQueryTextChange(@Nullable String query) {
                 if ((mSearchQuery == null || mSearchQuery.isEmpty()) && !(query == null || query.isEmpty())) {
                     //first click on search icon
                     mSearchQuery = query;
                     mSavedScrollPositionBeforSearch = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                             .findFirstCompletelyVisibleItemPosition();
-                } else if (!(mSearchQuery == null || mSearchQuery.isEmpty()) && (query == null || query.isEmpty())) {
+                } else if (!(mSearchQuery == null || mSearchQuery.isEmpty()) && (query == null || query.isEmpty()) && mListener != null) {
                     //clearing the search query
                     mSearchQuery = query;
                     Cursor bookListCursor = getCursor(mListener.shouldDisplayDownloadedOnly());
                     bookListRecyclerViewAdapter.changeCursor(bookListCursor);
                     (mRecyclerView.getLayoutManager()).scrollToPosition(mSavedScrollPositionBeforSearch);
 
-                } else {
+                } else if (mListener != null) {
                     mSearchQuery = query;
                     Cursor bookListCursor = getCursor(mListener.shouldDisplayDownloadedOnly());
                     bookListRecyclerViewAdapter.changeCursor(bookListCursor);
@@ -237,7 +247,7 @@ public class BookListFragment
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_rearrange) {
 
             if (mCurrentLayoutManagerType == GRID_LAYOUT_MANAGER) {

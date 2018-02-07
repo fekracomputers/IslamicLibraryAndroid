@@ -1,5 +1,7 @@
 package com.dictiography.collections;
 
+import android.support.annotation.NonNull;
+
 import java.util.NavigableMap;
 
 /**
@@ -29,6 +31,7 @@ public interface IndexedNavigableMap<K, V> extends NavigableMap<K, V> {
      *         from the beginning of the sorted map
      * @throws ArrayIndexOutOfBoundsException if the specified index is less than 0 or greater than size-1
      */
+    @NonNull
     Entry<K, V> exactEntry(int index);
 
     /**

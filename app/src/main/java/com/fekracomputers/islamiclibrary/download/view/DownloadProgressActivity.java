@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
+
 import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity.KEY_NUMBER_OF_BOOKS_TO_DONLOAD;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.BROADCAST_ACTION;
 import static com.fekracomputers.islamiclibrary.download.model.DownloadsConstants.EXTRA_NOTIFY_WITHOUT_BOOK_ID;
@@ -40,11 +44,10 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     private static final int CANCELLED_DOWNLOAD_TYPE = 0;
     private static final int FINISHED_DOWNLOAD_TYPE = 1;
     private static final int ZERO_DOWNLOAD_TYPE = 2;
-    DownlandProgressRecyclerViewAdapter bookmarkRecyclerViewAdapter;
+    @Nullable
+    DownlandProgressRecyclerViewAdapter downlandProgressRecyclerViewAdapter;
     private RecyclerView recyclerView;
     private DownloadProgressAsncTask downloadProgressAsncTask;
-    private Menu mMenu;
-    private BooksInformationDbHelper booksInformationDbHelper;
     private boolean mShowCancelAll = false;
 
     @Override
@@ -64,18 +67,26 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
         recyclerView = findViewById(R.id.recyclerView);
 
 
-        booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
-        ArrayList<Long> downloads = booksInformationDbHelper.getPendingDownloads();
-
-        if (downloads.size() != 0) {
-            mShowCancelAll=true;
+        ArrayList<Long> downloads;
+        if (BooksInformationDbHelper.databaseFileExists(this)) {
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
+            if (booksInformationDbHelper != null) {
+                downloads = booksInformationDbHelper.getPendingDownloads();
+                if (downloads.size() != 0) {
+                    mShowCancelAll = true;
+                    downloadProgressAsncTask = new DownloadProgressAsncTask();
+                    downloadProgressAsncTask.execute();
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                } else {
+                    showAlternativeView(ZERO_DOWNLOAD_TYPE);
+                }
+            }
+        } else {//downloading book information
+            mShowCancelAll = false;
             downloadProgressAsncTask = new DownloadProgressAsncTask();
-            downloadProgressAsncTask.execute(downloads.toArray(new Long[0]));
+            downloadProgressAsncTask.execute();
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        } else {
-            showAlternativeView(ZERO_DOWNLOAD_TYPE);
         }
     }
 
@@ -115,17 +126,23 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return (true);
             case R.id.cancel_all_downloads:
                 Bundle CancelDownloadDialogFragmentBundle = new Bundle();
-                CancelDownloadDialogFragmentBundle.putInt(KEY_NUMBER_OF_BOOKS_TO_DONLOAD, bookmarkRecyclerViewAdapter.getItemCount());
-                DialogFragment CancelDownloadDialogFragment = new CancelDownloadDialogFragment();
-                CancelDownloadDialogFragment.setArguments(CancelDownloadDialogFragmentBundle);
-                CancelDownloadDialogFragment.show(getSupportFragmentManager(), "CancelDownloadDialogFragment");
+                if (downlandProgressRecyclerViewAdapter != null) {
+                    CancelDownloadDialogFragmentBundle.putInt(KEY_NUMBER_OF_BOOKS_TO_DONLOAD,
+                            downlandProgressRecyclerViewAdapter.getItemCount());
+
+                    DialogFragment CancelDownloadDialogFragment = new CancelDownloadDialogFragment();
+                    CancelDownloadDialogFragment.setArguments(CancelDownloadDialogFragmentBundle);
+                    CancelDownloadDialogFragment.show(getSupportFragmentManager(), "CancelDownloadDialogFragment");
+                } else {
+                    Timber.d("downlandProgressRecyclerViewAdapter null");
+                }
                 return true;
         }
 
@@ -142,7 +159,16 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
         relativeLayout.setVisibility(View.VISIBLE);
     }
 
-    private class DownloadProgressAsncTask extends AsyncTask<Long, DownloadInfoUpdate, DownloadInfoUpdate> {
+    private void cancelMultipleDownloads(Cursor c, int columnIndex) {
+        if (BooksInformationDbHelper.databaseFileExists(this)) {
+            BooksInformationDbHelper booksInformationDbHelper = BooksInformationDbHelper.getInstance(this);
+            if (booksInformationDbHelper != null) {
+                booksInformationDbHelper.cancelMultipleDownloads(c, columnIndex);
+            }
+        }
+    }
+
+    private class DownloadProgressAsncTask extends AsyncTask<Void, DownloadInfoUpdate, DownloadInfoUpdate> {
 
         private List<DownloadInfo> mOldDownloadList;
         private boolean mFirstTime;
@@ -151,19 +177,17 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
             this.mFirstTime = true;
         }
 
+
+        @Nullable
         @Override
-        protected DownloadInfoUpdate doInBackground(Long... ids) {
+        protected DownloadInfoUpdate doInBackground(Void... voids) {
             //Convert Long[] to long[]
-            long candidateWatchedIds[] = new long[ids.length];
-            for (int i = 0; i < ids.length; i++) {
-                candidateWatchedIds[i] = ids[i];
-            }
 
             while (true) {
 
                 DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 DownloadManager.Query BooksDownloadQuery = new DownloadManager.Query();
-                BooksDownloadQuery.setFilterById(candidateWatchedIds);
+
                 BooksDownloadQuery.setFilterByStatus(DownloadManager.STATUS_RUNNING |
                         DownloadManager.STATUS_PAUSED |
                         DownloadManager.STATUS_PENDING);
@@ -214,7 +238,6 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
                     non_complete_query.setFilterByStatus(DownloadManager.STATUS_FAILED |
                             DownloadManager.STATUS_PENDING |
                             DownloadManager.STATUS_RUNNING);
-                    non_complete_query.setFilterById(candidateWatchedIds);
                     Cursor c = downloadManager.query(non_complete_query);
                     int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_ID);
                     //TODO this loop may cause problems if a download completed and the broadcast is triggered before we cancel it
@@ -222,7 +245,7 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
                         long enquId = c.getLong(columnIndex);
                         downloadManager.remove(enquId);
                     }
-                    booksInformationDbHelper.cancelMultipleDownloads(c, columnIndex);
+                    DownloadProgressActivity.this.cancelMultipleDownloads(c, columnIndex);
                     Intent localIntent =
                             new Intent(BROADCAST_ACTION)
                                     .putExtra(EXTRA_NOTIFY_WITHOUT_BOOK_ID, true);
@@ -232,9 +255,9 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
                     return null;
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(40);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Timber.e(e);
                 }
             }
         }
@@ -243,12 +266,14 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
         protected void onProgressUpdate(DownloadInfoUpdate... diffResult) {
             if (diffResult[0].type == CANCELLED_DOWNLOAD_TYPE) {
                 showProgress();
-            } else if (!mFirstTime) {
+            } else if (!(mFirstTime || downlandProgressRecyclerViewAdapter == null)) {
                 updateAdaperAndDipatchChanges(diffResult[0]);
             } else {
-                bookmarkRecyclerViewAdapter = new DownlandProgressRecyclerViewAdapter(DownloadProgressActivity.this, mOldDownloadList);
-                bookmarkRecyclerViewAdapter.setHasStableIds(true);
-                recyclerView.setAdapter(bookmarkRecyclerViewAdapter);
+                downlandProgressRecyclerViewAdapter = new DownlandProgressRecyclerViewAdapter(
+                        DownloadProgressActivity.this,
+                        mOldDownloadList);
+                downlandProgressRecyclerViewAdapter.setHasStableIds(true);
+                recyclerView.setAdapter(downlandProgressRecyclerViewAdapter);
                 mFirstTime = false;
             }
         }
@@ -256,9 +281,11 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
 
         @Override
         protected void onPostExecute(DownloadInfoUpdate diffResult) {
-            if (!mFirstTime) {
+            if (!(mFirstTime || downlandProgressRecyclerViewAdapter == null)) {
                 updateAdaperAndDipatchChanges(diffResult);
                 showAlternativeView(FINISHED_DOWNLOAD_TYPE);
+                mShowCancelAll = false;
+                supportInvalidateOptionsMenu();
             } else {
                 showAlternativeView(ZERO_DOWNLOAD_TYPE);
                 mFirstTime = false;
@@ -271,7 +298,9 @@ public class DownloadProgressActivity extends AppCompatActivity implements Cance
         }
 
         private void updateAdaperAndDipatchChanges(DownloadInfoUpdate newItems) {
-            bookmarkRecyclerViewAdapter.updateItems(newItems);
+            if (downlandProgressRecyclerViewAdapter != null) {
+                downlandProgressRecyclerViewAdapter.updateItems(newItems);
+            }
         }
     }
 

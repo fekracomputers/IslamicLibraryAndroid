@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadInfo.Down
 class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandProgressRecyclerViewAdapter.DownloadProgressViewHolder> {
     private List<DownloadInfo> downloadInfos;
     private Context context;
+    @NonNull
     private Deque<DownloadInfoUpdate> pendingUpdates = new ArrayDeque<>();
 
     public DownlandProgressRecyclerViewAdapter(Context context) {
@@ -45,15 +47,16 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
         this.downloadInfos = downloadInfos;
     }
 
+    @NonNull
     @Override
-    public DownloadProgressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DownloadProgressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_download, parent, false);
         return new DownlandProgressRecyclerViewAdapter.DownloadProgressViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DownloadProgressViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull DownloadProgressViewHolder holder, int position, @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
             for (Object payload : payloads) {
                 Bundle o = (Bundle) payload;
@@ -79,7 +82,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
     }
 
     @Override
-    public void onBindViewHolder(DownloadProgressViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DownloadProgressViewHolder holder, int position) {
         holder.bind(downloadInfos.get(position));
     }
 
@@ -96,14 +99,14 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
             return 0;
     }
 
-    void updateItems(final DownloadInfoUpdate newItems) {
+    void updateItems(@NonNull final DownloadInfoUpdate newItems) {
         pendingUpdates.push(newItems);
         if (pendingUpdates.size() == 1) {
             applyDiffResult(newItems);
         }
     }
 
-    private void applyDiffResult(DownloadInfoUpdate newItems) {
+    private void applyDiffResult(@NonNull DownloadInfoUpdate newItems) {
         pendingUpdates.remove(newItems);
         dispatchUpdates(newItems);
         if (pendingUpdates.size() > 0) {
@@ -115,7 +118,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
 
     // This method does the work of actually updating
     // the backing data and notifying the adapter
-    private void dispatchUpdates(DownloadInfoUpdate newItems) {
+    private void dispatchUpdates(@NonNull DownloadInfoUpdate newItems) {
         //this order is opposite to what the documentation suggests but this only works
         newItems.diffResult.dispatchUpdatesTo(this);
         downloadInfos.clear();
@@ -133,7 +136,7 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
         private final TextView reasonTextView;
         DownloadInfo downloadInfo;
 
-        DownloadProgressViewHolder(View itemView) {
+        DownloadProgressViewHolder(@NonNull View itemView) {
             super(itemView);
             progressBar = itemView.findViewById(R.id.progressBar);
             downloadTitle = itemView.findViewById(R.id.book_name);
@@ -147,12 +150,16 @@ class DownlandProgressRecyclerViewAdapter extends RecyclerView.Adapter<DownlandP
                 if (downloadManager != null) {
                     downloadManager.remove(downloadInfo.getId());
                 }
-                LocalDownloadBroadCastReciver.broadCastDownloadCanceled(context, downloadInfo.getId());
+                if (!downloadInfo.getTitle().equals(context.getString(R.string.book_information_database))) {
+                    LocalDownloadBroadCastReciver.broadCastDownloadCanceled(context, downloadInfo.getId());
+                } else {
+                    LocalDownloadBroadCastReciver.broadCastBookInformationDownloadCanceled(context, downloadInfo.getId());
+                }
             });
         }
 
 
-        void bind(DownloadInfo downloadInfo) {
+        void bind(@NonNull DownloadInfo downloadInfo) {
             this.downloadInfo = downloadInfo;
             bindProgress(downloadInfo.getProgressPercent());
             downloadTitle.setText(downloadInfo.getTitle());

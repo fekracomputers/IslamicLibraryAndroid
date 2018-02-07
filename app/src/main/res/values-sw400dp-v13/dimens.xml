@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="books_play_ML_inner_gutter_pad">0.0dip</dimen>
+    <dimen name="books_play_ML_outer_gutter_pad">8.0dip</dimen>
+    <dimen name="books_play_RN_inner_gutter_pad">4.0dip</dimen>
+    <dimen name="books_play_card_cluster_gutter">8.0dip</dimen>
+    <dimen name="books_play_cluster_inset">24.0dip</dimen>
+    <dimen name="books_play_outer_gutter">12.0dip</dimen>
+    <dimen name="eob_card_max_peeking_height">0.0dip</dimen>
+    <dimen name="eob_heading_size">50.0sp</dimen>
+    <dimen name="play_collection_edge_padding">12.0dip</dimen>
+    <dimen name="play_collection_edge_padding_minus_card_half_spacing">8.0dip</dimen>
+    <dimen name="details_page_cover_and_details_side_margin">20.0dip</dimen>
+</resources>

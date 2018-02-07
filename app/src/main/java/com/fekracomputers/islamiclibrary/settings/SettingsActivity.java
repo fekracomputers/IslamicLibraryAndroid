@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -69,12 +70,13 @@ public class SettingsActivity extends AppCompatActivity implements
     private static final String SI_LOCATION_TO_WRITE = "SI_LOCATION_TO_WRITE";
     private static final int REQUEST_WRITE_TO_SDCARD_PERMISSION = 1;
 
+    @Nullable
     private String mNewLocation;
     private String mOldLocation;
     private int restartOnBack = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
         super.onCreate(savedInstanceState);
 
@@ -152,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull final MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home: {
@@ -179,7 +181,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartScreen(final PreferenceFragmentCompat preferenceFragmentCompat, final PreferenceScreen preferenceScreen) {
+    public boolean onPreferenceStartScreen(@NonNull final PreferenceFragmentCompat preferenceFragmentCompat, @NonNull final PreferenceScreen preferenceScreen) {
         mReplaceFragmentStrategy.onPreferenceStartScreen(getSupportFragmentManager(), preferenceFragmentCompat, preferenceScreen);
         return true;
     }
@@ -195,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onPreferenceDisplayDialog(PreferenceFragmentCompat preferenceFragmentCompat, Preference preference) {
+    public boolean onPreferenceDisplayDialog(PreferenceFragmentCompat preferenceFragmentCompat, @NonNull Preference preference) {
         final String key = preference.getKey();
         DialogFragment f;
         if (preference instanceof ColorPreference) {

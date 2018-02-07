@@ -82,7 +82,7 @@
     <string name="pref_ringtone_silent">صامت</string>
 
     <string name="pref_title_global_override_local">تطبيق على كل الكتب </string>
-    <string name="global_page_display_preference">تعديل </string>
+    <string name="global_page_display_preference">تعديل خصائص العرض العامة </string>
     <string name="pref_header_global_display">اختيارات عرض صفحة الكتب العامة</string>
     <string name="pref_global_display_text_size">حجم خط متن الكتاب</string>
     <string name="pref_summary_global_override_local">تطبيق خيارات عامة موحدة على كل الكتب</string>
@@ -108,6 +108,8 @@
     <string name="downloading_book_information">نحمل قاعدة بيانات الكتب</string>
     <string name="info_refreshing_database_with_storage">نراجع الكتب المخزنة</string>
     <string name="info_preparing_book_information_database">جاري إعداد قاعدة بيانات الكتب</string>
+    <string name="info_unzipping_book_information_database">جاري فك ضغط قاعدة بيانات الكتب</string>
+
     <string name="pref_ui_language_arabic">واجهة  عربية</string>
     <string name="download_book">تحميل</string>
     <string name="download_selected_books">تنزيل الكتب المحددة</string>
@@ -203,6 +205,7 @@
     <string name="hint_search_authors_names">البحث في أسماء المؤلفين</string>
     <string name="hint_search_books_names">البحث في أسماء الكتب</string>
     <string name="preparing_book">جاري الإعداد</string>
+    <string name="unzipping_book">جاري فك الضغط</string>
     <string name="refreshing_on_background">سيتم مراجعة الكتب في الخلفية، يمكنك الاستمرار في القراءة الآن</string>
     <string name="open_source_licences">البرمجيات مفتوحة المصدر المستخدمة</string>
     <string name="searching_in_d_books">نبحث في %d كتب</string>
@@ -285,6 +288,26 @@
     <string name="menu_delete_note">حذف الملاحظة</string>
     <string name="menu_edit_note_color">تعديل لون الملاحظة</string>
     <string name="show_collecttion">إظهار</string>
-    <string name="book_information_error_close">عذرا !!!\nيوجد خلل في قاعدة بيانات الكتب\nسوف نغلق البرنامج فأعد تشغيله مرة أخرى لإعادة محاولة تحميل قاعدة بيانات الكتب</string>
+    <string name="book_information_error_close">عذرا !!!\nيوجد خلل في قاعدة بيانات الكتب\n هل تريد إعادة تحميلها؟</string>
+    <string name="book_information_canceled">لقد ألغيت تحميل قاعدة بيانات الكتب فلن يعمل البرنامج دونها،أعد تشغيل البرنامج لإعادة تحميلها</string>
+    <string name="download_failed">فشل تحميل كتاب رقم (%1$d) بسبب %2$s</string>
+    <string name="not_now">ليس الآن</string>
+    <string name="book_download_failure">فشل تحميل كتاب %1$s</string>
+    <string name="redownload">إعادة التحميل</string>
+    <string name="pref_title_pinch_zoom">تكبير الخط بسحب الشاشة</string>
+    <string name="book_not_download">كتاب (%1$s) غير محمل الآن</string>
+    <string name="book_info">%1$s،%2$s،%3$s</string>
+    <string name="updating_books_please_wait">يجري تحديث الكتب الرجاء الانتظار</string>
+    <string name="updating_books_progress">%1$d/%2$d</string>
+    <string name="exit_book">الخروج من الكتاب</string>
+    <string name="pref_text_color">لون النص</string>
+    <string name="pref_text_color_day">لون النص في القراءة النهارية</string>
+    <string name="pref_text_color_night">لون النص في القراءة الليلية</string>
+    <string name="pref_heading_color">لون العناوين</string>
+    <string name="pref_heading_color_day">لون العناوين قي القراءة النهارية</string>
+    <string name="pref_heading_color_night">لون العناوين في القراءة الليلية</string>
+    <string name="button_custom_color">لون معدل</string>
+    <string name="button_preset_color">ألوان معدة</string>
+    <string name="button_select_color">استخدام</string>
 
 </resources>

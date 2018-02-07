@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:baselineAligned="false"
+    android:contentDescription="@string/pref_title_tashkeel"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/pref_item_vertical_margin"
+    android:paddingEnd="@dimen/pref_outer_pad_horiz"
+    android:paddingLeft="@dimen/pref_outer_pad_horiz"
+    android:paddingRight="@dimen/pref_outer_pad_horiz"
+    android:paddingStart="@dimen/pref_outer_pad_horiz">
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="4dp"
+        android:contentDescription="@string/pref_title_pinch_zoom"
+        app:srcCompat="?settingsPinch" />
+
+    <TextView
+        style="@style/display_option_pref_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="@string/pref_title_pinch_zoom" />
+
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.0"
+        android:gravity="center_vertical">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/pref_pinch_zoom"
+            style="@style/Preference.SwitchColor"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:switchMinWidth="56.0dip"
+            android:textOff="@string/unchecked"
+            android:textOn="@string/checked"
+            android:theme="@style/Preference.SwitchColor" />
+    </FrameLayout>
+
+
+</LinearLayout>

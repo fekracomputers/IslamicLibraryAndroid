@@ -1,5 +1,8 @@
 package com.fekracomputers.islamiclibrary.search.model.FTS;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * بسم الله الرحمن الرحيم
  * Created by moda_ on 27/2/2017.
@@ -7,6 +10,7 @@ package com.fekracomputers.islamiclibrary.search.model.FTS;
 
 public class FtsExprTree {
     private FtsOperatorNode root;
+    @NonNull
     private StringBuilder stringRepresentation = new StringBuilder();
 
     public FtsExprTree(FtsOperatorNode root) {
@@ -14,7 +18,7 @@ public class FtsExprTree {
     }
 
 
-    private void traverse(BaseFtsEprNode node) {
+    private void traverse(@Nullable BaseFtsEprNode node) {
         if (node != null) {
             traverse(node.leftChild());
             stringRepresentation.append(node.value());
@@ -22,6 +26,7 @@ public class FtsExprTree {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         traverse(root);

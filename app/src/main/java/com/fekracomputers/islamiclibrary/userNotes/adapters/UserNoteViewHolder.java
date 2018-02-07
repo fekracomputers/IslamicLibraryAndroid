@@ -1,5 +1,6 @@
 package com.fekracomputers.islamiclibrary.userNotes.adapters;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -9,7 +10,7 @@ import android.view.View;
 class UserNoteViewHolder extends com.xwray.groupie.ViewHolder {
     protected UserNoteGroupAdapter.UserNoteInterActionListener listener;
 
-    public UserNoteViewHolder(View rootView) {
+    public UserNoteViewHolder(@NonNull View rootView) {
         super(rootView);
     }
 

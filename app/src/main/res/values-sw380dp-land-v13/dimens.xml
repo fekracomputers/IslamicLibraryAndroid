@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_image_width">160.0dip</dimen>
+    <dimen name="filter_dialog_v_inner">8.0dip</dimen>
+    <dimen name="filter_dialog_v_item">48.0dip</dimen>
+    <dimen name="filter_dialog_v_outer">16.0dip</dimen>
+    <dimen name="gifting_edu_banner_height">160.0dip</dimen>
+    <dimen name="gifting_edu_banner_width">192.0dip</dimen>
+</resources>

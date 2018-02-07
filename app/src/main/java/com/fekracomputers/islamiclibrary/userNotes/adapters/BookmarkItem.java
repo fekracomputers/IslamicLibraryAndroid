@@ -35,11 +35,15 @@ public class BookmarkItem extends UserNoteItem<Bookmark, BookmarkItem.ViewHolder
     }
 
     public static class ViewHolder extends UserNoteViewHolder {
+        @NonNull
         public final BookmarkCard bookmarkCard;
 
         public ViewHolder(View view) {
             super(view);
             bookmarkCard = (BookmarkCard) view;
+            bookmarkCard.setShowBook(true);
+            bookmarkCard.setShowCategory(true);
+            bookmarkCard.setShowAuthor(true);
         }
 
     }

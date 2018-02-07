@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="?cardBackgroundColor"
     android:layout_width="match_parent"
@@ -41,32 +40,32 @@
                 style="@style/navigationViewTextAppearance.day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="normal"
-                android:layout_toRightOf="@+id/part_page_number_tv"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="@dimen/skim_header_side_margin"
                 android:layout_marginRight="20.0dip"
+                android:layout_toRightOf="@+id/part_page_number_tv"
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
-                tools:text="الباب الأول"
+                android:singleLine="true"
+                android:textSize="@dimen/skim_view_header_textsize"
+                android:textStyle="normal"
 
-                android:textSize="@dimen/skim_view_header_textsize" />
+                tools:text="الباب الأول" />
 
 
             <TextView
                 android:id="@+id/part_page_number_tv"
                 style="@style/navigationViewTextAppearance.day"
                 android:layout_width="wrap_content"
-                android:textStyle="normal"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/skim_header_side_margin"
                 android:layout_marginTop="@dimen/skim_view_top_margin"
-                android:layout_alignParentLeft="true"
                 android:enabled="true"
                 android:gravity="end"
-                tools:text="23"
-                />
+                android:textStyle="normal"
+                tools:text="23" />
 
         </RelativeLayout>
 

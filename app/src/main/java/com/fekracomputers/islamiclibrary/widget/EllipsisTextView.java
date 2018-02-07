@@ -2,6 +2,8 @@ package com.fekracomputers.islamiclibrary.widget;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.util.AttributeSet;
 
@@ -19,22 +21,23 @@ import android.util.AttributeSet;
  */
 
 public class EllipsisTextView extends android.support.v7.widget.AppCompatTextView {
+    @Nullable
     private EllipsisListener ellipsesListeners;
     private boolean ellipses;
 
-    public EllipsisTextView(Context context) {
+    public EllipsisTextView(@NonNull Context context) {
         super(context);
     }
 
-    public EllipsisTextView(Context context, AttributeSet attrs) {
+    public EllipsisTextView(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public EllipsisTextView(Context context, AttributeSet attrs, int defStyle) {
+    public EllipsisTextView(@NonNull Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public void addEllipsesListener(EllipsisListener listener) {
+    public void addEllipsesListener(@Nullable EllipsisListener listener) {
         if (listener == null) {
             throw new NullPointerException();
         }

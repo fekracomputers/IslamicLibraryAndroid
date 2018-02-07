@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.model;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.tableOFContents.TableOfContentsUtils;
@@ -33,10 +34,12 @@ public class PageCitation {
         return resources.getString(R.string.citation_bottom_with_square_brackets, bookName, authorName, partAndPage);
     }
 
+    @NonNull
     public String getCitationString() {
         return "\n" + getCitationWithoutLineBreaks();
     }
 
+    @NonNull
     public String getCitationHtml() {
         return "<p>" + getCitationWithoutLineBreaks() + "</p>";
     }

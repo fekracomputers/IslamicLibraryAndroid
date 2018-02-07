@@ -32,7 +32,7 @@ public class BookResultsHeaderViewHolder extends ParentViewHolder {
 
     }
 
-    public void bind(BookSearchResultsContainer bookSearchResultsContainer) {
+    public void bind(@NonNull BookSearchResultsContainer bookSearchResultsContainer) {
         bookNameTextView.setText(bookSearchResultsContainer.getBookName());
         numberOfResultsTextView.setText(String.valueOf(bookSearchResultsContainer.getChildCount()));
         this.bookPartsInfo=bookSearchResultsContainer.bookPartsInfo;

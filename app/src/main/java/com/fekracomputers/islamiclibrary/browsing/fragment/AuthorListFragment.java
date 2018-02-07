@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -50,8 +52,11 @@ public class AuthorListFragment
 
     protected int mCurrentLayoutManagerType;
     protected RecyclerView mRecyclerView;
+    @Nullable
     protected AuthorRecyclerViewAdapter mAuthorRecyclerViewAdapter;
+    @Nullable
     protected RecyclerView.LayoutManager mLayoutManager;
+    @Nullable
     private OnAuthorItemClickListener mListener;
     private int mCurrentSortIndex;
     private String mSearchQuery;
@@ -71,7 +76,7 @@ public class AuthorListFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentLayoutManagerType = sharedPref.getInt(KEY_SHARED_PREF_AUTHOR_LAYOUT_TYPE, LINEAR_LAYOUT_MANAGER);
@@ -102,7 +107,7 @@ public class AuthorListFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(fragment_author_list, container, false);
@@ -114,7 +119,7 @@ public class AuthorListFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_author_list, menu);
 
@@ -140,13 +145,13 @@ public class AuthorListFragment
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_rearrange) {
 
             if (mCurrentLayoutManagerType == GRID_LAYOUT_MANAGER) {
                 setRecyclerViewLayoutManager(LINEAR_LAYOUT_MANAGER);
                 item.setIcon(R.drawable.ic_view_stream_black_24dp);
-            } else {//if mCurrentLayoutManagerType == LayoutManagerType.LINEAR_LAYOUT_MANAGER
+            } else {//if mCurrentLayoutManagerType == LINEAR_LAYOUT_MANAGER
                 setRecyclerViewLayoutManager(GRID_LAYOUT_MANAGER);
                 item.setIcon(R.drawable.ic_view_module_black_24dp);
             }
@@ -165,7 +170,7 @@ public class AuthorListFragment
     @Override
     public void sortMethodSelected(int which) {
         mCurrentSortIndex = which;
-        boolean downloadedOnly = mListener.shouldDisplayDownloadedOnly();
+        boolean downloadedOnly = mListener != null && mListener.shouldDisplayDownloadedOnly();
         Cursor bookListCursor = mAuthorRecyclerViewAdapter.getCursor(downloadedOnly, mSearchQuery, mCurrentSortIndex);
         mAuthorRecyclerViewAdapter.changeCursor(bookListCursor);
 
@@ -181,7 +186,9 @@ public class AuthorListFragment
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        ((BrowsingActivity) getActivity()).unRegisterListener(this);
+        if (getActivity() != null) {
+            ((BrowsingActivity) getActivity()).unRegisterListener(this);
+        }
     }
 
 
@@ -335,7 +342,8 @@ public class AuthorListFragment
 
     @Override
     public boolean shouldDisplayDownloadOnly() {
-        return mListener.shouldDisplayDownloadedOnly();
+
+        return mListener != null && mListener.shouldDisplayDownloadedOnly();
     }
 
     @Override
@@ -348,11 +356,6 @@ public class AuthorListFragment
     public void reScroll() {
         (mRecyclerView.getLayoutManager()).scrollToPosition(mSavedScrollPositionBeforSearch);
 
-    }
-
-    public enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
     }
 
 

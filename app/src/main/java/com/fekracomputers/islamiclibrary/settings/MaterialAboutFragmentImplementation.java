@@ -16,10 +16,7 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
-import com.franmontiel.attributionpresenter.AttributionPresenter;
-import com.franmontiel.attributionpresenter.entities.Attribution;
-import com.franmontiel.attributionpresenter.entities.Library;
-import com.franmontiel.attributionpresenter.entities.License;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 /**
  * بسم الله الرحمن الرحيم
@@ -197,58 +194,14 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         //endregion
 
         //region legalCardBuilder
-        final AttributionPresenter attributionPresenter = new AttributionPresenter.Builder(context)
-                .addAttributions(
-                        new Attribution.Builder("Rangy")
-                                .addCopyrightNotice("Copyright (c) 2014 Tim Down")
-                                .addLicense(License.MIT)
-                                .setWebsite("https://github.com/timdown/rangy")
-                                .build()
-                ).addAttributions(
-                        new Attribution.Builder("Expandable RecyclerView")
-                                .addCopyrightNotice("Copyright (c) 2014 Big Nerd Ranch")
-                                .addLicense(License.MIT)
-                                .setWebsite("http://bignerdranch.github.io/expandable-recycler-view/")
-                                .build()
-                ).addAttributions(
-                        new Attribution.Builder("rtl-viewpager")
-                                .addCopyrightNotice("Copyright 2016 Duolingo")
-                                .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/duolingo/rtl-viewpager")
-                                .build()
-                ).addAttributions(
-                        new Attribution.Builder("android-support-preference")
-                                .addCopyrightNotice("Copyright 2015 Diego Gómez Olvera")
-                                .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/consp1racy/android-support-preference")
-                                .build()
-                ).addAttributions(
-                        new Attribution.Builder("EasyFeedback")
-                                .addCopyrightNotice("Copyright 2017 Ramankit Singh")
-                                .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/webianks/EasyFeedback")
-                                .build()
-                ).addAttributions(
-                        new Attribution.Builder("AttributionPresenter")
-                                .addCopyrightNotice("Copyright 2017 Francisco José Montiel Navarro")
-                                .addLicense(License.APACHE)
-                                .setWebsite("https://github.com/franmontiel/AttributionPresenter")
-                                .build()
-                )
-                .addAttributions(
-                        new Attribution.Builder("Quran Android")
-                                .addCopyrightNotice("For Storage Utilities")
-                                .addLicense(License.GPL_3)
-                                .setWebsite("https://github.com/quran/quran_android")
-                                .build()
-                )
-                .addAttributions(Library.GLIDE)
-                .build();
         MaterialAboutCard.Builder legalCardBuilder = new MaterialAboutCard.Builder();
         legalCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.open_source_licences)
                 .icon(R.drawable.ic_insert_drive_file_black_24dp)
-                .setOnClickAction(() -> attributionPresenter.showDialog(getString(R.string.open_source_licences)))
+                .setOnClickAction(() -> {
+                    OssLicensesMenuActivity.setActivityTitle(getString(R.string.open_source_licences));
+                    startActivity(new Intent(getContext(), OssLicensesMenuActivity.class));
+                })
                 .build());
         legalCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.about_activity_acknowledgements)

@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.tableOFContents;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
@@ -17,10 +18,10 @@ public class TableOfContentsUtils {
      * @param multiPartStringRes a string with two integer formatting arguments %1$d part number %2$d pageNumber
      * @param uniPartStringRes   a string with one integer formatting arguments %1$d pageNumber
      */
-    public static String formatPageAndPartNumber(BookPartsInfo bookPartsInfo,
-                                                 PageInfo pageInfo,
+    public static String formatPageAndPartNumber(@NonNull BookPartsInfo bookPartsInfo,
+                                                 @NonNull PageInfo pageInfo,
                                                  int multiPartStringRes,
-                                                 int uniPartStringRes, Resources resources) {
+                                                 int uniPartStringRes, @NonNull Resources resources) {
 
         if (bookPartsInfo.isMultiPart()) {
             if (pageInfo.pageNumber == 0 && pageInfo.partNumber == 0) {

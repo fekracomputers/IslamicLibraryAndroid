@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadInfo;
@@ -30,30 +31,32 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
     public BookDownloadCompletedReceiver() {
     }
 
-    public static void broadCastBookDownloadFailed(int bookId, String reason, Context context) {
+    public static void broadCastBookDownloadFailed(int bookId, String reason, @NonNull Context context) {
         Timber.e("Download Failed :" + reason);
         BooksInformationDbHelper storedBooksDatabase = BooksInformationDbHelper.getInstance(context);
         if (storedBooksDatabase != null) {
             storedBooksDatabase.deleteBookFromStoredBooks(bookId, context);
         }
+
         Intent bookDeleteBroadCast =
                 new Intent(BROADCAST_ACTION)
                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_STATUS, DownloadsConstants.STATUS_NOT_DOWNLOAD)
                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_BOOK_ID, bookId)
                         .putExtra(DownloadsConstants.EXTRA_DOWNLOAD_FAILLED_REASON, reason);
         context.sendOrderedBroadcast(bookDeleteBroadCast, null);
+
     }
 
-    public static void updateBookDownloadStatus(Context context, long enqueId) {
+    public static void updateBookDownloadStatus(@NonNull Context context, long enqueId) {
         Cursor c = downloadManagerCursor(context, enqueId);
         try {
             BooksInformationDbHelper storedBooksDatabase = BooksInformationDbHelper.getInstance(context);
             if (storedBooksDatabase == null) {
                 if (c.moveToFirst()) {
-                    String filePath = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))).getPath();
-                    String fileNameWithExtension = filePath.substring(filePath.lastIndexOf(File.separatorChar) + 1);
                     int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
                     if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                        String filePath = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))).getPath();
+                        String fileNameWithExtension = filePath.substring(filePath.lastIndexOf(File.separatorChar) + 1);
                         if (fileNameWithExtension.equals(DATABASE_FULL_NAME)) {//uncompressed book information
                             broadCastUncompressedBookInformationDatabaseDownloaded(context);
                         } else if (fileNameWithExtension.equals(DATABASE_NAME + ".zip")) {//compressed book information
@@ -64,6 +67,13 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
                         }
                     } else if (status == DownloadManager.STATUS_FAILED) {
                         int reasonCode = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_REASON));
+                        String localUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                        String filePath = "unknown";
+                        if (localUri != null) {
+                            filePath = Uri.parse(localUri).getPath();
+                        } else {
+                            Timber.d("unkown file path ");
+                        }
                         throw new FileDownloadException(" DownloadManager.STATUS_FAILED reason: " +
                                 DownloadInfo.getReasonDebugString(status, reasonCode), null, 0, filePath, status);
                     }
@@ -74,13 +84,12 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
                 if (storedBooksDatabase.isDownloadEnqueue(enqueId) || (enqueId == informationDatabaseDownloadEnqueId)) {
                     int bookId = (int) storedBooksDatabase.getBookIdByDownloadId(enqueId);
                     if (c.moveToFirst()) {
-
                         //this condition necessary although this receiver is already registered
                         // on action DownloadInfo complete since it my return
                         int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                        String localUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                        String filePath = Uri.parse(localUri).getPath();
                         if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            String localUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                            String filePath = Uri.parse(localUri).getPath();
                             String fileNameWithExtension = filePath.substring(filePath.lastIndexOf(File.separatorChar) + 1);
                             String fileNameWithOutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf('.'));
                             if (BooksInformationDbHelper.compressedBookFileRegex.matcher(fileNameWithExtension).matches()) {//.zip file
@@ -101,8 +110,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
                                     .matcher(fileNameWithExtension)
                                     .matches()) {//.sqlite File
                                 matchBookIdFromFileAndDownload(bookId, fileNameWithOutExtension, status);
-                                storedBooksDatabase.setDownloadStatusByEnquId(enqueId,
-                                        DownloadsConstants.STATUS_DOWNLOAD_COMPLETED);
+                                storedBooksDatabase.setDownloadStatusByEnquId(enqueId, DownloadsConstants.STATUS_DOWNLOAD_COMPLETED);
                                 //announce download ended
                                 sendBookDownloadStatusChangeBroadCast(context, bookId, DownloadsConstants.STATUS_DOWNLOAD_COMPLETED);
                                 storedBooksDatabase.setDownloadStatusByEnquId(enqueId, DownloadsConstants.STATUS_UNZIP_ENDED);
@@ -145,6 +153,13 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
                             }
                         } else if (status == DownloadManager.STATUS_FAILED) {
                             int reasonCode = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_REASON));
+                            String localUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                            String filePath = "unknown";
+                            if (localUri != null) {
+                                filePath = Uri.parse(localUri).getPath();
+                            } else {
+                                Timber.d("unkown file path ");
+                            }
                             throw new FileDownloadException(" DownloadManager.STATUS_FAILED reason: " +
                                     DownloadInfo.getReasonDebugString(status, reasonCode), null, bookId, filePath, status);
                         }
@@ -187,20 +202,20 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
 
     }
 
-    private static Cursor downloadManagerCursor(Context context, long referenceId) {
+    private static Cursor downloadManagerCursor(@NonNull Context context, long referenceId) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query q = new DownloadManager.Query();
         q.setFilterById(referenceId);
         return downloadManager.query(q);
     }
 
-    private static void broadCastUncompressedBookInformationDatabaseDownloaded(Context context) {
+    private static void broadCastUncompressedBookInformationDatabaseDownloaded(@NonNull Context context) {
 
         sendBookDownloadStatusChangeBroadCast(context, DownloadsConstants.BOOK_INFORMATION_DUMMY_ID, STATUS_BOOKINFORMATION_UNZIP_ENDED);
 
     }
 
-    private static void broadcastCompressedBookInformationDatabaseDownloaded(Context context, String filePath, long referenceId) {
+    private static void broadcastCompressedBookInformationDatabaseDownloaded(@NonNull Context context, String filePath, long referenceId) {
         //Launch unzipping IntentService
         Intent serviceIntent = new Intent(context, UnZipIntentService.class);
         serviceIntent.putExtra(UnZipIntentService.EXTRA_FILE_PATH, filePath)
@@ -218,7 +233,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
      * @param localBroadcastStatus one of {@link DownloadsConstants#STATUS_DOWNLOAD_COMPLETED} ,
      *                             {@link DownloadsConstants#STATUS_DOWNLOAD_COMPLETED}
      */
-    public static void sendBookDownloadStatusChangeBroadCast(Context context, int bookId, int localBroadcastStatus) {
+    public static void sendBookDownloadStatusChangeBroadCast(@NonNull Context context, int bookId, int localBroadcastStatus) {
         Intent localIntent =
                 new Intent(BROADCAST_ACTION)
                         // Puts the status into the Intent
@@ -230,7 +245,7 @@ public class BookDownloadCompletedReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         long enqueId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
         updateBookDownloadStatus(context, enqueId);
     }

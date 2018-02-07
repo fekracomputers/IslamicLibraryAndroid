@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_card_max_peeking_height">0.0dip</dimen>
+    <dimen name="eob_divider_padding">12.0dip</dimen>
+    <dimen name="eob_image_height">360.0dip</dimen>
+    <dimen name="eob_image_width">232.0dip</dimen>
+    <dimen name="eob_title_top_margin">80.0dip</dimen>
+    <dimen name="launchscreens_product_logo_bottom">24.0dip</dimen>
+    <dimen name="nis_card_button_vert_margin">8.0dip</dimen>
+    <dimen name="nis_card_cover_width">172.0dip</dimen>
+    <dimen name="nis_card_height">262.0dip</dimen>
+    <dimen name="nis_card_info_width">200.0dip</dimen>
+    <dimen name="nis_card_width">372.0dip</dimen>
+    <dimen name="nis_card_title_margin">8.0dip</dimen>
+    <dimen name="eob_text_margin_horiz">32.0dip</dimen>
+    <dimen name="nis_primary_text_font_size">16.0sp</dimen>
+    <dimen name="nis_secondary_text_font_size">14.0sp</dimen>
+    <dimen name="skim_view_top_margin">12.0sp</dimen>
+</resources>

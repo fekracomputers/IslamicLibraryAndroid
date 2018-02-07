@@ -1,6 +1,13 @@
 package com.fekracomputers.islamiclibrary.utility;
 
 
+import android.support.annotation.NonNull;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +44,9 @@ public class ArabicUtilities {
      * this category) which means this will not match (and hence remove when used with replaceAll("")
      * english letters ,punctation and other things
      */
-    private static final Pattern CLEANING_PATTERN = Pattern.compile("[^\\p{Lo}\\p{Z}\\n]");
+    private static final Pattern REMOVE_PATTERN = Pattern.compile("[^\\p{L}\\p{Z}]");
+    private static final Pattern SPACE_REPLACED_PATTERN = Pattern.compile("[\\p{Z}\\p{S}\\p{C}\\p{Pc}\\p{Pd}\\p{Po}&&[^\"]]");
+    private static final Pattern TATWEELA_PATTERN = Pattern.compile("([\\p{L}+&&[^\\p{Lm}]])(\\p{Lm}+)(\\p{L}+)");
     private static final String ALEF_str = "\u0627";
     private static final String ALEF_MADDA_str = "\u0622";
     private static final String ALEF_HAMZA_ABOVE_str = "\u0623";
@@ -48,17 +57,31 @@ public class ArabicUtilities {
     private static final String HEH_STR = "\u0647";
     private static final Pattern equvilancePattern = Pattern.compile(
             ALEF_MADDA_str + "|" + ALEF_HAMZA_ABOVE_str + "|" + ALEF_HAMZA_BELOW_STR + "|" + DOTLESS_YEH_STR + "|" + TEH_MARBUTA_STR);
+    private static final Pattern REMOVE_REPEATED_SPACES = Pattern.compile("\\s\\s+");
+    private static final Pattern REMOVE_HTML_TAGS = Pattern.compile("<[^>]*>");
 
-    public static String cleanTashkeel(String s) {
+    public static String cleanTashkeel(@NonNull String s) {
         Matcher matcher = CLEANING_TASHKEEL.matcher(s);
         return matcher.replaceAll("");
     }
 
-    public static String cleanTextForSearchingWithRegex(String s) {
-        Matcher matcher = CLEANING_PATTERN.matcher(s);
-        String removed_tashkeel = matcher.replaceAll("");
+    public static String cleanTextForSearchingIndexing(String s) {
+        return cleanTextForSearchingQuery(cleanHtml(s));
+    }
 
-        Matcher equivlanceMatcher = equvilancePattern.matcher(removed_tashkeel);
+    @NonNull
+    public static String cleanTextForSearchingQuery(@NonNull String s) {
+
+        Matcher matcher = SPACE_REPLACED_PATTERN.matcher(s);
+        String space_replaced = matcher.replaceAll(" ");
+
+        Matcher matcher1 = REMOVE_PATTERN.matcher(space_replaced);
+        String removed = matcher1.replaceAll("");
+
+        Matcher matcher2 = REMOVE_REPEATED_SPACES.matcher(removed);
+        String removed_duplicat_spaces = matcher2.replaceAll(" ");
+
+        Matcher equivlanceMatcher = equvilancePattern.matcher(removed_duplicat_spaces);
 
         StringBuffer sb = new StringBuffer();
         while (equivlanceMatcher.find()) {
@@ -76,9 +99,21 @@ public class ArabicUtilities {
             }
         }
         equivlanceMatcher.appendTail(sb);
-        return sb.toString();
+
+        return handleTatweela(sb.toString());
     }
 
+    public static String handleTatweela(@NonNull String s) {
+        Matcher matcher4 = TATWEELA_PATTERN.matcher(s);
+        StringBuffer sb2 = new StringBuffer();
+        while (matcher4.find()) {
+            matcher4.appendReplacement(sb2, "$1$3");
+        }
+        matcher4.appendTail(sb2);
+        return sb2.toString();
+    }
+
+    @NonNull
     public static String cleanTextForSearchingWthStingBuilder(String s) {
         StringBuilder sb = new StringBuilder(s);
         for (int i = 0; i < sb.length(); i++) {
@@ -87,6 +122,8 @@ public class ArabicUtilities {
             if ((c < HAMZAH || c > YEH) & !Character.isSpace(c)) {
                 sb.deleteCharAt(i);
                 i--;
+            } else if (Character.isSpace(c)) {
+                sb.setCharAt(i, ' ');
             } else {
                 switch (c) {
                     case ALEF_MADDA:
@@ -113,7 +150,7 @@ public class ArabicUtilities {
      * prepare the string to pre prefixed with lam
      * قواعد الإملاء لعبد السلام هارون الباب الرابع
      */
-    public static String prepareForPrefixingLam(String string) {
+    public static String prepareForPrefixingLam(@NonNull String string) {
 
         if (startsWithDefiniteArticle(string)) {
             if (string.startsWith("ل", 2)) {
@@ -129,7 +166,21 @@ public class ArabicUtilities {
 
     }
 
-    public static boolean startsWithDefiniteArticle(String string) {
+    public static boolean startsWithDefiniteArticle(@NonNull String string) {
         return string.startsWith("ال");
+    }
+
+    @NonNull
+    public static String cleanHtml(String htmlText) {
+        Document doc = Jsoup.parse(htmlText);
+        Elements footnotes = doc.select("a[title].comment");
+        StringBuilder htmlTextBuilder = new StringBuilder(htmlText);
+        for (Element footnote : footnotes) {
+            htmlTextBuilder.append("\n").append(footnote.attr("title"));
+        }
+        String encodedHtml = REMOVE_HTML_TAGS.matcher(htmlTextBuilder.toString()).replaceAll("");
+
+        return encodedHtml;
+
     }
 }

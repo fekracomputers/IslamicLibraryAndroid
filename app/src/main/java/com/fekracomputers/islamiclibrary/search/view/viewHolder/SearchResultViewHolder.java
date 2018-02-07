@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.search.view.viewHolder;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ public class SearchResultViewHolder extends ChildViewHolder {
     private View searchResultView;
     private Resources mResources;
 
-    public SearchResultViewHolder(final View searchResult,
+    public SearchResultViewHolder(@NonNull final View searchResult,
                                   final SearchResultRecyclerViewAdapter.SearchResultOnClickDelegateListener mListener,
                                   Resources mResources) {
         super(searchResult);
@@ -37,7 +38,7 @@ public class SearchResultViewHolder extends ChildViewHolder {
         this.mResources = mResources;
     }
 
-    public void bind(final SearchResult searchResult, BookPartsInfo bookPartsInfo) {
+    public void bind(@NonNull final SearchResult searchResult, BookPartsInfo bookPartsInfo) {
 
         searchSnippetTextView.setText(searchResult.getformatedSearchSnippet());
         pageNumberTextView.setText(TableOfContentsUtils.formatPageAndPartNumber(

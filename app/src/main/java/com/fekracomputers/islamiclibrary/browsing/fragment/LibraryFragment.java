@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.browsing.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,9 @@ import static com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivi
 public class LibraryFragment extends Fragment {
 
     private static final String SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY = "SHARED_PREF_FILTER_PAGER_CURRENT_ITEM_KEY";
+    @NonNull
     ArrayList<BookCatalogElement> bookCatalogElements = new ArrayList<>();
+    @Nullable
     private OnBookFilterPagerPageChangedListener mListener;
     private ViewPager mViewPager;
 
@@ -96,7 +99,7 @@ public class LibraryFragment extends Fragment {
         return rootView;
     }
 
-    private void makTabsFixed(TabLayout tabLayout) {
+    private void makTabsFixed(@NonNull TabLayout tabLayout) {
         ViewGroup slidingTabStrip = (ViewGroup) tabLayout.getChildAt(0);
         int tabCount = tabLayout.getTabCount();
         for (int i = 0; i < tabCount; i++) {

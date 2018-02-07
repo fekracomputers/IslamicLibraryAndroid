@@ -69,10 +69,10 @@
             android:theme="@style/AppTheme.NoActionBar.ArtBackground" />
         <activity
             android:name=".SplashActivity"
+
             android:theme="@style/AppTheme.NoActionBar.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,6 +85,14 @@
             android:name=".settings.AboutActivity"
             android:parentActivityName=".browsing.activity.BrowsingActivity"
             android:theme="@style/AppTheme.MaterialAboutActivity" />
+
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/AppTheme" />
 
         <receiver
             android:name=".download.reciver.LocalDownloadBroadCastReciver"

@@ -3,6 +3,7 @@ package com.fekracomputers.islamiclibrary.reading.selection;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ public class SelectionPopupImpl implements SelectionPopup {
     protected final View mView;
     private TextSelectionDelegate delegate;
 
+    @NonNull
     private final FadeAnimationController mFadeController;
 
 
@@ -87,9 +89,7 @@ public class SelectionPopupImpl implements SelectionPopup {
     }
 
 
-
-
-    public SelectionPopupImpl(TextSelectionDelegate delegate, SelectionBoundsInfo mSelectionRect) {
+    public SelectionPopupImpl(@NonNull TextSelectionDelegate delegate, SelectionBoundsInfo mSelectionRect) {
         this.delegate = delegate;
         SelectionBoundsInfo mSelectionRect1 = mSelectionRect;
         Context mContext = delegate.getContext();

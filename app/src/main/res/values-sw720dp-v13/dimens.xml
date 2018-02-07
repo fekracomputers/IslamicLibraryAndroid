@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eob_divider_padding">18.0dip</dimen>
+    <dimen name="play_header_list_tab_floating_padding">36.0dip</dimen>
+    <dimen name="play_header_list_tab_padding_side">24.0dip</dimen>
+    <dimen name="eob_land_sample_side_margin">32.0dip</dimen>
+    <dimen name="eob_land_sample_top_margin">96.0dip</dimen>
+    <dimen name="eob_nis_card_side_margin">32.0dip</dimen>
+    <dimen name="play_collection_edge_padding">24.0dip</dimen>
+    <dimen name="play_collection_edge_padding_minus_card_half_spacing">18.0dip</dimen>
+    <dimen name="eob_topblue_margin">18.0dip</dimen>
+    <dimen name="eob_title_spacer_top_margin">280.0dip</dimen>
+    <dimen name="eob_nis_card_bottom_margin">32.0dip</dimen>
+    <dimen name="nis_card_side_margin">16.0dip</dimen>
+    <dimen name="nis_card_top_margin">24.0dip</dimen>
+</resources>

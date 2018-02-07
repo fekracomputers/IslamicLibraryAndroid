@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.search.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * بسم الله الرحمن الرحيم
@@ -17,7 +18,7 @@ public class SearchOptions implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeByte(this.areAllAlefEquivelent ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTaMarboutaEquivlantToHax ? (byte) 1 : (byte) 0);
         dest.writeByte(this.neglectTashkeel ? (byte) 1 : (byte) 0);
@@ -26,7 +27,7 @@ public class SearchOptions implements Parcelable {
     public SearchOptions() {
     }
 
-    protected SearchOptions(Parcel in) {
+    protected SearchOptions(@NonNull Parcel in) {
         this.areAllAlefEquivelent = in.readByte() != 0;
         this.isTaMarboutaEquivlantToHax = in.readByte() != 0;
         this.neglectTashkeel = in.readByte() != 0;
@@ -34,7 +35,7 @@ public class SearchOptions implements Parcelable {
 
     public static final Parcelable.Creator<SearchOptions> CREATOR = new Parcelable.Creator<SearchOptions>() {
         @Override
-        public SearchOptions createFromParcel(Parcel source) {
+        public SearchOptions createFromParcel(@NonNull Parcel source) {
             return new SearchOptions(source);
         }
 

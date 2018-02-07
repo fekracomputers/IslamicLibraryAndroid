@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -45,7 +46,7 @@ import static com.fekracomputers.islamiclibrary.download.model.DownloadFileConst
  */
 public class StorageUtils {
 
-    public static String getIslamicLibraryShamelaBooksDir(Context context) {
+    public static String getIslamicLibraryShamelaBooksDir(@NonNull Context context) {
         String base = getIslamicLibraryBaseDirectory(context);
         return base == null ? null : base + File.separator + DownloadFileConstants.SHAMELA_BOOKS_DIR;
 //        return Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -53,7 +54,7 @@ public class StorageUtils {
     }
 
     @Nullable
-    public static String getIslamicLibraryBaseDirectory(Context context) {
+    public static String getIslamicLibraryBaseDirectory(@NonNull Context context) {
         String basePath = getAppCustomLocation(context);
 
         if (!isSDCardMounted()) {
@@ -78,7 +79,8 @@ public class StorageUtils {
     /**
      * @return string representing the path to the root custom external storage
      */
-    public static String getAppCustomLocation(Context context) {
+    @Nullable
+    public static String getAppCustomLocation(@NonNull Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(DownloadFileConstants.PREF_APP_LOCATION,
                 Environment.getExternalStorageDirectory().getAbsolutePath());
@@ -90,13 +92,13 @@ public class StorageUtils {
     }
 
 
-    public static boolean haveWriteExternalStoragePermission(Context context) {
+    public static boolean haveWriteExternalStoragePermission(@NonNull Context context) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
                 ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                         PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void setAppCustomLocation(String location, Context context) {
+    public static void setAppCustomLocation(String location, @NonNull Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(DownloadFileConstants.PREF_APP_LOCATION, location);
@@ -104,7 +106,7 @@ public class StorageUtils {
 
     }
 
-    public static void setSdcardPermissionsDialogPresented(Context context) {
+    public static void setSdcardPermissionsDialogPresented(@NonNull Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(PREF_SDCARDPERMESSION_DIALOG_DISPLAYED, true);
@@ -112,7 +114,7 @@ public class StorageUtils {
 
     }
 
-    public static boolean makeIslamicLibraryShamelaDirectory(Context context) {
+    public static boolean makeIslamicLibraryShamelaDirectory(@NonNull Context context) {
         String path = getIslamicLibraryShamelaBooksDir(context);
         if (path == null) {
             return false;
@@ -121,14 +123,14 @@ public class StorageUtils {
         return (directory.exists() && directory.isDirectory()) || directory.mkdirs();
     }
 
-    public static boolean isOldDirectoriesExists(Context context) {
+    public static boolean isOldDirectoriesExists(@NonNull Context context) {
         String oldPath = getIslamicLibraryBaseDirectory(context) + File.separator +
                 DATABASE_FULL_NAME;
         return new File(oldPath).exists();
 
     }
 
-    public static boolean moveAppFiles(Context context, String newLocation, boolean automatic) {
+    public static boolean moveAppFiles(@NonNull Context context, String newLocation, boolean automatic) {
         if (getAppCustomLocation(context).equals(newLocation)) {
             return true;
         }
@@ -157,7 +159,7 @@ public class StorageUtils {
         return false;
     }
 
-    private static void deleteFileOrDirectory(File file) {
+    private static void deleteFileOrDirectory(@NonNull File file) {
         if (file.isDirectory()) {
             File[] subFiles = file.listFiles();
             // subFiles is null on some devices, despite this being a directory
@@ -178,7 +180,7 @@ public class StorageUtils {
         }
     }
 
-    private static void copyFileOrDirectory(File source, File destination) throws IOException {
+    private static void copyFileOrDirectory(@NonNull File source, @NonNull File destination) throws IOException {
         if (source.isDirectory()) {
             if (!destination.exists() && !destination.mkdirs()) {
                 return;
@@ -192,7 +194,7 @@ public class StorageUtils {
         }
     }
 
-    private static void copyFile(File source, File destination) throws IOException {
+    private static void copyFile(@NonNull File source, @NonNull File destination) throws IOException {
         FileInputStream inStream = new FileInputStream(source);
         FileOutputStream outStream = new FileOutputStream(destination);
         FileChannel inChannel = inStream.getChannel();
@@ -209,7 +211,8 @@ public class StorageUtils {
     /**
      * @return A List of all storage locations available
      */
-    public static List<Storage> getAllStorageLocations(Context context) {
+    @NonNull
+    public static List<Storage> getAllStorageLocations(@NonNull Context context) {
 
     /*
       This first condition is the code moving forward, since the else case is a bunch
@@ -271,7 +274,8 @@ public class StorageUtils {
      * @param context the context
      * @return the list of storage locations
      */
-    private static List<Storage> getLegacyStorageLocations(Context context) {
+    @NonNull
+    private static List<Storage> getLegacyStorageLocations(@NonNull Context context) {
         List<String> mounts = readMountsFile();
 
         // As per http://source.android.com/devices/tech/storage/config.html
@@ -302,7 +306,8 @@ public class StorageUtils {
      * @param mounts  a list of mount points as strings
      * @return a list of Storage items that can be rendered by the ui
      */
-    private static List<Storage> buildMountsList(Context context, List<String> mounts) {
+    @NonNull
+    private static List<Storage> buildMountsList(@NonNull Context context, @NonNull List<String> mounts) {
         List<Storage> list = new ArrayList<>(mounts.size());
 
         int externalSdcardsCount = 0;
@@ -336,6 +341,7 @@ public class StorageUtils {
      *
      * @return list of mounts based on the mounts file.
      */
+    @NonNull
     private static List<String> readMountsFile() {
         String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         List<String> mounts = new ArrayList<>();
@@ -380,6 +386,7 @@ public class StorageUtils {
      *
      * @return Set of mount points from `vold.fstab` configuration file
      */
+    @NonNull
     private static Set<String> readVoldsFile() {
         Set<String> volds = new HashSet<>();
         volds.add(Environment.getExternalStorageDirectory().getAbsolutePath());
@@ -420,7 +427,7 @@ public class StorageUtils {
         return volds;
     }
 
-    public static int getAppUsedSpace(Context context) {
+    public static int getAppUsedSpace(@NonNull Context context) {
         final String baseDirectory = getIslamicLibraryBaseDirectory(context);
         if (baseDirectory == null) {
             return -1;
@@ -444,7 +451,7 @@ public class StorageUtils {
         return (int) (size / (long) (1024 * 1024));
     }
 
-    public static boolean didPresentSdcardPermissionsDialog(Activity activity) {
+    public static boolean didPresentSdcardPermissionsDialog(@NonNull Activity activity) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         return sharedPreferences.getBoolean(PREF_SDCARDPERMESSION_DIALOG_DISPLAYED, false);
     }

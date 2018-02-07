@@ -20,7 +20,7 @@ public class BookCollectionInfo {
     public BookCollectionInfo() {
     }
 
-    public BookCollectionInfo(Collection<BooksCollection> booksCollections, int bookId) {
+    public BookCollectionInfo(@NonNull Collection<BooksCollection> booksCollections, int bookId) {
         this.booksCollections = new TreeSet<>(
                 (o1, o2) -> Integer.valueOf(o1.getCollectionsId()).compareTo(o2.getCollectionsId())
         );
@@ -32,13 +32,14 @@ public class BookCollectionInfo {
         return booksCollections;
     }
 
-    public void setBooksCollections(Collection<BooksCollection> booksCollections) {
+    public void setBooksCollections(@NonNull Collection<BooksCollection> booksCollections) {
         this.booksCollections = new TreeSet<>(
                 (o1, o2) -> Integer.valueOf(o1.getCollectionsId()).compareTo(o2.getCollectionsId())
         );
         this.booksCollections.addAll(booksCollections);
     }
 
+    @NonNull
     public Set<Integer> getBooksCollectionsIds() {
         HashSet<Integer> Ids = new HashSet<>(booksCollections.size());
         for (BooksCollection booksCollectionId : booksCollections) {
