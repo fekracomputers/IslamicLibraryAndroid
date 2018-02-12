@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="com.android.vending.BILLING" />
+
     <application
         android:name=".appliation.IslamicLibraryApplication"
         android:allowBackup="true"
@@ -69,10 +70,10 @@
             android:theme="@style/AppTheme.NoActionBar.ArtBackground" />
         <activity
             android:name=".SplashActivity"
-
             android:theme="@style/AppTheme.NoActionBar.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,11 +86,9 @@
             android:name=".settings.AboutActivity"
             android:parentActivityName=".browsing.activity.BrowsingActivity"
             android:theme="@style/AppTheme.MaterialAboutActivity" />
-
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/AppTheme" />
@@ -139,11 +138,13 @@
 
         <service
             android:name=".download.service.RefreshBooksWithDirectoryService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".billing.BillingActivity"></activity>
     </application>
 
 </manifest>

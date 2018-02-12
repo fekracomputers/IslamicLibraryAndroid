@@ -3,24 +3,49 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
     testOptions {
         unitTests.returnDefaultValues = true
     }
-
-
     defaultConfig {
         applicationId "com.fekracomputers.islamiclibrary"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 22
-        versionName "1.3.0"
+        versionCode 23
+        versionName "1.4.0"
         vectorDrawables.useSupportLibrary = false
         buildConfigField "boolean", "DONATIONS_GOOGLE", "true"
     }
-
-
+    flavorDimensions "price"
+    productFlavors {
+        free {
+            dimension "price"
+            applicationIdSuffix ""
+        }
+        pro1 {
+            dimension "price"
+            applicationIdSuffix ".pro1"
+        }
+        pro2 {
+            dimension "price"
+            applicationIdSuffix ".pro2"
+        }
+        pro3 {
+            dimension "price"
+            applicationIdSuffix ".pro3"
+        }
+        pro4 {
+            dimension "price"
+            applicationIdSuffix ".pro4"
+        }
+        pro5 {
+            dimension "price"
+            applicationIdSuffix ".pro5"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -36,7 +61,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     lintOptions {
 //        textOutput 'stdout'
 //        textReport true
@@ -46,14 +70,12 @@ android {
         abortOnError false
         warningsAsErrors false
     }
-
-
 }
 ext {
     supportLibraryVersion = "27.0.2"
     playServicesVersion = "11.8.0"
-    firebaseVersion="11.8.0"
-    xpece="1.3.2"
+    firebaseVersion = "11.8.0"
+    xpece = "1.3.2"
 }
 
 dependencies {
@@ -83,16 +105,19 @@ dependencies {
     //firebase
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
+    implementation 'com.android.support:support-v4:27.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.1", {
         exclude group: "com.android.support", module: "support-annotations"
     })
-    implementation fileTree(include: ["*.jar"], dir: "libs")
-    implementation("com.crashlytics.sdk.android:crashlytics:2.7.1@aar") {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation 'com.android.billingclient:billing:1.0'
+    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation project(':colorpicker')
 }
 apply plugin: "com.google.gms.google-services"

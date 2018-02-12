@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction;
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.billing.BillingActivity;
 import com.webianks.easy_feedback.EasyFeedback;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * بسم الله الرحمن الرحيم
@@ -38,13 +41,13 @@ public class AboutUtil {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             String appId = c.getPackageName();
             String appName = c.getResources().getString(R.string.app_name);
-            String recommendationString = c.getString(R.string.share_app_msg,appName,"https://play.google.com/store/apps/details?id=" + appId) ;
+            String recommendationString = c.getString(R.string.share_app_msg, appName, "https://play.google.com/store/apps/details?id=" + appId);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, appName);
             shareIntent.putExtra(Intent.EXTRA_TEXT, recommendationString);
             c.startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception e) {
-            //e.toString();
+            Timber.e(e);
         }
     }
 
@@ -96,7 +99,6 @@ public class AboutUtil {
 
     public static void rateApp(@NonNull Context context) {
         String appId = context.getPackageName();
-
         openMarket(context, "market://details?id=" + appId, "https://play.google.com/store/apps/details?id=" + appId);
     }
 
@@ -180,4 +182,9 @@ public class AboutUtil {
 
     }
 
+    public static void donate(Context context) {
+        Intent intent = new Intent(context, BillingActivity.class);
+        context.startActivity(intent);
+
+    }
 }

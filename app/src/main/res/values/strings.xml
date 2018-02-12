@@ -419,22 +419,22 @@
     <string name="error_billing_unavailable">Billing unavailable. Make sure your Google Play app
         is setup correctly</string>
     <string name="error_billing_default">Billing unavailable. Please check your device.</string>
-
-    <string name="button_drive">Drive</string>
-    <string name="button_purchase">Purchase</string>
-    <string name="button_buy">Buy</string>
-    <string name="button_own">Own</string>
-    <string name="button_update">Update</string>
-    <string name="button_change">Change</string>
-    <string name="button_full_tank">Full tank</string>
-    <string name="toast_full_tank">Your tank is full, please use some gas before buying
-        more.</string>
-
-    <string name="header_inapp">One-time deals</string>
-    <string name="header_subscriptions">Subscriptions</string>
-
     <string name="content_description_app_loading_image">App loading image</string>
     <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
     <string name="content_desc_gas_gauge_indicator">Gas gauge indicator</string>
     <string name="content_desc_free_vs_premium_indicator">Free or Premium Image Indicator</string>
+    <string name="donate">Donate</string>
+    <string name="iap_not_available"><![CDATA[\"In-app billing service is unavailable, please upgrade Android Market/Play to version >= 3.9.16\"]]></string>
+    <string name="wait">wait</string>
+    <string name="donation_descreption">Google Play handles all checkout details so the application never has to directly process any financial transactions</string>
+    <string name="button_purchase">Purchase</string>
+    <string name="button_consume">consume</string>
+    <string name="button_details">Details</string>
+    <string name="item_not_purchased">not purchased</string>
+    <string name="item_already_purchsed">already purchased</string>
+    <string name="about_support">Support Us</string>
+    <string name="support_notice">You can suppot us via</string>
+    <string name="feed_back_sub_tex">Suggestions and Notices to help us improve the app</string>
+    <string name="share_app_msg_sub_text">share app with friends</string>
+    <string name="donate_sub_text">Donate for supporting the app</string>
 </resources>
