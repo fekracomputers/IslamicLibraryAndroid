@@ -403,6 +403,8 @@
     <string name="button_custom_color">CUSTOM</string>
     <string name="button_preset_color">PRESET</string>
     <string name="button_select_color">SELECT</string>
+    <string name="background_color_day">Day background color</string>
+    <string name="background_color_night">Night background color</string>
 
     <!--end storage pref-->
 </resources>

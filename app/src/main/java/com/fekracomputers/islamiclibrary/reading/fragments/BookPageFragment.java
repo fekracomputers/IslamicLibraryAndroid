@@ -846,6 +846,18 @@ public class BookPageFragment extends Fragment implements
                         "javascript:setTextColor('#%06X');", 0xFFFFFF & color));
     }
 
+    @Override
+    public void highLightSearchResult(@NonNull String searchQuery) {
+        mBookPageWebView.loadUrl(String.
+                format(Locale.US,
+                        "javascript:highlightSearchString('%s');", searchQuery));
+    }
+
+    @Override
+    public void removeSearchResultHighlights() {
+        mBookPageWebView.loadUrl("javascript:removeSearchResultHighlights();");
+    }
+
     private void reloadeWithTashkeelOn(boolean tashkeelOn) {
         if (this.tashkeelOn != tashkeelOn) {
             if (this.tashkeelOn) {
@@ -900,6 +912,9 @@ public class BookPageFragment extends Fragment implements
         int getTextColor(boolean isNightMode);
 
         void populateReaderActionBar(CharSequence title, CharSequence author);
+
+        @Nullable
+        String getSearchStringQuery();
     }
 
 
@@ -953,6 +968,11 @@ public class BookPageFragment extends Fragment implements
             Log.d(getString(R.string.sd), getString(R.string.ddd) + highlightId);
             handler.post(() -> BookPageFragment.this.highlightClicked(highlightId));
 
+        }
+
+        @JavascriptInterface
+        public String getSearchQuery() {
+            return pageFragmentListener != null ? pageFragmentListener.getSearchStringQuery() : null;
         }
 
         @JavascriptInterface

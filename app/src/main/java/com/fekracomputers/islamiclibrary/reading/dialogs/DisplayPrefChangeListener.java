@@ -1,6 +1,7 @@
 package com.fekracomputers.islamiclibrary.reading.dialogs;
 
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 
 import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 
@@ -21,4 +22,8 @@ public interface DisplayPrefChangeListener {
     void setHeadingColor(@ColorInt int color);
 
     void setTextColor(@ColorInt int color);
+
+    void highLightSearchResult(@NonNull String searchQuery);
+
+    void removeSearchResultHighlights();
 }

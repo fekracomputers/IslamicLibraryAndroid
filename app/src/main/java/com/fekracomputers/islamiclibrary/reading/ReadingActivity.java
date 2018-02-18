@@ -64,6 +64,7 @@ import com.fekracomputers.islamiclibrary.reading.dialogs.PageNumberPickerDialogF
 import com.fekracomputers.islamiclibrary.reading.fragments.BookPageFragment;
 import com.fekracomputers.islamiclibrary.reading.widget.SearchScrubBar;
 import com.fekracomputers.islamiclibrary.search.model.BookSearchResultsContainer;
+import com.fekracomputers.islamiclibrary.search.model.SearchRequest;
 import com.fekracomputers.islamiclibrary.search.model.SearchResult;
 import com.fekracomputers.islamiclibrary.search.view.SearchResultFragment;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
@@ -98,6 +99,7 @@ public class ReadingActivity extends AppCompatActivity implements
     public static final String KEY_TAB_NAME = "Tab_Name";
     public static final String KEY_SEARCH_RESULT_ARRAY_LIST = "KEY_SEARCH_RESULT_ARRAY_LIST";
     public static final String KEY_SEARCH_RESULT_CHILD_POSITION = "KEY_SEARCH_RESULT_CHILD_POSITION";
+    public static final String KEY_SEARCH_REQUEST = "KEY_SEARCH_REQUEST";
     public static final String KEY_CURRENT_PAGE_INFO = "KEY_CURRENT_PAGE_INFO";
     public static final String KEY_CURRENT_PARTS_INFO = "KEY_CURRENT_PARTS_INFO";
     public static final String KEY_BOOK_ID = "KEY_BOOK_ID";
@@ -194,8 +196,8 @@ public class ReadingActivity extends AppCompatActivity implements
 
         @Override
         public void onPageSelected(int position) {
-
             setupSearchScrubOnSearchResultClicked(position);
+            //notifyHighlightSearchResults(mSearchString);
         }
 
 
@@ -224,7 +226,9 @@ public class ReadingActivity extends AppCompatActivity implements
     private SearchView mSearchView;
     @NonNull
     private View.OnClickListener mShowPageNumberPickerDialogClickListener = v -> showPageNumberPickerDialog();
+    @NonNull
     private ArrayList<DisplayOptionsPopupFragment> displayOptionsPopups = new ArrayList<>();
+    @NonNull
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceListener = (sharedPreferences1, key) -> {
         switch (key) {
             case SettingsFragment.KEY_DISPLAY_TEXT_SIZE:
@@ -252,11 +256,22 @@ public class ReadingActivity extends AppCompatActivity implements
                 break;
 
 
-            case SettingsFragment.KEY_BACKGROUND_COLOR:
-                int backGroundColor = sharedPreferences1.getInt(SettingsFragment.KEY_BACKGROUND_COLOR,
-                        AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR);
-                for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
-                    listener.setBackgroundColor(backGroundColor);
+            case SettingsFragment.KEY_BACKGROUND_COLOR_DAY:
+                if (!isNightMode()) {
+                    int backGroundColorDay = sharedPreferences1.getInt(SettingsFragment.KEY_BACKGROUND_COLOR_DAY,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setBackgroundColor(backGroundColorDay);
+                    }
+                }
+                break;
+            case SettingsFragment.KEY_BACKGROUND_COLOR_NIGHT:
+                if (isNightMode()) {
+                    int backGroundColorNight = sharedPreferences1.getInt(SettingsFragment.KEY_BACKGROUND_COLOR_NIGHT,
+                            AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR);
+                    for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                        listener.setBackgroundColor(backGroundColorNight);
+                    }
                 }
                 break;
             case SettingsFragment.KEY_TEXT_COLOR_DAY:
@@ -300,6 +315,8 @@ public class ReadingActivity extends AppCompatActivity implements
         }
 
     };
+    @Nullable
+    private String mSearchString;
 
     public static void openBook(int bookId, int pageId, @NonNull Context context) {
         Intent intent = new Intent(context, ReadingActivity.class);
@@ -342,6 +359,14 @@ public class ReadingActivity extends AppCompatActivity implements
         return newZoom;
     }
 
+    private void notifyHighlightSearchResults(@Nullable String searchString) {
+        if (searchString != null && !searchString.isEmpty()) {
+            for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+                listener.highLightSearchResult(searchString);
+            }
+        }
+    }
+
     public int getDisplayZoom() {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return DisplayPreferenceUtilities.getDisplayPreference(
@@ -353,6 +378,11 @@ public class ReadingActivity extends AppCompatActivity implements
     @Override
     public boolean getTashkeelState() {
         return isTashkeel();
+    }
+
+    @Override
+    public int getBackGroundColor() {
+        return getBackGroundColor(isNightMode());
     }
 
 
@@ -470,6 +500,46 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
+    public int getBackGroundColor(boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR_DAY,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR_NIGHT,
+                    AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR,
+                    defaultSharedPreferences,
+                    mUserDataDBHelper);
+        }
+    }
+
+    @Override
+    public void setBackgroundColor(@ColorInt int color, boolean isNight) {
+        if (!isNight) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR_DAY,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        } else {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR_NIGHT,
+                    color,
+                    defaultSharedPreferences, mUserDataDBHelper);
+        }
+        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
+            listener.setBackgroundColor(color);
+        }
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        setBackgroundColor(color, isNightMode());
+    }
+
+    @Override
     public int getHeadingColor() {
         return getHeadingColor(isNightMode());
     }
@@ -479,14 +549,6 @@ public class ReadingActivity extends AppCompatActivity implements
         return getTextColor(isNightMode());
     }
 
-    @Override
-    public int getBackGroundColor() {
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return DisplayPreferenceUtilities.getDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR,
-                AppConstants.DISPLAY_PREFERENCES_DEFAULTS.KEY_BACKGROUND_COLOR,
-                defaultSharedPreferences,
-                mUserDataDBHelper);
-    }
 
     @Override
     public boolean isTashkeel() {
@@ -508,16 +570,6 @@ public class ReadingActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void setBackgroundColor(@ColorInt int color) {
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        DisplayPreferenceUtilities.setDisplayPreference(SettingsFragment.KEY_BACKGROUND_COLOR,
-                color,
-                defaultSharedPreferences, mUserDataDBHelper);
-        for (DisplayPrefChangeListener listener : displayPrefChangeListeners) {
-            listener.setBackgroundColor(color);
-        }
-    }
 
     @Override
     public boolean isPinchZoom() {
@@ -646,12 +698,21 @@ public class ReadingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
+    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer,
+                                      int childAdapterPosition,
+                                      @NonNull SearchRequest searchRequest) {
         //hide the search result fragment without removing it
         getSupportFragmentManager()
                 .popBackStack();
 
-        mBookSearchResultsArrayList = bookSearchResultsContainer.getChildArrayList();
+        startSearchMode(bookSearchResultsContainer.getChildArrayList(), childAdapterPosition, searchRequest);
+    }
+
+    private void startSearchMode(@NonNull ArrayList<SearchResult> searchResultArrayList,
+                                 int childAdapterPosition,
+                                 @NonNull SearchRequest searchRequest) {
+        mBookSearchResultsArrayList = searchResultArrayList;
+        mSearchString = searchRequest.getCleanedSearchString();
         mCurrentSearchResultPosition = childAdapterPosition;
         if (!isSearchViewInflated) {
             mSearchViewStub.inflate();
@@ -661,12 +722,14 @@ public class ReadingActivity extends AppCompatActivity implements
         mIsInSearchMode = true;
         searchScrubBar.setVisibility(View.VISIBLE);
         moveToCurrentMatch();
+
     }
 
     private void setupSearchScrubOnSearchResultClicked(int position) {
         int pageId = mBookDatabaseHelper.position2PageId(position);
 
-        int i = Collections.binarySearch(mBookSearchResultsArrayList, new SearchResult(bookId, new PageInfo(pageId, 0, 0)));
+        int i = Collections.binarySearch(mBookSearchResultsArrayList,
+                new SearchResult(bookId, new PageInfo(pageId, 0, 0)));
         boolean isCurrentPageMatch = i >= 0;
         int numberOfMatchesBeforCurrent = isCurrentPageMatch ? i : -i - 1;
 
@@ -710,16 +773,23 @@ public class ReadingActivity extends AppCompatActivity implements
                 matchNumber >= 0 &&
                 matchNumber < mBookSearchResultsArrayList.size() &&
                 !mBookSearchResultsArrayList.isEmpty()) {
-            int targetPosition = mBookDatabaseHelper.pageId2position(mBookSearchResultsArrayList.get(matchNumber).getPageInfo().pageId);
+            int targetPosition = mBookDatabaseHelper
+                    .pageId2position(mBookSearchResultsArrayList.get(matchNumber).getPageInfo().pageId);
+
+            if (Math.abs(targetPosition - mPager.getCurrentItem()) <= mPager.getOffscreenPageLimit()) {
+                notifyHighlightSearchResults(mSearchString);
+            }
             if (targetPosition != mPager.getCurrentItem()) {
                 mPager.setCurrentItem(targetPosition,
                         true);
-            } else //the current match is the same as current page
-            {
+            } else {
+                //the current match is the same as current page
                 setupSearchScrubOnSearchResultClicked(targetPosition);
             }
+
         }
     }
+
 
     private void setNumberEditorValid(boolean valid, @NonNull EditText editText, CharSequence errorString) {
         if (valid) {
@@ -927,16 +997,12 @@ public class ReadingActivity extends AppCompatActivity implements
             });
 
 
+            //Activity Started from global search
             if (intent.hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST) && intent.hasExtra(KEY_SEARCH_RESULT_CHILD_POSITION)) {
                 int searchResultListPosition = intent.getIntExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION, 0);
-                mBookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
-                mCurrentSearchResultPosition = searchResultListPosition;
-                if (!isSearchViewInflated) {
-                    mSearchViewStub.inflate();
-                    isSearchViewInflated = true;
-                }
-                moveToCurrentMatch();
-
+                ArrayList<SearchResult> BookSearchResultsArrayList = intent.getParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST);
+                SearchRequest searchRequest = intent.getParcelableExtra(ReadingActivity.KEY_SEARCH_REQUEST);
+                startSearchMode(BookSearchResultsArrayList, searchResultListPosition, searchRequest);
             }
             getDelegate().setHandleNativeActionModesEnabled(false);
 
@@ -976,7 +1042,7 @@ public class ReadingActivity extends AppCompatActivity implements
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceListener);
     }
 
-    public void populateReaderActionBar(CharSequence title, CharSequence author) {
+    public void populateReaderActionBar(@NonNull CharSequence title, CharSequence author) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeActionContentDescription(R.string.exit_book);
@@ -990,6 +1056,12 @@ public class ReadingActivity extends AppCompatActivity implements
         if (SystemUtils.runningOnLollipopOrLater()) {
             ReadingActivity.this.setTaskDescription(new ActivityManager.TaskDescription(title.toString()));
         }
+    }
+
+    @Nullable
+    @Override
+    public String getSearchStringQuery() {
+        return mSearchString;
     }
 
     public void setActionBarElevation(float elevation) {
@@ -1316,12 +1388,18 @@ public class ReadingActivity extends AppCompatActivity implements
 
     private void exitSearchMode() {
         clearSearchMatches();
-
         mPager.removeOnPageChangeListener(searchScrubOnPageChangeListener);
         mSearchView.setQuery("", false);
         mSearchView.setIconified(true);
         searchScrubBar.setVisibility(View.GONE);
+        notifyClearSerchHighlight();
         mIsInSearchMode = false;
+    }
+
+    private void notifyClearSerchHighlight() {
+        for (DisplayPrefChangeListener displayPrefChangeListener : displayPrefChangeListeners) {
+            displayPrefChangeListener.removeSearchResultHighlights();
+        }
 
     }
 
@@ -1330,6 +1408,7 @@ public class ReadingActivity extends AppCompatActivity implements
         if (mBookSearchResultsArrayList != null) {
             mBookSearchResultsArrayList.clear();
         }
+        mSearchString = null;
     }
 
     private void removeSearchResultFragment() {
@@ -1389,7 +1468,7 @@ public class ReadingActivity extends AppCompatActivity implements
                 setHeadingColor(color, isNightMode());
                 break;
             case R.id.pref_theme:
-                setBackgroundColor(color);
+                setBackgroundColor(color, isNightMode());
                 break;
 
         }

@@ -368,10 +368,15 @@ public class DisplayOptionsPopupFragment extends DialogFragment {
 
         void setPinchZoom(boolean checked);
 
+        void setBackgroundColor(@ColorInt int color, boolean isNight);
+
         void setBackgroundColor(@ColorInt int color);
 
         @ColorInt
+        int getBackGroundColor(boolean isNight);
+
         int getBackGroundColor();
+
 
         void registerDisplayOptionsPopup(DisplayOptionsPopupFragment displayOptionsPopupFragment);
 

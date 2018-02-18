@@ -70,7 +70,8 @@ public class SettingsFragment extends XpPreferenceFragment implements
     public static final String PREF_KEEP_SCREEN_ON = "keepScreenOn";
     public static final String KEY_IS_TASHKEEL_ON = "tashkeel_on";
     public static final String KEY_IS_PINCH_ZOOM_ON = "pinch_zoom_on";
-    public static final String KEY_BACKGROUND_COLOR = "background_color";
+    public static final String KEY_BACKGROUND_COLOR_DAY = "background_color_day";
+    public static final String KEY_BACKGROUND_COLOR_NIGHT = "background_color_night";
     public static final String KEY_TEXT_COLOR_DAY = "text_color_day";
     public static final String KEY_TEXT_COLOR_NIGHT = "text_color_night";
     public static final String KEY_HEADING_COLOR_DAY = "heading_color_day";

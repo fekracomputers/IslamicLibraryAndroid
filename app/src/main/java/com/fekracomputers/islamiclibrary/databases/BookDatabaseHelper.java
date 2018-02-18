@@ -20,7 +20,7 @@ import com.fekracomputers.islamiclibrary.model.PageCitation;
 import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.model.PartInfo;
 import com.fekracomputers.islamiclibrary.model.Title;
-import com.fekracomputers.islamiclibrary.search.model.SearchOptions;
+import com.fekracomputers.islamiclibrary.search.model.SearchRequest;
 import com.fekracomputers.islamiclibrary.search.model.SearchResult;
 import com.fekracomputers.islamiclibrary.utility.ArabicUtilities;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
@@ -808,8 +808,8 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @NonNull
-    public ArrayList<SearchResult> search(String searchString, SearchOptions searchOptions) {
-        String cleanedSearchString = ArabicUtilities.cleanTextForSearchingWthStingBuilder(searchString);
+    public ArrayList<SearchResult> search(SearchRequest searchRequest) {
+        String cleanedSearchString = searchRequest.getCleanedSearchString();
 
         /*
         select pages.id,pages.partnumber,pages.pagenumber,pages.page
@@ -842,8 +842,8 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                     c.getInt(COLUMN_NAME_PART_NUMBER_IDX),
                     c.getInt(COLUMN_NAME_PAGE_NUMBER_IDX),
                     c.getString(COLUMN_NAME_PAGE_IDX)
-                    , searchOptions,
-                    searchString,
+                    , searchRequest.searchOptions,
+                    searchRequest.searchString,
                     title);
 
             SearchResults.add(SearchResult);

@@ -33,11 +33,11 @@ import java.util.List;
 public class SearchResultFragment extends Fragment implements
         SearchResultRecyclerViewAdapter.SearchResultOnClickDelegateListener {
     public static final String ARG_SEARCHABLE_BOOKS = "searchable_books";
+    // TODO: Customize parameter argument names
+    public static final String ARG_IS_GLOBAL_SEARCH = "is_global_search";
     SearchRequest mSearchRequest;
     @NonNull
     List<BookSearchResultsContainer> bookSearchResultsContainerList = new ArrayList<>();
-    // TODO: Customize parameter argument names
-    public static final String ARG_IS_GLOBAL_SEARCH = "is_global_search";
     // TODO: Customize parameters
     @Nullable
     private OnSearchResultFragmentInteractionListener mListener;
@@ -51,6 +51,7 @@ public class SearchResultFragment extends Fragment implements
     private ArrayList<Integer> requestedSearchBookIds;
     @Nullable
     private String mSearchQuery;
+    private SearchRequest searchRequest;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -89,6 +90,7 @@ public class SearchResultFragment extends Fragment implements
             mIsGlobalSearch = getArguments().getBoolean(ARG_IS_GLOBAL_SEARCH);
             requestedSearchBookIds = getArguments().getIntegerArrayList(ARG_SEARCHABLE_BOOKS);
         }
+        searchRequest = new SearchRequest(mSearchQuery, new SearchOptions(), requestedSearchBookIds, !mIsGlobalSearch);
     }
 
     @Override
@@ -99,7 +101,8 @@ public class SearchResultFragment extends Fragment implements
 
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        new SearchAsyncTask().execute(new SearchRequest(mSearchQuery, new SearchOptions(), requestedSearchBookIds, !mIsGlobalSearch));
+        searchRequest = new SearchRequest(mSearchQuery, new SearchOptions(), requestedSearchBookIds, !mIsGlobalSearch);
+        new SearchAsyncTask().execute(searchRequest);
         searchResultRecyclerViewAdapter = new SearchResultRecyclerViewAdapter(bookSearchResultsContainerList, this, getContext());
 
         recyclerView.setAdapter(searchResultRecyclerViewAdapter);
@@ -131,7 +134,7 @@ public class SearchResultFragment extends Fragment implements
     }
 
     public void onSearchResultClicked(int parentAdapterPosition, int childAdapterPosition) {
-        mListener.onSearchResultClicked(bookSearchResultsContainerList.get(parentAdapterPosition), childAdapterPosition);
+        mListener.onSearchResultClicked(bookSearchResultsContainerList.get(parentAdapterPosition), childAdapterPosition, searchRequest);
     }
 
 
@@ -146,7 +149,7 @@ public class SearchResultFragment extends Fragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnSearchResultFragmentInteractionListener {
-        void onSearchResultClicked(BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition);
+        void onSearchResultClicked(BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition, SearchRequest searchRequest);
     }
 
     private class SearchAsyncTask extends AsyncTask<SearchRequest, BookSearchResultsContainer, Void> {
@@ -162,7 +165,7 @@ public class SearchResultFragment extends Fragment implements
         @Nullable
         @Override
         protected Void doInBackground(SearchRequest... searchRequests) {
-            BookSearcher bookSearcher = new BookSearcher(SearchResultFragment.this.getContext(), searchRequests[0].expandAll, searchRequests[0].searchString, searchRequests[0].searchOptions);
+            BookSearcher bookSearcher = new BookSearcher(SearchResultFragment.this.getContext(), searchRequests[0]);
             ArrayList<Integer> searchableBooksIds = searchRequests[0].getSearchBleBooksId();
             for (Integer bookId : searchableBooksIds) {
                 publishProgress(bookSearcher.getBookSearchResultsContainer(bookId));

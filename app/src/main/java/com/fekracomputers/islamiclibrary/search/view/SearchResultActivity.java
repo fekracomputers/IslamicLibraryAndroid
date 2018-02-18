@@ -12,6 +12,7 @@ import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.fekracomputers.islamiclibrary.reading.ReadingActivity;
 import com.fekracomputers.islamiclibrary.search.model.BookSearchResultsContainer;
+import com.fekracomputers.islamiclibrary.search.model.SearchRequest;
 import com.fekracomputers.islamiclibrary.search.model.SearchResult;
 import com.fekracomputers.islamiclibrary.utility.Util;
 
@@ -58,12 +59,16 @@ public class SearchResultActivity extends AppCompatActivity implements SearchRes
 
 
     @Override
-    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer, int childAdapterPosition) {
+    public void onSearchResultClicked(@NonNull BookSearchResultsContainer bookSearchResultsContainer,
+                                      int childAdapterPosition,
+                                      SearchRequest searchRequest) {
         SearchResult searchResult=bookSearchResultsContainer.getChildList().get(childAdapterPosition);
         Intent intent = new Intent(this, ReadingActivity.class);
         intent.putExtra(ReadingActivity.KEY_BOOK_ID, searchResult.getBookId());
         intent.putExtra(ReadingActivity.KEY_SEARCH_RESULT_CHILD_POSITION,childAdapterPosition);
-        intent.putParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST,bookSearchResultsContainer.getChildArrayList());
+        intent.putExtra(ReadingActivity.KEY_SEARCH_REQUEST, searchRequest);
+        intent.putParcelableArrayListExtra(ReadingActivity.KEY_SEARCH_RESULT_ARRAY_LIST,
+                bookSearchResultsContainer.getChildArrayList());
         startActivity(intent);
     }
 }

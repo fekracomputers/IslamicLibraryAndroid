@@ -303,6 +303,8 @@
     <string name="pref_text_color">لون النص</string>
     <string name="pref_text_color_day">لون النص في القراءة النهارية</string>
     <string name="pref_text_color_night">لون النص في القراءة الليلية</string>
+    <string name="background_color_day">لون الخلفية في القراءة النهارية</string>
+    <string name="background_color_night">لون الخلفية في القراءة الليلية</string>
     <string name="pref_heading_color">لون العناوين</string>
     <string name="pref_heading_color_day">لون العناوين قي القراءة النهارية</string>
     <string name="pref_heading_color_night">لون العناوين في القراءة الليلية</string>

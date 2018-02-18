@@ -7,7 +7,7 @@ import com.fekracomputers.islamiclibrary.databases.BookDatabaseException;
 import com.fekracomputers.islamiclibrary.databases.BookDatabaseHelper;
 import com.fekracomputers.islamiclibrary.model.BookPartsInfo;
 import com.fekracomputers.islamiclibrary.search.model.BookSearchResultsContainer;
-import com.fekracomputers.islamiclibrary.search.model.SearchOptions;
+import com.fekracomputers.islamiclibrary.search.model.SearchRequest;
 import com.fekracomputers.islamiclibrary.search.model.SearchResult;
 
 import java.util.ArrayList;
@@ -21,15 +21,11 @@ public class BookSearcher {
 
 
     private final Context context;
-    private final boolean isExpanded;
-    private final String searchString;
-    private final SearchOptions searchOptions;
+    private final SearchRequest searchRequest;
 
-    public BookSearcher(Context context, boolean isExpanded, String searchString, SearchOptions searchOptions) {
+    public BookSearcher(Context context, SearchRequest searchRequest) {
         this.context = context;
-        this.isExpanded = isExpanded;
-        this.searchString = searchString;
-        this.searchOptions = searchOptions;
+        this.searchRequest = searchRequest;
     }
 
 
@@ -37,7 +33,7 @@ public class BookSearcher {
     public BookSearchResultsContainer getBookSearchResultsContainer(int bookId) {
         try {
             BookDatabaseHelper bookDatabaseHelper = BookDatabaseHelper.getInstance(context, bookId);
-            ArrayList<SearchResult> results = bookDatabaseHelper.search(searchString, searchOptions);
+            ArrayList<SearchResult> results = bookDatabaseHelper.search(searchRequest);
             BookPartsInfo bookPartsInfo = bookDatabaseHelper.getBookPartsInfo();
             ListIterator<SearchResult> searchResultIterator = results.listIterator();
             while (searchResultIterator.hasNext()) {
@@ -46,9 +42,9 @@ public class BookSearcher {
                     searchResultIterator.remove();
                 }
             }
-            return new BookSearchResultsContainer(isExpanded, bookId, bookDatabaseHelper.getBookName(), bookPartsInfo, results);
+            return new BookSearchResultsContainer(searchRequest.isExpanded(), bookId, bookDatabaseHelper.getBookName(), bookPartsInfo, results);
         } catch (BookDatabaseException bookDatabaseException) {
-            return new BookSearchResultsContainer(isExpanded, bookId, "", null, new ArrayList<>());
+            return new BookSearchResultsContainer(searchRequest.isExpanded(), bookId, "", null, new ArrayList<>());
         }
     }
 }
