@@ -1522,7 +1522,7 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
         boolean found = false;
         Cursor c = getReadableDatabase().rawQuery("PRAGMA database_list", null);
         while (c.moveToNext()) {
-            if (c.getString(1).equals(databaseName) && c.getString(2).equals(databasePath)) {
+            if (c.getString(1).equals(databaseName)) {
                 found = true;
                 break;
             }

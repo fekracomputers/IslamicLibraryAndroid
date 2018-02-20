@@ -257,9 +257,11 @@ public class StorageUtils {
                         Environment.getExternalStorageDirectory().getAbsolutePath(),
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M));
                 for (File mountPoint : mountPoints) {
-                    result.add(new Storage(context.getString(typeId, number++),
-                            mountPoint.getAbsolutePath()));
-                    typeId = R.string.prefs_sdcard_external;
+                    if (mountPoint != null) {
+                        result.add(new Storage(context.getString(typeId, number++),
+                                mountPoint.getAbsolutePath()));
+                        typeId = R.string.prefs_sdcard_external;
+                    }
                 }
             }
             return result;
