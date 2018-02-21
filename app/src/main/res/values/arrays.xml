@@ -32,6 +32,13 @@
         <item>@string/book_collection_most_opened</item>
         <item>@string/book_collection_recent_download</item>
     </string-array>
+    <string-array name="donation_google_catalog_values">
+        <item>1</item>
+        <item>10</item>
+        <item>50</item>
+        <item>100</item>
+
+    </string-array>
     <integer-array name="standard_books_collection_automatic_id">
         <item>1</item>
         <item>2</item>

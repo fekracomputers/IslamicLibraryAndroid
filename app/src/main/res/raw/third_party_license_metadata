@@ -1,25 +1,23 @@
-0:53 crashlytics
-55:47 firebase-core
-104:53 beta
-159:53 crashlytics-core
-214:24 answers
-240:23 fabric
-265:47 firebase-analytics
-314:47 firebase-analytics-impl
-363:47 firebase-iid
-412:47 firebase-common
-461:47 play-services-tasks
-510:47 play-services-basement
-559:2500 zlib
-3061:1602 JSR 305
-4665:11358 safeparcel
-16025:3182 PCRE
-19209:680 STL
-19891:731 UTF
-20624:1558 RE2
-22184:1481 darts_clone
-23667:1732 Protobuf Nano
-25401:19442 ICU4C
-44845:11342 flatbuffers
-56189:11358 CCTZ
-67549:243 tz database
+0:47 firebase-core
+49:47 firebase-analytics
+98:47 firebase-analytics-impl
+147:47 firebase-iid
+196:47 firebase-common
+245:47 play-services-tasks
+294:47 play-services-basement
+343:2500 zlib
+2845:1602 JSR 305
+4449:11358 safeparcel
+15809:3182 PCRE
+18993:680 STL
+19675:731 UTF
+20408:1558 RE2
+21968:1481 darts_clone
+23451:1732 Protobuf Nano
+25185:19442 ICU4C
+44629:11342 flatbuffers
+55973:11358 CCTZ
+67333:243 tz database
+67578:46 butterknife-compiler
+67626:46 butterknife-annotations
+67674:46 javapoet

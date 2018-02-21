@@ -11,4 +11,10 @@
     <item name="menu_item_rename" type="id" />
     <item name="menu_item_show" type="id" />
     <item name="bottom_nav_user_notes" type="id" />
+    <item name="screen_wait" type="id" />
+    <item name="screen_main" type="id" />
+    <item name="free_or_premium" type="id" />
+    <item name="gas_gauge" type="id" />
+    <item name="button_purchase" type="id" />
+    <item name="button_drive" type="id" />
 </resources>

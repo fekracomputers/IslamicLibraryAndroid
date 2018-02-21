@@ -406,5 +406,37 @@
     <string name="background_color_day">Day background color</string>
     <string name="background_color_night">Night background color</string>
 
+    <string name="donations_description">disc</string>
     <!--end storage pref-->
+    <string name="title_activity_main">Trivial Drive v2</string>
+
+    <string name="alert_no_gas">Oh, no! You are out of gas! Try buying some!</string>
+    <string name="alert_drove">Vroooom, you drove a few miles.</string>
+    <string name="alert_fill_gas">You filled &#188; tank. Your tank is now %1$d/4 full!</string>
+    <string name="alert_error_consuming">Error while consuming: %1$s</string>
+    <string name="alert_already_purchased">Item is already purchased</string>
+
+    <string name="error_no_skus">We didn\'t find any SKUs to display&#8230; Check your internet
+        connection and make sure your Google Developer Console was setup correctly.</string>
+    <string name="error_billing_unavailable">Billing unavailable. Make sure your Google Play app
+        is setup correctly</string>
+    <string name="error_billing_default">Billing unavailable. Please check your device.</string>
+    <string name="content_description_app_loading_image">App loading image</string>
+    <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
+    <string name="content_desc_gas_gauge_indicator">Gas gauge indicator</string>
+    <string name="content_desc_free_vs_premium_indicator">Free or Premium Image Indicator</string>
+    <string name="donate">Donate</string>
+    <string name="iap_not_available"><![CDATA[\"In-app billing service is unavailable, please upgrade Android Market/Play to version >= 3.9.16\"]]></string>
+    <string name="wait">wait</string>
+    <string name="donation_descreption">Google Play handles all checkout details so the application never has to directly process any financial transactions</string>
+    <string name="button_purchase">Purchase</string>
+    <string name="button_consume">consume</string>
+    <string name="button_details">Details</string>
+    <string name="item_not_purchased">not purchased</string>
+    <string name="item_already_purchsed">already purchased</string>
+    <string name="about_support">Support Us</string>
+    <string name="support_notice">You can suppot us via</string>
+    <string name="feed_back_sub_tex">Suggestions and Notices to help us improve the app</string>
+    <string name="share_app_msg_sub_text">share app with friends</string>
+    <string name="donate_sub_text">Donate for supporting the app</string>
 </resources>
