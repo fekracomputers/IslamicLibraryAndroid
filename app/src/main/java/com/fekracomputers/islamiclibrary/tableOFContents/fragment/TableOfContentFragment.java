@@ -191,7 +191,10 @@ public class TableOfContentFragment extends Fragment implements
         }
 
         mHistoryTitlesAdapter.notifyItemRangeRemoved(pastTitlePosition + 1, removed);
-        tableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
+        Title lastTitle = mHistoryLinkedList.peekLast();
+        if (tableOfContentRecyclerViewAdapter != null && lastTitle != null) {
+            tableOfContentRecyclerViewAdapter.displayChildrenOf(lastTitle);
+        }
     }
 
 
@@ -200,7 +203,10 @@ public class TableOfContentFragment extends Fragment implements
         mHistoryLinkedList.addLast(title);
         mBacstackTitlesLinkedList.addLast(title);
         mHistoryTitlesAdapter.notifyItemInserted(mHistoryLinkedList.size() - 1);
-        tableOfContentRecyclerViewAdapter.displayChildrenOf(mHistoryLinkedList.peekLast());
+        Title lastTitle = mHistoryLinkedList.peekLast();
+        if (lastTitle != null && tableOfContentRecyclerViewAdapter != null) {
+            tableOfContentRecyclerViewAdapter.displayChildrenOf(lastTitle);
+        }
         mHistoryRecyclerView.scrollToPosition(mHistoryLinkedList.size() - 1);
         getView().requestFocus();
 
