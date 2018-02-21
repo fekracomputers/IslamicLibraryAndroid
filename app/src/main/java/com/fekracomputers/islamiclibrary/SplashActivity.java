@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
+import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 import com.fekracomputers.islamiclibrary.download.service.UnZipIntentService;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
@@ -198,6 +200,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkBookInformationDatabase() {
+        checkUserDatabase();
         if (BooksInformationDbHelper.databaseFileExists(SplashActivity.this)) {
             BooksInformationDbHelper instance = BooksInformationDbHelper.getInstance(this);
             if (instance != null && instance.isValid()) {
@@ -213,6 +216,21 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             new getBooksInformationFromAssets(this).execute();
 
+        }
+    }
+
+    private void checkUserDatabase() {
+        File oldUserDatabase = getDatabasePath(UserDataDBHelper.DATABASE_NAME);
+        File newUserDatabasePath = new File(UserDataDBHelper.getDatabasePath(this));
+        if (oldUserDatabase.exists() && !newUserDatabasePath.exists()) {
+            try {
+                StorageUtils.copyFile(oldUserDatabase, newUserDatabasePath);
+                SQLiteDatabase.deleteDatabase(oldUserDatabase);
+            } catch (IOException e) {
+                Timber.e(e);
+            }
+        } else if (oldUserDatabase.exists() && newUserDatabasePath.exists()) {
+            SQLiteDatabase.deleteDatabase(oldUserDatabase);
         }
     }
 

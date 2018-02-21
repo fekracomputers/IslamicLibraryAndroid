@@ -26,4 +26,5 @@ public class DownloadFileConstants {
     public static final String SHAMELA_BOOKS_DIR = "shamela_books";
 
     public static final String COVERS = "covers";
+    public static final String USER_BOOKS_DIR = "user";
 }

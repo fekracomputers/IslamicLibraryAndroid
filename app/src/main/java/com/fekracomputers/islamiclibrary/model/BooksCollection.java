@@ -62,7 +62,7 @@ public class BooksCollection implements Comparable<BooksCollection> {
 
     private Cursor getNewCursor(Context context) {
         if (cursor == null || cursor.isClosed()) {
-            cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this);
+            cursor = UserDataDBHelper.getInstance(context).getBooksCollectionCursor(this, context);
         }
         return cursor;
     }

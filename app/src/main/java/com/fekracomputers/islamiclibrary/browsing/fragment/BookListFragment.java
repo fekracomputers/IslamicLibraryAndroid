@@ -452,7 +452,7 @@ public class BookListFragment
                             downloadedOnly, null);
                     break;
                 case FILTER_BY_COLLECTION:
-                    bookListCursor= UserDataDBHelper.getInstance(getContext()).getBooksCollectionCursor(id);
+                    bookListCursor = UserDataDBHelper.getInstance(getContext()).getBooksCollectionCursor(id, getContext());
                     break;
                 default:
                 case FILTERALL:

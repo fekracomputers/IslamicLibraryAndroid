@@ -19,6 +19,7 @@ import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -49,9 +50,14 @@ public class StorageUtils {
     public static String getIslamicLibraryShamelaBooksDir(@NonNull Context context) {
         String base = getIslamicLibraryBaseDirectory(context);
         return base == null ? null : base + File.separator + DownloadFileConstants.SHAMELA_BOOKS_DIR;
-//        return Environment.getExternalStorageDirectory().getAbsolutePath() +
-//                File.separator + DownloadFileConstants.ISLAMIC_LIBRARY_BASE_DIRECTORY;
+
     }
+
+    public static String getIslamicLibraryUserBooksDir(Context context) {
+        String base = getIslamicLibraryBaseDirectory(context);
+        return base == null ? null : base + File.separator + DownloadFileConstants.USER_BOOKS_DIR;
+    }
+
 
     @Nullable
     public static String getIslamicLibraryBaseDirectory(@NonNull Context context) {
@@ -180,7 +186,7 @@ public class StorageUtils {
         }
     }
 
-    private static void copyFileOrDirectory(@NonNull File source, @NonNull File destination) throws IOException {
+    public static void copyFileOrDirectory(@NonNull File source, @NonNull File destination) throws IOException {
         if (source.isDirectory()) {
             if (!destination.exists() && !destination.mkdirs()) {
                 return;
@@ -194,9 +200,10 @@ public class StorageUtils {
         }
     }
 
-    private static void copyFile(@NonNull File source, @NonNull File destination) throws IOException {
+
+    public static void copyFile(@NonNull File source, @NonNull File destination) throws IOException {
         FileInputStream inStream = new FileInputStream(source);
-        FileOutputStream outStream = new FileOutputStream(destination);
+        FileOutputStream outStream = openOutputStream(destination);
         FileChannel inChannel = inStream.getChannel();
         FileChannel outChannel = outStream.getChannel();
         try {
@@ -458,6 +465,7 @@ public class StorageUtils {
         return sharedPreferences.getBoolean(PREF_SDCARDPERMESSION_DIALOG_DISPLAYED, false);
     }
 
+
     public static class Storage {
         private final String label;
         private final String mountPoint;
@@ -509,5 +517,75 @@ public class StorageUtils {
         }
     }
 
+    /**
+     * Opens a {@link FileInputStream} for the specified file, providing better
+     * error messages than simply calling <code>new FileInputStream(file)</code>.
+     * <p>
+     * At the end of the method either the stream will be successfully opened,
+     * or an exception will have been thrown.
+     * <p>
+     * An exception is thrown if the file does not exist.
+     * An exception is thrown if the file object exists but is a directory.
+     * An exception is thrown if the file exists but cannot be read.
+     *
+     * @param file the file to open for input, must not be <code>null</code>
+     * @return a new {@link FileInputStream} for the specified file
+     * @throws FileNotFoundException if the file does not exist
+     * @throws IOException           if the file object is a directory
+     * @throws IOException           if the file cannot be read
+     * @since Commons IO 1.3
+     */
+    public static FileInputStream openInputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                throw new IOException("File '" + file + "' exists but is a directory");
+            }
+            if (file.canRead() == false) {
+                throw new IOException("File '" + file + "' cannot be read");
+            }
+        } else {
+            throw new FileNotFoundException("File '" + file + "' does not exist");
+        }
+        return new FileInputStream(file);
+    }
+
+    /**
+     * Opens a {@link FileOutputStream} for the specified file, checking and
+     * creating the parent directory if it does not exist.
+     * <p>
+     * At the end of the method either the stream will be successfully opened,
+     * or an exception will have been thrown.
+     * <p>
+     * The parent directory will be created if it does not exist.
+     * The file will be created if it does not exist.
+     * An exception is thrown if the file object exists but is a directory.
+     * An exception is thrown if the file exists but cannot be written to.
+     * An exception is thrown if the parent directory cannot be created.
+     *
+     * @param file the file to open for output, must not be <code>null</code>
+     * @return a new {@link FileOutputStream} for the specified file
+     * @throws IOException if the file object is a directory
+     * @throws IOException if the file cannot be written to
+     * @throws IOException if a parent directory needs creating but that fails
+     * @since Commons IO 1.3
+     */
+    public static FileOutputStream openOutputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                throw new IOException("File '" + file + "' exists but is a directory");
+            }
+            if (!file.canWrite()) {
+                throw new IOException("File '" + file + "' cannot be written to");
+            }
+        } else {
+            File parent = file.getParentFile();
+            if (parent != null && !parent.exists()) {
+                if (!parent.mkdirs()) {
+                    throw new IOException("File '" + file + "' could not be created");
+                }
+            }
+        }
+        return new FileOutputStream(file);
+    }
 
 }

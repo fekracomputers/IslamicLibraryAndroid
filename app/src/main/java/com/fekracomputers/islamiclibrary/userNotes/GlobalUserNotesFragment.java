@@ -89,8 +89,8 @@ public class GlobalUserNotesFragment extends Fragment implements SortListDialogF
             }
         };
 
-        bookmarkItems = userDatabase.getBookmarkItems();
-        highlightItems = userDatabase.getHighlightItems();
+        bookmarkItems = userDatabase.getBookmarkItems(getContext());
+        highlightItems = userDatabase.getHighlightItems(getContext());
         adapter = new UserNoteGroupAdapter();
         adapter.setUserNoteInterActionListener(mListener);
 

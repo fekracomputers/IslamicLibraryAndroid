@@ -22,7 +22,9 @@ import com.fekracomputers.islamiclibrary.model.PageInfo;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.BookmarkItem;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.HighlightItem;
 import com.fekracomputers.islamiclibrary.userNotes.adapters.UserNoteItem;
+import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,7 +39,9 @@ import timber.log.Timber;
  */
 
 public class UserDataDBHelper {
-    private static final String TAG = "UserDataDBHelper";
+    public static final String TAG = "UserDataDBHelper";
+    public static final String DATABASE_NAME = "user_data";
+    private static final int DATABASE_VERSION = 2;
     private static GlobalUserDBHelper sGlobalUserDBHelper;
     private final Context context;
     private int bookId;
@@ -50,14 +54,26 @@ public class UserDataDBHelper {
 
     public static synchronized UserDataDBHelper getInstance(Context context, int bookId) {
         if (sGlobalUserDBHelper == null) {
-            sGlobalUserDBHelper = new GlobalUserDBHelper(context);
+            sGlobalUserDBHelper = new GlobalUserDBHelper(
+                    context,
+                    getDatabasePath(context),
+                    null,
+                    DATABASE_VERSION);
         }
         return new UserDataDBHelper(context, bookId);
     }
 
+    @NonNull
+    public static String getDatabasePath(Context context) {
+        return StorageUtils.getIslamicLibraryUserBooksDir(context) + File.separator + DATABASE_NAME;
+    }
+
     public static synchronized GlobalUserDBHelper getInstance(Context context) {
         if (sGlobalUserDBHelper == null) {
-            sGlobalUserDBHelper = new GlobalUserDBHelper(context);
+            sGlobalUserDBHelper = new GlobalUserDBHelper(context,
+                    getDatabasePath(context),
+                    null,
+                    DATABASE_VERSION);
         }
         return sGlobalUserDBHelper;
     }
@@ -150,15 +166,13 @@ public class UserDataDBHelper {
         public static final int BOOK_COLLECTION_latest_DOWNLOADED_AUTO_ID = 3;
         public static final int COUNT_AUTO_COLLECTION_VER_2 = 3;
         public static final int FAVOURITE_COLLECTION_ID = 3;
-        private static final String DATABASE_NAME = "user_data";
-        private static final int DATABASE_VERSION = 2;
         private final Context context;
 
-        private GlobalUserDBHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            this.context = context;
-        }
 
+        private GlobalUserDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+            this.context = context.getApplicationContext();
+        }
 
         @Override
         public void onCreate(@NonNull SQLiteDatabase sqLiteDatabase) {
@@ -696,17 +710,17 @@ public class UserDataDBHelper {
         }
 
         @Nullable
-        public Cursor getBooksCollectionCursor(int collectionId) {
-            return getBooksCollectionCursor(getBooksCollection(collectionId));
+        public Cursor getBooksCollectionCursor(int collectionId, Context context) {
+            return getBooksCollectionCursor(getBooksCollection(collectionId), context);
         }
 
         @Nullable
-        public Cursor getBooksCollectionCursor(@NonNull BooksCollection booksCollection) {
+        public Cursor getBooksCollectionCursor(@NonNull BooksCollection booksCollection, Context context) {
             if (booksCollection.isAutomatic()) {
-                return getAutomaticBooksCollectionCursor(booksCollection.getAutomaticId());
+                return getAutomaticBooksCollectionCursor(booksCollection.getAutomaticId(), context);
             } else {
                 return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
-                        context.getDatabasePath(DATABASE_NAME).toString(),
+                        getDatabasePath(context),
                         UserDataDBContract.BooksCollectionJoinEntry.Table_NAME,
                         UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
                         new String[]{String.valueOf(booksCollection.getCollectionsId())},
@@ -716,12 +730,12 @@ public class UserDataDBHelper {
 
         }
 
-        private Cursor getAutomaticBooksCollectionCursor(int automaticId) {
+        private Cursor getAutomaticBooksCollectionCursor(int automaticId, Context context) {
             switch (automaticId) {
                 case MOST_RECENT_BOOK_COLLECTION_AUTO_ID://book_collection_most_recent
                     //select * from AccESSiNFORMATION where lastOpened is not null order by lastOpened desc
                     return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
-                            context.getDatabasePath(DATABASE_NAME).toString(),
+                            getDatabasePath(context),
                             UserDataDBContract.AccessInformationEntry.Table_NAME,
                             UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
                             new String[]{String.valueOf(DownloadsConstants.STATUS_FTS_INDEXING_ENDED)},
@@ -737,7 +751,7 @@ public class UserDataDBHelper {
                                     UserDataDBContract.AccessInformationEntry.LAST_OPENED_TIME_STAMP + SQL.DECS);
                 case BOOK_COLLECTION_MOST_OPENED_AUTO_ID://book_collection_most_opened
                     return BooksInformationDbHelper.getInstance(context).getBooksFilteredwithAttachDatabase(DATABASE_NAME,
-                            context.getDatabasePath(DATABASE_NAME).toString(),
+                            getDatabasePath(context),
                             UserDataDBContract.AccessInformationEntry.Table_NAME,
                             UserDataDBContract.BooksCollectionJoinEntry.BOOK_ID,
                             null,
@@ -1013,16 +1027,16 @@ public class UserDataDBHelper {
         }
 
         @NonNull
-        public Collection<UserNoteItem> getUserNotes() {
+        public Collection<UserNoteItem> getUserNotes(Context context) {
             ArrayList<UserNoteItem> userNotes = new ArrayList<>();
-            userNotes.addAll(getBookmarkItems());
-            userNotes.addAll(getHighlightItems());
+            userNotes.addAll(getBookmarkItems(context));
+            userNotes.addAll(getHighlightItems(context));
             return userNotes;
         }
 
 
         @NonNull
-        public ArrayList<UserNoteItem> getBookmarkItems() throws IllegalArgumentException {
+        public ArrayList<UserNoteItem> getBookmarkItems(Context context) throws IllegalArgumentException {
 //            if (!order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID) ||
 //                    !order.equals(UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID)) {
 //                throw new IllegalArgumentException("order must be {@link UserDataDBContract.BookmarkEntry.COLUMN_NAME_PAGE_ID} or" +
@@ -1071,7 +1085,7 @@ public class UserDataDBHelper {
         }
 
         @NonNull
-        public ArrayList<UserNoteItem> getHighlightItems() {
+        public ArrayList<UserNoteItem> getHighlightItems(Context context) {
             ArrayList<UserNoteItem> highlightArrayList = new ArrayList<>();
 
             Cursor c = getReadableDatabase().query(UserDataDBContract.HighlightEntry.TABLE_NAME,
