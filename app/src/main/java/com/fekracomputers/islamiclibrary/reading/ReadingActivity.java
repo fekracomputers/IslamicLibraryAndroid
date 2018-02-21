@@ -634,7 +634,7 @@ public class ReadingActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (mIsInSearchMode) {
+        if (mIsInSearchMode && !isInGlobalSearchResult()) {
             reShowSearchResultFragment();
         } else {
             super.onBackPressed();
@@ -1376,14 +1376,20 @@ public class ReadingActivity extends AppCompatActivity implements
         return getIntent().hasExtra(KEY_SEARCH_RESULT_ARRAY_LIST);
     }
 
-    private void reShowSearchResultFragment() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .show(getSupportFragmentManager().findFragmentByTag(SEARCH_FRAGMENT_TAG))
-                .addToBackStack(SHOW_SEARCH_FRAGMENT_BACKSTACK_ENTRY)
-                .commit();
-        searchScrubBar.setVisibility(View.GONE);
-        mIsInSearchMode = false;//why?
+    private boolean reShowSearchResultFragment() {
+        Fragment searchResultFragment = getSupportFragmentManager().findFragmentByTag(SEARCH_FRAGMENT_TAG);
+        if (searchResultFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .show(searchResultFragment)
+                    .addToBackStack(SHOW_SEARCH_FRAGMENT_BACKSTACK_ENTRY)
+                    .commit();
+            searchScrubBar.setVisibility(View.GONE);
+            mIsInSearchMode = false;//why?
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void exitSearchMode() {
