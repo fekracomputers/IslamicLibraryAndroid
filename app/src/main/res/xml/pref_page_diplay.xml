@@ -58,7 +58,7 @@
             app:cpv_selectedButtonText="@string/button_select_color"
             app:cpv_showDialog="true" />
         <com.jaredrummler.android.colorpicker.ColorPreferenceSupport
-            android:defaultValue="#333333"
+            android:defaultValue="@color/night_mode_web_view_bg"
             android:key="background_color_night"
             android:title="@string/background_color_night"
             app:cpv_allowCustom="true"
