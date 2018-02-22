@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,81 +10,64 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
     android:background="@color/book_card_background"
-    card_view:cardBackgroundColor="@color/book_card_background"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="0dp"
-    card_view:contentPadding="@dimen/content_padding"
+    app:cardBackgroundColor="@color/book_card_background"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp"
+    app:contentPadding="@dimen/content_padding"
     tools:showIn="@layout/activity_billing">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/sku_icon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_coin_gold" />
+
+        <TextView
+            android:id="@+id/product_titlte_textView"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toRightOf="@id/sku_icon"
+            tools:text="اشتراك ذهبي" />
+
+        <TextView
+            android:id="@+id/priceTextView"
+            style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/product_titlte_textView"
+            android:layout_toRightOf="@id/sku_icon"
+            tools:text="10 جنيهات" />
+
+        <com.fekracomputers.islamiclibrary.widget.StaticList
+            android:id="@+id/benefits_list"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/priceTextView"
+            android:layout_toRightOf="@id/sku_icon" />
 
-            <TextView
-                android:id="@+id/productIdTextView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                tools:text="تبرع 1" />
-
-            <TextView
-                android:id="@+id/statusTextView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                tools:text="10 جنيهات" />
-
-            <TextView
-                android:id="@+id/priceTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="تم الشراء" />
-        </LinearLayout>
-
-        <LinearLayout
-            style="?android:attr/buttonBarStyle"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/purchaseButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/benefits_list"
+            android:text="@string/button_purchase" />
 
-            <Button
-                android:id="@+id/purchaseButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
 
-                android:text="@string/button_purchase" />
-
-            <Button
-                android:id="@+id/consumeButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:text="@string/button_consume" />
-
-            <Button
-                android:id="@+id/productDetailsButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:text="@string/button_details" />
-
-        </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

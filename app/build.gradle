@@ -2,8 +2,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
 
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
 android {
     signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
     }
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
@@ -14,9 +26,11 @@ android {
         applicationId "com.fekracomputers.islamiclibrary"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 26
-        versionName "1.3.3"
+        versionCode 27
+        versionName "1.4.1"
         vectorDrawables.useSupportLibrary = false
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
     }
 
 
@@ -25,26 +39,32 @@ android {
         free {
             dimension "price"
             applicationIdSuffix ""
+            signingConfig signingConfigs.config
         }
         pro1 {
             dimension "price"
             applicationIdSuffix ".pro1"
+            signingConfig signingConfigs.config
         }
         pro2 {
             dimension "price"
             applicationIdSuffix ".pro2"
+            signingConfig signingConfigs.config
         }
         pro3 {
             dimension "price"
             applicationIdSuffix ".pro3"
+            signingConfig signingConfigs.config
         }
         pro4 {
             dimension "price"
             applicationIdSuffix ".pro4"
+            signingConfig signingConfigs.config
         }
         pro5 {
             dimension "price"
             applicationIdSuffix ".pro5"
+            signingConfig signingConfigs.config
         }
     }
 
@@ -109,10 +129,6 @@ dependencies {
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.google.android.gms:play-services-oss-licenses:$playServicesVersion"
     implementation 'com.android.support:support-v4:27.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.1", {
-        exclude group: "com.android.support", module: "support-annotations"
-    })
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
@@ -122,6 +138,17 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation project(':colorpicker')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.1", {
+        exclude group: "com.android.support", module: "support-annotations"
+    })
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
 }
 apply plugin: "com.google.gms.google-services"
 

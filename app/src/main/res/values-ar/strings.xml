@@ -311,12 +311,11 @@
     <string name="button_custom_color">لون معدل</string>
     <string name="button_preset_color">ألوان معدة</string>
     <string name="button_select_color">استخدام</string>
-    <string name="donate">تبرع</string>
-    <string name="iap_not_available"><![CDATA[\"In-app billing service is unavailable, please upgrade Android Market/Play to version >= 3.9.16\"]]></string>
+    <string name="financial_aid">ساهم ماديا</string>
+    <string name="iap_not_available">عذرا لا تتوافر هذه الخدمة على جهازك الرجاء تحديث play services ثم إعادة المحاولة</string>
     <string name="wait">انتظر</string>
     <string name="donation_descreption">يقوم (Google Play)بالتعامل مع كل ما يخص بالتحويلات المالية وتأمينها، ولا يقوم البرنامج بأي تعامل مباشر </string>
     <string name="button_purchase">دفع</string>
-    <string name="button_consume">إعادة التبرع</string>
     <string name="button_details">معلومات</string>
     <string name="item_not_purchased">غير مدفوعة</string>
     <string name="item_already_purchsed">دفعت بالفعل</string>
@@ -324,7 +323,13 @@
     <string name="support_notice">وعن أبي هريرة رضي الله عنه قال: قال رسول الله صلى الله عليه وسلم إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولدٍ صالح يدعو له. رواه مسلم وغيره،\n
 قال العلماء:وناسخ العلم النافع له أجره وأجر من قرأه أو نسخه أو عمل به من بعده ما بقي خطه والعمل به، لهذا الحديث وأمثاله، </string>
     <string name="feed_back_sub_tex">راسلنا بملاحظاتك واقتراحاتك لتطوير البرنامج</string>
+    <string name="donate_sub_text">اشترك معنا</string>
     <string name="share_app_msg_sub_text">انشر البرنامج ولك أجر من يستخدمه إن شاء الله</string>
-    <string name="donate_sub_text">تبرع لدعم البرنامج</string>
+    <string name="benefit_fast_support"> دعم سريع وتواصل فعال من مبرمجي البرنامج</string>
+    <string name="benefit_yearly">سنوي ولا يتجدد تلقائيا</string>
+    <string name="benefit_support_developing_the_app">دعم تطوير البرنامج وصيانته</string>
+    <string name="benefit_thawab">صدقة جارية لنشر العلم</string>
+    <string name="benefit_upload_books">إمكانية رفع كتب متخصصة بطلب العميل طالما لا تتعارض مع المحتوى العربي والإسلامي وقواعد النشر</string>
+    <string name="benefit_nominate"> الإعلان عن مؤسستك أو التعريف بشخصك في صفحة الداعمين</string>
 
 </resources>

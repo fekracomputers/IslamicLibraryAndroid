@@ -182,7 +182,7 @@ public class AboutUtil {
 
     }
 
-    public static void donate(Context context) {
+    public static void pay(Context context) {
         Intent intent = new Intent(context, BillingActivity.class);
         context.startActivity(intent);
 

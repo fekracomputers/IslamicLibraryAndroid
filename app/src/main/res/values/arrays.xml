@@ -45,6 +45,32 @@
         <item>3</item>
     </integer-array>
 
+    <string-array name="silver_user_benefits">
+        <item>@string/benefit_support_developing_the_app</item>
+        <item>@string/benefit_fast_support</item>
+        <item>@string/benefit_thawab</item>
+        <item>@string/benefit_yearly</item>
+    </string-array>
+
+
+    <string-array name="gold_user_benefits">
+        <item>@string/benefit_support_developing_the_app</item>
+        <item>@string/benefit_fast_support</item>
+        <item>@string/benefit_upload_books</item>
+        <item>@string/benefit_thawab</item>
+        <item>@string/benefit_yearly</item>
+    </string-array>
+
+
+    <string-array name="diamond_user_benefits">
+        <item>@string/benefit_support_developing_the_app</item>
+        <item>@string/benefit_fast_support</item>
+        <item>@string/benefit_upload_books</item>
+        <item>@string/benefit_nominate</item>
+        <item>@string/benefit_thawab</item>
+        <item>@string/benefit_yearly</item>
+    </string-array>
+
 
     <!--<array name="typeface_icons">-->
     <!--<item>@drawable/ic_font_georgia_black_24dp</item>-->

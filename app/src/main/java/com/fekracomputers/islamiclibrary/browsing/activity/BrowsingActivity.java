@@ -867,6 +867,8 @@ public class BrowsingActivity
             AboutUtil.ShareAppLink(this);
         } else if (id == R.id.nav_feedback) {
             AboutUtil.sendFeedBack(this);
+        } else if (id == R.id.nav_pay) {
+            AboutUtil.pay(this);
         } else if (id == R.id.nav_about_app) {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);

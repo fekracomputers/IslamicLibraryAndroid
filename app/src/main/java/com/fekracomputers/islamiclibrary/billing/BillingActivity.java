@@ -17,6 +17,7 @@ import com.fekracomputers.islamiclibrary.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class BillingActivity extends AppCompatActivity implements BillingAdapterListener {
     private static final String LICENSE_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArnuaw6mlbCgH3q0bhx1oj2HXlOP";
@@ -31,6 +32,13 @@ public class BillingActivity extends AppCompatActivity implements BillingAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
         ButterKnife.bind(this);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(R.string.financial_aid);
+        }
+
         if (!BillingProcessor.isIabServiceAvailable(this)) {
             showToast(R.string.iap_not_available);
         }
@@ -43,12 +51,14 @@ public class BillingActivity extends AppCompatActivity implements BillingAdapter
 
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
-                showToast("onBillingError: " + Integer.toString(errorCode));
+                Timber.e(error);
+                // showToast("onBillingError: " + Integer.toString(errorCode));
             }
 
             @Override
             public void onBillingInitialized() {
                 readyToPurchase = true;
+                billingItemsRecyclerViewAdapter.setReadyToPurchase(true);
                 billingItemsRecyclerViewAdapter.notifyDataSetChanged();
             }
 

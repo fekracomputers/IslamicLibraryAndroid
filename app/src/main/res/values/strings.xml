@@ -425,7 +425,7 @@
     <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
     <string name="content_desc_gas_gauge_indicator">Gas gauge indicator</string>
     <string name="content_desc_free_vs_premium_indicator">Free or Premium Image Indicator</string>
-    <string name="donate">Donate</string>
+    <string name="financial_aid">ساهم ماديا</string>
     <string name="iap_not_available"><![CDATA[\"In-app billing service is unavailable, please upgrade Android Market/Play to version >= 3.9.16\"]]></string>
     <string name="wait">wait</string>
     <string name="donation_descreption">Google Play handles all checkout details so the application never has to directly process any financial transactions</string>
@@ -438,5 +438,12 @@
     <string name="support_notice">You can suppot us via</string>
     <string name="feed_back_sub_tex">Suggestions and Notices to help us improve the app</string>
     <string name="share_app_msg_sub_text">share app with friends</string>
-    <string name="donate_sub_text">Donate for supporting the app</string>
+    <string name="donate_sub_text">subscribe to premium user</string>
+    <string name="benefit_fast_support">Faster and more effective user support</string>
+    <string name="benefit_yearly">Yearly and Doesn\'t automatically update</string>
+    <string name="benefit_support_developing_the_app">Support the development of the app</string>
+    <string name="benefit_thawab">صدقة جارية لنشر العلم</string>
+    <string name="benefit_upload_books">upload your custom books</string>
+    <string name="benefit_nominate">mention you or your organization as sponsor in sponsores page</string>
+
 </resources>

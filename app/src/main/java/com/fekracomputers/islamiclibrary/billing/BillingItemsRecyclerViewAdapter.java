@@ -5,11 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.anjlab.android.iab.v3.SkuDetails;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.billing.model.PremiumDiamond;
+import com.fekracomputers.islamiclibrary.billing.model.PremiumGold;
+import com.fekracomputers.islamiclibrary.billing.model.PremiumSilver;
+import com.fekracomputers.islamiclibrary.billing.model.SkuRowData;
+import com.fekracomputers.islamiclibrary.widget.StaticList;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,15 +29,15 @@ import butterknife.OnClick;
 class BillingItemsRecyclerViewAdapter extends RecyclerView.Adapter<BillingItemsRecyclerViewAdapter.ViewHolder> {
 
     private BillingAdapterListener billingAdapterListener;
-    private String[] managedItmsId = {"item_1",
-            "item_2",
-            "item_3",
-            "item_4",
-            "item_5"
-    };
+    private ArrayList<SkuRowData> items;
+    private boolean readyToPurchase;
 
     public BillingItemsRecyclerViewAdapter(BillingAdapterListener billingAdapterListener) {
         this.billingAdapterListener = billingAdapterListener;
+        items = new ArrayList<>();
+        items.add(new PremiumSilver(billingAdapterListener));
+        items.add(new PremiumGold(billingAdapterListener));
+        items.add(new PremiumDiamond(billingAdapterListener));
     }
 
     @Override
@@ -42,69 +49,66 @@ class BillingItemsRecyclerViewAdapter extends RecyclerView.Adapter<BillingItemsR
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setItem(managedItmsId[position]);
+        holder.setItem(items.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return managedItmsId.length;
+        return items.size();
     }
 
     public void notifyProductPurchased(String productId, TransactionDetails details) {
 
     }
 
+    public void setReadyToPurchase(boolean readyToPurchase) {
+        this.readyToPurchase = readyToPurchase;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.productIdTextView)
-        TextView productIdTextView;
+        @BindView(R.id.sku_icon)
+        ImageView IconImageView;
+
+        @BindView(R.id.benefits_list)
+        StaticList benefitsListView;
+
+        @BindView(R.id.product_titlte_textView)
+        TextView productTitleTextView;
+
         @BindView(R.id.purchaseButton)
         Button purchaseButton;
-        @BindView(R.id.consumeButton)
-        Button consumeButton;
-        @BindView(R.id.productDetailsButton)
-        Button productDetailsButton;
-        String itemId;
-        private SkuRowData skuRowData;
-        @BindView(R.id.statusTextView)
-        TextView statusTextView;
+
         @BindView(R.id.priceTextView)
         TextView priceTextView;
-        private boolean isPurchased;
+        private SkuRowData skuRowData;
+        private View itemView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            this.itemView = itemView;
             ButterKnife.bind(this, itemView);
-        }
-
-
-        @OnClick(R.id.consumeButton)
-        void consume() {
-            billingAdapterListener.consume(itemId);
         }
 
         @OnClick(R.id.purchaseButton)
         void purchase() {
-            billingAdapterListener.purchase(itemId);
+            billingAdapterListener.purchase(skuRowData.getSKU());
 
         }
 
-        @OnClick(R.id.productDetailsButton)
-        void showDetails() {
-            billingAdapterListener.showDetails(itemId);
-        }
 
-        private void updateTextViews() {
-            productIdTextView.setText(skuRowData.getTitle());
+        public void setItem(SkuRowData item) {
+            skuRowData = item;
+            skuRowData.refreshData(billingAdapterListener);
+            productTitleTextView.setText(skuRowData.getTitle());
             priceTextView.setText(skuRowData.getPrice());
-            isPurchased = billingAdapterListener.isPurchased(itemId);
-            statusTextView.setText(isPurchased ? R.string.item_already_purchsed : R.string.item_not_purchased);
-        }
-
-        public void setItem(String itemId) {
-            this.itemId = itemId;
-            SkuDetails details = billingAdapterListener.getDetails(itemId);
-            skuRowData = new SkuRowData(details, SkuRowData.TYPE_NORMAL, SkuRowData.SkuType.INAPP);
-            updateTextViews();
+            purchaseButton.setEnabled(readyToPurchase);
+            if (skuRowData.isPurchased()) {
+                purchaseButton.setEnabled(false);
+                purchaseButton.setText(R.string.item_already_purchsed);
+            }
+            if (skuRowData.getIcon() != 0) IconImageView.setImageResource(skuRowData.getIcon());
+            CharSequence[] benefitsList = itemView.getResources().getTextArray(skuRowData.getTextArrayResId());
+            benefitsListView.setAdapter(itemView.getContext(), R.layout.item_sku_benefit, R.id.benefit_text, benefitsList);
         }
     }
 }
