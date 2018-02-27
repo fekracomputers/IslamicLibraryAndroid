@@ -85,7 +85,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
 
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text(R.string.financial_aid)
-                        .subText(R.string.donate_sub_text)
+                        .subText(R.string.support_sub_text)
                         .icon(R.drawable.ic_payment_black_24dp)
                         .setOnClickAction(() -> AboutUtil.pay(context))
                         .build())

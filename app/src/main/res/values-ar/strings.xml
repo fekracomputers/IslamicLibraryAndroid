@@ -323,7 +323,7 @@
     <string name="support_notice">وعن أبي هريرة رضي الله عنه قال: قال رسول الله صلى الله عليه وسلم إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولدٍ صالح يدعو له. رواه مسلم وغيره،\n
 قال العلماء:وناسخ العلم النافع له أجره وأجر من قرأه أو نسخه أو عمل به من بعده ما بقي خطه والعمل به، لهذا الحديث وأمثاله، </string>
     <string name="feed_back_sub_tex">راسلنا بملاحظاتك واقتراحاتك لتطوير البرنامج</string>
-    <string name="donate_sub_text">اشترك معنا</string>
+    <string name="support_sub_text">اشترك معنا</string>
     <string name="share_app_msg_sub_text">انشر البرنامج ولك أجر من يستخدمه إن شاء الله</string>
     <string name="benefit_fast_support"> دعم سريع وتواصل فعال من مبرمجي البرنامج</string>
     <string name="benefit_yearly">سنوي ولا يتجدد تلقائيا</string>

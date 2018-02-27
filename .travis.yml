@@ -16,8 +16,8 @@ android:
     - tools
     - tools
     - platform-tools
-    - android-26
-    - build-tools-26.0.2
+    - android-27
+    - build-tools-27.0.3
 before_script:
   - mv library/google-services.json app/google-services.json
   - echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;26.0.2" "platforms;android-26" "extras;google;m2repository"
