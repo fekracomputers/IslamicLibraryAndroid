@@ -28,6 +28,7 @@ import com.fekracomputers.islamiclibrary.browsing.activity.BrowsingActivity;
 import com.fekracomputers.islamiclibrary.databases.BooksInformationDbHelper;
 import com.fekracomputers.islamiclibrary.databases.UserDataDBHelper;
 import com.fekracomputers.islamiclibrary.download.model.DownloadFileConstants;
+import com.fekracomputers.islamiclibrary.download.model.DownloadsConstants;
 import com.fekracomputers.islamiclibrary.download.service.UnZipIntentService;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
@@ -201,9 +202,10 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkBookInformationDatabase() {
         checkUserDatabase();
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         if (BooksInformationDbHelper.databaseFileExists(SplashActivity.this)) {
             BooksInformationDbHelper instance = BooksInformationDbHelper.getInstance(this);
-            if (instance != null && instance.isValid()) {
+            if (!doesBookInfoContentNeedsUpdate(preferences) && (instance != null && instance.isValid())) {
                 updateBooksIfNeeded();
             } else {
                 BooksInformationDbHelper.deleteBookInformationFile();
@@ -236,15 +238,22 @@ public class SplashActivity extends AppCompatActivity {
 
     private void updateBooksIfNeeded() {
         SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-        if (!preferences.getBoolean(BOOKS_UPDATED_TO_V_4, false)) {
+        if (!preferences.getBoolean(BOOKS_UPDATED_TO_V_4, false) || doesBookInfoContentNeedsUpdate(preferences)) {
             new UpdateBooksAsyncTask(this).execute();
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(BOOKS_UPDATED_TO_V_4, true);
+            editor.putInt(DownloadsConstants.PREF_BOOKS_INFO_CONTENT_VERSION,
+                    DownloadsConstants.CURRENT_BOOKS_INFO_CONTENT_VERSION);
             editor.apply();
         } else {
             finishSplashAndLaunchMainActivity();
         }
 
+    }
+
+    private boolean doesBookInfoContentNeedsUpdate(SharedPreferences preferences) {
+        return preferences.getInt(DownloadsConstants.PREF_BOOKS_INFO_CONTENT_VERSION, 0) <
+                DownloadsConstants.CURRENT_BOOKS_INFO_CONTENT_VERSION;
     }
 
     private void handleOldDirectory() {
@@ -320,7 +329,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private static class getBooksInformationFromAssets extends AsyncTask<Void, Integer, Boolean> {
-        private static final double MAX_MANI_DB_SIZE = 18587648L;
+        private static final double MAX_MANI_DB_SIZE = 4264929L;
         private double downloadSoFar = 0;
         private WeakReference<SplashActivity> activityReference;
 
@@ -379,7 +388,6 @@ public class SplashActivity extends AppCompatActivity {
             if (activity != null)
                 if (success) {
                     activity.updateBooksIfNeeded();
-                    activity.finishSplashAndLaunchMainActivity();
                 } else {
                     activity.finish();
                 }

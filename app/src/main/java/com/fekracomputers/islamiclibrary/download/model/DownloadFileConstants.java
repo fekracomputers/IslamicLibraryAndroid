@@ -19,7 +19,7 @@ public class DownloadFileConstants {
     public static final String BOOK_INFORMATION_URL = BASE_URL + URL_SEPARATOR + ONLINE_DATABASE_NAME;
     public static final String COMPRESSED_BASE_BOOK_URL = BASE_URL + URL_SEPARATOR + "cbooks";
     // http://booksapi.islam-db.com/resources/main.sqlite.zip
-    public static final String COMPRESSED_BOOK_INFORMATION_URL = BASE_URL + URL_SEPARATOR + ONLINE_DATABASE_NAME;
+    public static final String COMPRESSED_BOOK_INFORMATION_URL = BASE_URL + URL_SEPARATOR + COMPRESSED_ONLINE_DATABASE_NAME;
     //    public static final String COMPRESSED_BOOK_INFORMATION_URL = COMPRESSED_BASE_BOOK_URL + URL_SEPARATOR + "main111" + "." + COMPRESSION_EXTENTION;
     public static final String PREF_APP_LOCATION = "custom_app_location_pref";
     public static final String PREF_SDCARDPERMESSION_DIALOG_DISPLAYED = "PREF_SDCARD_PERMISSION_DIALOG_DISPLAYED";

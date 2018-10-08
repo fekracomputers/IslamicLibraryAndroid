@@ -55,11 +55,14 @@ import com.fekracomputers.islamiclibrary.homeScreen.dialog.RenameCollectionDialo
 import com.fekracomputers.islamiclibrary.model.AuthorInfo;
 import com.fekracomputers.islamiclibrary.model.BookCategory;
 import com.fekracomputers.islamiclibrary.model.BooksCollection;
+import com.fekracomputers.islamiclibrary.reminder.AppRateController;
+import com.fekracomputers.islamiclibrary.reminder.DonationReminderDialogFragment;
 import com.fekracomputers.islamiclibrary.search.view.SearchRequestPopupFragment;
 import com.fekracomputers.islamiclibrary.search.view.SearchResultActivity;
 import com.fekracomputers.islamiclibrary.search.view.SearchResultFragment;
 import com.fekracomputers.islamiclibrary.settings.AboutActivity;
 import com.fekracomputers.islamiclibrary.settings.AboutUtil;
+import com.fekracomputers.islamiclibrary.settings.HelpActivity;
 import com.fekracomputers.islamiclibrary.settings.SettingsActivity;
 import com.fekracomputers.islamiclibrary.userNotes.GlobalUserNotesFragment;
 import com.fekracomputers.islamiclibrary.utility.Util;
@@ -93,7 +96,8 @@ public class BrowsingActivity
         BrowsingActivityNavigationController.BrowsingActivityControllerListener,
         BookCollectionsController.BookCollectionsControllerCallback,
         RenameCollectionDialogFragment.RenameCollectionListener,
-        GlobalUserNotesFragment.GlobalUserNotesFragmentListener {
+        GlobalUserNotesFragment.GlobalUserNotesFragmentListener,
+        DonationReminderDialogFragment.DonationReminderDialogFragmentDelegate {
 
     public static final int AUTHOR_LIST_FRAGMENT_TYPE = 0;
     public static final int BOOK_CATEGORY_FRAGMENT_TYPE = 1;
@@ -133,6 +137,7 @@ public class BrowsingActivity
     private BrowsingActivityNavigationController browsingActivityNavigationController;
     @NonNull
     private HashSet<Integer> mBooksToDownload = new HashSet<>();
+    private BrowsingAnalyticsController browsingAnalyticsController;
     @Nullable
     private BookCardEventsCallback bookCardEventsCallback = new BookCardEventsCallback(this) {
         @Override
@@ -250,13 +255,11 @@ public class BrowsingActivity
 
 
     };
-
-
-    private BrowsingAnalyticsController browsingAnalyticsController;
     private AppBarLayout appBarLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     @NonNull
     private ArrayList<BookCollectionsCallBack> bookCollectionsCallBack = new ArrayList<>();
+    private AppRateController appRateController;
 
     private void notifyBookDownloadFailed(int bookId, String failurReason) {
         CoordinatorLayout coordinatorLayout = findViewById(R.id.browsing_coordinator_layout);
@@ -300,7 +303,6 @@ public class BrowsingActivity
 
         browsingAnalyticsController = new BrowsingAnalyticsController(this);
         inflateUi(savedInstanceState);
-
     }
 
 
@@ -378,7 +380,11 @@ public class BrowsingActivity
             }
         }
 
+        appRateController = new AppRateController(this);
 
+        appRateController
+                .monitor()
+                .showRateDialogIfMeetsConditions(this);
     }
 
     public void setAppbarExpanded(boolean expanded) {
@@ -640,7 +646,6 @@ public class BrowsingActivity
     }
 
 
-
     @Override
     public void OnFilterAllSelected(boolean b) {
         if (mPaneNumber > 1) {
@@ -867,6 +872,9 @@ public class BrowsingActivity
             AboutUtil.ShareAppLink(this);
         } else if (id == R.id.nav_feedback) {
             AboutUtil.sendFeedBack(this);
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_pay) {
             AboutUtil.pay(this);
         } else if (id == R.id.nav_about_app) {
@@ -968,6 +976,11 @@ public class BrowsingActivity
         mySnackbar.show();
     }
 
+    @Override
+    public DonationReminderDialogFragment.DonationReminderDialogFragmentListener getListener() {
+        return appRateController.getListener();
+    }
+
 
     private class BookSelectionActionModeCallback {
 
@@ -1021,7 +1034,6 @@ public class BrowsingActivity
             notifySelectionActionModeDestroyed();
         }
 
-        @Nullable
         void startBookSelectionActionMode(@NonNull final BrowsingActivity browsingActivity) {
             selectionToolBar = browsingActivity.findViewById(R.id.selection_tool_bar);
             menu = selectionToolBar.getMenu();

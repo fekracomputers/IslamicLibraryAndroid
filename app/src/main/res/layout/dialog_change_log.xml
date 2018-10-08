@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+
+
+    <it.gmariotti.changelibs.library.view.ChangeLogRecyclerView
+        android:id="@+id/change_log_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:paddingTop="8dp"
+        app:rowHeaderLayoutId="@layout/changelogrowheader_material_layout"
+        app:rowLayoutId="@layout/changelogrow_material_layout" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+
+        android:background="@color/material_grey_200" />
+    <include layout="@layout/support_buttons" />
+</LinearLayout>

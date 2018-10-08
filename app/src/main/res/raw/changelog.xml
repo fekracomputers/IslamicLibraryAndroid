@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog bulletedList="false">
+    <changelogversion
+        changeDate="Apr 15, 2018"
+        versionName="1.4.3">
+        <changelogimprovement>Updating the latest Shamela books</changelogimprovement>
+        <changelogimprovement>Adding Help Videos</changelogimprovement>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Feb 22, 2018"
+        versionName="1.4.2">
+        <changelogimprovement>Use In app purchases to support the app</changelogimprovement>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Feb 21, 2018"
+        versionName="1.3.3">
+        <changelogimprovement>Highlight Search result</changelogimprovement>
+        <changelogimprovement>User notes saved to external storage to persist app uninstall could be
+            manually backuped by copyng file at islamicLibrary/user_data
+        </changelogimprovement>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Feb 3, 2018"
+        versionName="1.3.0">
+        <changelogimprovement>change background color</changelogimprovement>
+        <changelogimprovement>change Text color</changelogimprovement>
+        <changelogimprovement>change heading color</changelogimprovement>
+    </changelogversion>
+
+
+    <changelogversion
+        changeDate="Jan 28, 2018"
+        versionName="1.2.4">
+        <changelogimprovement>now books could be read directly after downloading and no need for
+        </changelogimprovement>
+        <changelogimprovement>new tab including all notes and bookmarks from all books
+        </changelogimprovement>
+        <changelogimprovement>option to diable pinch zoom</changelogimprovement>
+    </changelogversion>
+    <changelogversion
+        changeDate="Dec 25, 2017"
+        versionName="1.0.3">
+        <changelogbug>fixes for downloads</changelogbug>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Dec 4, 2017"
+        versionName=" 1.0.0">
+        <changelogimprovement>New Home Screen</changelogimprovement>
+        <changelogimprovement>most read book</changelogimprovement>
+        <changelogimprovement>latest downloaded books</changelogimprovement>
+        <changelogimprovement>latest read book</changelogimprovement>
+        <changelogimprovement>custom user book collection</changelogimprovement>
+        <changelogimprovement>editable home screen</changelogimprovement>
+        <changelogimprovement>show/hide tashkeel</changelogimprovement>
+        <changelogimprovement>ability to keep screen on while reading</changelogimprovement>
+        <changelogimprovement>fix bug in highlight menu items on some devices while in night mode
+        </changelogimprovement>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Sep 8, 2017"
+        versionName="0.11.0">
+        <changelogimprovement>enhance the way for selecting books for search (author books,category
+            books or all books)
+        </changelogimprovement>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Sep 6, 2017"
+        versionName="0.10.0">
+        <changelogbug>bug fix with android Nougat (7)</changelogbug>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Sep 5, 2017"
+        versionName="0.9.0">
+        <changelogimprovement>ability to store files on SD card</changelogimprovement>
+    </changelogversion>
+
+
+    <changelogversion
+        changeDate="Sep 5, 2017"
+        versionName="0.7.0">
+        <changelogimprovement>ability to store files on SD card</changelogimprovement>
+    </changelogversion>
+
+
+    <changelogversion
+        changeDate="Jul 21, 2017"
+        versionName="0.5.0">
+        <changelogimprovement>adding delete book feature</changelogimprovement>
+        <changelogbug>Fix crash when searching for book name in list view</changelogbug>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="Jun 6, 2017"
+        versionName="1.0.0-beta4">
+        <changelogbug>trying to fix issue with some kitkat devices for storage</changelogbug>
+    </changelogversion>
+
+
+    <changelogversion
+        changeDate="May 31, 2017"
+        versionName="1.0.0-beta3">
+        <changelogbug>fix crashes with download manager</changelogbug>
+    </changelogversion>
+
+
+    <changelogversion
+        changeDate="May 30, 2017"
+        versionName="1.0.0-beta2">
+        <changelogbug>fix crash on kitkat</changelogbug>
+        <changelogbug>minor typo correction</changelogbug>
+    </changelogversion>
+
+    <changelogversion
+        changeDate="May 28, 2017"
+        versionName="beta-1">
+        <changelogtext>First beta release</changelogtext>
+    </changelogversion>
+
+</changelog>

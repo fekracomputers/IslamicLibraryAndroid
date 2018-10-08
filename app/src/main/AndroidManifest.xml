@@ -83,6 +83,11 @@
             android:parentActivityName=".browsing.activity.BrowsingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".settings.HelpActivity"
+            android:parentActivityName=".browsing.activity.BrowsingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".settings.AboutActivity"
             android:parentActivityName=".browsing.activity.BrowsingActivity"
             android:theme="@style/AppTheme.MaterialAboutActivity" />
@@ -144,7 +149,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".billing.BillingActivity"></activity>
+        <activity android:name=".billing.BillingActivity" />
     </application>
 
 </manifest>

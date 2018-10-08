@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-  compileSdkVersion 26
-  buildToolsVersion "26.0.2"
+  compileSdkVersion 27
+  buildToolsVersion '28.0.2'
   resourcePrefix "cpv_"
 
   defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 26
+    targetSdkVersion 27
   }
 
   lintOptions {
@@ -16,8 +16,8 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:appcompat-v7:26.1.0'
-  compile 'com.android.support:preference-v7:26.1.0'
+  implementation 'com.android.support:appcompat-v7:27.1.0'
+  implementation 'com.android.support:preference-v7:27.1.0'
 
 }
 

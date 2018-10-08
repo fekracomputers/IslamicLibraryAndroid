@@ -35,8 +35,8 @@ public class AboutActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Util.restartIfLocaleChanged(this, mIsArabic);
-
     }
+
 
 
 }

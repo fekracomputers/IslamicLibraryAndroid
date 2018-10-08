@@ -14,6 +14,8 @@ import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.fekracomputers.islamiclibrary.R;
+import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
+import com.fekracomputers.islamiclibrary.utility.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,9 +28,12 @@ public class BillingActivity extends AppCompatActivity implements BillingAdapter
     RecyclerView recyrecyclerView;
     BillingItemsRecyclerViewAdapter billingItemsRecyclerViewAdapter;
     private boolean readyToPurchase = false;
+    private boolean mIsArabic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((IslamicLibraryApplication) getApplication()).refreshLocale(this, false);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billing);
         ButterKnife.bind(this);
@@ -71,6 +76,7 @@ public class BillingActivity extends AppCompatActivity implements BillingAdapter
         recyrecyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyrecyclerView.setHasFixedSize(true);
         recyrecyclerView.setAdapter(billingItemsRecyclerViewAdapter);
+        mIsArabic = Util.isArabicUi(this);
 
     }
 
@@ -102,6 +108,7 @@ public class BillingActivity extends AppCompatActivity implements BillingAdapter
     @Override
     protected void onResume() {
         super.onResume();
+        Util.restartIfLocaleChanged(this, mIsArabic);
         billingItemsRecyclerViewAdapter.notifyDataSetChanged();
     }
 

@@ -1,3 +1,4 @@
+
 package com.fekracomputers.islamiclibrary.userNotes.adapters;
 
 import android.animation.ObjectAnimator;

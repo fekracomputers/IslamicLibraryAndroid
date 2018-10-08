@@ -431,11 +431,6 @@
     <attr name="spinnerView" format="reference" />
     <attr name="spinnerDropdownItemView" format="reference" />
     <attr name="spinnerAccessibilityLabel" format="reference" />
-    <attr name="imageAspectRatioAdjust">
-        <enum name="none" value="0" />
-        <enum name="adjust_height" value="2" />
-        <enum name="adjust_width" value="1" />
-    </attr>
     <attr name="imageAspectRatio" format="float" />
     <attr name="circleCrop" format="boolean" />
 
@@ -553,16 +548,7 @@
         <enum name="omnibox_title_section" value="5" />
         <enum name="omnibox_url_section" value="4" />
     </attr>
-    <attr name="buttonSize" format="reference">
-        <enum name="icon_only" value="2" />
-        <enum name="standard" value="0" />
-        <enum name="wide" value="1" />
-    </attr>
-    <attr name="colorScheme" format="reference">
-        <enum name="auto" value="2" />
-        <enum name="dark" value="0" />
-        <enum name="light" value="1" />
-    </attr>
+
     <attr name="scopeUris" format="reference|string" />
     <attr name="widthSource" format="string" />
     <attr name="heightSource" format="string" />

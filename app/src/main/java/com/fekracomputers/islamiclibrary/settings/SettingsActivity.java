@@ -28,6 +28,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.SplashActivity;
 import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
@@ -36,7 +37,6 @@ import com.fekracomputers.islamiclibrary.utility.PermissionUtil;
 import com.fekracomputers.islamiclibrary.utility.StorageUtils;
 import com.fekracomputers.islamiclibrary.utility.Util;
 
-import net.xpece.android.support.preference.BuildConfig;
 import net.xpece.android.support.preference.ColorPreference;
 import net.xpece.android.support.preference.PreferenceScreenNavigationStrategy;
 import net.xpece.android.support.preference.XpColorPreferenceDialogFragment;

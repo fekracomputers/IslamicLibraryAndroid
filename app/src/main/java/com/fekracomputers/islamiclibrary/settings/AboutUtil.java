@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction;
+import com.fekracomputers.islamiclibrary.BuildConfig;
 import com.fekracomputers.islamiclibrary.R;
 import com.fekracomputers.islamiclibrary.billing.BillingActivity;
 import com.webianks.easy_feedback.EasyFeedback;
@@ -123,6 +124,15 @@ public class AboutUtil {
         }
     }
 
+    public static void startYoutube(Context context) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/channel/UCRndnr7kTZ004K6QCirumaw"));
+        context.startActivity(browserIntent);
+    }
+    public static void ShowHelpVideos(Context context,String id) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/"+id));
+        context.startActivity(browserIntent);
+    }
+
     public static void startTwitter(@NonNull Context context, String name) {
         try {
             context.getPackageManager().getPackageInfo("com.twitter.android", 0);
@@ -187,4 +197,16 @@ public class AboutUtil {
         context.startActivity(intent);
 
     }
+
+    public static void buyPaidVersion(Context context) {
+        String appId = "com.fekracomputers.islamiclibrary.pro1";
+        openMarket(context, "market://details?id=" + appId, "https://play.google.com/store/apps/details?id=" + appId);
+    }
+
+    public static boolean isPro(Context context) {
+        return BuildConfig.APPLICATION_ID.contains("pro");
+    }
+
+
+
 }

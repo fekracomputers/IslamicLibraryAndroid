@@ -320,8 +320,8 @@
     <string name="item_not_purchased">غير مدفوعة</string>
     <string name="item_already_purchsed">دفعت بالفعل</string>
     <string name="about_support">ادعمنا</string>
-    <string name="support_notice">وعن أبي هريرة رضي الله عنه قال: قال رسول الله صلى الله عليه وسلم إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولدٍ صالح يدعو له. رواه مسلم وغيره،\n
-قال العلماء:وناسخ العلم النافع له أجره وأجر من قرأه أو نسخه أو عمل به من بعده ما بقي خطه والعمل به، لهذا الحديث وأمثاله، </string>
+    <string name="support_notice">عن أبي هريرة رضي الله عنه قال: قال رسول الله صلى الله عليه وسلم إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولدٍ صالح يدعو له. رواه مسلم وغيره،\n
+قال العلما:وناسخ العلم النافع له أجره وأجر من قرأه أو نسخه أو عمل به من بعده ما بقي خطه والعمل به، لهذا الحديث وأمثاله </string>
     <string name="feed_back_sub_tex">راسلنا بملاحظاتك واقتراحاتك لتطوير البرنامج</string>
     <string name="support_sub_text">اشترك معنا</string>
     <string name="share_app_msg_sub_text">انشر البرنامج ولك أجر من يستخدمه إن شاء الله</string>
@@ -331,5 +331,19 @@
     <string name="benefit_thawab">صدقة جارية لنشر العلم</string>
     <string name="benefit_upload_books">إمكانية رفع كتب متخصصة بطلب العميل طالما لا تتعارض مع المحتوى العربي والإسلامي وقواعد النشر</string>
     <string name="benefit_nominate"> الإعلان عن مؤسستك أو التعريف بشخصك في صفحة الداعمين</string>
+    <string name="action_show_later">لاحقا</string>
+    <string name="action_never_show">لا تظهر مرة أخرى</string>
+    <string name="action_buy_paid_version">شراء النسخة المدفوعة</string>
+
+    <string name="changelog_row_prefix_bug">[b]علاج علة:[/b]</string>
+
+    <!-- Prefix for Improvement type change log -->
+    <string name="changelog_row_prefix_improvement">[b][font color=red]جديد:[/b]</string>
+    <string name="change_log">آخر التحديثات</string>
+    <string name="action_help">المساعدة</string>
+    <string name="label_explayin_video">سلسة فديوهات شرح البرنامج</string>
+    <string name="label_video_3">الجزء الثالث</string>
+    <string name="label_video_2">الجزء الثاني</string>
+    <string name="label_video_1">الجزء الأول</string>
 
 </resources>

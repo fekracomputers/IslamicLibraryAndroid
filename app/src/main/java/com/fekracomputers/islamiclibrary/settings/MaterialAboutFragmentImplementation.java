@@ -15,7 +15,6 @@ import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard;
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList;
 import com.fekracomputers.islamiclibrary.R;
-import com.fekracomputers.islamiclibrary.appliation.IslamicLibraryApplication;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import timber.log.Timber;
@@ -34,10 +33,14 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         return R.style.AppTheme_MaterialAboutActivity_Fragment;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
     @NonNull
     @Override
     protected MaterialAboutList getMaterialAboutList(@NonNull final Context context) {
-        ((IslamicLibraryApplication) getActivity().getApplication()).refreshLocale(getActivity(), false);
         MaterialAboutCard.Builder generalInfoCardBuilder = new MaterialAboutCard.Builder();
 
         //region generalInfoCardBuilder
@@ -166,7 +169,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         socialNetworksCardBuilder
                 .addItem(new MaterialAboutTitleItem.Builder()
                         .text(R.string.find_us_on_social_media)
-                        .icon(null)
+                        .icon(R.drawable.company_logo)
                         .build());
 
 
@@ -184,6 +187,11 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
                 .setOnClickAction(() -> AboutUtil.startTwitter(context,
                         context.getResources().getString(R.string.twitter_user_name)))
                 .build());
+        socialNetworksCardBuilder.addItem(new MaterialAboutActionItem.Builder()
+                .text(R.string.about_activity_youtube_label)
+                .icon(R.drawable.youtube_social_square_red)
+                .setOnClickAction(() -> AboutUtil.startYoutube(context))
+                .build());
 
 
         //endregion
@@ -192,7 +200,7 @@ public class MaterialAboutFragmentImplementation extends MaterialAboutFragment {
         MaterialAboutCard.Builder aboutCardBuilder = new MaterialAboutCard.Builder();
         aboutCardBuilder.addItem(new MaterialAboutActionItem.Builder()
                 .text(R.string.other_apps)
-                .icon(R.drawable.ic_collections_bookmark_black_24dp)
+                .icon(R.drawable.ic_google_play)
                 .setOnClickAction(() -> AboutUtil.openDevelopersPage(context))
                 .build());
         aboutCardBuilder.addItem(new MaterialAboutActionItem.Builder()

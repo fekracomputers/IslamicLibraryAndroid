@@ -57,4 +57,6 @@ public class BrowsingAnalyticsController {
         return ANALYTICS_CATEGORY_TYPE + bookCategory.getId();
 
     }
+
+
 }

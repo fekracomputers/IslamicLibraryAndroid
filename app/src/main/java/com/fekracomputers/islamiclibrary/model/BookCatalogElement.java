@@ -2,6 +2,7 @@ package com.fekracomputers.islamiclibrary.model;
 
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 /**
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 public interface BookCatalogElement extends Parcelable {
     int getId();
 
+    @StringRes
     int getName();
     Fragment getNewFragment();
     @DrawableRes

@@ -267,7 +267,8 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
     private static final String FROM_BOOKS_JOIN_AUTHORS =
             SQL.FROM + BOOKS_JOIN_AUTHORS;
     private static final String FROM_BOOKS_JOIN_AUTHORS_JOIN_CAT = SQL.FROM + BOOKS_JOIN_AUTHORS_JOIN_CAT;
-    private static final String[] DEFULT_CATEGORIES = new String[]{"العقيدة",
+    private static final String[] DEFULT_CATEGORIES = new String[]{
+            "العقيدة",
             "الفرق والردود",
             "التفاسير",
             "علوم القران",
@@ -307,7 +308,8 @@ public class BooksInformationDbHelper extends SQLiteOpenHelper {
             "فهارس الكتب والادلة",
             "محاضرات مفرغة",
             "الدعوة واحوال المسلمين",
-            "كتب اسلامية عامة", "علوم اخرى"};
+            "كتب اسلامية عامة",
+            "علوم اخرى"};
     private static final String CREATE_STORED_INFO = " CREATE TABLE IF NOT EXISTS "
             + BooksInformationDBContract.StoredBooks.TABLE_NAME_V3 + "( " +
             BooksInformationDBContract.StoredBooks.COLUMN_NAME_BookID + " integer primary key" + "," +

@@ -444,6 +444,22 @@
     <string name="benefit_support_developing_the_app">Support the development of the app</string>
     <string name="benefit_thawab">صدقة جارية لنشر العلم</string>
     <string name="benefit_upload_books">upload your custom books</string>
-    <string name="benefit_nominate">mention you or your organization as sponsor in sponsores page</string>
+    <string name="benefit_nominate">mention you or your organization as sponsor in sponsors page</string>
+    <string name="action_show_later">Later</string>
+    <string name="action_never_show">Don\'t show again</string>
+    <string name="action_buy_paid_version">Buy paid version</string>
+
+    <!-- Prefix for Bug type change log -->
+    <string name="changelog_row_prefix_bug">[b]Bug:[/b]</string>
+
+    <!-- Prefix for Improvement type change log -->
+    <string name="changelog_row_prefix_improvement">[b][font color=red]New:[/b]</string>
+    <string name="change_log">Latest changes</string>
+    <string name="about_activity_youtube_label">youtube</string>
+    <string name="action_help">Help</string>
+    <string name="label_explayin_video">سلسة فديوهات شرح البرنامج</string>
+    <string name="label_video_3">part 3</string>
+    <string name="label_video_2">Part 2</string>
+    <string name="label_video_1">Part 1</string>
 
 </resources>
